@@ -16,12 +16,26 @@
  * limitations under the License.
  */
 
-final class DiffusionMercurialRenameHistoryQuery
-  extends DiffusionRenameHistoryQuery {
+final class PhabricatorApplicationSubscriptions extends PhabricatorApplication {
 
-  protected function executeQuery() {
-    // TODO: Implement.
-    return null;
+  public function shouldAppearInLaunchView() {
+    return false;
+  }
+
+  public function getEventListeners() {
+    return array(
+      new PhabricatorSubscriptionsUIEventListener(),
+    );
+  }
+
+  public function getRoutes() {
+    return array(
+      '/subscriptions/' => array(
+        '(?P<action>add|delete)/'.
+        '(?P<phid>[^/]+)/' => 'PhabricatorSubscriptionsEditController',
+      ),
+    );
   }
 
 }
+

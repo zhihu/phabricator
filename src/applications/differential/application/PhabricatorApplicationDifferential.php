@@ -30,6 +30,10 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
     return 'differential';
   }
 
+  public function getHelpURI() {
+    return PhabricatorEnv::getDoclink('article/Differential_User_Guide.html');
+  }
+
   public function getFactObjectsForAnalysis() {
     return array(
       new DifferentialRevision(),
@@ -38,35 +42,40 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
 
   public function getRoutes() {
     return array(
-      '/D(?P<id>\d+)' => 'DifferentialRevisionViewController',
+      '/D(?P<id>[1-9]\d*)' => 'DifferentialRevisionViewController',
       '/differential/' => array(
         '' => 'DifferentialRevisionListController',
         'filter/(?P<filter>\w+)/(?:(?P<username>[\w\.-_]+)/)?' =>
           'DifferentialRevisionListController',
         'stats/(?P<filter>\w+)/' => 'DifferentialRevisionStatsController',
         'diff/' => array(
-          '(?P<id>\d+)/' => 'DifferentialDiffViewController',
+          '(?P<id>[1-9]\d*)/' => 'DifferentialDiffViewController',
           'create/' => 'DifferentialDiffCreateController',
         ),
         'changeset/' => 'DifferentialChangesetViewController',
-        'revision/edit/(?:(?P<id>\d+)/)?'
+        'revision/edit/(?:(?P<id>[1-9]\d*)/)?'
           => 'DifferentialRevisionEditController',
         'comment/' => array(
-          'preview/(?P<id>\d+)/' => 'DifferentialCommentPreviewController',
+          'preview/(?P<id>[1-9]\d*)/' => 'DifferentialCommentPreviewController',
           'save/' => 'DifferentialCommentSaveController',
           'inline/' => array(
-            'preview/(?P<id>\d+)/' =>
-              'DifferentialInlineCommentPreviewController',
-            'edit/(?P<id>\d+)/' => 'DifferentialInlineCommentEditController',
+            'preview/(?P<id>[1-9]\d*)/'
+              => 'DifferentialInlineCommentPreviewController',
+            'edit/(?P<id>[1-9]\d*)/'
+              => 'DifferentialInlineCommentEditController',
           ),
         ),
-        'subscribe/(?P<action>add|rem)/(?P<id>\d+)/'
+        'subscribe/(?P<action>add|rem)/(?P<id>[1-9]\d*)/'
           => 'DifferentialSubscribeController',
       ),
     );
   }
 
-  public function getCoreApplicationOrder() {
+  public function getApplicationGroup() {
+    return self::GROUP_CORE;
+  }
+
+  public function getApplicationOrder() {
     return 0.100;
   }
 

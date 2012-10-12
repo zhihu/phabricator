@@ -50,7 +50,6 @@ abstract class AphrontController {
     return $controller->processRequest();
   }
 
-
   final public function setCurrentApplication(
     PhabricatorApplication $current_application) {
 
@@ -60,6 +59,11 @@ abstract class AphrontController {
 
   final public function getCurrentApplication() {
     return $this->currentApplication;
+  }
+
+  public function __set($name, $value) {
+    phlog('Wrote to undeclared property '.get_class($this).'::$'.$name.'.');
+    $this->$name = $value;
   }
 
 }

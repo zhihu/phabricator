@@ -48,16 +48,20 @@ final class PhabricatorApplicationPhriction extends PhabricatorApplication {
         'history(?P<slug>/)'     => 'PhrictionHistoryController',
         'history/(?P<slug>.+/)'  => 'PhrictionHistoryController',
 
-        'edit/(?:(?P<id>\d+)/)?' => 'PhrictionEditController',
-        'delete/(?P<id>\d+)/'    => 'PhrictionDeleteController',
+        'edit/(?:(?P<id>[1-9]\d*)/)?' => 'PhrictionEditController',
+        'delete/(?P<id>[1-9]\d*)/'    => 'PhrictionDeleteController',
 
         'preview/' => 'PhrictionDocumentPreviewController',
-        'diff/(?P<id>\d+)/' => 'PhrictionDiffController',
+        'diff/(?P<id>[1-9]\d*)/' => 'PhrictionDiffController',
       ),
     );
   }
 
-  public function getCoreApplicationOrder() {
+  public function getApplicationGroup() {
+    return self::GROUP_COMMUNICATION;
+  }
+
+  public function getApplicationOrder() {
     return 0.140;
   }
 

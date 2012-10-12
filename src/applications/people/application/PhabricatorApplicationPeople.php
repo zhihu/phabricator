@@ -34,12 +34,20 @@ final class PhabricatorApplicationPeople extends PhabricatorApplication {
     return 'people';
   }
 
+  public function getFlavorText() {
+    return pht('Sort of a social utility.');
+  }
+
+  public function getApplicationGroup() {
+    return self::GROUP_ADMIN;
+  }
+
   public function getRoutes() {
     return array(
       '/people/' => array(
         '' => 'PhabricatorPeopleListController',
         'logs/' => 'PhabricatorPeopleLogsController',
-        'edit/(?:(?P<id>\d+)/(?:(?P<view>\w+)/)?)?'
+        'edit/(?:(?P<id>[1-9]\d*)/(?:(?P<view>\w+)/)?)?'
           => 'PhabricatorPeopleEditController',
         'ldap/' => 'PhabricatorPeopleLdapController',
       ),

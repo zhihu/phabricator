@@ -111,22 +111,27 @@ final class PhameBlogViewController
       $notice = $this->buildNoticeView()
         ->setTitle('Successfully created your blog.')
         ->appendChild('Time to write some posts.');
+    } else if ($request->getExists('edit')) {
+      $notice = $this->buildNoticeView()
+        ->setTitle('Successfully edited your blog.')
+        ->appendChild('Time to write some posts.');
     } else {
       $notice = null;
     }
+
+    $panel = id(new PhamePostListView())
+      ->setBlogStyle(true)
+      ->setUser($this->getRequest()->getUser())
+      ->setBloggers($bloggers)
+      ->setPosts($posts)
+      ->setActions($actions)
+      ->setDraftList(false);
 
     $details = id(new PhameBlogDetailView())
       ->setUser($user)
       ->setBloggers($bloggers)
       ->setBlog($blog)
       ->setIsAdmin($is_admin);
-
-    $panel = id(new PhamePostListView())
-      ->setUser($this->getRequest()->getUser())
-      ->setBloggers($bloggers)
-      ->setPosts($posts)
-      ->setActions($actions)
-      ->setDraftList(false);
 
     $this->setShowSideNav(false);
 

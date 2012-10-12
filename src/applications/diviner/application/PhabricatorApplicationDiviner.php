@@ -18,8 +18,30 @@
 
 final class PhabricatorApplicationDiviner extends PhabricatorApplication {
 
-  public function shouldAppearInLaunchView() {
-    return false;
+  public function getBaseURI() {
+    return '/diviner/';
+  }
+
+  public function getAutospriteName() {
+    return 'diviner';
+  }
+
+  public function getShortDescription() {
+    return 'Documentation';
+  }
+
+  public function getTitleGlyph() {
+    return "\xE2\x97\x89";
+  }
+
+  public function getRoutes() {
+    return array(
+      '/diviner/' => 'DivinerListController',
+    );
+  }
+
+  public function getApplicationGroup() {
+    return self::GROUP_COMMUNICATION;
   }
 
   public function buildMainMenuItems(

@@ -446,6 +446,14 @@ final class DifferentialChangesetParser {
         $unchanged = true;
       }
     }
+    $changetype = $this->changeset->getChangeType();
+    if ($changetype == DifferentialChangeType::TYPE_MOVE_AWAY) {
+      // sometimes we show moved files as unchanged, sometimes deleted,
+      // and sometimes inconsistent with what actually happened at the
+      // destination of the move.  Rather than make a false claim,
+      // omit the 'not changed' notice if this is the source of a move
+      $unchanged = false;
+    }
 
     $this->specialAttributes = array(
       self::ATTR_UNCHANGED  => $unchanged,
@@ -575,30 +583,7 @@ final class DifferentialChangesetParser {
     }
     $new_corpus_block = implode("\n", $new_corpus);
 
-    $generated_guess = (strpos($new_corpus_block, '@'.'generated') !== false);
-
-    if (!$generated_guess) {
-      $config_key = 'differential.generated-paths';
-      $generated_path_regexps = PhabricatorEnv::getEnvConfig($config_key);
-      foreach ($generated_path_regexps as $regexp) {
-        if (preg_match($regexp, $this->changeset->getFilename())) {
-          $generated_guess = true;
-          break;
-        }
-      }
-    }
-
-    $event = new PhabricatorEvent(
-      PhabricatorEventType::TYPE_DIFFERENTIAL_WILLMARKGENERATED,
-      array(
-        'corpus' => $new_corpus_block,
-        'is_generated' => $generated_guess
-      )
-    );
-    PhutilEventEngine::dispatchEvent($event);
-
-    $generated = $event->getValue('is_generated');
-    $this->specialAttributes[self::ATTR_GENERATED] = $generated;
+    $this->markGenerated($new_corpus_block);
 
     if ($this->isTopLevel && !$this->comments &&
         ($this->isGenerated() || $this->isUnchanged() || $this->isDeleted())) {
@@ -770,6 +755,33 @@ final class DifferentialChangesetParser {
     }
   }
 
+  private function markGenerated($new_corpus_block = '') {
+    $generated_guess = (strpos($new_corpus_block, '@'.'generated') !== false);
+
+    if (!$generated_guess) {
+      $config_key = 'differential.generated-paths';
+      $generated_path_regexps = PhabricatorEnv::getEnvConfig($config_key);
+      foreach ($generated_path_regexps as $regexp) {
+        if (preg_match($regexp, $this->changeset->getFilename())) {
+          $generated_guess = true;
+          break;
+        }
+      }
+    }
+
+    $event = new PhabricatorEvent(
+      PhabricatorEventType::TYPE_DIFFERENTIAL_WILLMARKGENERATED,
+      array(
+        'corpus' => $new_corpus_block,
+        'is_generated' => $generated_guess,
+      )
+    );
+    PhutilEventEngine::dispatchEvent($event);
+
+    $generated = $event->getValue('is_generated');
+    $this->specialAttributes[self::ATTR_GENERATED] = $generated;
+  }
+
   public function isGenerated() {
     return idx($this->specialAttributes, self::ATTR_GENERATED, false);
   }
@@ -841,8 +853,11 @@ final class DifferentialChangesetParser {
 
     $changeset = $this->changeset;
 
-    if ($changeset->getFileType() == DifferentialChangeType::FILE_TEXT ||
-        $changeset->getFileType() == DifferentialChangeType::FILE_SYMLINK) {
+    if ($changeset->getFileType() != DifferentialChangeType::FILE_TEXT &&
+        $changeset->getFileType() != DifferentialChangeType::FILE_SYMLINK) {
+      $this->markGenerated();
+
+    } else {
       if ($skip_cache || !$this->loadCache()) {
 
         $ignore_all = (($whitespace_mode == self::WHITESPACE_IGNORE_ALL) ||
@@ -1379,7 +1394,11 @@ final class DifferentialChangesetParser {
     //
     $depths = array();
     $last_depth = 0;
-    for ($ii = $range_start + $range_len - 1; $ii >= $range_start; $ii--) {
+    $range_end = $range_start + $range_len;
+    if (!isset($this->new[$range_end])) {
+      $range_end--;
+    }
+    for ($ii = $range_end; $ii >= $range_start; $ii--) {
       // We need to expand tabs to process mixed indenting and to round
       // correctly later.
       $line = str_replace("\t", "  ", $this->new[$ii]['text']);

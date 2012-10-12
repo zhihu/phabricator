@@ -42,10 +42,6 @@ final class PhabricatorActionListView extends AphrontView {
       throw new Exception("Call setUser() before render()!");
     }
 
-    if (!$this->object) {
-      throw new Exception("Call setObject() before render()!");
-    }
-
     $event = new PhabricatorEvent(
       PhabricatorEventType::TYPE_UI_DIDRENDERACTIONS,
       array(
@@ -56,6 +52,10 @@ final class PhabricatorActionListView extends AphrontView {
     PhutilEventEngine::dispatchEvent($event);
 
     $actions = $event->getValue('actions');
+
+    if (!$actions) {
+      return null;
+    }
 
     require_celerity_resource('phabricator-action-list-view-css');
     return phutil_render_tag(

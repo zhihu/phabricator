@@ -27,6 +27,7 @@ final class PhabricatorRepositoryCommit extends PhabricatorRepositoryDAO {
   protected $auditStatus = PhabricatorAuditCommitStatusConstants::NONE;
 
   private $commitData;
+  private $audits;
   private $isUnparsed;
 
   public function setIsUnparsed($is_unparsed) {
@@ -71,6 +72,16 @@ final class PhabricatorRepositoryCommit extends PhabricatorRepositoryDAO {
     return $this->commitData;
   }
 
+  public function attachAudits(array $audits) {
+    assert_instances_of($audits, 'PhabricatorAuditComment');
+    $this->audits = $audits;
+    return $this;
+  }
+
+  public function getAudits() {
+    return $this->audits;
+  }
+
   public function save() {
     if (!$this->mailKey) {
       $this->mailKey = Filesystem::readRandomCharacters(20);
@@ -89,6 +100,11 @@ final class PhabricatorRepositoryCommit extends PhabricatorRepositoryDAO {
 
     $this->saveTransaction();
     return $result;
+  }
+
+  public function getDateCreated() {
+    // This is primarily to make analysis of commits with the Fact engine work.
+    return $this->getEpoch();
   }
 
   /**
@@ -132,7 +148,5 @@ final class PhabricatorRepositoryCommit extends PhabricatorRepositoryDAO {
 
     return $this->setAuditStatus($status);
   }
-
-
 
 }

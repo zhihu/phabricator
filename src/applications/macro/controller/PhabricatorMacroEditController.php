@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-final class PhabricatorFileMacroEditController
-  extends PhabricatorFileController {
+final class PhabricatorMacroEditController
+  extends PhabricatorMacroController {
 
   private $id;
 
@@ -38,6 +38,7 @@ final class PhabricatorFileMacroEditController
 
     $errors = array();
     $e_name = true;
+    $file = null;
 
     $request = $this->getRequest();
     $user = $request->getUser();
@@ -68,12 +69,25 @@ final class PhabricatorFileMacroEditController
 
         try {
           $macro->save();
-          return id(new AphrontRedirectResponse())->setURI('/file/macro/');
+          return id(new AphrontRedirectResponse())->setURI(
+            $this->getApplicationURI());
         } catch (AphrontQueryDuplicateKeyException $ex) {
           $errors[] = 'Macro name is not unique!';
           $e_name = 'Duplicate';
         }
       }
+    } else if ($this->id) {
+      $file = id(new PhabricatorFile())
+        ->loadOneWhere('phid = %s', $macro->getFilePHID());
+    }
+
+    $caption = null;
+    if ($file) {
+      $caption = phutil_render_tag(
+        'img',
+        array(
+          'src' => $file->getViewURI(),
+        ));
     }
 
     if ($errors) {
@@ -85,7 +99,6 @@ final class PhabricatorFileMacroEditController
     }
 
     $form = new AphrontFormView();
-    $form->setAction('/file/macro/edit/');
     $form->setUser($request->getUser());
 
     $form
@@ -101,11 +114,12 @@ final class PhabricatorFileMacroEditController
         id(new AphrontFormFileControl())
           ->setLabel('File')
           ->setName('file')
+          ->setCaption($caption)
           ->setError(true))
       ->appendChild(
         id(new AphrontFormSubmitControl())
           ->setValue('Save Image Macro')
-          ->addCancelButton('/file/macro/'));
+          ->addCancelButton($this->getApplicationURI()));
 
     $panel = new AphrontPanelView();
     if ($macro->getID()) {
@@ -117,13 +131,13 @@ final class PhabricatorFileMacroEditController
     $panel->appendChild($form);
     $panel->setWidth(AphrontPanelView::WIDTH_FULL);
 
-    $side_nav = new PhabricatorFileSideNavView();
-    $side_nav->setSelectedFilter('create_macro');
-    $side_nav->appendChild($error_view);
-    $side_nav->appendChild($panel);
+    $nav = $this->buildSideNavView($macro);
+    $nav->selectFilter('#', 'edit');
+    $nav->appendChild($error_view);
+    $nav->appendChild($panel);
 
-    return $this->buildStandardPageResponse(
-      $side_nav,
+    return $this->buildApplicationPage(
+      $nav,
       array(
         'title' => $title,
       ));

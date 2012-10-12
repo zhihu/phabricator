@@ -18,25 +18,130 @@
 
 final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
 
-  public function getCaption() {
-
-    $caption = parent::getCaption();
-    if ($caption) {
-      $caption_suffix = '<br />'.$caption;
-    } else {
-      $caption_suffix = '';
+  protected function renderInput() {
+    $id = $this->getID();
+    if (!$id) {
+      $id = celerity_generate_unique_node_id();
+      $this->setID($id);
     }
 
-    return phutil_render_tag(
-      'a',
+    Javelin::initBehavior(
+      'aphront-drag-and-drop-textarea',
       array(
+        'target'          => $id,
+        'activatedClass'  => 'aphront-textarea-drag-and-drop',
+        'uri'             => '/file/dropupload/',
+      ));
+
+    Javelin::initBehavior('phabricator-remarkup-assist', array());
+    Javelin::initBehavior('phabricator-tooltips', array());
+
+    $actions = array(
+      'b'     => array(
+        'tip' => pht('Bold'),
+      ),
+      'i'     => array(
+        'tip' => pht('Italics'),
+      ),
+      'tt'    => array(
+        'tip' => pht('Monospaced'),
+      ),
+      array(
+<<<<<<< HEAD
         //'href' => PhabricatorEnv::getDoclink('article/Remarkup_Reference.html'),
         'href' => 'http://ph.in.zhihu.com/w/chinese_remarkup_reference/',
         'tabindex' => '-1',
         'target' => '_blank',
+=======
+        'spacer' => true,
       ),
-      'Formatting Reference') .
-      $caption_suffix;
+      'ul' => array(
+        'tip' => pht('Bulleted List'),
+      ),
+      'ol' => array(
+        'tip' => pht('Numbered List'),
+      ),
+      'code' => array(
+        'tip' => pht('Code Block'),
+      ),
+      'help'  => array(
+        'tip' => pht('Help'),
+        'align' => 'right',
+        'href'  => PhabricatorEnv::getDoclink(
+          'article/Remarkup_Reference.html'),
+>>>>>>> 8798d2189efcd2e2d183f0422cd43403cf614d8b
+      ),
+    );
+
+    $buttons = array();
+    foreach ($actions as $action => $spec) {
+      if (idx($spec, 'spacer')) {
+        $buttons[] = phutil_render_tag(
+          'span',
+          array(
+            'class' => 'remarkup-assist-separator',
+          ),
+          '');
+        continue;
+      }
+
+      $classes = array();
+      $classes[] = 'remarkup-assist-button';
+      if (idx($spec, 'align') == 'right') {
+        $classes[] = 'remarkup-assist-right';
+      }
+
+      $href = idx($spec, 'href', '#');
+      if ($href == '#') {
+        $meta = array('action' => $action);
+        $mustcapture = true;
+        $target = null;
+      } else {
+        $meta = array();
+        $mustcapture = null;
+        $target = '_blank';
+      }
+
+      $tip = idx($spec, 'tip');
+      if ($tip) {
+        $meta['tip'] = $tip;
+      }
+
+      $buttons[] = javelin_render_tag(
+        'a',
+        array(
+          'class'       => implode(' ', $classes),
+          'href'        => $href,
+          'sigil'       => 'remarkup-assist has-tooltip',
+          'meta'        => $meta,
+          'mustcapture' => $mustcapture,
+          'target'      => $target,
+          'tabindex'    => -1,
+        ),
+        phutil_render_tag(
+          'div',
+          array(
+            'class' => 'remarkup-assist autosprite remarkup-assist-'.$action,
+          ),
+          ''));
+    }
+
+    $buttons = phutil_render_tag(
+      'div',
+      array(
+        'class' => 'remarkup-assist-bar',
+      ),
+      implode('', $buttons));
+
+    $this->setCustomClass('remarkup-assist-textarea');
+
+    return javelin_render_tag(
+      'div',
+      array(
+        'sigil' => 'remarkup-assist-control',
+      ),
+      $buttons.
+      parent::renderInput());
   }
 
 }

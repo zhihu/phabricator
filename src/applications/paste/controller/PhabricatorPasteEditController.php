@@ -49,6 +49,7 @@ final class PhabricatorPasteEditController extends PhabricatorPasteController {
 
         if ($parent) {
           $paste->setParentPHID($parent->getPHID());
+          $paste->setViewPolicy($parent->getViewPolicy());
         }
       }
 
@@ -125,7 +126,7 @@ final class PhabricatorPasteEditController extends PhabricatorPasteController {
     $form->setFlexible(true);
 
     $langs = array(
-      '' => '(Detect With Wizardly Powers)',
+      '' => '(Detect From Filename in Title)',
     ) + PhabricatorEnv::getEnvConfig('pygments.dropdown-choices');
 
     $form
@@ -166,6 +167,22 @@ final class PhabricatorPasteEditController extends PhabricatorPasteController {
             ->setHeight(AphrontFormTextAreaControl::HEIGHT_VERY_TALL)
             ->setCustomClass('PhabricatorMonospaced')
             ->setName('text'));
+    } else {
+      $fork_link = phutil_render_tag(
+        'a',
+        array(
+          'href' => $this->getApplicationURI('?parent='.$paste->getID())
+        ),
+        'Fork'
+      );
+      $form
+        ->appendChild(
+          id(new AphrontFormMarkupControl())
+          ->setLabel('Text')
+          ->setValue(
+            'Paste text can not be edited. '.
+            $fork_link.' to create a new paste.'
+          ));
     }
 
     $submit = new AphrontFormSubmitControl();

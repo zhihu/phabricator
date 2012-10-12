@@ -52,7 +52,7 @@ final class AphrontSideNavView extends AphrontView {
   }
 
   public function setFlexible($flexible) {
-    $this->flexible = $flexible;
+    $this->isFlexible = $flexible;
     return $this;
   }
 
@@ -91,7 +91,7 @@ final class AphrontSideNavView extends AphrontView {
         ),
         $apps->render());
 
-      if ($this->flexible) {
+      if ($this->isFlexible) {
         $drag_id = celerity_generate_unique_node_id();
         $flex_bar = phutil_render_tag(
           'div',
@@ -193,18 +193,23 @@ final class AphrontSideNavView extends AphrontView {
 
     $meta = null;
 
+    $group_core = PhabricatorApplication::GROUP_CORE;
+
     $applications = PhabricatorApplication::getAllInstalledApplications();
     foreach ($applications as $application) {
       if ($application instanceof PhabricatorApplicationApplications) {
         $meta = $application;
         continue;
       }
-      if ($application->getCoreApplicationOrder() !== null) {
+      if ($application->getApplicationGroup() != $group_core) {
+        continue;
+      }
+      if ($application->getApplicationOrder() !== null) {
         $core[] = $application;
       }
     }
 
-    $core = msort($core, 'getCoreApplicationOrder');
+    $core = msort($core, 'getApplicationOrder');
     if ($meta) {
       $core[] = $meta;
     }
@@ -221,8 +226,11 @@ final class AphrontSideNavView extends AphrontView {
     foreach ($core as $phid => $application) {
       $classes = array();
       $classes[] = 'phabricator-nav-app-item';
+
       if ($current && $phid == $current->getPHID()) {
-        $classes[] = 'phabricator-nav-app-item-selected';
+        $selected = true;
+      } else {
+        $selected = false;
       }
 
       $iclasses = array();
@@ -233,7 +241,11 @@ final class AphrontSideNavView extends AphrontView {
                  'background-size: 30px auto;';
       } else {
         $iclasses[] = 'autosprite';
-        $iclasses[] = 'app-'.$application->getAutospriteName();
+        $sprite = $application->getAutospriteName();
+        if ($selected) {
+          $sprite .= '-selected';
+        }
+        $iclasses[] = 'app-'.$sprite;
       }
 
       $icon = phutil_render_tag(
