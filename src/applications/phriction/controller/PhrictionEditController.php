@@ -233,9 +233,7 @@ final class PhrictionEditController
           ->setValue($content_text)
           ->setHeight(AphrontFormTextAreaControl::HEIGHT_VERY_TALL)
           ->setName('content')
-          ->setID('document-textarea')
-          ->setEnableDragAndDropFileUploads(true)
-          ->setCaption($remarkup_reference))
+          ->setID('document-textarea'))
       ->appendChild(
         id(new AphrontFormTextControl())
           ->setLabel('Edit Notes')
