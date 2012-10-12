@@ -30,8 +30,8 @@ final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
     return phutil_render_tag(
       'a',
       array(
-        'href' => PhabricatorEnv::getDoclink(
-          'article/Remarkup_Reference.html'),
+        //'href' => PhabricatorEnv::getDoclink('article/Remarkup_Reference.html'),
+        'href' => 'http://ph.in.zhihu.com/w/chinese_remarkup_reference/',
         'tabindex' => '-1',
         'target' => '_blank',
       ),

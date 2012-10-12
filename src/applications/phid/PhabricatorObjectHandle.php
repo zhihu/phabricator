@@ -213,6 +213,8 @@ final class PhabricatorObjectHandle {
   public function getLinkName() {
     switch ($this->getType()) {
       case PhabricatorPHIDConstants::PHID_TYPE_USER:
+        $name = $this->getFullName();
+        break;
       case PhabricatorPHIDConstants::PHID_TYPE_CMIT:
         $name = $this->getName();
         break;

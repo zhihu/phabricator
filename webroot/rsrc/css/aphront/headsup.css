@@ -19,6 +19,7 @@
 
 .aphront-headsup-property-table {
   font-size:  12px;
+  white-space: nowrap;
   width:      auto;
   margin:     0 285px 15px 20px;
 }

@@ -177,6 +177,16 @@ final class PhrictionEditController
     $uri = PhrictionDocument::getSlugURI($uri);
     $uri = PhabricatorEnv::getProductionURI($uri);
 
+    $remarkup_reference = phutil_render_tag(
+      'a',
+      array(
+        //'href' => PhabricatorEnv::getDoclink('article/Remarkup_Reference.html'),
+        'href' => 'http://ph.in.zhihu.com/w/chinese_remarkup_reference/',
+        'tabindex' => '-1',
+        'target' => '_blank',
+      ),
+      'Formatting Reference');
+
     $cancel_uri = PhrictionDocument::getSlugURI($document->getSlug());
 
     if ($draft &&
@@ -218,13 +228,14 @@ final class PhrictionEditController
           ->setLabel('URI')
           ->setValue($uri))
       ->appendChild(
-        id(new PhabricatorRemarkupControl())
+        id(new AphrontFormTextAreaControl())
           ->setLabel('Content')
           ->setValue($content_text)
           ->setHeight(AphrontFormTextAreaControl::HEIGHT_VERY_TALL)
           ->setName('content')
           ->setID('document-textarea')
-          ->setEnableDragAndDropFileUploads(true))
+          ->setEnableDragAndDropFileUploads(true)
+          ->setCaption($remarkup_reference))
       ->appendChild(
         id(new AphrontFormTextControl())
           ->setLabel('Edit Notes')
