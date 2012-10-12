@@ -47,12 +47,10 @@ final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
         'tip' => pht('Monospaced'),
       ),
       array(
-<<<<<<< HEAD
         //'href' => PhabricatorEnv::getDoclink('article/Remarkup_Reference.html'),
         'href' => 'http://ph.in.zhihu.com/w/chinese_remarkup_reference/',
         'tabindex' => '-1',
         'target' => '_blank',
-=======
         'spacer' => true,
       ),
       'ul' => array(
@@ -69,7 +67,6 @@ final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
         'align' => 'right',
         'href'  => PhabricatorEnv::getDoclink(
           'article/Remarkup_Reference.html'),
->>>>>>> 8798d2189efcd2e2d183f0422cd43403cf614d8b
       ),
     );
 
