@@ -123,7 +123,7 @@ final class DifferentialInlineCommentEditView extends AphrontView {
       'a',
       array(
         //'href' => PhabricatorEnv::getDoclink('article/Remarkup_Reference.html'),
-        'href' => 'http://ph.in.zhihu.com/w/chinese_remarkup_reference/',
+        'href' => 'http://ph.in.zhihu.com/w/usage/formatting_reference/',
         'tabindex' => '-1',
         'target' => '_blank',
       ),

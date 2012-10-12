@@ -136,7 +136,8 @@ abstract class AphrontApplicationConfiguration {
     $file_uri = PhabricatorEnv::getEnvConfig('security.alternate-file-domain');
     if ($host != id(new PhutilURI($base_uri))->getDomain() &&
         $host != id(new PhutilURI($prod_uri))->getDomain() &&
-        $host != id(new PhutilURI($file_uri))->getDomain()) {
+        $host != id(new PhutilURI($file_uri))->getDomain() &&
+        $host != '127.0.0.1') {
       $blogs = id(new PhameBlogQuery())->withDomain($host)->execute();
       $blog = reset($blogs);
       if (!$blog) {
