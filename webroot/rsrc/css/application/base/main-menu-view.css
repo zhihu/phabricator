@@ -11,11 +11,15 @@
 */
 
 .phabricator-main-menu {
-  background: #2d3236;
+/*  background: #2d3236;
   background-image: url(/rsrc/image/main_texture.png);
   position: relative;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-  height: 44px;
+  height: 44px;*/
+
+  background-image: url(http://static.zhihu.com/static/img/sticky_header/header-bg.png);
+  position: relative;
+  height: 48px;
 }
 
 .phabricator-main-menu a:hover {
