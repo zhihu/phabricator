@@ -25,7 +25,7 @@
 }
 
 .main-menu-item-icon-settings-selected {
-  /*background-position: 0px -108px;*/
+  background: url(/res/005c7630/rsrc/image/custom/gear.png) no-repeat 0 0;
 }
 
 .main-menu-item-icon-settings:hover {
@@ -37,7 +37,7 @@
 }
 
 .main-menu-item-icon-logout-selected {
-  /*background-position: 0px -189px;*/
+  background: url(/res/005c7630/rsrc/image/custom/shutdown.png) no-repeat 0 0;
 }
 
 .main-menu-item-icon-logout:hover {
