@@ -122,7 +122,6 @@ input[type="text"] {
   border: 1px solid #CCC;
   padding: 8px;
   color: #333;
-  box-sizing: border-box;
 }
 
 
