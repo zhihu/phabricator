@@ -1195,6 +1195,7 @@ phutil_register_library_map(array(
     'PhrictionEditController' => 'applications/phriction/controller/PhrictionEditController.php',
     'PhrictionHistoryController' => 'applications/phriction/controller/PhrictionHistoryController.php',
     'PhrictionListController' => 'applications/phriction/controller/PhrictionListController.php',
+    'Pinyin' => 'infrastructure/util/Pinyin.php',
     'PonderAddAnswerView' => 'applications/ponder/view/PonderAddAnswerView.php',
     'PonderAddCommentView' => 'applications/ponder/view/PonderAddCommentView.php',
     'PonderAnswer' => 'applications/ponder/storage/PonderAnswer.php',
