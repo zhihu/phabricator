@@ -105,6 +105,34 @@ celerity_register_resource_map(array(
     'disk' => '/rsrc/image/credit_cards.png',
     'type' => 'png',
   ),
+  '/rsrc/image/custom/gear.png' =>
+  array(
+    'hash' => '68edd66dc49f892c3034f5620c227224',
+    'uri' => '/res/68edd66d/rsrc/image/custom/gear.png',
+    'disk' => '/rsrc/image/custom/gear.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/custom/logo.png' =>
+  array(
+    'hash' => 'a0a067086a0689ba7006447125df3967',
+    'uri' => '/res/a0a06708/rsrc/image/custom/logo.png',
+    'disk' => '/rsrc/image/custom/logo.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/custom/noti.png' =>
+  array(
+    'hash' => '706f658d6099c0c1124b89f3f4202938',
+    'uri' => '/res/706f658d/rsrc/image/custom/noti.png',
+    'disk' => '/rsrc/image/custom/noti.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/custom/shutdown.png' =>
+  array(
+    'hash' => '5542326cb9844770b1a35c93fbfbfa90',
+    'uri' => '/res/5542326c/rsrc/image/custom/shutdown.png',
+    'disk' => '/rsrc/image/custom/shutdown.png',
+    'type' => 'png',
+  ),
   '/rsrc/image/divot.png' =>
   array(
     'hash' => '3be267bd11ea375bf68e808893718e0e',
@@ -657,7 +685,7 @@ celerity_register_resource_map(array(
   ),
   'autosprite-css' =>
   array(
-    'uri' => '/res/6c0c2948/rsrc/css/autosprite.css',
+    'uri' => '/res/d35a95ca/rsrc/css/autosprite.css',
     'type' => 'css',
     'requires' =>
     array(
@@ -2483,7 +2511,7 @@ celerity_register_resource_map(array(
   ),
   'phabricator-main-menu-view' =>
   array(
-    'uri' => '/res/f7972517/rsrc/css/application/base/main-menu-view.css',
+    'uri' => '/res/a1fcae7e/rsrc/css/application/base/main-menu-view.css',
     'type' => 'css',
     'requires' =>
     array(

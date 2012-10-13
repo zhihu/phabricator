@@ -1,26 +1,10 @@
 <?php
 
-/*
- * Copyright 2012 Facebook, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 final class PhabricatorChineseTranslation
   extends PhabricatorTranslation {
 
   final public function getLanguage() {
-    return 'chs';
+    return 'en';
   }
 
   public function getName() {
@@ -169,6 +153,30 @@ final class PhabricatorChineseTranslation
         '%d Assigned Task',
         '%d Assigned Tasks',
       ),
+
+      'AM' => '上午',
+      'PM' => '下午',
+
+      'Mon' => '星期一',
+      'Tues' => '星期二',
+      'Wed' => '星期三',
+      'Thur' => '星期四',
+      'Fri' => '星期五',
+      'Sta' => '星期六',
+      'Sun' => '星期日',
+
+      'Jan' => '一月',
+      'Feb' => '二月',
+      'Mar' => '三月',
+      'Apr' => '四月',
+      'May' => '五月',
+      'Jun' => '六月',
+      'Jul' => '七月',
+      'Aug' => '八月',
+      'Sept' => '九月',
+      'Oct' => '十月',
+      'Nov' => '十一月',
+      'Dec' => '十二月',
 
     );
   }
