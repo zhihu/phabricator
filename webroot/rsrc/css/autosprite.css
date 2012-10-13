@@ -21,27 +21,27 @@
 }
 
 .main-menu-item-icon-settings {
-  background-position: 0px -81px;
+  background: url(/res/005c7630/rsrc/image/custom/gear.png) no-repeat 0 0;
 }
 
 .main-menu-item-icon-settings-selected {
-  background-position: 0px -108px;
+  /*background-position: 0px -108px;*/
 }
 
 .main-menu-item-icon-settings:hover {
-  background-position: 0px -135px;
+  /*background-position: 0px -135px;*/
 }
 
 .main-menu-item-icon-logout {
-  background-position: 0px -162px;
+  background: url(/res/005c7630/rsrc/image/custom/shutdown.png) no-repeat 0 0;
 }
 
 .main-menu-item-icon-logout-selected {
-  background-position: 0px -189px;
+  /*background-position: 0px -189px;*/
 }
 
 .main-menu-item-icon-logout:hover {
-  background-position: 0px -216px;
+  /*background-position: 0px -216px;*/
 }
 
 .main-menu-item-icon-notifications {
@@ -50,10 +50,6 @@
 
 .main-menu-item-icon-notifications-selected {
   background-position: 0px -270px;
-}
-
-.main-menu-item-icon-notifications:hover {
-  background-position: 0px -297px;
 }
 
 .main-menu-item-icon-task {
