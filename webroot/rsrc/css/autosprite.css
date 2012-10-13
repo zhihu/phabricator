@@ -33,11 +33,11 @@
 }
 
 .main-menu-item-icon-logout {
-  background: url(/res/005c7630/rsrc/image/custom/shutdown.png) no-repeat 0 0;
+  background: url(/res/005c7630/rsrc/image/custom/shutdown.png) no-repeat 0 1px;
 }
 
 .main-menu-item-icon-logout-selected {
-  background: url(/res/005c7630/rsrc/image/custom/shutdown.png) no-repeat 0 0;
+  background: url(/res/005c7630/rsrc/image/custom/shutdown.png) no-repeat 0 1px;
 }
 
 .main-menu-item-icon-logout:hover {
