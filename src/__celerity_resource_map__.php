@@ -685,7 +685,7 @@ celerity_register_resource_map(array(
   ),
   'autosprite-css' =>
   array(
-    'uri' => '/res/d35a95ca/rsrc/css/autosprite.css',
+    'uri' => '/res/428e9a42/rsrc/css/autosprite.css',
     'type' => 'css',
     'requires' =>
     array(
@@ -2511,7 +2511,7 @@ celerity_register_resource_map(array(
   ),
   'phabricator-main-menu-view' =>
   array(
-    'uri' => '/res/a1fcae7e/rsrc/css/application/base/main-menu-view.css',
+    'uri' => '/res/6829149f/rsrc/css/application/base/main-menu-view.css',
     'type' => 'css',
     'requires' =>
     array(
