@@ -173,7 +173,7 @@ final class PhabricatorChineseTranslation
       'Jun' => '六月',
       'Jul' => '七月',
       'Aug' => '八月',
-      'Sept' => '九月',
+      'Sep' => '九月',
       'Oct' => '十月',
       'Nov' => '十一月',
       'Dec' => '十二月',
