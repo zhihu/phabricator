@@ -158,9 +158,9 @@ final class PhabricatorChineseTranslation
       'PM' => '下午',
 
       'Mon' => '星期一',
-      'Tues' => '星期二',
+      'Tue' => '星期二',
       'Wed' => '星期三',
-      'Thur' => '星期四',
+      'Thu' => '星期四',
       'Fri' => '星期五',
       'Sta' => '星期六',
       'Sun' => '星期日',
