@@ -5,7 +5,7 @@
 .phabricator-jump-nav-form {
   text-align: center;
   padding: 0px;
-  margin: 0 2em;
+  margin: 2em;
 }
 
 .phabricator-jump-nav {
@@ -16,9 +16,7 @@
 }
 
 .phabricator-jump-nav-caption {
-  margin-top: 4px;
-  padding-bottom: 4px;
-  font-size: 11px;
-  color: #666666;
+  color: #999;
   text-align: left;
+  margin: 5px 0 0 8px;
 }
