@@ -32,10 +32,6 @@
   color: #999999;
 }
 
-.phabricator-notification-list {
-  font-size: 11px;
-}
-
 .phabricator-notification-list .phabricator-notification-unread,
 .phabricator-notification-menu .phabricator-notification-unread {
   background: #aacfef;
