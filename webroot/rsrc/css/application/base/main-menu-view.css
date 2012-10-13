@@ -74,10 +74,10 @@
 
 .phabricator-main-menu-logo {
   display: inline-block;
-  height: 44px;
-  width: 170px;
-  margin-right: 12px;
-  background: 6px 9px url(/rsrc/image/logo_grey.png) no-repeat;
+  height: 48px;
+  width: 54px;
+  margin: 0 6px;
+  background: 6px 9px url(/res/da055af1/rsrc/image/custom/logo.png) no-repeat;
 }
 
 .phabricator-main-menu-logo span {
@@ -135,9 +135,9 @@
 */
 
 .phabricator-main-menu-icon {
-  width: 26px;
-  height: 26px;
-  margin: 9px 6px;
+  width: 28px;
+  height: 28px;
+  margin: 9px;
   display: inline-block;
 }
 
@@ -165,7 +165,8 @@
 
 .main-menu-item-icon-profile {
   background-repeat: no-repeat;
-  background-size: 26px 26px;
+  background-size: 28px 28px;
+  margin: 8px;
 }
 
 .device-desktop .main-menu-item-icon-profile {
@@ -230,14 +231,14 @@
   width: 100%;
   right: 0;
   position: absolute;
-  border: 1px solid #0055AC;
+  border: 1px solid #237BD5;
   border-radius: 15px;
   background: #555;
   height: 14px;
   line-height: 14px;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, .2),0 1px 0 rgba(255, 255, 255, .2);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, .1),0 1px 0 rgba(255, 255, 255, .1);
   padding: 6px 32px 6px 10px;
-  background-color: #E6F3FA;
+  background-color: #ECF3F7;
 }
 
 .phabricator-main-menu-search input:focus {
@@ -251,12 +252,12 @@
 .phabricator-main-menu-search button {
   position: absolute;
   color: transparent;
-  background: transparent 5px 6px url(/rsrc/image/search.png) no-repeat;
+  background: url('http://static.zhihu.com/static/img/icons_v13.4.png') no-repeat -100px -793px;
   border: none;
   outline: none;
   box-shadow: none;
 
-  height: 20px;
+  height: 20px
   width: 20px;
   top: 11px;
   right: 6px;
@@ -342,10 +343,11 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
 }
 
 .phabricator-main-menu-alert-item {
-  width: 26px;
-  height: 26px;
-  margin: 9px;
+  width: 18px;
+  height: 28px;
+  margin: 10px 12px;
   display: block;
+  background: url(/res/005c7630/rsrc/image/custom/noti.png) no-repeat;
 }
 
 .phabricator-main-menu-alert-indicator {
