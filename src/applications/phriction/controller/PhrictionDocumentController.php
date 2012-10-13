@@ -208,8 +208,8 @@ final class PhrictionDocumentController
         $breadcrumbs.
       '</div>'.
       $version_note.
-      $page_content.
-      $children;
+      $page_content;
+      //$children;
 
     return $this->buildStandardPageResponse(
       $page,
