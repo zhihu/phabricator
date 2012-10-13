@@ -162,7 +162,7 @@ final class PhabricatorChineseTranslation
       'Wed' => '星期三',
       'Thu' => '星期四',
       'Fri' => '星期五',
-      'Sta' => '星期六',
+      'Sat' => '星期六',
       'Sun' => '星期日',
 
       'Jan' => '一月',
@@ -178,6 +178,8 @@ final class PhabricatorChineseTranslation
       'Nov' => '十一月',
       'Dec' => '十二月',
 
+      'Today' => '今天',
+      'Yesterday' => '昨天',
     );
   }
 

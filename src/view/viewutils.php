@@ -40,11 +40,11 @@ function phabricator_relative_date($epoch, $user, $on = false) {
   $date = phabricator_date($epoch, $user);
 
   if ($date === $today) {
-    return 'today';
+    return '今天';
   }
 
   if ($date === $yesterday) {
-    return 'yesterday';
+    return '昨天';
   }
 
   return (($on ? 'on ' : '').$date);
@@ -140,7 +140,7 @@ function phabricator_format_relative_time($duration) {
  */
 function phabricator_format_relative_time_detailed($duration, $levels = 2) {
   if ($duration == 0) {
-    return 'now';
+    return '现在';
   }
   $levels = max(1, min($levels, 5));
   $remainder = 0;
@@ -172,7 +172,7 @@ function phabricator_format_relative_time_detailed($duration, $levels = 2) {
   };
 
   if ($is_negative) {
-    $detailed_relative_time .= ' ago';
+    $detailed_relative_time .= ' 之前';
   }
 
   return $detailed_relative_time;
