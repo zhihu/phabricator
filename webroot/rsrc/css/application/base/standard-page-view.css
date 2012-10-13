@@ -2,6 +2,9 @@
  * @provides phabricator-standard-page-view
  */
 
+.phabricator-standard-page-body {
+  margin-top: -2px;
+}
 .phabricator-standard-page {
   background: #ffffff;
 }

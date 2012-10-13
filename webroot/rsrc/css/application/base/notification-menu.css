@@ -11,13 +11,11 @@
 
 .device-desktop .phabricator-notification-menu {
   position: fixed;
-  width: 360px;
-  top: 42px;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
+  width: 380px;
+  top: 48px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, .2);
   z-index: 9;
-
-  border: 1px solid #33393d;
-  border-top-width: 0;
+  border: 1px solid #BBB;
 }
 
 .device-tablet .phabricator-notification-menu,
@@ -27,8 +25,7 @@
 
 
 .phabricator-notification {
-  padding: 6px 6px;
-  margin: 1px 0;
+  padding: 12px;
 }
 
 .no-notifications {

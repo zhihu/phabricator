@@ -24,6 +24,7 @@
 
 .phabricator-main-menu a:hover {
   text-decoration: none;
+  opacity: .8;
 }
 
 .device-desktop .phabricator-main-menu {
