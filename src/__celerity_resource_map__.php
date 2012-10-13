@@ -2511,7 +2511,7 @@ celerity_register_resource_map(array(
   ),
   'phabricator-main-menu-view' =>
   array(
-    'uri' => '/res/b4a73119/rsrc/css/application/base/main-menu-view.css',
+    'uri' => '/res/4c2564bf/rsrc/css/application/base/main-menu-view.css',
     'type' => 'css',
     'requires' =>
     array(
