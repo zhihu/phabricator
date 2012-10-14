@@ -98,7 +98,7 @@ JX.install('Prefab', {
       datasource.setTransformer(
         function(object) {
           return {
-            name: object[0],
+            name: object[0] + ' ' + object[3],
             display: object[0],
             uri: object[1],
             id: object[2],
