@@ -31,7 +31,7 @@ JX.behavior('phabricator-search-typeahead', function(config) {
       ]);
 
     return {
-      name: object[0],
+      name: object[0] + ' ' + object[3],
       display: render,
       uri: object[1],
       id: object[2],
