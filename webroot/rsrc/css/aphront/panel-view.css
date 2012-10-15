@@ -4,11 +4,7 @@
 
 
 .aphront-panel-view {
-  background: #f3f3f3;
-  border: 1px solid #c0c0c0;
-  border-width: 1px 0 0;
-  padding: 1em 2em;
-  margin: 1em 2em;
+  border-top: 1px solid #EEE;
 }
 
 .aphront-unpadded-panel-view {
@@ -97,10 +93,8 @@
 }
 
 .aphront-mini-panel-view {
-  background: #f3f3f3;
-  padding: 4px 2em;
-  margin: 2px 2em;
-  border: 1px solid #e6e6e6;
+  padding: 1em 2em;
+  border-top: 1px solid #EEE;
 }
 
 .aphront-mini-panel-view p {
