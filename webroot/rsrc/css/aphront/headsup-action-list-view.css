@@ -3,23 +3,22 @@
  */
 
 .aphront-headsup-action-list {
-  float:        right;
-  width:        250px;
-  background:   #cfcfbf;
-  border:       1px solid #666622;
-  border-width: 0px 0px 1px 1px;
-  margin:       -15px 0px 1em 0;
-  font-size:    11px;
+  float: right;
+  width: 300px;
+  background: #EEE;
+  border: 1px solid #CCC;
+  border-radius: 2px;
+  padding: 10px 15px;
 }
 
 .aphront-headsup-action-list a,
 .aphront-headsup-action-list span,
 .aphront-headsup-action-list button {
   background-position: 8px center;
-  background-repeat:   no-repeat;
-  display:             block;
-  padding:             4px 4px 4px 32px;
-  line-height:         normal;
+  background-repeat: no-repeat;
+  display: block;
+  padding: 10px 15px 10px 35px;
+  line-height: normal;
 }
 
 .aphront-headsup-action-list span.unavailable {

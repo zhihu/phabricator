@@ -50,20 +50,13 @@
 }
 
 .aphront-panel-accent {
-  background: #efefdf;
-  border: 1px solid #666622;
+  padding: 0 8em;
 }
 
 .aphront-panel-accent .aphront-form-view {
-  background: #fffff5;
-  border: 1px solid #c4c4c0;
-}
-
-.aphront-panel-preview {
-  background: #fbfbfb;
-  border-bottom: 1px solid #aaaaaa;
-  margin: -1em 2em 2em;
-  padding: 15px 20px;
+  background: #EEE;
+  border: 1px solid #CCC;
+  border-radius: 4px;
 }
 
 .aphront-panel-preview-wide {
