@@ -94,6 +94,20 @@ JX.install('Prefab', {
         });
       };
 
+      datasource.createNode = function(data) {
+        return JX.$N(
+            'a',
+            {
+              sigil: 'typeahead-result',
+               href: data.uri,
+               name: data.display,
+               rel: data.id,
+               className: 'jx-result'
+            },
+            data.display
+            );
+      },
+
       datasource.setSortHandler(JX.bind(datasource, sort_handler));
       datasource.setTransformer(
         function(object) {
