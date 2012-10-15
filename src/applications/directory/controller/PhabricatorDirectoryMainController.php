@@ -502,7 +502,8 @@ final class PhabricatorDirectoryMainController
       $nav_buttons[] = array(
         'Create Task',
         '/maniphest/task/create/',
-        'create-task');
+        'create-task',
+        'Start Hacking');
     }
 
     $nav_buttons[] = array(
