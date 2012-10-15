@@ -13,15 +13,17 @@
 
 .phabricator-feed-story {
   padding-left: 64px;
-  margin: .5em 0 1em;
+  padding: 15px 0 15px 52px;
   background: 5px 2px no-repeat;
   min-height: 64px;
+  border-bottom: 1px solid #EEE;
+  background-position: 0 17px;
+  color: #999;
+  background-size: 40px;
 }
 
 .phabricator-feed-story-one-line {
   min-height: 0;
-  font-size: 11px;
-  color: #444444;
 }
 
 .phabricator-feed-story-head {

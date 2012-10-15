@@ -25,10 +25,6 @@
   background: white;
 }
 
-.phabricator-app-button .app-button:hover {
-  opacity: .8;
-}
-
 .phabricator-app-button .app-button:active {
   background: #eee;
   border: 1px solid #bbb;
