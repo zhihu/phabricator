@@ -7,24 +7,23 @@ button,
 a.button,
 a.button:visited,
 input.inputsubmit {
-  background: #5e77aa url('/rsrc/image/sprite.png') 0 0 repeat-x;
-  border: 1px solid #29447e;
-  border-bottom-color: #1a356e;
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-  text-align: center;
-  white-space: nowrap;
-  display: inline-block;
-  font-size: 13px;
   overflow: visible;
-  padding: 2px 8px 3px 8px;
-  line-height: 18px;
-  vertical-align: baseline;
   width: auto;
-  box-shadow: 0px 1px 0px rgba(0,0,0,.12);
-  -moz-box-shadow: 0px 1px 0px rgba(0,0,0,.12);
-  -webkit-box-shadow: 0px 1px 0px rgba(0,0,0,.12);
+  background: #0874C4;
+  background: -webkit-gradient(linear,left top,left bottom,from(#1288D4),to(#0771C1));
+  background: -moz-linear-gradient(top,#1288D4,#0771C1);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
+  border: 1px solid #0D6EB8;
+  color: white;
+  -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset,0 1px 0 rgba(0, 0, 0, .2);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .2) inset,0 1px 0 rgba(0, 0, 0, .2);
+  text-decoration: none;
+  vertical-align: middle;
+  display: inline-block;
+  text-align: center;
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 3px;
 }
 
 button {
@@ -54,9 +53,10 @@ td button {
 
 button:active,
 a.button:active {
-  background-color: #4f6aa3;
-  background-position: 0 -100px;
-  border-bottom-color: #29447e;
+  background: #197CC7;
+  background: -webkit-gradient(linear,0 0,0 100%,from(#1B8FD8),to(#197CC7)) background:-moz-linear-gradient(top,#1B8FD8,#197CC7);
+  -webkit-box-shadow: 0 1px 2px #125A92 inset;
+  box-shadow: 0 1px 2px #125A92 inset;
 }
 
 button.green,
@@ -82,14 +82,21 @@ a.grey:visited,
 a.button.disabled,
 button[disabled], /* Set by JX.Workflow. */
 button.disabled {
-  background-color: #e4e5e5;
-  background-position: 0 -250px;
-  border: 1px solid #999;
-  border-bottom-color: #888;
-  color: #333;
-  box-shadow: 0px 1px 0px rgba(0,0,0,.07);
-  -moz-box-shadow: 0px 1px 0px rgba(0,0,0,.07);
-  -webkit-box-shadow: 0px 1px 0px rgba(0,0,0,.07);
+  background: #F8F8F9;
+  background: -webkit-gradient(linear,0 0,0 100%,from(#F8F8F9),to(#E6E6E8));
+  background: -moz-linear-gradient(top,#F8F8F9,#E6E6E8);
+  text-shadow: 0 1px 0 white;
+  border: 1px solid #BBB;
+  color: #666;
+  -webkit-box-shadow: 0 1px 0 white inset,0 1px 0 rgba(0, 0, 0, .1);
+  box-shadow: 0 1px 0 white inset,0 1px 0 rgba(0, 0, 0, .1);
+  text-decoration: none;
+  vertical-align: middle;
+  display: inline-block;
+  text-align: center;
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 3px;
 }
 
 a.disabled,
@@ -104,9 +111,11 @@ button.grey:active,
 a.grey:active,
 button.grey_active,
 a.dropdown-open {
-  background-color: #dddddd;
-  background-position: 0 -200px;
-  border-bottom-color: #999;
+  background: white;
+  background: -webkit-gradient(linear,0 0,0 100%,from(#DDD),to(#DDD));
+  background: -moz-linear-gradient(top,#DDD,#DDD);
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }
 
 button:active::-moz-focus-inner,
