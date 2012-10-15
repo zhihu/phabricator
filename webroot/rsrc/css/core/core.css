@@ -123,5 +123,9 @@ input[type="text"] {
   padding: 8px;
   color: #333;
 }
-
+input[type="text"]:focus {
+  outline: none;
+  border: 1px solid #86ACDF;
+  box-shadow: 0 0 12px rgba(130, 169, 221, .4);
+}
 
