@@ -62,18 +62,27 @@ a.button:active {
 button.green,
 a.green,
 a.green:visited {
-  background-color: #6da952;
-  background-position: 0 -50px;
-  border: 1px solid #3b6e22;
-  border-bottom-color: #2c5a15;
+  background: #8AB923;
+  background: -webkit-gradient(linear,0 0,0 100%,from(#ADDA4D),to(#86B846));
+  background: -moz-linear-gradient(top,#ADDA4D,#86B846);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .3);
+  border: 1px solid #6D8F29;
+  color: #3E5E00!important;
+  min-width: 56px;
+  width: auto!important;
+  _width: 56px;
+  -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset,0 1px 0 rgba(0, 0, 0, .2);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset,0 1px 0 rgba(0, 0, 0, .2);
 }
 
 button.green:active,
 a.green:active {
-  background-color: #5e9d43;
-  background-position: 0 -150px;
-  border-bottom-color: #3b6e22;
-}
+  background: #79A814;
+  background: -webkit-gradient(linear,0 0,0 100%,from(#9AC244),to(#78A53E));
+  background: -moz-linear-gradient(top,#9AC244,#78A53E);
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .3) inset;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .3) inset;
+  }
 
 button.grey,
 input.inputaux,
