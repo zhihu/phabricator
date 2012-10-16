@@ -14,9 +14,8 @@
 }
 
 .aphront-table-view th {
-  font-size: 12px;
   font-weight: bold;
-  padding: 4px 8px;
+  padding: 8px 12px;
   background: #003366;
   color: white;
   white-space: nowrap;
@@ -45,8 +44,7 @@
 
 .aphront-table-view td {
   vertical-align:   top;
-  padding:          4px 8px;
-  font-size:        11px;
+  padding:          8px 12px;
   white-space:      nowrap;
 }
 

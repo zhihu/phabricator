@@ -6,12 +6,11 @@
   width: 100%;
   margin: -1px 0;
   border-collapse: separate;
-  font-size: 12px;
   color: #222;
 }
 
 .maniphest-task-summary td {
-  padding: 6px 3px;
+  padding: 8px 3px;
   white-space: nowrap;
   border-style: solid;
   border-bottom-color: #DDD;
@@ -82,7 +81,7 @@
   padding-right: 8px;
   border-right-width: 1px;
   border-right-style: solid;
-  border-right-color: #787878;
+  border-right-color: #DDD;
 }
 
 .maniphest-task-summary .pri-bullet {
