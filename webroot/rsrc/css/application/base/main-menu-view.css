@@ -261,6 +261,7 @@
   width: 20px;
   top: 11px;
   right: 6px;
+  text-indent: 50px;
 }
 
 .phabricator-main-menu-search-target div.jx-typeahead-results {
