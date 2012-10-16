@@ -1195,7 +1195,6 @@ phutil_register_library_map(array(
     'PhrictionEditController' => 'applications/phriction/controller/PhrictionEditController.php',
     'PhrictionHistoryController' => 'applications/phriction/controller/PhrictionHistoryController.php',
     'PhrictionListController' => 'applications/phriction/controller/PhrictionListController.php',
-    'Pinyin' => 'infrastructure/util/Pinyin.php',
     'PonderAddAnswerView' => 'applications/ponder/view/PonderAddAnswerView.php',
     'PonderAddCommentView' => 'applications/ponder/view/PonderAddCommentView.php',
     'PonderAnswer' => 'applications/ponder/storage/PonderAnswer.php',
@@ -1238,6 +1237,7 @@ phutil_register_library_map(array(
   ),
   'function' =>
   array(
+    'GetPinyin' => 'infrastructure/util/Pinyin.php',
     '_phabricator_date_format' => 'view/viewutils.php',
     'celerity_generate_unique_node_id' => 'infrastructure/celerity/api.php',
     'celerity_get_resource_uri' => 'infrastructure/celerity/api.php',

@@ -495,9 +495,8 @@ final class PhabricatorUser extends PhabricatorUserDAO implements PhutilPerson {
    * typeahead sources. To do this, we need a separate table of name fragments.
    */
   public function updateNameTokens() {
-    $py = new Pinyin();
     $tokens = array_merge(
-      self::tokenizeName($py->getPinyin($this->getRealName(), $charset='utf-8')),
+      self::tokenizeName(GetPinyin($this->getRealName())),
       self::tokenizeName($this->getRealName()),
       self::tokenizeName($this->getUserName()));
     $tokens = array_unique($tokens);

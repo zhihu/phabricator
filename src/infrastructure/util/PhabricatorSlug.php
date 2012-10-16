@@ -22,8 +22,7 @@ final class PhabricatorSlug {
 
     // TODO: We need to deal with unicode at some point, this is just a very
     // basic proof-of-concept implementation.
-    $py = new Pinyin();
-    $slug = $py->getPinyin($slug, $charset='utf-8');                                               
+    $slug = GetPinyin($slug);                                               
 
     $slug = strtolower($slug);
     $slug = preg_replace('@/+@', '/', $slug);

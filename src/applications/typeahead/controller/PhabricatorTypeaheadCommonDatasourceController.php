@@ -115,8 +115,6 @@ final class PhabricatorTypeaheadCommonDatasourceController
         'realName',
         'phid');
 
-      $py = new Pinyin();
-
       if ($query) {
         // This is an arbitrary limit which is just larger than any limit we
         // actually use in the application.
@@ -191,7 +189,7 @@ final class PhabricatorTypeaheadCommonDatasourceController
           ->setName($user->getFullName())
           ->setURI('/p/'.$user->getUsername())
           ->setPHID($user->getPHID())
-          ->setPriorityString($user->getUsername().' '.$py->getPinyin($user->getRealName(), $charset='utf-8'));
+          ->setPriorityString($user->getUsername().' '.GetPinyin($user->getRealName()));
 
         if ($need_rich_data) {
           $display_type = 'User';

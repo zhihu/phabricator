@@ -187,13 +187,13 @@ final class PhabricatorChineseTranslation
       'REPLY HANDLER ACTIONS' => '回复操作',
 
       'Retitled' => '更改了标题',
-      'changed the title from %s to %s' => '标题从%s更改为%s',
+      'changed the title from %s to %s' => '标题从%s改成了%s',
       'Edited' => '编辑了',
       'updated the task description' => '更新了任务描述',
       'Commented On' => '评论了',
       'added a comment' => '添加了一条评论',
       'Claimed' => '认领了',
-      'claimed this task' => '认领这个任务',
+      'claimed this task' => '认领了这个任务',
     );
   }
 
