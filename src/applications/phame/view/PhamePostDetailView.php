@@ -172,7 +172,7 @@ final class PhamePostDetailView extends AphrontView {
                              $user);
     }
     $caption .= ' by <b>'.
-      phutil_escape_html($blogger->getName()).'</b>.';
+      phutil_escape_html($blogger->getFullName()).'</b>.';
 
     $shortened = false;
     $body_text = $post->getBody();
