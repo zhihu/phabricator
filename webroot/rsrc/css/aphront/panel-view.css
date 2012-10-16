@@ -19,7 +19,9 @@
 .aphront-panel-view h1 {
   font-size:        14px;
   font-weight:      bold;
-  margin:          15px 0;
+}
+.aphront-panel-accent.aphront-panel-view h1 {
+  margin: 15px 0;
 }
 
 .aphront-panel-view-caption {
