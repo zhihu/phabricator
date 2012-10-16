@@ -91,6 +91,7 @@
 .aphront-mini-panel-view {
   padding: 1.2em 2em;
   border-top: 1px solid #EEE;
+  display: none;
 }
 
 .aphront-mini-panel-view p {
