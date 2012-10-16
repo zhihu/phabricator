@@ -5,6 +5,7 @@
 
 .aphront-panel-view {
   border-top: 1px solid #EEE;
+  padding: 1em 2em;
 }
 
 .aphront-unpadded-panel-view {
@@ -18,7 +19,7 @@
 .aphront-panel-view h1 {
   font-size:        14px;
   font-weight:      bold;
-  padding:          4px 0 0 0;
+  margin:          15px 0;
 }
 
 .aphront-panel-view-caption {
