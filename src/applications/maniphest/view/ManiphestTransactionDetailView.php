@@ -149,8 +149,6 @@ final class ManiphestTransactionDetailView extends ManiphestView {
     }
 
     $this->forEmail = false;
-
-    $descs = "== 清空本邮件内容直接回复可添加评论到 phabricator 中 == \n".$descs;
     return array($action, $descs);
   }
 
