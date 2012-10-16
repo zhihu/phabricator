@@ -19,7 +19,7 @@
 
 .phabricator-transaction-header {
   background: #F6F6F6;
-  padding: 14px 15px;
+  padding: 15px;
 }
 
 .phabricator-transaction-header a {
@@ -33,6 +33,6 @@
 }
 
 .phabricator-transaction-content {
-  padding: 0 15px 14px;
+  padding: 0 15px;
   overflow: auto;
 }
