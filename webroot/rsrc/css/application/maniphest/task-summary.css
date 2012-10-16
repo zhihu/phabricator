@@ -4,22 +4,19 @@
 
 .maniphest-task-summary {
   width: 100%;
-  margin: 4px 0;
+  margin: -1px 0;
   border-collapse: separate;
-
   font-size: 12px;
-  color: #222222;
+  color: #222;
 }
 
 .maniphest-task-summary td {
-  padding: 5px 3px;
-  background: #f9f9f9;
+  padding: 6px 3px;
   white-space: nowrap;
-
   border-style: solid;
-  border-top-color: #888888;
-  border-bottom-color: #666666;
+  border-bottom-color: #DDD;
   border-width: 1px 0;
+  border-top-color: #DDD;
 }
 
 .maniphest-task-summary td em {
@@ -33,9 +30,6 @@
 .maniphest-task-summary td.maniphest-task-handle {
   padding: 0 6px;
   width: 1px;
-
-  border-right-width: 1px;
-  border-right-color: #787878;
 }
 
 .maniphest-task-summary td.maniphest-task-batch {
