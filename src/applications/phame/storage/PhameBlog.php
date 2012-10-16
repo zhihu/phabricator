@@ -19,7 +19,10 @@
 /**
  * @group phame
  */
-final class PhameBlog extends PhameDAO {
+final class PhameBlog extends PhameDAO
+  implements PhabricatorPolicyInterface, PhabricatorMarkupInterface {
+
+  const MARKUP_FIELD_DESCRIPTION = 'markup:description';
 
   const SKIN_DEFAULT = 'PhabricatorBlogSkin';
 
@@ -30,8 +33,9 @@ final class PhameBlog extends PhameDAO {
   protected $domain;
   protected $configData;
   protected $creatorPHID;
-
-  private $skin;
+  protected $viewPolicy;
+  protected $editPolicy;
+  protected $joinPolicy;
 
   private $bloggerPHIDs;
   private $bloggers;
@@ -185,10 +189,6 @@ final class PhameBlog extends PhameDAO {
     return $this->getActionURI('posts');
   }
 
-  public function getViewURI() {
-    return $this->getActionURI('view');
-  }
-
   public function getEditURI() {
     return $this->getActionURI('edit');
   }
@@ -212,4 +212,85 @@ final class PhameBlog extends PhameDAO {
   public static function getRequestBlog() {
     return self::$requestBlog;
   }
+
+
+/* -(  PhabricatorPolicyInterface Implementation  )-------------------------- */
+
+
+  public function getCapabilities() {
+    return array(
+      PhabricatorPolicyCapability::CAN_VIEW,
+      PhabricatorPolicyCapability::CAN_EDIT,
+      PhabricatorPolicyCapability::CAN_JOIN,
+    );
+  }
+
+
+  public function getPolicy($capability) {
+    switch ($capability) {
+      case PhabricatorPolicyCapability::CAN_VIEW:
+        return $this->getViewPolicy();
+      case PhabricatorPolicyCapability::CAN_EDIT:
+        return $this->getEditPolicy();
+      case PhabricatorPolicyCapability::CAN_JOIN:
+        return $this->getJoinPolicy();
+    }
+  }
+
+  public function hasAutomaticCapability($capability, PhabricatorUser $user) {
+    $can_edit = PhabricatorPolicyCapability::CAN_EDIT;
+    $can_join = PhabricatorPolicyCapability::CAN_JOIN;
+
+    switch ($capability) {
+      case PhabricatorPolicyCapability::CAN_VIEW:
+        // Users who can edit or post to a blog can always view it.
+        if (PhabricatorPolicyFilter::hasCapability($user, $this, $can_edit)) {
+          return true;
+        }
+        if (PhabricatorPolicyFilter::hasCapability($user, $this, $can_join)) {
+          return true;
+        }
+        break;
+      case PhabricatorPolicyCapability::CAN_JOIN:
+        // Users who can edit a blog can always post to it.
+        if (PhabricatorPolicyFilter::hasCapability($user, $this, $can_edit)) {
+          return true;
+        }
+        break;
+    }
+
+    return false;
+  }
+
+
+/* -(  PhabricatorMarkupInterface Implementation  )-------------------------- */
+
+
+  public function getMarkupFieldKey($field) {
+    $hash = PhabricatorHash::digest($this->getMarkupText($field));
+    return $this->getPHID().':'.$field.':'.$hash;
+  }
+
+
+  public function newMarkupEngine($field) {
+    return PhabricatorMarkupEngine::newPhameMarkupEngine();
+  }
+
+
+  public function getMarkupText($field) {
+    return $this->getDescription();
+  }
+
+
+  public function didMarkupText(
+    $field,
+    $output,
+    PhutilMarkupEngine $engine) {
+    return $output;
+  }
+
+  public function shouldUseMarkupCache($field) {
+    return (bool)$this->getPHID();
+  }
+
 }
