@@ -4,6 +4,7 @@
 
 .aphront-headsup-core {
   margin-right: 332px;
+  overflow: hidden;
 }
 
 .aphront-headsup-panel {
