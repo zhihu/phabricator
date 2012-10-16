@@ -58,7 +58,7 @@ final class PhabricatorMetaMTAMailBody {
    * @task compose
    */
   public function addTextSection($header, $text) {
-    $this->sections[] = $header."\n".$this->indent($text);
+    $this->sections[] = $header.": ".$this->indent($text);
     return $this;
   }
 

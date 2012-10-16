@@ -43,8 +43,7 @@ final class ManiphestReplyHandler extends PhabricatorMailReplyHandler {
 
   public function getReplyHandlerInstructions() {
     if ($this->supportsReplies()) {
-      return "Reply to comment or attach files, or !close, !claim, or ".
-             "!unsubscribe.";
+      return "回复邮件可评论、上传文件，或者回复!close, !claim, !unsubscribe来关闭、认领、退订任务";
     } else {
       return null;
     }

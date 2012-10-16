@@ -138,7 +138,7 @@ final class ManiphestTransactionDetailView extends ManiphestView {
     $descs = implode("\n", $descs);
 
     if ($comments) {
-      $descs .= "\n".$comments;
+      $descs = $comments."\n\n".$descs;
     }
 
     foreach ($this->transactions as $transaction) {
@@ -149,6 +149,8 @@ final class ManiphestTransactionDetailView extends ManiphestView {
     }
 
     $this->forEmail = false;
+
+    $descs = "== 清空本邮件内容直接回复可添加评论到 phabricator 中 == \n".$descs;
     return array($action, $descs);
   }
 
@@ -325,41 +327,41 @@ final class ManiphestTransactionDetailView extends ManiphestView {
     $old = $transaction->getOldValue();
     switch ($type) {
       case ManiphestTransactionType::TYPE_TITLE:
-        $verb = 'Retitled';
-        $desc = 'changed the title from '.$this->renderString($old).
-                                   ' to '.$this->renderString($new);
+        $verb = pht('Retitled');
+        $desc = pht('changed the title from %s to %s', $this->renderString($old),
+          $this->renderString($new));
         break;
       case ManiphestTransactionType::TYPE_DESCRIPTION:
-        $verb = 'Edited';
+        $verb = pht('Edited');
         if ($this->forEmail || $this->getRenderFullSummary()) {
-          $desc = 'updated the task description';
+          $desc = pht('updated the task description');
         } else {
           $desc = 'updated the task description; '.
                   $this->renderExpandLink($transaction);
         }
         break;
       case ManiphestTransactionType::TYPE_NONE:
-        $verb = 'Commented On';
-        $desc = 'added a comment';
+        $verb = pht('Commented On');
+        $desc = pht('added a comment');
         break;
       case ManiphestTransactionType::TYPE_OWNER:
         if ($transaction->getAuthorPHID() == $new) {
-          $verb = 'Claimed';
-          $desc = 'claimed this task';
+          $verb = pht('Claimed');
+          $desc = pht('claimed this task');
           $classes[] = 'claimed';
         } else if (!$new) {
-          $verb = 'Up For Grabs';
-          $desc = 'placed this task up for grabs';
+          $verb = pht('Up For Grabs');
+          $desc = pht('placed this task up for grabs');
           $classes[] = 'upforgrab';
         } else if (!$old) {
-          $verb = 'Assigned';
-          $desc = 'assigned this task to '.$this->renderHandles(array($new));
-          $classes[] = 'assigned';
+          $verb = pht('Assigned');
+          $desc = pht('assigned this task to').' '.$this->renderHandles(array($new));
+          $classes[] = pht('assigned');
         } else {
-          $verb = 'Reassigned';
-          $desc = 'reassigned this task from '.
+          $verb = pht('Reassigned');
+          $desc = pht('reassigned this task from').' '.
                   $this->renderHandles(array($old)).
-                  ' to '.
+                  ' '.'to'.' '.
                   $this->renderHandles(array($new));
           $classes[] = 'reassigned';
         }
@@ -369,28 +371,27 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         $removed = array_diff($old, $new);
         // can only add in preview so just show placeholder if nothing to add
         if ($this->preview && empty($added)) {
-          $verb = 'Changed CC';
-          $desc = 'changed CCs..';
+          $verb = pht('Changed CC');
+          $desc = pht('changed CCs..');
           break;
         }
         if ($added && !$removed) {
-          $verb = 'Added CC';
+          $verb = pht('Added CC');
           if (count($added) == 1) {
-            $desc = 'added '.$this->renderHandles($added).' to CC';
+            $desc = pht('added %s to CC', $this->renderHandles($added));
           } else {
-            $desc = 'added CCs: '.$this->renderHandles($added);
+            $desc = pht('added CCs: %s', $this->renderHandles($added));
           }
         } else if ($removed && !$added) {
-          $verb = 'Removed CC';
+          $verb = pht('Removed CC');
           if (count($removed) == 1) {
-            $desc = 'removed '.$this->renderHandles($removed).' from CC';
+            $desc = pht('removed %s from CC', $this->renderHandles($removed));
           } else {
-            $desc = 'removed CCs: '.$this->renderHandles($removed);
+            $desc = pht('removed CCs: %s', $this->renderHandles($removed));
           }
         } else {
-          $verb = 'Changed CC';
-          $desc = 'changed CCs, added: '.$this->renderHandles($added).'; '.
-                             'removed: '.$this->renderHandles($removed);
+          $verb = pht('Changed CC');
+          $desc = pht('changed CCs, added: %s;  removed: %s', $this->renderHandles($removed), $this->renderHandles($added));
         }
         break;
       case ManiphestTransactionType::TYPE_EDGE:
@@ -415,53 +416,53 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         $removed = array_diff($old, $new);
         // can only add in preview so just show placeholder if nothing to add
         if ($this->preview && empty($added)) {
-          $verb = 'Changed Projects';
-          $desc = 'changed projects..';
+          $verb = pht('Changed Projects');
+          $desc = pht('changed projects..');
           break;
         }
         if ($added && !$removed) {
-          $verb = 'Added Project';
+          $verb = pht('Added Project');
           if (count($added) == 1) {
-            $desc = 'added project '.$this->renderHandles($added);
+            $desc = pht('added project %s', $this->renderHandles($added));
           } else {
-            $desc = 'added projects: '.$this->renderHandles($added);
+            $desc = pht('added projects: %s', $this->renderHandles($added));
           }
         } else if ($removed && !$added) {
-          $verb = 'Removed Project';
+          $verb = pht('Removed Project');
           if (count($removed) == 1) {
-            $desc = 'removed project '.$this->renderHandles($removed);
+            $desc = pht('removed project %s', $this->renderHandles($removed));
           } else {
-            $desc = 'removed projects: '.$this->renderHandles($removed);
+            $desc = pht('removed projects: %s', $this->renderHandles($removed));
           }
         } else {
-          $verb = 'Changed Projects';
-          $desc = 'changed projects, added: '.$this->renderHandles($added).'; '.
-                                  'removed: '.$this->renderHandles($removed);
+          $verb = pht('Changed Projects');
+          $desc = pht('changed projects, added: %s; removed: %s',
+            $this->renderHandles($added), $this->renderHandles($removed));
         }
         break;
       case ManiphestTransactionType::TYPE_STATUS:
         if ($new == ManiphestTaskStatus::STATUS_OPEN) {
           if ($old) {
-            $verb = 'Reopened';
-            $desc = 'reopened this task';
+            $verb = pht('Reopened');
+            $desc = pht('reopened this task');
             $classes[] = 'reopened';
           } else {
-            $verb = 'Created';
-            $desc = 'created this task';
+            $verb = pht('Created');
+            $desc = pht('created this task');
             $classes[] = 'created';
           }
         } else if ($new == ManiphestTaskStatus::STATUS_CLOSED_SPITE) {
-          $verb = 'Spited';
-          $desc = 'closed this task out of spite';
+          $verb = pht('Spited');
+          $desc = pht('closed this task out of spite');
           $classes[] = 'spited';
         } else if ($new == ManiphestTaskStatus::STATUS_CLOSED_DUPLICATE) {
-          $verb = 'Merged';
-          $desc = 'closed this task as a duplicate';
+          $verb = pht('Merged');
+          $desc = pht('closed this task as a duplicate');
           $classes[] = 'duplicate';
         } else {
-          $verb = 'Closed';
+          $verb = pht('Closed');
           $full = idx(ManiphestTaskStatus::getTaskStatusMap(), $new, '???');
-          $desc = 'closed this task as "'.$full.'"';
+          $desc = pht('closed this task as "%s"', $full);
           $classes[] = 'closed';
         }
         break;
@@ -470,16 +471,16 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         $new_name = ManiphestTaskPriority::getTaskPriorityName($new);
 
         if ($old == ManiphestTaskPriority::PRIORITY_TRIAGE) {
-          $verb = 'Triaged';
-          $desc = 'triaged this task as "'.$new_name.'" priority';
+          $verb = pht('Triaged');
+          $desc = pht('triaged this task as "%s priority', $new_name);
         } else if ($old > $new) {
-          $verb = 'Lowered Priority';
-          $desc = 'lowered the priority of this task from "'.$old_name.'" to '.
-                  '"'.$new_name.'"';
+          $verb = pht('Lowered Priority');
+          $desc = pht('lowered the priority of this task from "%s" to "%s"',
+            $old_name, $new_name);
         } else {
-          $verb = 'Raised Priority';
-          $desc = 'raised the priority of this task from "'.$old_name.'" to '.
-                  '"'.$new_name.'"';
+          $verb = pht('Raised Priority');
+          $desc = pht('raised the priority of this task from "%s" to "%s"',
+            $old_name, $new_name);
         }
         if ($new == ManiphestTaskPriority::PRIORITY_UNBREAK_NOW) {
           $classes[] = 'unbreaknow';
@@ -487,8 +488,8 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         break;
       case ManiphestTransactionType::TYPE_ATTACH:
         if ($this->preview) {
-          $verb = 'Changed Attached';
-          $desc = 'changed attachments..';
+          $verb = pht('Changed Attached');
+          $desc = pht('changed attachments..');
           break;
         }
 
@@ -513,24 +514,22 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         $rem_desc = $this->renderHandles($removed);
 
         if ($added && !$removed) {
-          $verb = 'Attached';
+          $verb = pht('Attached');
           $desc =
-            'attached '.
-            $this->getAttachName($attach_type, count($added)).': '.
-            $add_desc;
+            pht('attached %s: %s',
+              $this->getAttachName($attach_type, count($added)), $add_desc);
         } else if ($removed && !$added) {
-          $verb = 'Detached';
+          $verb = pht('Detached');
           $desc =
-            'detached '.
-            $this->getAttachName($attach_type, count($removed)).': '.
-            $rem_desc;
+            pht('detached %s: %s',
+              $this->getAttachName($attach_type, count($removed)), $rem_desc);
         } else {
-          $verb = 'Changed Attached';
+          $verb = pht('Changed Attached');
           $desc =
-            'changed attached '.
-            $this->getAttachName($attach_type, count($added) + count($removed)).
-            ', added: '.$add_desc.'; '.
-            'removed: '.$rem_desc;
+            pht('changed attached %s, added: %s; removed: %s',
+              $this->getAttachName($attach_type, count($added) + count($removed)),
+              $add_desc,
+              $rem_desc);
         }
         break;
       case ManiphestTransactionType::TYPE_AUXILIARY:
@@ -543,11 +542,11 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         }
         if ($verb === null) {
           if ($old === null) {
-            $verb = "Set Field";
+            $verb = pht('Set Field');
           } else if ($new === null) {
-            $verb = "Removed Field";
+            $verb = pht('Removed Field');
           } else {
-            $verb = "Updated Field";
+            $verb = pht('Updated Field');
           }
         }
 
@@ -619,7 +618,7 @@ final class ManiphestTransactionDetailView extends ManiphestView {
       'show details');
   }
 
-  private function renderHandles($phids, $full = false) {
+  private function renderHandles($phids, $full = true) {
     $links = array();
     foreach ($phids as $phid) {
       if ($this->forEmail) {

@@ -180,6 +180,20 @@ final class PhabricatorChineseTranslation
 
       'Today' => '今天',
       'Yesterday' => '昨天',
+
+      'TASK DETAIL' => '任务详情',
+      'TASK DESCRIPTION' => '任务描述',
+
+      'REPLY HANDLER ACTIONS' => '回复操作',
+
+      'Retitled' => '更改了标题',
+      'changed the title from %s to %s' => '标题从%s更改为%s',
+      'Edited' => '编辑了',
+      'updated the task description' => '更新了任务描述',
+      'Commented On' => '评论了',
+      'added a comment' => '添加了一条评论',
+      'Claimed' => '认领了',
+      'claimed this task' => '认领这个任务',
     );
   }
 
