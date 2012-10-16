@@ -15,10 +15,10 @@
 }
 
 .phabricator-remarkup .remarkup-code-block {
-  margin: 1em 2em;
+  margin: 1.5em 2em;
   white-space: pre;
   font-family: "Monaco", monospace;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .phabricator-remarkup .remarkup-code-header {
@@ -28,12 +28,12 @@
 }
 
 .phabricator-remarkup .remarkup-code-block pre {
-  background: #fdfae7;
-  border: 1px solid #f5e178;
+  background: #FBFBFB;
+  border: 1px solid #DDD;
   display: block;
-  color: #000000;
+  color: black;
   overflow: auto;
-  padding: .5em 1em;
+  padding: .8em 1.2em;
   font-family: "Monaco", monospace;
 }
 
