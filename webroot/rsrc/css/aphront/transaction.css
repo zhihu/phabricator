@@ -33,6 +33,6 @@
 }
 
 .phabricator-transaction-content {
-  padding: 0 15px;
+  padding: 15px;
   overflow: auto;
 }
