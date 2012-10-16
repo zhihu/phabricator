@@ -3,9 +3,9 @@
  */
 
 .phriction-header {
-  background: #eeeeee;
-  border-bottom: 1px solid #dddddd;
-  padding: 1em;
+  background: #F6F6F6;
+  border-bottom: 1px solid #DDD;
+  padding: 20px 40px;
 }
 
 .phriction-header a.button {
@@ -14,12 +14,12 @@
 }
 
 .phriction-header h1 {
-  margin: .25em 0;
+  margin-bottom: 5px;
 }
 
 .phriction-content {
   max-width: 960px;
-  margin: 1em;
+  margin: 20px 40px;
 }
 
 .phriction-byline {

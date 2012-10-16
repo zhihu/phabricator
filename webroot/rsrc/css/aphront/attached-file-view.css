@@ -24,20 +24,15 @@
 }
 
 .aphront-file-preview-view {
-  float: left;
-  margin: 4px 4px 12px;
   text-align: center;
-  font-size: 11px;
-  color: #333333;
-  overflow: hidden;
-  width: 166px;
+  color: #999;
   white-space: nowrap;
 }
 
 .aphront-file-preview-thumb {
-  padding: 2px;
-  border: 1px solid #000000;
-  background: #ffffff;
+  border: 1px solid #CCC;
+  background: white;
   margin-bottom: 2px;
   width: 160px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, .1);
 }

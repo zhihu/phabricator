@@ -9,10 +9,9 @@
 }
 
 .phabricator-jump-nav {
-  margin-top: -8px;
   font-size: 16px;
   width: 100%;
-  padding: 2px 0;
+  box-sizing: border-box;
 }
 
 .phabricator-jump-nav-caption {

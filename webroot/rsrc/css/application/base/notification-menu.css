@@ -4,7 +4,6 @@
 
 .phabricator-notification-menu {
   background: #ffffff;
-  font-size: 11px;
   word-wrap: break-word;
   overflow-y: auto;
 }
@@ -25,7 +24,11 @@
 
 
 .phabricator-notification {
-  padding: 12px;
+  padding: 8px 12px;
+}
+
+.phabricator-notification + .phabricator-notification {
+  border-top: 1px solid #EEE;
 }
 
 .no-notifications {

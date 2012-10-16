@@ -21,7 +21,7 @@ th.aphront-side-nav-navigation a,
 th.aphront-side-nav-navigation span {
   display: block;
   margin: 0 0 2px;
-  min-width: 165px;
+  min-width: 100px;
   padding: 6px 20px;
   font-weight: bold;
   white-space: nowrap;
