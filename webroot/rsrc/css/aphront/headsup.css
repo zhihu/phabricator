@@ -20,6 +20,7 @@
 .aphront-headsup-property-table {
   width: auto;
   margin-top: 10px;
+  white-space: nowrap;
 }
 
 .aphront-headsup-property-table th {
