@@ -47,10 +47,6 @@ final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
         'tip' => pht('Monospaced'),
       ),
       array(
-        //'href' => PhabricatorEnv::getDoclink('article/Remarkup_Reference.html'),
-        'href' => 'http://ph.in.zhihu.com/w/usage/formatting_reference/',
-        'tabindex' => '-1',
-        'target' => '_blank',
         'spacer' => true,
       ),
       'ul' => array(
