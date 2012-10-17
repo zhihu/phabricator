@@ -30,6 +30,9 @@ JX.behavior('workflow', function() {
         return;
       }
       e.prevent();
+      if(!target.href){
+        target = e.getTarget()
+      }
       JX.Workflow.newFromLink(target).start();
     });
 });
