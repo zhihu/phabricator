@@ -16,29 +16,6 @@
  * limitations under the License.
  */
 
-/**
- * @group phame
- */
-final class PhabricatorBlogSkin extends PhameBlogSkin {
-
-  public function __construct() {
-    $this->setShowChrome(true);
-  }
-
-  protected function renderHeader() {
-    return '';
-  }
-
-  protected function renderFooter() {
-    return '';
-  }
-
-  protected function renderBody() {
-    require_celerity_resource('phame-css');
-
-    return
-      $this->renderNotice() .
-      $this->renderPosts() .
-      $this->renderBlogDetails();
-  }
+function _e($text) {
+  return phutil_escape_html($text);
 }

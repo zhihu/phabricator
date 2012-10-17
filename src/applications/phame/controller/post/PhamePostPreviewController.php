@@ -30,24 +30,17 @@ extends PhameController {
     $request     = $this->getRequest();
     $user        = $request->getUser();
     $body        = $request->getStr('body');
-    $title       = $request->getStr('title');
-    $phame_title = $request->getStr('phame_title');
 
     $post = id(new PhamePost())
-      ->setBody($body)
-      ->setTitle($title)
-      ->setPhameTitle($phame_title)
-      ->setDateModified(time());
+      ->setBody($body);
 
-    $blogger = PhabricatorObjectHandleData::loadOneHandle($user->getPHID());
+    $content = PhabricatorMarkupEngine::renderOneObject(
+      $post,
+      PhamePost::MARKUP_FIELD_BODY,
+      $user);
 
-    $post_html = id(new PhamePostDetailView())
-      ->setUser($user)
-      ->setBlogger($blogger)
-      ->setPost($post)
-      ->setIsPreview(true)
-      ->render();
+    $content = '<div class="phabricator-remarkup">'.$content.'</div>';
 
-    return id(new AphrontAjaxResponse())->setContent($post_html);
+    return id(new AphrontAjaxResponse())->setContent($content);
   }
 }
