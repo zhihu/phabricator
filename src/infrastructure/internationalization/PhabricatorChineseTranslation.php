@@ -150,8 +150,8 @@ final class PhabricatorChineseTranslation
       ),
 
       '%d Assigned Task(s)' => array(
-        '%d Assigned Task',
-        '%d Assigned Tasks',
+        '%d 指派给我的任务',
+        '%d 指派给我的任务',
       ),
 
       'AM' => '上午',
