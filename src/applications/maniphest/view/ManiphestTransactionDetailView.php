@@ -334,7 +334,7 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         if ($this->forEmail || $this->getRenderFullSummary()) {
           $desc = pht('updated the task description');
         } else {
-          $desc = 'updated the task description; '.
+          $desc = pht('updated the task description').' '.
                   $this->renderExpandLink($transaction);
         }
         break;
@@ -353,8 +353,8 @@ final class ManiphestTransactionDetailView extends ManiphestView {
           $classes[] = 'upforgrab';
         } else if (!$old) {
           $verb = pht('Assigned');
-          $desc = pht('assigned this task to').' '.$this->renderHandles(array($new));
-          $classes[] = pht('assigned');
+          $desc = pht('assigned this task to %s', $this->renderHandles(array($new)));
+          $classes[] = 'assigned';
         } else {
           $verb = pht('Reassigned');
           $desc = pht('reassigned this task from').' '.
@@ -470,7 +470,7 @@ final class ManiphestTransactionDetailView extends ManiphestView {
 
         if ($old == ManiphestTaskPriority::PRIORITY_TRIAGE) {
           $verb = pht('Triaged');
-          $desc = pht('triaged this task as "%s priority', $new_name);
+          $desc = pht('triaged this task as "%s" priority', $new_name);
         } else if ($old > $new) {
           $verb = pht('Lowered Priority');
           $desc = pht('lowered the priority of this task from "%s" to "%s"',

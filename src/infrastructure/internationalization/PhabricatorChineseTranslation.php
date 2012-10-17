@@ -194,6 +194,17 @@ final class PhabricatorChineseTranslation
       'added a comment' => '添加了一条评论',
       'Claimed' => '认领了',
       'claimed this task' => '认领了这个任务',
+      'created this task' => '创建了这个任务',
+      'triaged this task as "%s" priority' => '调整了这个任务的优先级为：%s',
+      'added project %s' => '把任务添加进了项目：%s',
+      'added %s to CC' => '把 %s 加进了CC',
+      'added CCs: %s' => '把他们加进了CC：%s',
+      'Closed' => '已关闭',
+      'closed this task as "%s"' => '关闭了这个任务：%s',
+      'assigned this task to %s' => '把这个任务分配给了：%s',
+      'added %d dependent task(s): %s' => '添加了%d个依赖于它的任务：%s',
+      'lowered the priority of this task from "%s" to "%s"' => '把优先级从%s降低为了%s',
+      'placed this task up for grabs' => '把这个任务抛了出来求认领',
     );
   }
 
