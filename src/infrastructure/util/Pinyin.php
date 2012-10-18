@@ -14,7 +14,7 @@ function MBStringToJsonArray($str) {
       }
     }
     if ($len == 2) {
-      $arr[] = json_decode(substr($json, 0, $len));
+      $arr[] = json_decode('"'.substr($json, 0, $len).'"');
     } else {
       $arr[] = substr($json, 0, $len);
     }
