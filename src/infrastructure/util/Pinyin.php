@@ -1,18 +1,26 @@
 <?php
 
-function MBStringToJsonArray ($str) {
-  if (empty($str)) return false;
-  $len = mb_strlen($str);
-  $array = array();
-  for ($i = 0; $i < $len; $i++) {
-    $c = mb_substr($str, $i, 1);
-    if (ord($c) <= 255) {
-      $array[] = $c;
-    } else {
-      $array[] = str_replace('"', '', json_encode($c));
+function MBStringToJsonArray($str) {
+  $json = json_encode($str);
+  $json = substr($json, 1, strlen($json) - 2);
+  $arr = array();
+  while (strlen($json) > 0) {
+    $len = 1;
+    if ($json[0] == '\\') {
+      if ($json[1] == 'u') {
+        $len = 6;
+      } else {
+        $len = 2;
+      }
     }
+    if ($len == 2) {
+      $arr[] = json_decode(substr($json, 0, $len));
+    } else {
+      $arr[] = substr($json, 0, $len);
+    }
+    $json = substr($json, $len, strlen($json) - $len);
   }
-  return $array;
+  return $arr;
 }
 
 function GetPinyin($str) {
