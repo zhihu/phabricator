@@ -79,9 +79,36 @@
   width: 54px;
   margin: 0 6px;
   background: 6px 9px url(/res/da055af1/rsrc/image/custom/logo.png) no-repeat;
+  float: left;
 }
 
-.phabricator-main-menu-logo span {
+.phabricator-main-menu-phriction-logo,
+.phabricator-main-menu-maniphest-logo,
+.phabricator-main-menu-create-task-logo {
+  display: inline-block;
+  height: 48px;
+  width: 48px;
+  margin: 0 6px;
+  float: left;
+}
+
+.phabricator-main-menu-phriction-logo {
+  width: 48px;
+  background: 6px 12px url(/res/da055af1/rsrc/image/custom/wiki-header.png) no-repeat;
+}
+
+.phabricator-main-menu-maniphest-logo {
+  background: 6px 10px url(/res/da055af1/rsrc/image/custom/anchor-header.png) no-repeat;
+}
+
+.phabricator-main-menu-create-task-logo {
+  background: 6px 11px url(/res/da055af1/rsrc/image/custom/create-header.png) no-repeat;
+}
+
+.phabricator-main-menu-logo span,
+.phabricator-main-menu-phriction-logo span,
+.phabricator-main-menu-maniphest-logo span,
+.phabricator-main-menu-create-task-logo span {
   display: none;
 }
 
@@ -341,6 +368,7 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
 .phabricator-main-menu-alert {
   display: inline-block;
   position: relative;
+  float: left;
 }
 
 .phabricator-main-menu-alert-item {
