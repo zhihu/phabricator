@@ -206,6 +206,9 @@ final class PhabricatorChineseTranslation
       'lowered the priority of this task from "%s" to "%s"' => '把优先级从%s降低为了%s',
       'placed this task up for grabs' => '把这个任务抛了出来求认领',
       'added projects: %s' => '把任务添加进了项目：%s',
+      'reopened this task' => '重开了这个任务',
+      'removed %s from CC' => '把从CC中移除了%s',
+      'changed CCs, added: %s;  removed: %s' => '更新了CC列表，添加了：%s，移除了：%s',
     );
   }
 
