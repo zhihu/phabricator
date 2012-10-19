@@ -28,7 +28,7 @@
 .phabricator-app-button .app-button:active {
   background: #eee;
   border: 1px solid #bbb;
-  box-shadow: 0px 1px 0px rgba(0, 0, 0, .2);
+  box-shadow: 0px 1px 0px rgba(0, 0, 0, .1);
 }
 
 a.phabricator-button-caption,
