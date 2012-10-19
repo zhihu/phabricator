@@ -44,7 +44,10 @@ abstract class PhabricatorDirectoryController extends PhabricatorController {
     $nav->addFilter('submit_bug', '提交BUG', '/maniphest/task/create/?projects=PHID-PROJ-ng2ucirw6embkz22vruj');
     $nav->addFilter('submit_idea', '提交想法', '/maniphest/task/create/?projects=PHID-PROJ-jjdydjiyr2275zl7qjvq');
     $nav->addFilter('submit_idea', '提交用户反馈', '/maniphest/task/create/?projects=PHID-PROJ-sj23435jqi7ugo3sltel');
+    $nav->addSpacer();
     $nav->addFilter('projects', '项目列表', '/project/filter/allactive/');
+    $nav->addFilter('projects', '我关注的任务', '/maniphest/view/subscribed/');
+    $nav->addSpacer();
     $nav->addFilter('blog', '博客列表', '/phame/post/all/');
     $nav->addSpacer();
     $nav->addFilter('applications', '更多功能');
