@@ -357,10 +357,9 @@ final class ManiphestTransactionDetailView extends ManiphestView {
           $classes[] = 'assigned';
         } else {
           $verb = pht('Reassigned');
-          $desc = pht('reassigned this task from').' '.
-                  $this->renderHandles(array($old)).
-                  ' '.'to'.' '.
-                  $this->renderHandles(array($new));
+          $desc = pht('reassigned this task from %s to %s',
+            $this->renderHandles(array($old)),
+            $this->renderHandles(array($new)));
           $classes[] = 'reassigned';
         }
         break;

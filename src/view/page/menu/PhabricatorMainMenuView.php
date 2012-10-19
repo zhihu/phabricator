@@ -65,6 +65,33 @@ final class PhabricatorMainMenuView extends AphrontView {
           ),
         ),
         '<span>Expand</span>'));
+
+    if ($user->isLoggedIn()) {
+      $group->appendChild(
+        phutil_render_tag(
+          'a',
+          array(
+            'class' => 'phabricator-main-menu-phriction-logo',
+            'href'  => '/w/',
+          ),
+          '<span>Phriction</span>'));
+      $group->appendChild(
+        phutil_render_tag(
+          'a',
+          array(
+            'class' => 'phabricator-main-menu-maniphest-logo',
+            'href'  => '/maniphest/',
+          ),
+          '<span>Maniphest</span>'));
+      $group->appendChild(
+        phutil_render_tag(
+          'a',
+          array(
+            'class' => 'phabricator-main-menu-create-task-logo',
+            'href'  => '/maniphest/task/create/',
+          ),
+          '<span>Create Task</span>'));
+    }
     $logo = $group->render();
 
     return phutil_render_tag(

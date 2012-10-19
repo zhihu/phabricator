@@ -81,7 +81,7 @@ final class PhabricatorDirectoryMainController
 
     $content = array(
       $app_panel,
-      $jump_panel,
+      //$jump_panel,
       $unbreak_panel,
       $triage_panel,
       $revision_panel,

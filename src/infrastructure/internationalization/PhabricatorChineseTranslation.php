@@ -209,6 +209,9 @@ final class PhabricatorChineseTranslation
       'reopened this task' => '重开了这个任务',
       'removed %s from CC' => '把从CC中移除了%s',
       'changed CCs, added: %s;  removed: %s' => '更新了CC列表，添加了：%s，移除了：%s',
+      'removed project %s' => '移除了项目：%s',
+      'removed projects: %s' => '移除了项目：%s',
+      'reassigned this task from %s to %s' => '把任务从%s转给了%s',
     );
   }
 
