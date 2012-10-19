@@ -27,8 +27,6 @@ final class ManiphestTaskStatus extends ManiphestConstants {
   const STATUS_CLOSED_INVALID     = 3;
   const STATUS_CLOSED_DUPLICATE   = 4;
   const STATUS_CLOSED_SPITE       = 5;
-  const STATUS_CLOSED_VERIFIED    = 6;
-  const STATUS_CLOSED_CLOSED      = 7;
 
   public static function getTaskStatusMap() {
     return array(
@@ -38,8 +36,6 @@ final class ManiphestTaskStatus extends ManiphestConstants {
       self::STATUS_CLOSED_INVALID       => 'Invalid',
       self::STATUS_CLOSED_DUPLICATE     => 'Duplicate',
       self::STATUS_CLOSED_SPITE         => 'Spite',
-      self::STATUS_CLOSED_VERIFIED      => 'Verified',
-      self::STATUS_CLOSED_CLOSED        => 'Closed',
     );
   }
 
@@ -51,8 +47,6 @@ final class ManiphestTaskStatus extends ManiphestConstants {
       self::STATUS_CLOSED_INVALID       => 'Closed, Invalid',
       self::STATUS_CLOSED_DUPLICATE     => 'Closed, Duplicate',
       self::STATUS_CLOSED_SPITE         => 'Closed out of Spite',
-      self::STATUS_CLOSED_VERIFIED      => 'Closed, Verified',
-      self::STATUS_CLOSED_CLOSED        => 'Closed, Closed',
     );
     return idx($map, $status, '???');
   }

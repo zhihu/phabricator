@@ -205,6 +205,7 @@ final class PhabricatorChineseTranslation
       'added %d dependent task(s): %s' => '添加了%d个依赖于它的任务：%s',
       'lowered the priority of this task from "%s" to "%s"' => '把优先级从%s降低为了%s',
       'placed this task up for grabs' => '把这个任务抛了出来求认领',
+      'added projects: %s' => '把任务添加进了项目：%s',
     );
   }
 
