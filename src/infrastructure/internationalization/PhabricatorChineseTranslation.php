@@ -212,6 +212,8 @@ final class PhabricatorChineseTranslation
       'removed project %s' => '移除了项目：%s',
       'removed projects: %s' => '移除了项目：%s',
       'reassigned this task from %s to %s' => '把任务从%s转给了%s',
+      'attached %s: %s' => '上传了%s：%s',
+      'file(s)' => '文件',
     );
   }
 
