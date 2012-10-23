@@ -215,6 +215,18 @@ final class PhabricatorChineseTranslation
       'attached %s: %s' => '上传了%s：%s',
       'file(s)' => '文件',
       'raised the priority of this task from "%s" to "%s"' => '将任务到优先级从：%s提高为：%s',
+
+      'Status' => '状态',
+      'Assigned To' => '负责人',
+      'Priority' => '优先级',
+      'CC' => '抄送',
+      'Author' => '创建人',
+      'Projects' => '项目',
+      'Dependent Tasks' => '父项目',
+      'Description' => '描述',
+      'Depends On' => '子项目',
+      'Attached Files' => '附件',
+      'Files' => '文件',
     );
   }
 

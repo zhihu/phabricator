@@ -406,7 +406,7 @@ final class ManiphestTaskEditController extends ManiphestController {
       $form
         ->appendChild(
           id(new AphrontFormSelectControl())
-            ->setLabel('Status')
+            ->setLabel(pht('Status'))
             ->setName('status')
             ->setValue($task->getStatus())
             ->setOptions(ManiphestTaskStatus::getTaskStatusMap()));
@@ -415,7 +415,7 @@ final class ManiphestTaskEditController extends ManiphestController {
     $form
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setLabel('Assigned To')
+          ->setLabel(pht('Assigned To'))
           ->setName('assigned_to')
           ->setValue($assigned_value)
           ->setUser($user)
@@ -423,20 +423,20 @@ final class ManiphestTaskEditController extends ManiphestController {
           ->setLimit(1))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setLabel('CC')
+          ->setLabel(pht('CC'))
           ->setName('cc')
           ->setValue($cc_value)
           ->setUser($user)
           ->setDatasource('/typeahead/common/mailable/'))
       ->appendChild(
         id(new AphrontFormSelectControl())
-          ->setLabel('Priority')
+          ->setLabel(pht('Priority'))
           ->setName('priority')
           ->setOptions($priority_map)
           ->setValue($task->getPriority()))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setLabel('Projects')
+          ->setLabel(pht('Projects'))
           ->setName('projects')
           ->setValue($projects_value)
           ->setID($project_tokenizer_id)
@@ -500,7 +500,7 @@ final class ManiphestTaskEditController extends ManiphestController {
     }
 
     $description_control
-      ->setLabel('Description')
+      ->setLabel(pht('Description'))
       ->setName('description')
       ->setID('description-textarea')
       ->setValue($task->getDescription());
@@ -512,7 +512,7 @@ final class ManiphestTaskEditController extends ManiphestController {
       $form
         ->appendChild(
           id(new AphrontFormDragAndDropUploadControl())
-            ->setLabel('Attached Files')
+            ->setLabel(pht('Attached Files'))
             ->setName('files')
             ->setActivatedClass('aphront-panel-view-drag-and-drop'));
     }

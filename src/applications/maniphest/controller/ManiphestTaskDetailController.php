@@ -108,16 +108,16 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $handles = $this->loadViewerHandles($phids);
 
     $dict = array();
-    $dict['Status'] =
+    $dict[pht('Status')] =
       '<strong>'.
         ManiphestTaskStatus::getTaskStatusFullName($task->getStatus()).
       '</strong>';
 
-    $dict['Assigned To'] = $task->getOwnerPHID()
+    $dict[pht('Assigned To')] = $task->getOwnerPHID()
       ? $handles[$task->getOwnerPHID()]->renderLink()
       : '<em>None</em>';
 
-    $dict['Priority'] = ManiphestTaskPriority::getTaskPriorityName(
+    $dict[pht('Priority')] = ManiphestTaskPriority::getTaskPriorityName(
       $task->getPriority());
 
     $cc = $task->getCCPHIDs();
@@ -126,12 +126,12 @@ final class ManiphestTaskDetailController extends ManiphestController {
       foreach ($cc as $phid) {
         $cc_links[] = $handles[$phid]->renderLink();
       }
-      $dict['CC'] = implode(', ', $cc_links);
+      $dict[pht('CC')] = implode(', ', $cc_links);
     } else {
-      $dict['CC'] = '<em>None</em>';
+      $dict[pht('CC')] = '<em>None</em>';
     }
 
-    $dict['Author'] = $handles[$task->getAuthorPHID()]->renderLink();
+    $dict[pht('Author')] = $handles[$task->getAuthorPHID()]->renderLink();
 
     $source = $task->getOriginalEmailSource();
     if ($source) {
@@ -150,9 +150,9 @@ final class ManiphestTaskDetailController extends ManiphestController {
       foreach ($projects as $phid) {
         $project_links[] = $handles[$phid]->renderLink();
       }
-      $dict['Projects'] = implode(', ', $project_links);
+      $dict[pht('Projects')] = implode(', ', $project_links);
     } else {
-      $dict['Projects'] = '<em>None</em>';
+      $dict[pht('Projects')] = '<em>None</em>';
     }
 
     $extensions = ManiphestTaskExtensions::newExtensions();
@@ -170,12 +170,12 @@ final class ManiphestTaskDetailController extends ManiphestController {
     }
 
     if ($dep_by_tasks) {
-      $dict['Dependent Tasks'] = $this->renderHandleList(
+      $dict[pht('Dependent Tasks')] = $this->renderHandleList(
         array_select_keys($handles, $dep_by_tasks));
     }
 
     if ($dep_on_tasks) {
-      $dict['Depends On'] = $this->renderHandleList(
+      $dict[pht('Depends On')] = $this->renderHandleList(
         array_select_keys($handles, $dep_on_tasks));
     }
 
@@ -200,7 +200,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
       $view = new PhabricatorFileLinkListView();
       $view->setFiles($files);
 
-      $dict['Files'] = $view->render();
+      $dict[pht('Files')] = $view->render();
     }
 
     $context_bar = null;
