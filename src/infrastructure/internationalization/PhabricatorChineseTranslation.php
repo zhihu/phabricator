@@ -222,9 +222,9 @@ final class PhabricatorChineseTranslation
       'CC' => '抄送',
       'Author' => '创建人',
       'Projects' => '项目',
-      'Dependent Tasks' => '父项目',
+      'Dependent Tasks' => '父任务',
       'Description' => '描述',
-      'Depends On' => '子项目',
+      'Depends On' => '子任务',
       'Attached Files' => '附件',
       'Files' => '文件',
     );
