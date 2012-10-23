@@ -35,7 +35,7 @@ th.aphront-side-nav-navigation span {
 
 th.aphront-side-nav-navigation a:hover {
   text-decoration: none;
-  background: #DFEBF7;
+  background-color: #DFEBF7;
 }
 
 th.aphront-side-nav-navigation hr {
@@ -47,7 +47,7 @@ th.aphront-side-nav-navigation hr {
 
 th.aphront-side-nav-navigation a.aphront-side-nav-selected,
 th.aphront-side-nav-navigation a.aphront-side-nav-selected:hover {
-  background: #DFEBF7;
+  background-color: #DFEBF7;
 }
 
 /* customize side nav icons */
