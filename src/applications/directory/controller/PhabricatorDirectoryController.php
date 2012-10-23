@@ -50,7 +50,7 @@ abstract class PhabricatorDirectoryController extends PhabricatorController {
     $nav->addSpacer();
     $nav->addFilter('blog', '博客列表', '/phame/post/all/', false, 'aphront-side-nav-blogs');
     $nav->addSpacer();
-    $nav->addFilter('applications', '更多功能', false, 'aphront-side-nav-applications');
+    $nav->addFilter('applications', '更多功能', '/applications/', false, 'aphront-side-nav-applications');
 
     return $nav;
   }
