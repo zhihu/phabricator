@@ -214,6 +214,7 @@ final class PhabricatorChineseTranslation
       'reassigned this task from %s to %s' => '把任务从%s转给了%s',
       'attached %s: %s' => '上传了%s：%s',
       'file(s)' => '文件',
+      'raised the priority of this task from "%s" to "%s"' => '将任务到优先级从：%s提高为：%s',
     );
   }
 

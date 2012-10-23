@@ -38,19 +38,19 @@ abstract class PhabricatorDirectoryController extends PhabricatorController {
     $nav->setBaseURI(new PhutilURI('/'));
 
     $nav->addLabel('知乎海盗船');
-    $nav->addFilter('home', '常用功能', '/');
-    $nav->addFilter('feed', '全局动态');
+    $nav->addFilter('home', '常用功能', '/', false, 'aphront-side-nav-home');
+    $nav->addFilter('feed', '全局动态', '/feed/', false, 'aphront-side-nav-feed');
     $nav->addSpacer();
-    $nav->addFilter('submit_bug', '提交BUG', '/maniphest/task/create/?projects=PHID-PROJ-ng2ucirw6embkz22vruj');
-    $nav->addFilter('submit_idea', '提交想法', '/maniphest/task/create/?projects=PHID-PROJ-jjdydjiyr2275zl7qjvq');
-    $nav->addFilter('submit_idea', '提交用户反馈', '/maniphest/task/create/?projects=PHID-PROJ-sj23435jqi7ugo3sltel');
+    $nav->addFilter('submit_bug', '提交BUG', '/maniphest/task/create/?projects=PHID-PROJ-ng2ucirw6embkz22vruj', false, 'aphront-side-nav-bug');
+    $nav->addFilter('submit_idea', '提交想法', '/maniphest/task/create/?projects=PHID-PROJ-jjdydjiyr2275zl7qjvq', false, 'aphront-side-nav-idea');
+    $nav->addFilter('submit_idea', '提交用户反馈', '/maniphest/task/create/?projects=PHID-PROJ-sj23435jqi7ugo3sltel', false, 'aphront-side-nav-feedback');
     $nav->addSpacer();
-    $nav->addFilter('projects', '项目列表', '/project/filter/allactive/');
-    $nav->addFilter('projects', '我关注的任务', '/maniphest/view/subscribed/');
+    $nav->addFilter('projects', '项目列表', '/project/filter/allactive/', false, 'aphront-side-nav-projects');
+    $nav->addFilter('projects', '我关注的任务', '/maniphest/view/subscribed/', false, 'aphront-side-nav-tasks');
     $nav->addSpacer();
-    $nav->addFilter('blog', '博客列表', '/phame/post/all/');
+    $nav->addFilter('blog', '博客列表', '/phame/post/all/', false, 'aphront-side-nav-blogs');
     $nav->addSpacer();
-    $nav->addFilter('applications', '更多功能');
+    $nav->addFilter('applications', '更多功能', false, 'aphront-side-nav-applications');
 
     return $nav;
   }
