@@ -20,6 +20,7 @@
   background-image: url(http://static.zhihu.com/static/img/sticky_header/header-bg.png);
   position: relative;
   height: 48px;
+  z-index: 6;
 }
 
 .phabricator-main-menu a:hover {
@@ -30,7 +31,6 @@
 .device-desktop .phabricator-main-menu {
   text-align: right;
   width: 100%;
-  z-index: 6;
 }
 
 /* - Main Menu Group -----------------------------------------------------------
