@@ -244,7 +244,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $actions = array();
 
     $action = new AphrontHeadsupActionView();
-    $action->setName('Edit Task');
+    $action->setName(pht('Edit Task'));
     $action->setURI('/maniphest/task/edit/'.$task->getID().'/');
     $action->setClass('action-edit');
     $actions[] = $action;
@@ -265,7 +265,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
       $action = new AphrontHeadsupActionView();
       $action->setClass('phabricator-flag-ghost');
       $action->setURI('/flag/edit/'.$task->getPHID().'/');
-      $action->setName('Flag Task');
+      $action->setName(pht('Flag Task'));
       $action->setWorkflow(true);
       $actions[] = $action;
     }
@@ -274,28 +274,28 @@ final class ManiphestTaskDetailController extends ManiphestController {
     require_celerity_resource('javelin-behavior-phabricator-object-selector');
 
     $action = new AphrontHeadsupActionView();
-    $action->setName('Merge Duplicates');
+    $action->setName(pht('Merge Duplicates'));
     $action->setURI('/search/attach/'.$task->getPHID().'/TASK/merge/');
     $action->setWorkflow(true);
     $action->setClass('action-merge');
     $actions[] = $action;
 
     $action = new AphrontHeadsupActionView();
-    $action->setName('Create Subtask');
+    $action->setName(pht('Create Subtask'));
     $action->setURI('/maniphest/task/create/?parent='.$task->getID());
     $action->setClass('action-branch');
     $actions[] = $action;
 
 
     $action = new AphrontHeadsupActionView();
-    $action->setName('Edit Dependencies');
+    $action->setName(pht('Edit Dependencies'));
     $action->setURI('/search/attach/'.$task->getPHID().'/TASK/dependencies/');
     $action->setWorkflow(true);
     $action->setClass('action-dependencies');
     $actions[] = $action;
 
     $action = new AphrontHeadsupActionView();
-    $action->setName('Edit Differential Revisions');
+    $action->setName(pht('Edit Differential Revisions'));
     $action->setURI('/search/attach/'.$task->getPHID().'/DREV/');
     $action->setWorkflow(true);
     $action->setClass('action-attach');

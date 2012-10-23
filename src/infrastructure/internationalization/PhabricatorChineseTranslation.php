@@ -227,6 +227,13 @@ final class PhabricatorChineseTranslation
       'Depends On' => '子任务',
       'Attached Files' => '附件',
       'Files' => '文件',
+
+      'Edit Task' => '编辑任务',
+      'Flag Task' => '标记任务',
+      'Merge Duplicates' => '合并重复任务',
+      'Create Subtask' => '创建子任务',
+      'Edit Dependencies' => '添加子任务',
+      'Edit Differential Revisions' => '编辑 Differential Revisions',
     );
   }
 
