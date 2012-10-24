@@ -28,7 +28,7 @@
 }
 
 .phabricator-remarkup .remarkup-code-block pre {
-  background: #FBFBFB;
+  background: #FFF;
   border: 1px solid #DDD;
   display: block;
   color: black;
