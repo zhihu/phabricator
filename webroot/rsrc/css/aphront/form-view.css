@@ -51,8 +51,7 @@
 
 .aphront-form-required {
   font-weight: normal;
-  color: #888888;
-  font-size: 11px;
+  color: #999;
 }
 
 .aphront-form-input input,
@@ -69,7 +68,7 @@
 }
 
 .aphront-form-control {
-  padding: 4px;
+  padding: 5px;
 }
 
 .aphront-form-control-submit button,
@@ -186,15 +185,14 @@ table.aphront-form-control-checkbox-layout th {
 }
 
 .drag-and-drop-instructions {
-  color: #333333;
-  font-size: 11px;
-  padding: 6px 8px;
+  color: #555;
+  padding: 15px;
 }
 
 .drag-and-drop-file-target {
-  border: 1px dashed #bfbfbf;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  border: 1px dashed #BBB;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .aphront-textarea-drag-and-drop {

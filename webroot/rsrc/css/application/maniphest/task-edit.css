@@ -5,5 +5,8 @@
 .maniphest-description-preview-header {
   color: #666;
   margin-bottom: 1em;
-  font-size: 11px;
+}
+
+.aphront-panel-preview-full {
+  padding: 2em 8em;
 }

@@ -71,7 +71,7 @@ body.phabricator-chromeless-page {
 }
 
 select, input, button, textarea, button {
-  font: 99% 'lucida grande', tahoma, verdana, arial, clean, sans-serif;
+  font: 13px/1.69 'lucida grande', tahoma, verdana, arial, clean, sans-serif;
 }
 
 select {
@@ -115,15 +115,15 @@ img {
   display: block;
 }
 
-input[type="text"] {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) inset;
-  border-radius: 3px;
+input[type="text"], textarea {
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+  border-radius: 2px;
   background: white;
-  border: 1px solid #CCC;
+  border: 1px solid #BBB;
   padding: 8px;
-  color: #333;
 }
-input[type="text"]:focus {
+input[type="text"]:focus,
+textarea:focus {
   outline: none;
   border: 1px solid #86ACDF;
   box-shadow: 0 0 12px rgba(130, 169, 221, .4);
