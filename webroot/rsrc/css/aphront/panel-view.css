@@ -5,6 +5,11 @@
 
 .aphront-panel-view {
   border-top: 1px solid #EEE;
+  padding: 2em 8em;
+}
+
+/*fall back for homepage*/
+.aphront-side-nav-content .aphront-panel-view {
   padding: 1.2em 2em;
 }
 
@@ -12,9 +17,6 @@
   padding: 0px;
 }
 
-/*.aphront-panel-view .aphront-panel-header {
-  margin: 0;
-}*/
 
 .aphront-panel-view h1 {
   font-size:        14px;
