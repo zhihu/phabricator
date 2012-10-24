@@ -4,7 +4,6 @@
  *           javelin-stratcom
  *           javelin-dom
  *           javelin-mask
- *           javelin-vector
  *           javelin-util
  */
 
@@ -15,7 +14,6 @@ JX.behavior('lightbox-attachments', function (config) {
   var next         = null;
   var x_margin     = 40;
   var y_margin     = 100;
-  var onscroll     = window.onscroll;
   var downloadForm = JX.$H(config.downloadForm);
 
   function loadLightBox(e) {
@@ -82,27 +80,20 @@ JX.behavior('lightbox-attachments', function (config) {
 
     lightbox = JX.$N('div',
                      {
-                       className : 'lightbox-attachment'
+                       className : 'lightbox-attachment',
+                       sigil: 'lightbox-attachment'
                      },
                      img
                     );
     JX.DOM.appendContent(lightbox, name_element);
 
-    var s   = JX.Vector.getScroll();
-    var closeIcon = '';
-    // Don't show the close icon if the beautiful header is
-    // still mostly present. Optimizes for common case of
-    // clicking on an attachment in object detail view without
-    // scrolling.
-    if (s.y >= 22) {
-      closeIcon = JX.$N('a',
+    var closeIcon = JX.$N('a',
                          {
                            className : 'lightbox-close',
                            href : '#'
                          }
                         );
-      JX.DOM.listen(closeIcon, 'click', null, closeLightBox);
-    }
+    JX.DOM.listen(closeIcon, 'click', null, closeLightBox);
     JX.DOM.appendContent(lightbox, closeIcon);
     var leftIcon = '';
     if (next) {
@@ -154,7 +145,12 @@ JX.behavior('lightbox-attachments', function (config) {
                   'click',
                   null,
                   function (e) {
-                    e.prevent(); closeLightBox(e); form.submit();
+                    e.prevent();
+                    form.submit();
+                    // Firefox and probably IE need this trick to work.
+                    // Removing a form from the DOM while its submitting is
+                    // tricky business.
+                    setTimeout(JX.bind(null, closeLightBox, e), 0);
                   }
                  );
     var downloadSpan = JX.$N('span',
@@ -171,7 +167,7 @@ JX.behavior('lightbox-attachments', function (config) {
                           );
     JX.DOM.appendContent(lightbox, statusHTML);
     JX.DOM.alterClass(document.body, 'lightbox-attached', true);
-    JX.Mask.show();
+    JX.Mask.show('jx-dark-mask');
     document.body.appendChild(lightbox);
     img.src = img_uri;
   }
@@ -220,7 +216,6 @@ JX.behavior('lightbox-attachments', function (config) {
     lightbox = null;
     prev     = null;
     next     = null;
-    window.onscroll = onscroll;
   }
 
   function loadAnotherLightBox(el, e) {
@@ -237,43 +232,7 @@ JX.behavior('lightbox-attachments', function (config) {
       return;
     }
     var img = JX.DOM.find(lightbox, 'img');
-    var d   = JX.Vector.getDim(img);
-    var s   = JX.Vector.getScroll();
-    JX.Stratcom.addData(img, { x : d.x, y : d.y } );
-
-    window.onscroll = function() {
-      window.scrollTo(s.x, s.y);
-    };
-
-    return resizeLightBox(e);
-  }
-
-  function resizeLightBox(e) {
-    if (!lightbox) {
-      return;
-    }
-    var img = JX.DOM.find(lightbox, 'img');
-    var v   = JX.Vector.getViewport();
-    var s   = JX.Vector.getScroll();
-    var d   = JX.Stratcom.getData(img);
-
-    var w = d.x;
-    var h = d.y;
-    var scale = 0;
-    if (w > (v.x - x_margin)) {
-      scale = (v.x - x_margin) / w;
-      w = w * scale;
-      h = h * scale;
-    }
-    if (h > (v.y - y_margin)) {
-      scale = (v.y - y_margin) / h;
-      w = w * scale;
-      h = h * scale;
-    }
-
     JX.DOM.alterClass(img, 'loading', false);
-    JX.$V(w, h).setDim(img);
-    JX.Vector.getViewport().setDim(lightbox);
   }
 
   JX.Stratcom.listen(
@@ -283,15 +242,27 @@ JX.behavior('lightbox-attachments', function (config) {
   );
 
   JX.Stratcom.listen(
-    'resize',
-    null,
-    resizeLightBox
-  );
-
-  JX.Stratcom.listen(
     'keydown',
     null,
     lightBoxHandleKeyDown
   );
+
+
+  // When the user clicks the background, close the lightbox.
+  JX.Stratcom.listen(
+    'click',
+    'lightbox-attachment',
+    function (e) {
+      if (!lightbox) {
+        return;
+      }
+      if (e.getTarget() != e.getNode('lightbox-attachment')) {
+        // Don't close if they clicked some other element, like the image
+        // itself or the next/previous arrows.
+        return;
+      }
+      closeLightBox(e);
+      e.kill();
+    });
 
 });
