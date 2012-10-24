@@ -232,7 +232,7 @@ final class PhabricatorChineseTranslation
       'Flag Task' => '标记任务',
       'Merge Duplicates' => '合并重复任务',
       'Create Subtask' => '创建子任务',
-      'Edit Dependencies' => '添加子任务',
+      'Edit Dependencies' => '管理子任务',
       'Edit Differential Revisions' => '编辑 Differential Revisions',
     );
   }
