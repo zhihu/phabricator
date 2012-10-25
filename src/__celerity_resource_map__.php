@@ -709,7 +709,7 @@ celerity_register_resource_map(array(
   ),
   'aphront-form-view-css' =>
   array(
-    'uri' => '/res/f7a224d9/rsrc/css/aphront/form-view.css',
+    'uri' => '/res/94ccb096/rsrc/css/aphront/form-view.css',
     'type' => 'css',
     'requires' =>
     array(
@@ -2045,13 +2045,12 @@ celerity_register_resource_map(array(
   ),
   'javelin-mask' =>
   array(
-    'uri' => '/res/03ef78b8/rsrc/js/javelin/lib/Mask.js',
+    'uri' => '/res/d2a35fff/rsrc/js/javelin/lib/Mask.js',
     'type' => 'js',
     'requires' =>
     array(
       0 => 'javelin-install',
-      1 => 'javelin-vector',
-      2 => 'javelin-dom',
+      1 => 'javelin-dom',
     ),
     'disk' => '/rsrc/js/javelin/lib/Mask.js',
   ),
@@ -2107,7 +2106,7 @@ celerity_register_resource_map(array(
   ),
   'javelin-request' =>
   array(
-    'uri' => '/res/6350e673/rsrc/js/javelin/lib/Request.js',
+    'uri' => '/res/b867a488/rsrc/js/javelin/lib/Request.js',
     'type' => 'js',
     'requires' =>
     array(
@@ -2378,7 +2377,7 @@ celerity_register_resource_map(array(
   ),
   'maniphest-task-edit-css' =>
   array(
-    'uri' => '/res/eb6b3c11/rsrc/css/application/maniphest/task-edit.css',
+    'uri' => '/res/3bb2d0ab/rsrc/css/application/maniphest/task-edit.css',
     'type' => 'css',
     'requires' =>
     array(
@@ -2396,7 +2395,7 @@ celerity_register_resource_map(array(
   ),
   'maniphest-transaction-detail-css' =>
   array(
-    'uri' => '/res/1360831b/rsrc/css/application/maniphest/transaction-detail.css',
+    'uri' => '/res/b007683e/rsrc/css/application/maniphest/transaction-detail.css',
     'type' => 'css',
     'requires' =>
     array(
@@ -3184,7 +3183,7 @@ celerity_register_resource_map(array(
 ), array(
   'packages' =>
   array(
-    'bd4ea285' =>
+    '19a03d7f' =>
     array(
       'name' => 'core.pkg.css',
       'symbols' =>
@@ -3213,10 +3212,10 @@ celerity_register_resource_map(array(
         21 => 'phabricator-flag-css',
         22 => 'aphront-error-view-css',
       ),
-      'uri' => '/res/pkg/bd4ea285/core.pkg.css',
+      'uri' => '/res/pkg/19a03d7f/core.pkg.css',
       'type' => 'css',
     ),
-    '441ebe5f' =>
+    '0d03a66c' =>
     array(
       'name' => 'core.pkg.js',
       'symbols' =>
@@ -3239,7 +3238,7 @@ celerity_register_resource_map(array(
         15 => 'javelin-behavior-phabricator-tooltips',
         16 => 'phabricator-prefab',
       ),
-      'uri' => '/res/pkg/441ebe5f/core.pkg.js',
+      'uri' => '/res/pkg/0d03a66c/core.pkg.js',
       'type' => 'js',
     ),
     'f62d376d' =>
@@ -3314,7 +3313,7 @@ celerity_register_resource_map(array(
       'uri' => '/res/pkg/5e68be89/diffusion.pkg.js',
       'type' => 'js',
     ),
-    '309e5c2e' =>
+    '84a7fd55' =>
     array(
       'name' => 'javelin.pkg.js',
       'symbols' =>
@@ -3330,10 +3329,10 @@ celerity_register_resource_map(array(
         8 => 'javelin-json',
         9 => 'javelin-uri',
       ),
-      'uri' => '/res/pkg/309e5c2e/javelin.pkg.js',
+      'uri' => '/res/pkg/84a7fd55/javelin.pkg.js',
       'type' => 'js',
     ),
-    'cbfa3a70' =>
+    'a285a825' =>
     array(
       'name' => 'maniphest.pkg.css',
       'symbols' =>
@@ -3343,7 +3342,7 @@ celerity_register_resource_map(array(
         2 => 'aphront-attached-file-view-css',
         3 => 'phabricator-project-tag-css',
       ),
-      'uri' => '/res/pkg/cbfa3a70/maniphest.pkg.css',
+      'uri' => '/res/pkg/a285a825/maniphest.pkg.css',
       'type' => 'css',
     ),
     '7707de41' =>
@@ -3379,21 +3378,21 @@ celerity_register_resource_map(array(
   ),
   'reverse' =>
   array(
-    'aphront-attached-file-view-css' => 'cbfa3a70',
-    'aphront-crumbs-view-css' => 'bd4ea285',
-    'aphront-dialog-view-css' => 'bd4ea285',
-    'aphront-error-view-css' => 'bd4ea285',
-    'aphront-form-view-css' => 'bd4ea285',
+    'aphront-attached-file-view-css' => 'a285a825',
+    'aphront-crumbs-view-css' => '19a03d7f',
+    'aphront-dialog-view-css' => '19a03d7f',
+    'aphront-error-view-css' => '19a03d7f',
+    'aphront-form-view-css' => '19a03d7f',
     'aphront-headsup-action-list-view-css' => 'f62d376d',
-    'aphront-headsup-view-css' => 'bd4ea285',
-    'aphront-list-filter-view-css' => 'bd4ea285',
-    'aphront-pager-view-css' => 'bd4ea285',
-    'aphront-panel-view-css' => 'bd4ea285',
-    'aphront-side-nav-view-css' => 'bd4ea285',
-    'aphront-table-view-css' => 'bd4ea285',
-    'aphront-tokenizer-control-css' => 'bd4ea285',
-    'aphront-tooltip-css' => 'bd4ea285',
-    'aphront-typeahead-control-css' => 'bd4ea285',
+    'aphront-headsup-view-css' => '19a03d7f',
+    'aphront-list-filter-view-css' => '19a03d7f',
+    'aphront-pager-view-css' => '19a03d7f',
+    'aphront-panel-view-css' => '19a03d7f',
+    'aphront-side-nav-view-css' => '19a03d7f',
+    'aphront-table-view-css' => '19a03d7f',
+    'aphront-tokenizer-control-css' => '19a03d7f',
+    'aphront-tooltip-css' => '19a03d7f',
+    'aphront-typeahead-control-css' => '19a03d7f',
     'differential-changeset-view-css' => 'f62d376d',
     'differential-core-view-css' => 'f62d376d',
     'differential-inline-comment-editor' => '8136e4a6',
@@ -3408,11 +3407,11 @@ celerity_register_resource_map(array(
     'diffusion-commit-view-css' => 'c8ce2d88',
     'diffusion-icons-css' => 'c8ce2d88',
     'inline-comment-summary-css' => 'f62d376d',
-    'javelin-behavior' => '309e5c2e',
+    'javelin-behavior' => '84a7fd55',
     'javelin-behavior-aphront-basic-tokenizer' => 'dd024ca1',
     'javelin-behavior-aphront-drag-and-drop' => '8136e4a6',
     'javelin-behavior-aphront-drag-and-drop-textarea' => '8136e4a6',
-    'javelin-behavior-aphront-form-disable-on-submit' => '441ebe5f',
+    'javelin-behavior-aphront-form-disable-on-submit' => '0d03a66c',
     'javelin-behavior-audit-preview' => '5e68be89',
     'javelin-behavior-differential-accept-with-errors' => '8136e4a6',
     'javelin-behavior-differential-add-reviewers-and-ccs' => '8136e4a6',
@@ -3431,55 +3430,55 @@ celerity_register_resource_map(array(
     'javelin-behavior-maniphest-transaction-controls' => '7707de41',
     'javelin-behavior-maniphest-transaction-expand' => '7707de41',
     'javelin-behavior-maniphest-transaction-preview' => '7707de41',
-    'javelin-behavior-phabricator-autofocus' => '441ebe5f',
-    'javelin-behavior-phabricator-keyboard-shortcuts' => '441ebe5f',
+    'javelin-behavior-phabricator-autofocus' => '0d03a66c',
+    'javelin-behavior-phabricator-keyboard-shortcuts' => '0d03a66c',
     'javelin-behavior-phabricator-object-selector' => '8136e4a6',
-    'javelin-behavior-phabricator-oncopy' => '441ebe5f',
-    'javelin-behavior-phabricator-tooltips' => '441ebe5f',
-    'javelin-behavior-phabricator-watch-anchor' => '441ebe5f',
-    'javelin-behavior-refresh-csrf' => '441ebe5f',
+    'javelin-behavior-phabricator-oncopy' => '0d03a66c',
+    'javelin-behavior-phabricator-tooltips' => '0d03a66c',
+    'javelin-behavior-phabricator-watch-anchor' => '0d03a66c',
+    'javelin-behavior-refresh-csrf' => '0d03a66c',
     'javelin-behavior-repository-crossreference' => '8136e4a6',
-    'javelin-behavior-workflow' => '441ebe5f',
-    'javelin-dom' => '309e5c2e',
-    'javelin-event' => '309e5c2e',
-    'javelin-install' => '309e5c2e',
-    'javelin-json' => '309e5c2e',
-    'javelin-mask' => '441ebe5f',
-    'javelin-request' => '309e5c2e',
-    'javelin-stratcom' => '309e5c2e',
+    'javelin-behavior-workflow' => '0d03a66c',
+    'javelin-dom' => '84a7fd55',
+    'javelin-event' => '84a7fd55',
+    'javelin-install' => '84a7fd55',
+    'javelin-json' => '84a7fd55',
+    'javelin-mask' => '0d03a66c',
+    'javelin-request' => '84a7fd55',
+    'javelin-stratcom' => '84a7fd55',
     'javelin-tokenizer' => 'dd024ca1',
     'javelin-typeahead' => 'dd024ca1',
     'javelin-typeahead-normalizer' => 'dd024ca1',
     'javelin-typeahead-ondemand-source' => 'dd024ca1',
     'javelin-typeahead-preloaded-source' => 'dd024ca1',
     'javelin-typeahead-source' => 'dd024ca1',
-    'javelin-uri' => '309e5c2e',
-    'javelin-util' => '309e5c2e',
-    'javelin-vector' => '309e5c2e',
-    'javelin-workflow' => '441ebe5f',
-    'maniphest-task-summary-css' => 'cbfa3a70',
-    'maniphest-transaction-detail-css' => 'cbfa3a70',
-    'phabricator-app-buttons-css' => 'bd4ea285',
+    'javelin-uri' => '84a7fd55',
+    'javelin-util' => '84a7fd55',
+    'javelin-vector' => '84a7fd55',
+    'javelin-workflow' => '0d03a66c',
+    'maniphest-task-summary-css' => 'a285a825',
+    'maniphest-transaction-detail-css' => 'a285a825',
+    'phabricator-app-buttons-css' => '19a03d7f',
     'phabricator-content-source-view-css' => 'f62d376d',
-    'phabricator-core-buttons-css' => 'bd4ea285',
-    'phabricator-core-css' => 'bd4ea285',
-    'phabricator-directory-css' => 'bd4ea285',
+    'phabricator-core-buttons-css' => '19a03d7f',
+    'phabricator-core-css' => '19a03d7f',
+    'phabricator-directory-css' => '19a03d7f',
     'phabricator-drag-and-drop-file-upload' => '8136e4a6',
-    'phabricator-dropdown-menu' => '441ebe5f',
-    'phabricator-flag-css' => 'bd4ea285',
-    'phabricator-jump-nav' => 'bd4ea285',
-    'phabricator-keyboard-shortcut' => '441ebe5f',
-    'phabricator-keyboard-shortcut-manager' => '441ebe5f',
-    'phabricator-menu-item' => '441ebe5f',
+    'phabricator-dropdown-menu' => '0d03a66c',
+    'phabricator-flag-css' => '19a03d7f',
+    'phabricator-jump-nav' => '19a03d7f',
+    'phabricator-keyboard-shortcut' => '0d03a66c',
+    'phabricator-keyboard-shortcut-manager' => '0d03a66c',
+    'phabricator-menu-item' => '0d03a66c',
     'phabricator-object-selector-css' => 'f62d376d',
-    'phabricator-paste-file-upload' => '441ebe5f',
-    'phabricator-prefab' => '441ebe5f',
-    'phabricator-project-tag-css' => 'cbfa3a70',
-    'phabricator-remarkup-css' => 'bd4ea285',
+    'phabricator-paste-file-upload' => '0d03a66c',
+    'phabricator-prefab' => '0d03a66c',
+    'phabricator-project-tag-css' => 'a285a825',
+    'phabricator-remarkup-css' => '19a03d7f',
     'phabricator-shaped-request' => '8136e4a6',
-    'phabricator-standard-page-view' => 'bd4ea285',
-    'phabricator-tooltip' => '441ebe5f',
-    'phabricator-transaction-view-css' => 'bd4ea285',
-    'syntax-highlighting-css' => 'bd4ea285',
+    'phabricator-standard-page-view' => '19a03d7f',
+    'phabricator-tooltip' => '0d03a66c',
+    'phabricator-transaction-view-css' => '19a03d7f',
+    'syntax-highlighting-css' => '19a03d7f',
   ),
 ));
