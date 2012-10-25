@@ -258,7 +258,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
       $action = new AphrontHeadsupActionView();
       $action->setClass('flag-clear '.$class);
       $action->setURI('/flag/delete/'.$flag->getID().'/');
-      $action->setName('Remove '.$color.' Flag');
+      $action->setName(pht('Remove %s Flag', $color));
       $action->setWorkflow(true);
       $actions[] = $action;
     } else {

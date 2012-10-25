@@ -66,7 +66,7 @@ abstract class DifferentialMail {
   protected function getActorName() {
     $handle = $this->getActorHandle();
     if ($handle) {
-      return $handle->getName();
+      return $handle->getFullName();
     }
     return '???';
   }

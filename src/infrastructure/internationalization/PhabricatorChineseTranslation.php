@@ -37,15 +37,9 @@ final class PhabricatorChineseTranslation
 
       '%d line(s)' => array('%d line', '%d lines'),
 
-      'added %d commit(s): %s' => array(
-        'added commit: %2$s',
-        'added commits: %2$s',
-      ),
+      'added %d commit(s): %s' => '添加了commit：%2$s',
 
-      'removed %d commit(s): %s' => array(
-        'removed commit: %2$s',
-        'removed commits: %2$s',
-      ),
+      'removed %d commit(s): %s' => '移除了commit： %2$s',
 
       'changed %d commit(s), added %d: %s; removed %d: %s' =>
         'changed commits, added: %3$s; removed: %5$s',
@@ -55,10 +49,7 @@ final class PhabricatorChineseTranslation
         'ATTACHED COMMITS',
       ),
 
-      'added %d dependencie(s): %s' => array(
-        'added dependency: %2$s',
-        'added dependencies: %2$s',
-      ),
+      'added %d dependencie(s): %s' => '添加了子任务： %2$s',
 
       'added %d dependent task(s): %s' => array(
         'added dependent task: %2$s',
@@ -81,30 +72,18 @@ final class PhabricatorChineseTranslation
       'changed %d dependent task(s), added %d: %s; removed %d: %s',
         'changed dependent tasks, added: %3$s; removed: %5$s',
 
-      'DEPENDENT %d TASK(s)' => array(
-        'DEPENDENT TASK',
-        'DEPENDENT TASKS',
-      ),
+      'DEPENDENT %d TASK(s)' => '父任务',
 
-      'DEPENDS ON %d TASK(S)' => array(
-        'DEPENDS ON TASK',
-        'DEPENDS ON TASKS',
-      ),
+      'DEPENDS ON %d TASK(S)' => '子任务',
 
       'DIFFERENTIAL %d REVISION(S)' => array(
         'DIFFERENTIAL REVISION',
         'DIFFERENTIAL REVISIONS',
       ),
 
-      'added %d revision(s): %s' => array(
-        'added revision: %2$s',
-        'added revisions: %2$s',
-      ),
+      'added %d revision(s): %s' => '添加了revision： %2$s',
 
-      'removed %d revision(s): %s' => array(
-        'removed revision: %2$s',
-        'removed revisions: %2$s',
-      ),
+      'removed %d revision(s): %s' => '移除了revision： %2$s',
 
       'changed %d revision(s), added %d: %s; removed %d: %s' =>
         'changed revisions, added %3$s; removed %5$s',
@@ -149,10 +128,7 @@ final class PhabricatorChineseTranslation
         '%d Unbreak Now Tasks!',
       ),
 
-      '%d Assigned Task(s)' => array(
-        '%d 指派给我的任务',
-        '%d 指派给我的任务',
-      ),
+      '%d Assigned Task(s)' => '%d 个我负责的任务',
 
       'AM' => '上午',
       'PM' => '下午',
@@ -202,7 +178,7 @@ final class PhabricatorChineseTranslation
       'Closed' => '已关闭',
       'closed this task as "%s"' => '关闭了这个任务：%s',
       'assigned this task to %s' => '把这个任务分配给了：%s',
-      'added %d dependent task(s): %s' => '添加了%d个依赖于它的任务：%s',
+      'added %d dependent task(s): %s' => '添加了父任务：%2$s',
       'lowered the priority of this task from "%s" to "%s"' => '把优先级从%s降低为了%s',
       'placed this task up for grabs' => '把这个任务抛了出来求认领',
       'added projects: %s' => '把任务添加进了项目：%s',
@@ -234,6 +210,10 @@ final class PhabricatorChineseTranslation
       'Create Subtask' => '创建子任务',
       'Edit Dependencies' => '管理子任务',
       'Edit Differential Revisions' => '编辑 Differential Revisions',
+
+      '%s requested code review of "%s".' => '%s发起了一个riview请求："%s"',
+      '%s updated the revision "%s".' => '%s更新了revision："%s"',
+      'Remove %s Flag' => '移除标记(%s)',
     );
   }
 

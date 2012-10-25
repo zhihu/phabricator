@@ -191,7 +191,7 @@ final class DifferentialReviewersFieldSpecification
     $handles = array_select_keys(
       $handles,
       array($this->getRevision()->getPrimaryReviewer())) + $handles;
-    $names = mpull($handles, 'getName');
+    $names = mpull($handles, 'geFulltName');
     return 'Reviewers: '.implode(', ', $names);
   }
 

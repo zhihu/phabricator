@@ -40,9 +40,9 @@ final class DifferentialNewDiffMail extends DifferentialReviewRequestMail {
     $body = array();
 
     if ($this->isFirstMailToRecipients()) {
-      $body[] = "{$actor} requested code review of \"{$name}\".";
+      $body[] = pht('%s requested code review of "%s".', $actor, $name);
     } else {
-      $body[] = "{$actor} updated the revision \"{$name}\".";
+      $body[] = pht('%s updated the revision "%s".', $actor, $name);
     }
     $body[] = null;
 
