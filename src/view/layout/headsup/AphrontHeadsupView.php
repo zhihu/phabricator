@@ -103,8 +103,10 @@ final class AphrontHeadsupView extends AphrontView {
 
     return
       '<div class="aphront-headsup-panel">'.
-        self::renderSingleView($this->actionList).
+        '<div class="right-ct">'.
         $shortcuts.
+        self::renderSingleView($this->actionList).
+        '</div>'.
         '<div class="aphront-headsup-core">'.
           $header.
           $prop_table.

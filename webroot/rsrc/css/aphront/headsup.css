@@ -3,13 +3,13 @@
  */
 
 .aphront-headsup-core {
-  margin-right: 332px;
+  /*margin-right: 332px;*/
   /*overflow: hidden;*/
 }
 
 .aphront-headsup-panel {
   background: #F8F8F8;
-  padding: 2em 8em;
+  padding: 2em 1em;
   box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 }
 
@@ -21,7 +21,8 @@
 .aphront-headsup-property-table {
   width: auto;
   margin-top: 10px;
-  white-space: nowrap;
+  min-width: 400px;
+  /*white-space: nowrap;*/
 }
 
 .aphront-headsup-property-table th {
@@ -48,5 +49,10 @@
 
 .aphront-headsup-keyboard-shortcuts {
   float: right;
-  margin-right: 20px;
+  margin-top: 4px;
 }
+
+.right-ct{
+  width: 250px;
+  float: right;
+} 
