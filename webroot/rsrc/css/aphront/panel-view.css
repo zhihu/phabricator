@@ -5,7 +5,7 @@
 
 .aphront-panel-view {
   border-top: 1px solid #EEE;
-  padding: 2em 8em;
+  padding: 2em 4em;
 }
 
 /*fall back for homepage*/
@@ -55,7 +55,7 @@
 }
 
 .aphront-panel-accent {
-  padding: 0 8em;
+  padding: 0 4em;
 }
 
 .aphront-panel-accent .aphront-form-view {
