@@ -115,17 +115,17 @@ img {
   display: block;
 }
 
-input[type="text"], textarea {
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
-  border-radius: 2px;
-  background: white;
-  border: 1px solid #BBB;
-  padding: 8px;
-}
-input[type="text"]:focus,
-textarea:focus {
-  outline: none;
-  border: 1px solid #86ACDF;
-  box-shadow: 0 0 12px rgba(130, 169, 221, .4);
-}
+.busy {
+  position: fixed;
+  bottom: 8px;
+  right: 8px;
 
+  background: #ffffff url(/rsrc/image/loading.gif) center no-repeat;
+  width: 64px;
+  height: 64px;
+  opacity: 0.5;
+  z-index: 40;
+
+  border: 1px solid #444444;
+  border-radius: 8px;
+}
