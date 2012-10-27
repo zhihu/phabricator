@@ -161,7 +161,7 @@ final class PhabricatorPeopleProfileController
     return $this->buildApplicationPage(
       $header,
       array(
-        'title' => $user->getUsername(),
+        'title' => $user->getFullName(),
       ));
   }
 
