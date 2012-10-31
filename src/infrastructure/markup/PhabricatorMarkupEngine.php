@@ -441,7 +441,7 @@ final class PhabricatorMarkupEngine {
 
     $rules[] = new PhabricatorRemarkupRuleMention();
 
-    $rules[] = new PhutilRemarkupRuleEmoji();
+    $rules[] = new PhabricatorRemarkupRuleEmoji();
     $rules[] = new PhutilRemarkupRuleEscapeHTML();
     $rules[] = new PhutilRemarkupRuleBold();
     $rules[] = new PhutilRemarkupRuleItalic();

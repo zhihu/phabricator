@@ -1255,6 +1255,7 @@ phutil_register_library_map(array(
   'function' =>
   array(
     'GetPinyin' => 'infrastructure/util/Pinyin.php',
+    'MBStringToJsonArray' => 'infrastructure/util/Pinyin.php',
     '_phabricator_date_format' => 'view/viewutils.php',
     'celerity_generate_unique_node_id' => 'infrastructure/celerity/api.php',
     'celerity_get_resource_uri' => 'infrastructure/celerity/api.php',
