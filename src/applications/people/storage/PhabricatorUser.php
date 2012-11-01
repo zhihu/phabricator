@@ -536,18 +536,19 @@ final class PhabricatorUser extends PhabricatorUserDAO implements PhutilPerson {
 
     $uri = $this->getEmailLoginURI();
     $body = <<<EOBODY
-Welcome to Phabricator!
+欢迎使用Phabricator!
 
-{$admin_username} ({$admin_realname}) has created an account for you.
+{$admin_username} ({$admin_realname}) 为你建了一个账号。
 
-  Username: {$user_username}
+  用户名: {$user_username}
 
-To login to Phabricator, follow this link and set a password:
+点击下面的连接设置密码。
 
   {$uri}
 
-After you have set a password, you can login in the future by going here:
+如果不是在知乎办公室访问Phabricator，需要经过一个验证，用户名：ph，密码：haidaochuan
 
+点击前往Phabricator
   {$base_uri}
 
 EOBODY;
