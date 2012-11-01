@@ -138,13 +138,13 @@ final class ManiphestTransactionDetailView extends ManiphestView {
     $descs = implode("\n", $descs);
 
     if ($comments) {
-      $descs = $comments."\n\n".$descs;
+      $descs = $comments."\n\n====\n\n".$descs;
     }
 
     foreach ($this->transactions as $transaction) {
       $supplemental = $this->renderSupplementalInfoForEmail($transaction);
       if ($supplemental) {
-        $descs .= "\n\n".$supplemental;
+        $descs .= "\n".$supplemental;
       }
     }
 
