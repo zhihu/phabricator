@@ -77,7 +77,7 @@ final class PhabricatorEmailLoginController
           $uri = $target_user->getEmailLoginURI($target_email);
           if ($is_serious) {
             $body = <<<EOBODY
-You can use this link to reset your Phabricator password:
+点击以下连接重置Phabricator密码：
 
   {$uri}
 
