@@ -51,8 +51,8 @@ celerity_register_resource_map(array(
   ),
   '/rsrc/image/autosprite.png' =>
   array(
-    'hash' => '3b629161ca61ba77683afa327c3b826c',
-    'uri' => '/res/3b629161/rsrc/image/autosprite.png',
+    'hash' => 'bc9479b2a610a3ecee18dc88744c4ce6',
+    'uri' => '/res/bc9479b2/rsrc/image/autosprite.png',
     'disk' => '/rsrc/image/autosprite.png',
     'type' => 'png',
   ),
@@ -166,6 +166,11927 @@ celerity_register_resource_map(array(
     'hash' => '3be267bd11ea375bf68e808893718e0e',
     'uri' => '/res/3be267bd/rsrc/image/divot.png',
     'disk' => '/rsrc/image/divot.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/+1.png' =>
+  array(
+    'hash' => '7284f78bbc59c27161f2042d91097411',
+    'uri' => '/res/7284f78b/rsrc/image/emoji/+1.png',
+    'disk' => '/rsrc/image/emoji/+1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/-1.png' =>
+  array(
+    'hash' => 'f1d1af4873bcb0d4b57ef9ff76ba8905',
+    'uri' => '/res/f1d1af48/rsrc/image/emoji/-1.png',
+    'disk' => '/rsrc/image/emoji/-1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/100.png' =>
+  array(
+    'hash' => 'cb4c4320bb9058fe4da838bf3a0f3507',
+    'uri' => '/res/cb4c4320/rsrc/image/emoji/100.png',
+    'disk' => '/rsrc/image/emoji/100.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/109.png' =>
+  array(
+    'hash' => '8c432dea77070b79514e2e6c86bbd93e',
+    'uri' => '/res/8c432dea/rsrc/image/emoji/109.png',
+    'disk' => '/rsrc/image/emoji/109.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/1234.png' =>
+  array(
+    'hash' => '9a2626bcda750011b577f1fdb4a81816',
+    'uri' => '/res/9a2626bc/rsrc/image/emoji/1234.png',
+    'disk' => '/rsrc/image/emoji/1234.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/8ball.png' =>
+  array(
+    'hash' => '67586844835027f2052eb035064d3917',
+    'uri' => '/res/67586844/rsrc/image/emoji/8ball.png',
+    'disk' => '/rsrc/image/emoji/8ball.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/a.png' =>
+  array(
+    'hash' => '2815b0e2a64dc9852af5021559358945',
+    'uri' => '/res/2815b0e2/rsrc/image/emoji/a.png',
+    'disk' => '/rsrc/image/emoji/a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ab.png' =>
+  array(
+    'hash' => 'f5bc524801026054a2b8e51a978a7772',
+    'uri' => '/res/f5bc5248/rsrc/image/emoji/ab.png',
+    'disk' => '/rsrc/image/emoji/ab.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/abc.png' =>
+  array(
+    'hash' => '2cba998bad4b921f6a9929bed39465bf',
+    'uri' => '/res/2cba998b/rsrc/image/emoji/abc.png',
+    'disk' => '/rsrc/image/emoji/abc.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/abcd.png' =>
+  array(
+    'hash' => '7af58818ad925da1ac48648d3de11b2d',
+    'uri' => '/res/7af58818/rsrc/image/emoji/abcd.png',
+    'disk' => '/rsrc/image/emoji/abcd.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/accept.png' =>
+  array(
+    'hash' => '2c91c5b6d36aa9916831a6c330264167',
+    'uri' => '/res/2c91c5b6/rsrc/image/emoji/accept.png',
+    'disk' => '/rsrc/image/emoji/accept.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/aerial_tramway.png' =>
+  array(
+    'hash' => 'b5f8a5f4a7b38c7927c2c76f95ee1466',
+    'uri' => '/res/b5f8a5f4/rsrc/image/emoji/aerial_tramway.png',
+    'disk' => '/rsrc/image/emoji/aerial_tramway.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/airplane.png' =>
+  array(
+    'hash' => 'd4ee33a4e03913b27abca7bbee604215',
+    'uri' => '/res/d4ee33a4/rsrc/image/emoji/airplane.png',
+    'disk' => '/rsrc/image/emoji/airplane.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/alarm_clock.png' =>
+  array(
+    'hash' => 'bb454019248f6754f0afbe0d38ad6c98',
+    'uri' => '/res/bb454019/rsrc/image/emoji/alarm_clock.png',
+    'disk' => '/rsrc/image/emoji/alarm_clock.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/alien.png' =>
+  array(
+    'hash' => 'a5382e7024728c8764cf422706db401c',
+    'uri' => '/res/a5382e70/rsrc/image/emoji/alien.png',
+    'disk' => '/rsrc/image/emoji/alien.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ambulance.png' =>
+  array(
+    'hash' => 'ac1f93e651856dfd199e9d5bb3898fec',
+    'uri' => '/res/ac1f93e6/rsrc/image/emoji/ambulance.png',
+    'disk' => '/rsrc/image/emoji/ambulance.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/anchor.png' =>
+  array(
+    'hash' => '519a553b1e388470215d45f468e62bc8',
+    'uri' => '/res/519a553b/rsrc/image/emoji/anchor.png',
+    'disk' => '/rsrc/image/emoji/anchor.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/angel.png' =>
+  array(
+    'hash' => 'b03872dde85f4b6d8f980171246e1e2b',
+    'uri' => '/res/b03872dd/rsrc/image/emoji/angel.png',
+    'disk' => '/rsrc/image/emoji/angel.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/anger.png' =>
+  array(
+    'hash' => 'c9cc72edd193301fdee71009bab2ff2e',
+    'uri' => '/res/c9cc72ed/rsrc/image/emoji/anger.png',
+    'disk' => '/rsrc/image/emoji/anger.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/angry.png' =>
+  array(
+    'hash' => 'e4e780671ec6fe5cdce5a83d3345a2f8',
+    'uri' => '/res/e4e78067/rsrc/image/emoji/angry.png',
+    'disk' => '/rsrc/image/emoji/angry.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/anguished.png' =>
+  array(
+    'hash' => '9617f25ec49c0d4b065bfbcf2afda0ae',
+    'uri' => '/res/9617f25e/rsrc/image/emoji/anguished.png',
+    'disk' => '/rsrc/image/emoji/anguished.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ant.png' =>
+  array(
+    'hash' => '99dd6ca2973e5e4e0b0c80327ebe8fc2',
+    'uri' => '/res/99dd6ca2/rsrc/image/emoji/ant.png',
+    'disk' => '/rsrc/image/emoji/ant.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/apple.png' =>
+  array(
+    'hash' => '91d1eb66704ba2bbeb0df4999de0b002',
+    'uri' => '/res/91d1eb66/rsrc/image/emoji/apple.png',
+    'disk' => '/rsrc/image/emoji/apple.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/aquarius.png' =>
+  array(
+    'hash' => '3b2658b7fd9b416fd4a66b07f98a0acd',
+    'uri' => '/res/3b2658b7/rsrc/image/emoji/aquarius.png',
+    'disk' => '/rsrc/image/emoji/aquarius.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/aries.png' =>
+  array(
+    'hash' => '8889fc954569aa7b4d2c7a62cec564d0',
+    'uri' => '/res/8889fc95/rsrc/image/emoji/aries.png',
+    'disk' => '/rsrc/image/emoji/aries.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_backward.png' =>
+  array(
+    'hash' => '9c39c57a08b1b795a229cbe312f73b00',
+    'uri' => '/res/9c39c57a/rsrc/image/emoji/arrow_backward.png',
+    'disk' => '/rsrc/image/emoji/arrow_backward.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_double_down.png' =>
+  array(
+    'hash' => '94cef4140b0913dd8607bcbe3e7f90b1',
+    'uri' => '/res/94cef414/rsrc/image/emoji/arrow_double_down.png',
+    'disk' => '/rsrc/image/emoji/arrow_double_down.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_double_up.png' =>
+  array(
+    'hash' => '4d829c282bfa76ed9b65d42641dd87cb',
+    'uri' => '/res/4d829c28/rsrc/image/emoji/arrow_double_up.png',
+    'disk' => '/rsrc/image/emoji/arrow_double_up.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_down.png' =>
+  array(
+    'hash' => 'b96151643745243d8807cf05da738610',
+    'uri' => '/res/b9615164/rsrc/image/emoji/arrow_down.png',
+    'disk' => '/rsrc/image/emoji/arrow_down.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_down_small.png' =>
+  array(
+    'hash' => '5e068b3b2b971e2f5a4e06593356973e',
+    'uri' => '/res/5e068b3b/rsrc/image/emoji/arrow_down_small.png',
+    'disk' => '/rsrc/image/emoji/arrow_down_small.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_forward.png' =>
+  array(
+    'hash' => '70ba16fefc4b8311a181d2c587e43276',
+    'uri' => '/res/70ba16fe/rsrc/image/emoji/arrow_forward.png',
+    'disk' => '/rsrc/image/emoji/arrow_forward.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_heading_down.png' =>
+  array(
+    'hash' => '623b2ce98adaf3fcaf0a3da5e9bb9b54',
+    'uri' => '/res/623b2ce9/rsrc/image/emoji/arrow_heading_down.png',
+    'disk' => '/rsrc/image/emoji/arrow_heading_down.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_heading_up.png' =>
+  array(
+    'hash' => '187f2440da1e0405eacb93d49e0f20cb',
+    'uri' => '/res/187f2440/rsrc/image/emoji/arrow_heading_up.png',
+    'disk' => '/rsrc/image/emoji/arrow_heading_up.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_left.png' =>
+  array(
+    'hash' => 'da2a77f6f2f7cc4195676f76559a893c',
+    'uri' => '/res/da2a77f6/rsrc/image/emoji/arrow_left.png',
+    'disk' => '/rsrc/image/emoji/arrow_left.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_lower_left.png' =>
+  array(
+    'hash' => '1fbd9d98082cad633f134b2fb32b7d30',
+    'uri' => '/res/1fbd9d98/rsrc/image/emoji/arrow_lower_left.png',
+    'disk' => '/rsrc/image/emoji/arrow_lower_left.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_lower_right.png' =>
+  array(
+    'hash' => 'e1c7655706a61ad2c5933d4d20e97c21',
+    'uri' => '/res/e1c76557/rsrc/image/emoji/arrow_lower_right.png',
+    'disk' => '/rsrc/image/emoji/arrow_lower_right.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_right.png' =>
+  array(
+    'hash' => 'a6b0c1ef9533d94e9341f5d95a914e62',
+    'uri' => '/res/a6b0c1ef/rsrc/image/emoji/arrow_right.png',
+    'disk' => '/rsrc/image/emoji/arrow_right.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_right_hook.png' =>
+  array(
+    'hash' => '279e409a2a7a4374b99aa66123bdfaab',
+    'uri' => '/res/279e409a/rsrc/image/emoji/arrow_right_hook.png',
+    'disk' => '/rsrc/image/emoji/arrow_right_hook.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_up.png' =>
+  array(
+    'hash' => 'd37be3fa5c204e2b84da0b77e1622ecd',
+    'uri' => '/res/d37be3fa/rsrc/image/emoji/arrow_up.png',
+    'disk' => '/rsrc/image/emoji/arrow_up.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_up_down.png' =>
+  array(
+    'hash' => '7553d65cba736dcff9d25b75fb3f1568',
+    'uri' => '/res/7553d65c/rsrc/image/emoji/arrow_up_down.png',
+    'disk' => '/rsrc/image/emoji/arrow_up_down.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_up_small.png' =>
+  array(
+    'hash' => '78bcf24086de1b9700f35aadbedac3d9',
+    'uri' => '/res/78bcf240/rsrc/image/emoji/arrow_up_small.png',
+    'disk' => '/rsrc/image/emoji/arrow_up_small.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_upper_left.png' =>
+  array(
+    'hash' => '375e13035dc3fa1fd6c7957bf0ba035e',
+    'uri' => '/res/375e1303/rsrc/image/emoji/arrow_upper_left.png',
+    'disk' => '/rsrc/image/emoji/arrow_upper_left.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrow_upper_right.png' =>
+  array(
+    'hash' => '3c708730795e8ee3904bbc1ff81b1494',
+    'uri' => '/res/3c708730/rsrc/image/emoji/arrow_upper_right.png',
+    'disk' => '/rsrc/image/emoji/arrow_upper_right.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrows_clockwise.png' =>
+  array(
+    'hash' => 'f184f9c033ce44174c62ab810d72f097',
+    'uri' => '/res/f184f9c0/rsrc/image/emoji/arrows_clockwise.png',
+    'disk' => '/rsrc/image/emoji/arrows_clockwise.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/arrows_counterclockwise.png' =>
+  array(
+    'hash' => '253229059cae2af06c5e8879749d789d',
+    'uri' => '/res/25322905/rsrc/image/emoji/arrows_counterclockwise.png',
+    'disk' => '/rsrc/image/emoji/arrows_counterclockwise.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/art.png' =>
+  array(
+    'hash' => 'eeaa13096fc89396f5639c5809bafcf6',
+    'uri' => '/res/eeaa1309/rsrc/image/emoji/art.png',
+    'disk' => '/rsrc/image/emoji/art.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/articulated_lorry.png' =>
+  array(
+    'hash' => '2a19ba54b129c381ddd1ca7eba681cae',
+    'uri' => '/res/2a19ba54/rsrc/image/emoji/articulated_lorry.png',
+    'disk' => '/rsrc/image/emoji/articulated_lorry.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/astonished.png' =>
+  array(
+    'hash' => '6c91c9430729413ea1c20baaf026a38d',
+    'uri' => '/res/6c91c943/rsrc/image/emoji/astonished.png',
+    'disk' => '/rsrc/image/emoji/astonished.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/atm.png' =>
+  array(
+    'hash' => 'd001b5f63b60f2b70b6f87e41c3bcc0e',
+    'uri' => '/res/d001b5f6/rsrc/image/emoji/atm.png',
+    'disk' => '/rsrc/image/emoji/atm.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/b.png' =>
+  array(
+    'hash' => 'ce0665c6c1d430dfe346cb05a5cbca22',
+    'uri' => '/res/ce0665c6/rsrc/image/emoji/b.png',
+    'disk' => '/rsrc/image/emoji/b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/baby.png' =>
+  array(
+    'hash' => '2337975169cd96415f3e9c40b7bd7ec3',
+    'uri' => '/res/23379751/rsrc/image/emoji/baby.png',
+    'disk' => '/rsrc/image/emoji/baby.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/baby_bottle.png' =>
+  array(
+    'hash' => 'aae56bc66bf26f8dcf22e0018349c8d0',
+    'uri' => '/res/aae56bc6/rsrc/image/emoji/baby_bottle.png',
+    'disk' => '/rsrc/image/emoji/baby_bottle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/baby_chick.png' =>
+  array(
+    'hash' => 'c9a3626d20231c052b272800d597d942',
+    'uri' => '/res/c9a3626d/rsrc/image/emoji/baby_chick.png',
+    'disk' => '/rsrc/image/emoji/baby_chick.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/baby_symbol.png' =>
+  array(
+    'hash' => '64532167c4c0c324ce2286103a21477b',
+    'uri' => '/res/64532167/rsrc/image/emoji/baby_symbol.png',
+    'disk' => '/rsrc/image/emoji/baby_symbol.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/baggage_claim.png' =>
+  array(
+    'hash' => 'f7666682192b85cb4c30ce9ea7f7d86e',
+    'uri' => '/res/f7666682/rsrc/image/emoji/baggage_claim.png',
+    'disk' => '/rsrc/image/emoji/baggage_claim.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/balloon.png' =>
+  array(
+    'hash' => '533b6f5689056454c16aedaf72511bbd',
+    'uri' => '/res/533b6f56/rsrc/image/emoji/balloon.png',
+    'disk' => '/rsrc/image/emoji/balloon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ballot_box_with_check.png' =>
+  array(
+    'hash' => '70697a5b634b38a36a20c1324cb24a90',
+    'uri' => '/res/70697a5b/rsrc/image/emoji/ballot_box_with_check.png',
+    'disk' => '/rsrc/image/emoji/ballot_box_with_check.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bamboo.png' =>
+  array(
+    'hash' => '0395e13882fa6925f96ca5febe8fde82',
+    'uri' => '/res/0395e138/rsrc/image/emoji/bamboo.png',
+    'disk' => '/rsrc/image/emoji/bamboo.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/banana.png' =>
+  array(
+    'hash' => '844f25bc9aa34f88165fac242cc103dc',
+    'uri' => '/res/844f25bc/rsrc/image/emoji/banana.png',
+    'disk' => '/rsrc/image/emoji/banana.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bangbang.png' =>
+  array(
+    'hash' => 'e7f49e7563fc3a522075f1dd66e6c44d',
+    'uri' => '/res/e7f49e75/rsrc/image/emoji/bangbang.png',
+    'disk' => '/rsrc/image/emoji/bangbang.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bank.png' =>
+  array(
+    'hash' => '4541560a9c3619f3501c9940fc74cc84',
+    'uri' => '/res/4541560a/rsrc/image/emoji/bank.png',
+    'disk' => '/rsrc/image/emoji/bank.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bar_chart.png' =>
+  array(
+    'hash' => '075c3124ff786cde16e065b0178c6aba',
+    'uri' => '/res/075c3124/rsrc/image/emoji/bar_chart.png',
+    'disk' => '/rsrc/image/emoji/bar_chart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/barber.png' =>
+  array(
+    'hash' => '8c5bbb967fc9439f293872d02c3a7427',
+    'uri' => '/res/8c5bbb96/rsrc/image/emoji/barber.png',
+    'disk' => '/rsrc/image/emoji/barber.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/baseball.png' =>
+  array(
+    'hash' => '7c72847e1524ba640ad59771a371d072',
+    'uri' => '/res/7c72847e/rsrc/image/emoji/baseball.png',
+    'disk' => '/rsrc/image/emoji/baseball.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/basketball.png' =>
+  array(
+    'hash' => 'b582947d178695392243ed4f6635f721',
+    'uri' => '/res/b582947d/rsrc/image/emoji/basketball.png',
+    'disk' => '/rsrc/image/emoji/basketball.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bath.png' =>
+  array(
+    'hash' => '79fe54a58d197a917e443551e7b9df45',
+    'uri' => '/res/79fe54a5/rsrc/image/emoji/bath.png',
+    'disk' => '/rsrc/image/emoji/bath.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bathtub.png' =>
+  array(
+    'hash' => '8f1a4b3bb7035e240201007fbc9d5816',
+    'uri' => '/res/8f1a4b3b/rsrc/image/emoji/bathtub.png',
+    'disk' => '/rsrc/image/emoji/bathtub.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/battery.png' =>
+  array(
+    'hash' => '7336f27ef56ba20e6f7479bce99ae363',
+    'uri' => '/res/7336f27e/rsrc/image/emoji/battery.png',
+    'disk' => '/rsrc/image/emoji/battery.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bear.png' =>
+  array(
+    'hash' => 'ac4d6b0e6eeec54486387df76b894885',
+    'uri' => '/res/ac4d6b0e/rsrc/image/emoji/bear.png',
+    'disk' => '/rsrc/image/emoji/bear.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bee.png' =>
+  array(
+    'hash' => '0b193212bffd2dac9c1b27fb747ecd67',
+    'uri' => '/res/0b193212/rsrc/image/emoji/bee.png',
+    'disk' => '/rsrc/image/emoji/bee.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/beer.png' =>
+  array(
+    'hash' => '3623334eed942da7a33edfd9c2e37e00',
+    'uri' => '/res/3623334e/rsrc/image/emoji/beer.png',
+    'disk' => '/rsrc/image/emoji/beer.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/beers.png' =>
+  array(
+    'hash' => 'fc8665661b98651d67a84883e5aa537d',
+    'uri' => '/res/fc866566/rsrc/image/emoji/beers.png',
+    'disk' => '/rsrc/image/emoji/beers.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/beetle.png' =>
+  array(
+    'hash' => '6a417539693ced1413e4213032af2abe',
+    'uri' => '/res/6a417539/rsrc/image/emoji/beetle.png',
+    'disk' => '/rsrc/image/emoji/beetle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/beginner.png' =>
+  array(
+    'hash' => '654d1a2abb310136039e0aecf76bc605',
+    'uri' => '/res/654d1a2a/rsrc/image/emoji/beginner.png',
+    'disk' => '/rsrc/image/emoji/beginner.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bell.png' =>
+  array(
+    'hash' => '192d076b5e84a51687df3abf58652b3b',
+    'uri' => '/res/192d076b/rsrc/image/emoji/bell.png',
+    'disk' => '/rsrc/image/emoji/bell.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bento.png' =>
+  array(
+    'hash' => 'ae57ce4783b7aba5a099a062b7084131',
+    'uri' => '/res/ae57ce47/rsrc/image/emoji/bento.png',
+    'disk' => '/rsrc/image/emoji/bento.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bicyclist.png' =>
+  array(
+    'hash' => '21c0a3ce251539b071c4e0071cbc2de8',
+    'uri' => '/res/21c0a3ce/rsrc/image/emoji/bicyclist.png',
+    'disk' => '/rsrc/image/emoji/bicyclist.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bike.png' =>
+  array(
+    'hash' => '9dc8c84da28785962d5f387e30cc3f7e',
+    'uri' => '/res/9dc8c84d/rsrc/image/emoji/bike.png',
+    'disk' => '/rsrc/image/emoji/bike.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bikini.png' =>
+  array(
+    'hash' => '9893541b9d9a00995d9a4a94269c0c8a',
+    'uri' => '/res/9893541b/rsrc/image/emoji/bikini.png',
+    'disk' => '/rsrc/image/emoji/bikini.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bird.png' =>
+  array(
+    'hash' => '2f8913750bb2b99cec94ada264d71089',
+    'uri' => '/res/2f891375/rsrc/image/emoji/bird.png',
+    'disk' => '/rsrc/image/emoji/bird.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/birthday.png' =>
+  array(
+    'hash' => '4e0672342c7c19ba51b3b01db7ddc584',
+    'uri' => '/res/4e067234/rsrc/image/emoji/birthday.png',
+    'disk' => '/rsrc/image/emoji/birthday.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/black_circle.png' =>
+  array(
+    'hash' => 'bd1116daf4a1b9ea69f990156a07eec3',
+    'uri' => '/res/bd1116da/rsrc/image/emoji/black_circle.png',
+    'disk' => '/rsrc/image/emoji/black_circle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/black_joker.png' =>
+  array(
+    'hash' => '4abcd7ba1e1a8949ab6e331b19c79990',
+    'uri' => '/res/4abcd7ba/rsrc/image/emoji/black_joker.png',
+    'disk' => '/rsrc/image/emoji/black_joker.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/black_nib.png' =>
+  array(
+    'hash' => '92363cfecb04a5c0283372f80a883ffd',
+    'uri' => '/res/92363cfe/rsrc/image/emoji/black_nib.png',
+    'disk' => '/rsrc/image/emoji/black_nib.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/black_square.png' =>
+  array(
+    'hash' => '3b0807d45c4c268dd92a2dc08849b4a3',
+    'uri' => '/res/3b0807d4/rsrc/image/emoji/black_square.png',
+    'disk' => '/rsrc/image/emoji/black_square.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/black_square_button.png' =>
+  array(
+    'hash' => '443d0a93d083632cf3caad22c6ddf9ce',
+    'uri' => '/res/443d0a93/rsrc/image/emoji/black_square_button.png',
+    'disk' => '/rsrc/image/emoji/black_square_button.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/blossom.png' =>
+  array(
+    'hash' => '74b8c7039d8179f9bfc0eaecd3945fa0',
+    'uri' => '/res/74b8c703/rsrc/image/emoji/blossom.png',
+    'disk' => '/rsrc/image/emoji/blossom.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/blowfish.png' =>
+  array(
+    'hash' => 'b113df1a06419621feecfd89c31769cc',
+    'uri' => '/res/b113df1a/rsrc/image/emoji/blowfish.png',
+    'disk' => '/rsrc/image/emoji/blowfish.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/blue_book.png' =>
+  array(
+    'hash' => 'be314f000a990a9a9aba84ccfd433d38',
+    'uri' => '/res/be314f00/rsrc/image/emoji/blue_book.png',
+    'disk' => '/rsrc/image/emoji/blue_book.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/blue_car.png' =>
+  array(
+    'hash' => 'bb70418b5489547bb0482d8583407ca0',
+    'uri' => '/res/bb70418b/rsrc/image/emoji/blue_car.png',
+    'disk' => '/rsrc/image/emoji/blue_car.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/blue_heart.png' =>
+  array(
+    'hash' => '1b6970153cafd4d4921f5c22112d35a0',
+    'uri' => '/res/1b697015/rsrc/image/emoji/blue_heart.png',
+    'disk' => '/rsrc/image/emoji/blue_heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/blush.png' =>
+  array(
+    'hash' => 'f1c97164dd866b877e6f2ee60885dbf4',
+    'uri' => '/res/f1c97164/rsrc/image/emoji/blush.png',
+    'disk' => '/rsrc/image/emoji/blush.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/boar.png' =>
+  array(
+    'hash' => '1537cf2ebd2f77380fc9ce79c955f9c5',
+    'uri' => '/res/1537cf2e/rsrc/image/emoji/boar.png',
+    'disk' => '/rsrc/image/emoji/boar.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/boat.png' =>
+  array(
+    'hash' => '4d57c4b1dbd8d60e7917bcb8fc373f40',
+    'uri' => '/res/4d57c4b1/rsrc/image/emoji/boat.png',
+    'disk' => '/rsrc/image/emoji/boat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bomb.png' =>
+  array(
+    'hash' => '98a54f6854d3a9181b18379300f5d624',
+    'uri' => '/res/98a54f68/rsrc/image/emoji/bomb.png',
+    'disk' => '/rsrc/image/emoji/bomb.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/book.png' =>
+  array(
+    'hash' => '913412467d3e8550b52ca2a5c5b59509',
+    'uri' => '/res/91341246/rsrc/image/emoji/book.png',
+    'disk' => '/rsrc/image/emoji/book.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bookmark.png' =>
+  array(
+    'hash' => 'c4bd970bd4c995fab3f5ad5a3333ff65',
+    'uri' => '/res/c4bd970b/rsrc/image/emoji/bookmark.png',
+    'disk' => '/rsrc/image/emoji/bookmark.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bookmark_tabs.png' =>
+  array(
+    'hash' => '98be6fdd96c9ad7bdf9c24998e13f153',
+    'uri' => '/res/98be6fdd/rsrc/image/emoji/bookmark_tabs.png',
+    'disk' => '/rsrc/image/emoji/bookmark_tabs.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/books.png' =>
+  array(
+    'hash' => 'c524168645c23a1265784e65d79277e2',
+    'uri' => '/res/c5241686/rsrc/image/emoji/books.png',
+    'disk' => '/rsrc/image/emoji/books.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/boom.png' =>
+  array(
+    'hash' => '6a9623559369af0f6d29addb38d28921',
+    'uri' => '/res/6a962355/rsrc/image/emoji/boom.png',
+    'disk' => '/rsrc/image/emoji/boom.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/boot.png' =>
+  array(
+    'hash' => '7f5211281d99b9821119da4155058260',
+    'uri' => '/res/7f521128/rsrc/image/emoji/boot.png',
+    'disk' => '/rsrc/image/emoji/boot.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bouquet.png' =>
+  array(
+    'hash' => 'f8bd455fd35ed889f502a93ad2e4c497',
+    'uri' => '/res/f8bd455f/rsrc/image/emoji/bouquet.png',
+    'disk' => '/rsrc/image/emoji/bouquet.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bow.png' =>
+  array(
+    'hash' => '5e1040236f4e853cd11b5f01673a7083',
+    'uri' => '/res/5e104023/rsrc/image/emoji/bow.png',
+    'disk' => '/rsrc/image/emoji/bow.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bowling.png' =>
+  array(
+    'hash' => 'bd9f2b6b57197138b94efabdd34efee0',
+    'uri' => '/res/bd9f2b6b/rsrc/image/emoji/bowling.png',
+    'disk' => '/rsrc/image/emoji/bowling.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bowtie.png' =>
+  array(
+    'hash' => 'e086fb1e7ca45be5de601efd1c3866a4',
+    'uri' => '/res/e086fb1e/rsrc/image/emoji/bowtie.png',
+    'disk' => '/rsrc/image/emoji/bowtie.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/boy.png' =>
+  array(
+    'hash' => '7383dc564fad7f4eb62fda5b01004f3b',
+    'uri' => '/res/7383dc56/rsrc/image/emoji/boy.png',
+    'disk' => '/rsrc/image/emoji/boy.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bread.png' =>
+  array(
+    'hash' => '05616a48a0ffc7140dad07a161d69a5c',
+    'uri' => '/res/05616a48/rsrc/image/emoji/bread.png',
+    'disk' => '/rsrc/image/emoji/bread.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bride_with_veil.png' =>
+  array(
+    'hash' => '037a8af7020406402fbecc6f452e44ea',
+    'uri' => '/res/037a8af7/rsrc/image/emoji/bride_with_veil.png',
+    'disk' => '/rsrc/image/emoji/bride_with_veil.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bridge_at_night.png' =>
+  array(
+    'hash' => '230eec9b7b29c8b74736a26e930393b7',
+    'uri' => '/res/230eec9b/rsrc/image/emoji/bridge_at_night.png',
+    'disk' => '/rsrc/image/emoji/bridge_at_night.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/briefcase.png' =>
+  array(
+    'hash' => 'a4b7bbf38217ec6878a763cb3ded3d90',
+    'uri' => '/res/a4b7bbf3/rsrc/image/emoji/briefcase.png',
+    'disk' => '/rsrc/image/emoji/briefcase.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/broken_heart.png' =>
+  array(
+    'hash' => 'ac14c7c25a4f6419fa1e39f47490fb43',
+    'uri' => '/res/ac14c7c2/rsrc/image/emoji/broken_heart.png',
+    'disk' => '/rsrc/image/emoji/broken_heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bug.png' =>
+  array(
+    'hash' => '7b973884a743d88166624c1cd2a305e0',
+    'uri' => '/res/7b973884/rsrc/image/emoji/bug.png',
+    'disk' => '/rsrc/image/emoji/bug.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bulb.png' =>
+  array(
+    'hash' => '04716c10db7903dd116292f5baae5b90',
+    'uri' => '/res/04716c10/rsrc/image/emoji/bulb.png',
+    'disk' => '/rsrc/image/emoji/bulb.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bullettrain_front.png' =>
+  array(
+    'hash' => 'e46344a14b85b85ec4c9ad7005772d06',
+    'uri' => '/res/e46344a1/rsrc/image/emoji/bullettrain_front.png',
+    'disk' => '/rsrc/image/emoji/bullettrain_front.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bullettrain_side.png' =>
+  array(
+    'hash' => '0852fbfc50146784c3caff1ca938b5ab',
+    'uri' => '/res/0852fbfc/rsrc/image/emoji/bullettrain_side.png',
+    'disk' => '/rsrc/image/emoji/bullettrain_side.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bus.png' =>
+  array(
+    'hash' => '9ada1036b301b8823333417b0bd632f2',
+    'uri' => '/res/9ada1036/rsrc/image/emoji/bus.png',
+    'disk' => '/rsrc/image/emoji/bus.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/busstop.png' =>
+  array(
+    'hash' => 'ba2fdc732ecf7944b7677def3aa5fa88',
+    'uri' => '/res/ba2fdc73/rsrc/image/emoji/busstop.png',
+    'disk' => '/rsrc/image/emoji/busstop.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/bust_in_silhouette.png' =>
+  array(
+    'hash' => '2e1cf65d423b219fbe3872ee4e7cfefc',
+    'uri' => '/res/2e1cf65d/rsrc/image/emoji/bust_in_silhouette.png',
+    'disk' => '/rsrc/image/emoji/bust_in_silhouette.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/busts_in_silhouette.png' =>
+  array(
+    'hash' => 'e2a6906e30e6fd2102133b7f16b0c3ed',
+    'uri' => '/res/e2a6906e/rsrc/image/emoji/busts_in_silhouette.png',
+    'disk' => '/rsrc/image/emoji/busts_in_silhouette.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cactus.png' =>
+  array(
+    'hash' => 'fbb0ebe8c4f65bc4938cb78861523578',
+    'uri' => '/res/fbb0ebe8/rsrc/image/emoji/cactus.png',
+    'disk' => '/rsrc/image/emoji/cactus.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cake.png' =>
+  array(
+    'hash' => '9af5007e040b72f31e08cb328f8aae5f',
+    'uri' => '/res/9af5007e/rsrc/image/emoji/cake.png',
+    'disk' => '/rsrc/image/emoji/cake.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/calendar.png' =>
+  array(
+    'hash' => '5e4fa6d76287c6c9b30c7907e2c6f68e',
+    'uri' => '/res/5e4fa6d7/rsrc/image/emoji/calendar.png',
+    'disk' => '/rsrc/image/emoji/calendar.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/calling.png' =>
+  array(
+    'hash' => '922a52a65042f50937d6f3b4630219a3',
+    'uri' => '/res/922a52a6/rsrc/image/emoji/calling.png',
+    'disk' => '/rsrc/image/emoji/calling.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/camel.png' =>
+  array(
+    'hash' => 'e1e95dbe91afa64b7de40b9ecd6c046c',
+    'uri' => '/res/e1e95dbe/rsrc/image/emoji/camel.png',
+    'disk' => '/rsrc/image/emoji/camel.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/camera.png' =>
+  array(
+    'hash' => 'bc63732e5b52bae803f90342ac444bbf',
+    'uri' => '/res/bc63732e/rsrc/image/emoji/camera.png',
+    'disk' => '/rsrc/image/emoji/camera.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cancer.png' =>
+  array(
+    'hash' => '15f1eaf759b4780db70e2b9dbae9edf8',
+    'uri' => '/res/15f1eaf7/rsrc/image/emoji/cancer.png',
+    'disk' => '/rsrc/image/emoji/cancer.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/candy.png' =>
+  array(
+    'hash' => '0843277322d1b681b1c3a0a782aa6b21',
+    'uri' => '/res/08432773/rsrc/image/emoji/candy.png',
+    'disk' => '/rsrc/image/emoji/candy.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/capital_abcd.png' =>
+  array(
+    'hash' => '4615d063e457aca129ff75667b43e276',
+    'uri' => '/res/4615d063/rsrc/image/emoji/capital_abcd.png',
+    'disk' => '/rsrc/image/emoji/capital_abcd.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/capricorn.png' =>
+  array(
+    'hash' => '84f08036441cb6518d5644eec78eb1c9',
+    'uri' => '/res/84f08036/rsrc/image/emoji/capricorn.png',
+    'disk' => '/rsrc/image/emoji/capricorn.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/car.png' =>
+  array(
+    'hash' => '322bc585738c3ce2142b6faf53b3d8a8',
+    'uri' => '/res/322bc585/rsrc/image/emoji/car.png',
+    'disk' => '/rsrc/image/emoji/car.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/card_index.png' =>
+  array(
+    'hash' => 'af53276980a5ad93ac022463a276a3a9',
+    'uri' => '/res/af532769/rsrc/image/emoji/card_index.png',
+    'disk' => '/rsrc/image/emoji/card_index.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/carousel_horse.png' =>
+  array(
+    'hash' => '5659c82ad30bd29ab98002f48190d666',
+    'uri' => '/res/5659c82a/rsrc/image/emoji/carousel_horse.png',
+    'disk' => '/rsrc/image/emoji/carousel_horse.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cat.png' =>
+  array(
+    'hash' => '51ad713266e727c6b2438dd72b85a123',
+    'uri' => '/res/51ad7132/rsrc/image/emoji/cat.png',
+    'disk' => '/rsrc/image/emoji/cat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cat2.png' =>
+  array(
+    'hash' => 'f554c190e7675fa96a9f4a5c9219c792',
+    'uri' => '/res/f554c190/rsrc/image/emoji/cat2.png',
+    'disk' => '/rsrc/image/emoji/cat2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cd.png' =>
+  array(
+    'hash' => '89d51d9f098a6b13c04ded19089fe59c',
+    'uri' => '/res/89d51d9f/rsrc/image/emoji/cd.png',
+    'disk' => '/rsrc/image/emoji/cd.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/chart.png' =>
+  array(
+    'hash' => '46178b8091b65ecbb7118524cd43e6a9',
+    'uri' => '/res/46178b80/rsrc/image/emoji/chart.png',
+    'disk' => '/rsrc/image/emoji/chart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/chart_with_downwards_trend.png' =>
+  array(
+    'hash' => '1a86c36a5419503fd5f7d0e922fec1f1',
+    'uri' => '/res/1a86c36a/rsrc/image/emoji/chart_with_downwards_trend.png',
+    'disk' => '/rsrc/image/emoji/chart_with_downwards_trend.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/chart_with_upwards_trend.png' =>
+  array(
+    'hash' => '745ce42db6416a71dbb0c06380b7927b',
+    'uri' => '/res/745ce42d/rsrc/image/emoji/chart_with_upwards_trend.png',
+    'disk' => '/rsrc/image/emoji/chart_with_upwards_trend.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/checkered_flag.png' =>
+  array(
+    'hash' => 'a1948f62e68a97bee647ce25dc2dee69',
+    'uri' => '/res/a1948f62/rsrc/image/emoji/checkered_flag.png',
+    'disk' => '/rsrc/image/emoji/checkered_flag.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cherries.png' =>
+  array(
+    'hash' => 'bdc43a8695ad6757100afa6aa4aa9835',
+    'uri' => '/res/bdc43a86/rsrc/image/emoji/cherries.png',
+    'disk' => '/rsrc/image/emoji/cherries.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cherry_blossom.png' =>
+  array(
+    'hash' => 'ed42078971d6862bc51cc5fd8e2e0ad5',
+    'uri' => '/res/ed420789/rsrc/image/emoji/cherry_blossom.png',
+    'disk' => '/rsrc/image/emoji/cherry_blossom.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/chestnut.png' =>
+  array(
+    'hash' => 'a460a6fa010eda1a6064f469dfda23d1',
+    'uri' => '/res/a460a6fa/rsrc/image/emoji/chestnut.png',
+    'disk' => '/rsrc/image/emoji/chestnut.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/chicken.png' =>
+  array(
+    'hash' => '0bb5f280b92e8a2794fbc14e5c32f312',
+    'uri' => '/res/0bb5f280/rsrc/image/emoji/chicken.png',
+    'disk' => '/rsrc/image/emoji/chicken.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/children_crossing.png' =>
+  array(
+    'hash' => 'b94a49422b8d6662801988c49502b03b',
+    'uri' => '/res/b94a4942/rsrc/image/emoji/children_crossing.png',
+    'disk' => '/rsrc/image/emoji/children_crossing.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/chocolate_bar.png' =>
+  array(
+    'hash' => '55870d9df3e7e954960ccbb91802df64',
+    'uri' => '/res/55870d9d/rsrc/image/emoji/chocolate_bar.png',
+    'disk' => '/rsrc/image/emoji/chocolate_bar.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/christmas_tree.png' =>
+  array(
+    'hash' => '97a66af0273e1107a0557bb60f3d462e',
+    'uri' => '/res/97a66af0/rsrc/image/emoji/christmas_tree.png',
+    'disk' => '/rsrc/image/emoji/christmas_tree.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/church.png' =>
+  array(
+    'hash' => 'd6ef3047951488253ce6e734e7be2f33',
+    'uri' => '/res/d6ef3047/rsrc/image/emoji/church.png',
+    'disk' => '/rsrc/image/emoji/church.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cinema.png' =>
+  array(
+    'hash' => '2b4730fce0aceacbdc42bd769325dc51',
+    'uri' => '/res/2b4730fc/rsrc/image/emoji/cinema.png',
+    'disk' => '/rsrc/image/emoji/cinema.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/circus_tent.png' =>
+  array(
+    'hash' => '763d9efb8aa150983bf78330c2dfe786',
+    'uri' => '/res/763d9efb/rsrc/image/emoji/circus_tent.png',
+    'disk' => '/rsrc/image/emoji/circus_tent.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/city_sunrise.png' =>
+  array(
+    'hash' => 'f986b5935cbc9dc1c3387fa466ccc9e2',
+    'uri' => '/res/f986b593/rsrc/image/emoji/city_sunrise.png',
+    'disk' => '/rsrc/image/emoji/city_sunrise.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/city_sunset.png' =>
+  array(
+    'hash' => '3ea73cc5181e54cd2e810d290dc3fa47',
+    'uri' => '/res/3ea73cc5/rsrc/image/emoji/city_sunset.png',
+    'disk' => '/rsrc/image/emoji/city_sunset.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cl.png' =>
+  array(
+    'hash' => '5af2de82f73ecfb2b2ed2908d92076db',
+    'uri' => '/res/5af2de82/rsrc/image/emoji/cl.png',
+    'disk' => '/rsrc/image/emoji/cl.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clap.png' =>
+  array(
+    'hash' => '982b1aefb6a98bd0a57f10accef1bcdc',
+    'uri' => '/res/982b1aef/rsrc/image/emoji/clap.png',
+    'disk' => '/rsrc/image/emoji/clap.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clapper.png' =>
+  array(
+    'hash' => 'edeca9928c74285b4a03321862a135c9',
+    'uri' => '/res/edeca992/rsrc/image/emoji/clapper.png',
+    'disk' => '/rsrc/image/emoji/clapper.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clipboard.png' =>
+  array(
+    'hash' => '99274ea479787549032932960dbb7501',
+    'uri' => '/res/99274ea4/rsrc/image/emoji/clipboard.png',
+    'disk' => '/rsrc/image/emoji/clipboard.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock1.png' =>
+  array(
+    'hash' => 'aa3718c24953ee49f690e1c8e4b4036c',
+    'uri' => '/res/aa3718c2/rsrc/image/emoji/clock1.png',
+    'disk' => '/rsrc/image/emoji/clock1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock10.png' =>
+  array(
+    'hash' => 'a2a21d4a507cf0332743730ce120f7eb',
+    'uri' => '/res/a2a21d4a/rsrc/image/emoji/clock10.png',
+    'disk' => '/rsrc/image/emoji/clock10.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock1030.png' =>
+  array(
+    'hash' => '20df7a62ec754f91540c247acb177486',
+    'uri' => '/res/20df7a62/rsrc/image/emoji/clock1030.png',
+    'disk' => '/rsrc/image/emoji/clock1030.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock11.png' =>
+  array(
+    'hash' => '75171066ed71804958cb4aa742cd8680',
+    'uri' => '/res/75171066/rsrc/image/emoji/clock11.png',
+    'disk' => '/rsrc/image/emoji/clock11.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock1130.png' =>
+  array(
+    'hash' => '731835f431f24743e9c7635863eb4425',
+    'uri' => '/res/731835f4/rsrc/image/emoji/clock1130.png',
+    'disk' => '/rsrc/image/emoji/clock1130.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock12.png' =>
+  array(
+    'hash' => '93380f959cca0e0232c993081c5d7b90',
+    'uri' => '/res/93380f95/rsrc/image/emoji/clock12.png',
+    'disk' => '/rsrc/image/emoji/clock12.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock1230.png' =>
+  array(
+    'hash' => '6ea41ed56ae8a4e56c8e6ca62cb61b99',
+    'uri' => '/res/6ea41ed5/rsrc/image/emoji/clock1230.png',
+    'disk' => '/rsrc/image/emoji/clock1230.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock130.png' =>
+  array(
+    'hash' => '9836aed88a30eec07c4f077d33f40ea9',
+    'uri' => '/res/9836aed8/rsrc/image/emoji/clock130.png',
+    'disk' => '/rsrc/image/emoji/clock130.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock2.png' =>
+  array(
+    'hash' => '86a76317d1e3dafa99f6dc07fc703386',
+    'uri' => '/res/86a76317/rsrc/image/emoji/clock2.png',
+    'disk' => '/rsrc/image/emoji/clock2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock230.png' =>
+  array(
+    'hash' => '09f01d5bbb0c2853b6998a0b187617f8',
+    'uri' => '/res/09f01d5b/rsrc/image/emoji/clock230.png',
+    'disk' => '/rsrc/image/emoji/clock230.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock3.png' =>
+  array(
+    'hash' => 'a4324b590c4e84e8933a798f374e7b45',
+    'uri' => '/res/a4324b59/rsrc/image/emoji/clock3.png',
+    'disk' => '/rsrc/image/emoji/clock3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock330.png' =>
+  array(
+    'hash' => '86f9f95e201fdf4f22ce3a390055a34a',
+    'uri' => '/res/86f9f95e/rsrc/image/emoji/clock330.png',
+    'disk' => '/rsrc/image/emoji/clock330.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock4.png' =>
+  array(
+    'hash' => 'cddcc3fc507fb32e934b34f5ee39c832',
+    'uri' => '/res/cddcc3fc/rsrc/image/emoji/clock4.png',
+    'disk' => '/rsrc/image/emoji/clock4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock430.png' =>
+  array(
+    'hash' => 'dd9e5effcbdbb920c7a5391e3bf0fa26',
+    'uri' => '/res/dd9e5eff/rsrc/image/emoji/clock430.png',
+    'disk' => '/rsrc/image/emoji/clock430.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock5.png' =>
+  array(
+    'hash' => '3e65e7ae5cb8976615bbdab5079b6b37',
+    'uri' => '/res/3e65e7ae/rsrc/image/emoji/clock5.png',
+    'disk' => '/rsrc/image/emoji/clock5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock530.png' =>
+  array(
+    'hash' => 'a1791a01fe084f7f1a9fb3666a03eb79',
+    'uri' => '/res/a1791a01/rsrc/image/emoji/clock530.png',
+    'disk' => '/rsrc/image/emoji/clock530.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock6.png' =>
+  array(
+    'hash' => 'cbff6c1ecaa5a69b0007a46eb0546b4f',
+    'uri' => '/res/cbff6c1e/rsrc/image/emoji/clock6.png',
+    'disk' => '/rsrc/image/emoji/clock6.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock630.png' =>
+  array(
+    'hash' => '7af6b9601a9e0b945e952ba9734a207b',
+    'uri' => '/res/7af6b960/rsrc/image/emoji/clock630.png',
+    'disk' => '/rsrc/image/emoji/clock630.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock7.png' =>
+  array(
+    'hash' => 'f227823d678f7691777ba2368d4fcbf0',
+    'uri' => '/res/f227823d/rsrc/image/emoji/clock7.png',
+    'disk' => '/rsrc/image/emoji/clock7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock730.png' =>
+  array(
+    'hash' => 'c55c9e3ebef6e1645024f6c8efa1f6d0',
+    'uri' => '/res/c55c9e3e/rsrc/image/emoji/clock730.png',
+    'disk' => '/rsrc/image/emoji/clock730.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock8.png' =>
+  array(
+    'hash' => 'c567e56d5a23dc66b6961e1daca06b71',
+    'uri' => '/res/c567e56d/rsrc/image/emoji/clock8.png',
+    'disk' => '/rsrc/image/emoji/clock8.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock830.png' =>
+  array(
+    'hash' => '2e5bfe7b63612bb0d82c751a7b4355b6',
+    'uri' => '/res/2e5bfe7b/rsrc/image/emoji/clock830.png',
+    'disk' => '/rsrc/image/emoji/clock830.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock9.png' =>
+  array(
+    'hash' => 'a9ab304041115db75942300d844e3053',
+    'uri' => '/res/a9ab3040/rsrc/image/emoji/clock9.png',
+    'disk' => '/rsrc/image/emoji/clock9.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clock930.png' =>
+  array(
+    'hash' => 'e71635f55657f444116bb3b5637710b3',
+    'uri' => '/res/e71635f5/rsrc/image/emoji/clock930.png',
+    'disk' => '/rsrc/image/emoji/clock930.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/closed_book.png' =>
+  array(
+    'hash' => 'b75a656580a11ce8c9892c18b82dc0f4',
+    'uri' => '/res/b75a6565/rsrc/image/emoji/closed_book.png',
+    'disk' => '/rsrc/image/emoji/closed_book.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/closed_lock_with_key.png' =>
+  array(
+    'hash' => '24a6886d46cf1416dbda87b4e3bbd7ed',
+    'uri' => '/res/24a6886d/rsrc/image/emoji/closed_lock_with_key.png',
+    'disk' => '/rsrc/image/emoji/closed_lock_with_key.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/closed_umbrella.png' =>
+  array(
+    'hash' => '0bddac47fc237ef56714bd09c74996c6',
+    'uri' => '/res/0bddac47/rsrc/image/emoji/closed_umbrella.png',
+    'disk' => '/rsrc/image/emoji/closed_umbrella.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cloud.png' =>
+  array(
+    'hash' => '1c6ccbf7a4e5a96558935af3481ab43f',
+    'uri' => '/res/1c6ccbf7/rsrc/image/emoji/cloud.png',
+    'disk' => '/rsrc/image/emoji/cloud.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/clubs.png' =>
+  array(
+    'hash' => '4683d948305f98439619d0045bb522de',
+    'uri' => '/res/4683d948/rsrc/image/emoji/clubs.png',
+    'disk' => '/rsrc/image/emoji/clubs.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cn.png' =>
+  array(
+    'hash' => '0fa32c4661817d457fc70a648b969e2b',
+    'uri' => '/res/0fa32c46/rsrc/image/emoji/cn.png',
+    'disk' => '/rsrc/image/emoji/cn.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cocktail.png' =>
+  array(
+    'hash' => '590dd3f4428c28d90265768a7ffb7b61',
+    'uri' => '/res/590dd3f4/rsrc/image/emoji/cocktail.png',
+    'disk' => '/rsrc/image/emoji/cocktail.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/coffee.png' =>
+  array(
+    'hash' => 'f980daa9a8d7160627428cc9c22b6658',
+    'uri' => '/res/f980daa9/rsrc/image/emoji/coffee.png',
+    'disk' => '/rsrc/image/emoji/coffee.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cold_sweat.png' =>
+  array(
+    'hash' => '9593e2f82ebbce7c1b5a547cbcc8e54e',
+    'uri' => '/res/9593e2f8/rsrc/image/emoji/cold_sweat.png',
+    'disk' => '/rsrc/image/emoji/cold_sweat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/collision.png' =>
+  array(
+    'hash' => '54b4a5d9e6649ca14fd8289177c5d130',
+    'uri' => '/res/54b4a5d9/rsrc/image/emoji/collision.png',
+    'disk' => '/rsrc/image/emoji/collision.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/computer.png' =>
+  array(
+    'hash' => '501cbc3eb6925426c380597f543330d3',
+    'uri' => '/res/501cbc3e/rsrc/image/emoji/computer.png',
+    'disk' => '/rsrc/image/emoji/computer.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/confetti_ball.png' =>
+  array(
+    'hash' => 'b777e471ac648ecc09d68c575ac79294',
+    'uri' => '/res/b777e471/rsrc/image/emoji/confetti_ball.png',
+    'disk' => '/rsrc/image/emoji/confetti_ball.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/confounded.png' =>
+  array(
+    'hash' => '598ea57d844399493f9459fb8688108a',
+    'uri' => '/res/598ea57d/rsrc/image/emoji/confounded.png',
+    'disk' => '/rsrc/image/emoji/confounded.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/confused.png' =>
+  array(
+    'hash' => 'd66e9b061f1a519044ca25875d45f9aa',
+    'uri' => '/res/d66e9b06/rsrc/image/emoji/confused.png',
+    'disk' => '/rsrc/image/emoji/confused.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/congratulations.png' =>
+  array(
+    'hash' => '0d75b02c38e7cc67b76ad9f0b085742d',
+    'uri' => '/res/0d75b02c/rsrc/image/emoji/congratulations.png',
+    'disk' => '/rsrc/image/emoji/congratulations.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/construction.png' =>
+  array(
+    'hash' => '969dd4331d5e9c4db1da342143e7ca81',
+    'uri' => '/res/969dd433/rsrc/image/emoji/construction.png',
+    'disk' => '/rsrc/image/emoji/construction.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/construction_worker.png' =>
+  array(
+    'hash' => '934eb4dacfed30937b81d0d0e809124b',
+    'uri' => '/res/934eb4da/rsrc/image/emoji/construction_worker.png',
+    'disk' => '/rsrc/image/emoji/construction_worker.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/convenience_store.png' =>
+  array(
+    'hash' => '849a0ae3f90eff9641d2652665d89981',
+    'uri' => '/res/849a0ae3/rsrc/image/emoji/convenience_store.png',
+    'disk' => '/rsrc/image/emoji/convenience_store.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cookie.png' =>
+  array(
+    'hash' => 'a2be6b33ab0fcd38b752d2681a92c7c0',
+    'uri' => '/res/a2be6b33/rsrc/image/emoji/cookie.png',
+    'disk' => '/rsrc/image/emoji/cookie.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cool.png' =>
+  array(
+    'hash' => '8d15c5ea4e2e6a52b0c194331cf2c53d',
+    'uri' => '/res/8d15c5ea/rsrc/image/emoji/cool.png',
+    'disk' => '/rsrc/image/emoji/cool.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cop.png' =>
+  array(
+    'hash' => '83a181e08b39d845cba02c583f56af3b',
+    'uri' => '/res/83a181e0/rsrc/image/emoji/cop.png',
+    'disk' => '/rsrc/image/emoji/cop.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/copyright.png' =>
+  array(
+    'hash' => '8d06eb5043034c7ed1d9520806f0b3fb',
+    'uri' => '/res/8d06eb50/rsrc/image/emoji/copyright.png',
+    'disk' => '/rsrc/image/emoji/copyright.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/corn.png' =>
+  array(
+    'hash' => 'c34c875ad33a57e706ab5eb2a72cf248',
+    'uri' => '/res/c34c875a/rsrc/image/emoji/corn.png',
+    'disk' => '/rsrc/image/emoji/corn.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/couple.png' =>
+  array(
+    'hash' => '18fc0f1ff8b47813e2527b4041e76f06',
+    'uri' => '/res/18fc0f1f/rsrc/image/emoji/couple.png',
+    'disk' => '/rsrc/image/emoji/couple.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/couple_with_heart.png' =>
+  array(
+    'hash' => '4efd58074c7fcf4925d3eb96a08e77f8',
+    'uri' => '/res/4efd5807/rsrc/image/emoji/couple_with_heart.png',
+    'disk' => '/rsrc/image/emoji/couple_with_heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/couplekiss.png' =>
+  array(
+    'hash' => 'a23e696376c01b2645302cd581425fe1',
+    'uri' => '/res/a23e6963/rsrc/image/emoji/couplekiss.png',
+    'disk' => '/rsrc/image/emoji/couplekiss.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cow.png' =>
+  array(
+    'hash' => 'c09e42528c18e2e3196640780610a326',
+    'uri' => '/res/c09e4252/rsrc/image/emoji/cow.png',
+    'disk' => '/rsrc/image/emoji/cow.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cow2.png' =>
+  array(
+    'hash' => '7650d0c2b9bbfa7c5b6fb75d98a2a3cb',
+    'uri' => '/res/7650d0c2/rsrc/image/emoji/cow2.png',
+    'disk' => '/rsrc/image/emoji/cow2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/credit_card.png' =>
+  array(
+    'hash' => '7aaedaf74f30a63d9515cc307229d89f',
+    'uri' => '/res/7aaedaf7/rsrc/image/emoji/credit_card.png',
+    'disk' => '/rsrc/image/emoji/credit_card.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/crocodile.png' =>
+  array(
+    'hash' => 'e6a9e46b13f88ed638594b6513fced36',
+    'uri' => '/res/e6a9e46b/rsrc/image/emoji/crocodile.png',
+    'disk' => '/rsrc/image/emoji/crocodile.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/crossed_flags.png' =>
+  array(
+    'hash' => '0224c6e0a7732c65bfa4a7664e36a9b1',
+    'uri' => '/res/0224c6e0/rsrc/image/emoji/crossed_flags.png',
+    'disk' => '/rsrc/image/emoji/crossed_flags.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/crown.png' =>
+  array(
+    'hash' => 'f89697c9cec3c88ce4f7d8bb3e86de36',
+    'uri' => '/res/f89697c9/rsrc/image/emoji/crown.png',
+    'disk' => '/rsrc/image/emoji/crown.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cry.png' =>
+  array(
+    'hash' => 'ffc97fc71800e1b2601f02fdca7e4f46',
+    'uri' => '/res/ffc97fc7/rsrc/image/emoji/cry.png',
+    'disk' => '/rsrc/image/emoji/cry.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/crying_cat_face.png' =>
+  array(
+    'hash' => 'deb2b6437d7b1ac9cbc7247c9343865a',
+    'uri' => '/res/deb2b643/rsrc/image/emoji/crying_cat_face.png',
+    'disk' => '/rsrc/image/emoji/crying_cat_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/crystal_ball.png' =>
+  array(
+    'hash' => '00d4b04e61b48db74992ef24de68587e',
+    'uri' => '/res/00d4b04e/rsrc/image/emoji/crystal_ball.png',
+    'disk' => '/rsrc/image/emoji/crystal_ball.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cupid.png' =>
+  array(
+    'hash' => 'ae63de9a8fb8120a772b08bfc0f7b4ce',
+    'uri' => '/res/ae63de9a/rsrc/image/emoji/cupid.png',
+    'disk' => '/rsrc/image/emoji/cupid.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/curly_loop.png' =>
+  array(
+    'hash' => 'afd9eccd25edb07e9b17f164bb3e4b3f',
+    'uri' => '/res/afd9eccd/rsrc/image/emoji/curly_loop.png',
+    'disk' => '/rsrc/image/emoji/curly_loop.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/currency_exchange.png' =>
+  array(
+    'hash' => 'a22712e51809b1fad9ecb19a082a31d8',
+    'uri' => '/res/a22712e5/rsrc/image/emoji/currency_exchange.png',
+    'disk' => '/rsrc/image/emoji/currency_exchange.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/curry.png' =>
+  array(
+    'hash' => '9f5f210fc3c5259345c67bfc72729e79',
+    'uri' => '/res/9f5f210f/rsrc/image/emoji/curry.png',
+    'disk' => '/rsrc/image/emoji/curry.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/custard.png' =>
+  array(
+    'hash' => '89315275092ea49798514d0cd750b26c',
+    'uri' => '/res/89315275/rsrc/image/emoji/custard.png',
+    'disk' => '/rsrc/image/emoji/custard.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/customs.png' =>
+  array(
+    'hash' => '7e86bc3c8bf80ad7144ee8d46c3fc7fb',
+    'uri' => '/res/7e86bc3c/rsrc/image/emoji/customs.png',
+    'disk' => '/rsrc/image/emoji/customs.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/cyclone.png' =>
+  array(
+    'hash' => '09bee1e41caaff1f40a6b1a3e96e1fe6',
+    'uri' => '/res/09bee1e4/rsrc/image/emoji/cyclone.png',
+    'disk' => '/rsrc/image/emoji/cyclone.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dancer.png' =>
+  array(
+    'hash' => '6df26449b290ee3a46b59c36a765ad50',
+    'uri' => '/res/6df26449/rsrc/image/emoji/dancer.png',
+    'disk' => '/rsrc/image/emoji/dancer.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dancers.png' =>
+  array(
+    'hash' => 'bcb5e57ec7eefc62e84888a9b598fd32',
+    'uri' => '/res/bcb5e57e/rsrc/image/emoji/dancers.png',
+    'disk' => '/rsrc/image/emoji/dancers.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dango.png' =>
+  array(
+    'hash' => '6bcf04be52df20cf98b58a5df8436941',
+    'uri' => '/res/6bcf04be/rsrc/image/emoji/dango.png',
+    'disk' => '/rsrc/image/emoji/dango.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dart.png' =>
+  array(
+    'hash' => '9e40710bea0ab22fbc0c6b6fb51f3596',
+    'uri' => '/res/9e40710b/rsrc/image/emoji/dart.png',
+    'disk' => '/rsrc/image/emoji/dart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dash.png' =>
+  array(
+    'hash' => '2d555007af01b33783c365b71b40017c',
+    'uri' => '/res/2d555007/rsrc/image/emoji/dash.png',
+    'disk' => '/rsrc/image/emoji/dash.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/date.png' =>
+  array(
+    'hash' => '2ba67838399b4873c164fede15c59a74',
+    'uri' => '/res/2ba67838/rsrc/image/emoji/date.png',
+    'disk' => '/rsrc/image/emoji/date.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/de.png' =>
+  array(
+    'hash' => 'c74794d788d9fd264177872af3f922e3',
+    'uri' => '/res/c74794d7/rsrc/image/emoji/de.png',
+    'disk' => '/rsrc/image/emoji/de.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/deciduous_tree.png' =>
+  array(
+    'hash' => 'e774e1df1fe3b4cd8b64bf2b02b47d21',
+    'uri' => '/res/e774e1df/rsrc/image/emoji/deciduous_tree.png',
+    'disk' => '/rsrc/image/emoji/deciduous_tree.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/department_store.png' =>
+  array(
+    'hash' => '9475e84b5cfeabd81277b419e0080a3c',
+    'uri' => '/res/9475e84b/rsrc/image/emoji/department_store.png',
+    'disk' => '/rsrc/image/emoji/department_store.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/diamond_shape_with_a_dot_inside.png' =>
+  array(
+    'hash' => '6f3c079903264b283948b0ee099a2a82',
+    'uri' => '/res/6f3c0799/rsrc/image/emoji/diamond_shape_with_a_dot_inside.png',
+    'disk' => '/rsrc/image/emoji/diamond_shape_with_a_dot_inside.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/diamonds.png' =>
+  array(
+    'hash' => '82b078b612b077d0f2fcb1c08c1453b9',
+    'uri' => '/res/82b078b6/rsrc/image/emoji/diamonds.png',
+    'disk' => '/rsrc/image/emoji/diamonds.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/disappointed.png' =>
+  array(
+    'hash' => '78f5e2cf1500a4c3cd2c17666e45282e',
+    'uri' => '/res/78f5e2cf/rsrc/image/emoji/disappointed.png',
+    'disk' => '/rsrc/image/emoji/disappointed.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dizzy.png' =>
+  array(
+    'hash' => '4e7a6a205a7b73848494d7530941de22',
+    'uri' => '/res/4e7a6a20/rsrc/image/emoji/dizzy.png',
+    'disk' => '/rsrc/image/emoji/dizzy.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dizzy_face.png' =>
+  array(
+    'hash' => '02909a6c5b4222be4a1200e76be1d41f',
+    'uri' => '/res/02909a6c/rsrc/image/emoji/dizzy_face.png',
+    'disk' => '/rsrc/image/emoji/dizzy_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/do_not_litter.png' =>
+  array(
+    'hash' => '4ee016565e55372d287dd2689a855ad2',
+    'uri' => '/res/4ee01656/rsrc/image/emoji/do_not_litter.png',
+    'disk' => '/rsrc/image/emoji/do_not_litter.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dog.png' =>
+  array(
+    'hash' => 'c3f2241f369d72c38cdf8848629dd65d',
+    'uri' => '/res/c3f2241f/rsrc/image/emoji/dog.png',
+    'disk' => '/rsrc/image/emoji/dog.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dog2.png' =>
+  array(
+    'hash' => '516e04c9697e933f02957528953cb783',
+    'uri' => '/res/516e04c9/rsrc/image/emoji/dog2.png',
+    'disk' => '/rsrc/image/emoji/dog2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dollar.png' =>
+  array(
+    'hash' => 'c61f7616c88f1c6729ab70e72ce687fc',
+    'uri' => '/res/c61f7616/rsrc/image/emoji/dollar.png',
+    'disk' => '/rsrc/image/emoji/dollar.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dolls.png' =>
+  array(
+    'hash' => '7b6a8daf136e3a20094c66f4ba56daf3',
+    'uri' => '/res/7b6a8daf/rsrc/image/emoji/dolls.png',
+    'disk' => '/rsrc/image/emoji/dolls.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dolphin.png' =>
+  array(
+    'hash' => 'c5d58b618cee48fc5d624d9e62e45876',
+    'uri' => '/res/c5d58b61/rsrc/image/emoji/dolphin.png',
+    'disk' => '/rsrc/image/emoji/dolphin.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/door.png' =>
+  array(
+    'hash' => '3d80659f8761c51a677452ff3a9a90f5',
+    'uri' => '/res/3d80659f/rsrc/image/emoji/door.png',
+    'disk' => '/rsrc/image/emoji/door.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/doughnut.png' =>
+  array(
+    'hash' => '5180012281ac55a21acdd26fe0228931',
+    'uri' => '/res/51800122/rsrc/image/emoji/doughnut.png',
+    'disk' => '/rsrc/image/emoji/doughnut.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dragon.png' =>
+  array(
+    'hash' => '46fc0b2d1e3754d6d0b131c207a88383',
+    'uri' => '/res/46fc0b2d/rsrc/image/emoji/dragon.png',
+    'disk' => '/rsrc/image/emoji/dragon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dragon_face.png' =>
+  array(
+    'hash' => '6e9f10c0b4b82742cfbf5643eaca9f80',
+    'uri' => '/res/6e9f10c0/rsrc/image/emoji/dragon_face.png',
+    'disk' => '/rsrc/image/emoji/dragon_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dress.png' =>
+  array(
+    'hash' => '8c79bc9911cb70c7fc3b2074d91d08bc',
+    'uri' => '/res/8c79bc99/rsrc/image/emoji/dress.png',
+    'disk' => '/rsrc/image/emoji/dress.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dromedary_camel.png' =>
+  array(
+    'hash' => '2c979a3e5d917b647cc7326aac2c2f20',
+    'uri' => '/res/2c979a3e/rsrc/image/emoji/dromedary_camel.png',
+    'disk' => '/rsrc/image/emoji/dromedary_camel.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/droplet.png' =>
+  array(
+    'hash' => '9cd44aab9715b9cdeead7b6e5060aad8',
+    'uri' => '/res/9cd44aab/rsrc/image/emoji/droplet.png',
+    'disk' => '/rsrc/image/emoji/droplet.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/dvd.png' =>
+  array(
+    'hash' => '6e65441d6ee09d1cf6343a1d646f3700',
+    'uri' => '/res/6e65441d/rsrc/image/emoji/dvd.png',
+    'disk' => '/rsrc/image/emoji/dvd.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/e-mail.png' =>
+  array(
+    'hash' => '18fede147333e1e685419223cb595d82',
+    'uri' => '/res/18fede14/rsrc/image/emoji/e-mail.png',
+    'disk' => '/rsrc/image/emoji/e-mail.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ear.png' =>
+  array(
+    'hash' => 'c081742ad39e32827ac082ef2db9d755',
+    'uri' => '/res/c081742a/rsrc/image/emoji/ear.png',
+    'disk' => '/rsrc/image/emoji/ear.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ear_of_rice.png' =>
+  array(
+    'hash' => '4832e03fa7564cb482cab7bef47ef260',
+    'uri' => '/res/4832e03f/rsrc/image/emoji/ear_of_rice.png',
+    'disk' => '/rsrc/image/emoji/ear_of_rice.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/earth_africa.png' =>
+  array(
+    'hash' => '868f37e505ca7b2d424f49f9e61b8274',
+    'uri' => '/res/868f37e5/rsrc/image/emoji/earth_africa.png',
+    'disk' => '/rsrc/image/emoji/earth_africa.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/earth_americas.png' =>
+  array(
+    'hash' => 'a9019018884fa4655e81349a44bc0a31',
+    'uri' => '/res/a9019018/rsrc/image/emoji/earth_americas.png',
+    'disk' => '/rsrc/image/emoji/earth_americas.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/earth_asia.png' =>
+  array(
+    'hash' => 'fd2bdc5d9fce5d0bbe63fa3726875f86',
+    'uri' => '/res/fd2bdc5d/rsrc/image/emoji/earth_asia.png',
+    'disk' => '/rsrc/image/emoji/earth_asia.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/egg.png' =>
+  array(
+    'hash' => '5fa5c4c084ba4dff20252c8c14c41863',
+    'uri' => '/res/5fa5c4c0/rsrc/image/emoji/egg.png',
+    'disk' => '/rsrc/image/emoji/egg.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/eggplant.png' =>
+  array(
+    'hash' => 'fea8f9359b69c6a6aeaaab1550bae189',
+    'uri' => '/res/fea8f935/rsrc/image/emoji/eggplant.png',
+    'disk' => '/rsrc/image/emoji/eggplant.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/eight.png' =>
+  array(
+    'hash' => '6ae493cadb50cf4dba722a5eac376a79',
+    'uri' => '/res/6ae493ca/rsrc/image/emoji/eight.png',
+    'disk' => '/rsrc/image/emoji/eight.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/eight_pointed_black_star.png' =>
+  array(
+    'hash' => 'eb97cff4d1be8a79e279812bb60b1a56',
+    'uri' => '/res/eb97cff4/rsrc/image/emoji/eight_pointed_black_star.png',
+    'disk' => '/rsrc/image/emoji/eight_pointed_black_star.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/eight_spoked_asterisk.png' =>
+  array(
+    'hash' => '2f735f7576cde5637f2beb0730bc2396',
+    'uri' => '/res/2f735f75/rsrc/image/emoji/eight_spoked_asterisk.png',
+    'disk' => '/rsrc/image/emoji/eight_spoked_asterisk.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/electric_plug.png' =>
+  array(
+    'hash' => 'fa50bf3b0dba43c0316a52fcd0310251',
+    'uri' => '/res/fa50bf3b/rsrc/image/emoji/electric_plug.png',
+    'disk' => '/rsrc/image/emoji/electric_plug.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/elephant.png' =>
+  array(
+    'hash' => 'b4f5ee1044a7e2e8ddf40781703bb520',
+    'uri' => '/res/b4f5ee10/rsrc/image/emoji/elephant.png',
+    'disk' => '/rsrc/image/emoji/elephant.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/email.png' =>
+  array(
+    'hash' => '0896c314023e913dbc6a26a5a63617c2',
+    'uri' => '/res/0896c314/rsrc/image/emoji/email.png',
+    'disk' => '/rsrc/image/emoji/email.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/end.png' =>
+  array(
+    'hash' => '35d112da3f404987d61862eaeed40463',
+    'uri' => '/res/35d112da/rsrc/image/emoji/end.png',
+    'disk' => '/rsrc/image/emoji/end.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/envelope.png' =>
+  array(
+    'hash' => '664e4051597df4149b178007e0443a5c',
+    'uri' => '/res/664e4051/rsrc/image/emoji/envelope.png',
+    'disk' => '/rsrc/image/emoji/envelope.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/es.png' =>
+  array(
+    'hash' => '53d9c7b1e8908b166636a96dd376f806',
+    'uri' => '/res/53d9c7b1/rsrc/image/emoji/es.png',
+    'disk' => '/rsrc/image/emoji/es.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/euro.png' =>
+  array(
+    'hash' => '12f20880384c148e7fcb652b751e15d4',
+    'uri' => '/res/12f20880/rsrc/image/emoji/euro.png',
+    'disk' => '/rsrc/image/emoji/euro.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/european_castle.png' =>
+  array(
+    'hash' => 'cdbe11114ab800ae3d16a139ce736f3b',
+    'uri' => '/res/cdbe1111/rsrc/image/emoji/european_castle.png',
+    'disk' => '/rsrc/image/emoji/european_castle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/european_post_office.png' =>
+  array(
+    'hash' => '33c3cea4594730f4cf530c08dd793af7',
+    'uri' => '/res/33c3cea4/rsrc/image/emoji/european_post_office.png',
+    'disk' => '/rsrc/image/emoji/european_post_office.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/evergreen_tree.png' =>
+  array(
+    'hash' => '61c5d2a0fe81fe871b5fb25699900bd0',
+    'uri' => '/res/61c5d2a0/rsrc/image/emoji/evergreen_tree.png',
+    'disk' => '/rsrc/image/emoji/evergreen_tree.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/exclamation.png' =>
+  array(
+    'hash' => '7dfcc4564943b32f30b6925df30f034c',
+    'uri' => '/res/7dfcc456/rsrc/image/emoji/exclamation.png',
+    'disk' => '/rsrc/image/emoji/exclamation.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/expressionless.png' =>
+  array(
+    'hash' => '5a28fb9eb6f0cb6f9b6f704ccf9c41bb',
+    'uri' => '/res/5a28fb9e/rsrc/image/emoji/expressionless.png',
+    'disk' => '/rsrc/image/emoji/expressionless.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/eyeglasses.png' =>
+  array(
+    'hash' => '7ce9341edfd1ff73bb568dd4ed9ae3dd',
+    'uri' => '/res/7ce9341e/rsrc/image/emoji/eyeglasses.png',
+    'disk' => '/rsrc/image/emoji/eyeglasses.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/eyes.png' =>
+  array(
+    'hash' => '8192972c7de70924d75e92e5812de039',
+    'uri' => '/res/8192972c/rsrc/image/emoji/eyes.png',
+    'disk' => '/rsrc/image/emoji/eyes.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/facepunch.png' =>
+  array(
+    'hash' => 'a0f5a45fa6aaed7afd4e6826d958aaca',
+    'uri' => '/res/a0f5a45f/rsrc/image/emoji/facepunch.png',
+    'disk' => '/rsrc/image/emoji/facepunch.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/factory.png' =>
+  array(
+    'hash' => '3769f5d019604195d68a077b6c25f777',
+    'uri' => '/res/3769f5d0/rsrc/image/emoji/factory.png',
+    'disk' => '/rsrc/image/emoji/factory.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fallen_leaf.png' =>
+  array(
+    'hash' => '14dfcd3701cc91d7ce2647fc2aec1e76',
+    'uri' => '/res/14dfcd37/rsrc/image/emoji/fallen_leaf.png',
+    'disk' => '/rsrc/image/emoji/fallen_leaf.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/family.png' =>
+  array(
+    'hash' => 'b94ef63217f1bac6a04775b5bf360e99',
+    'uri' => '/res/b94ef632/rsrc/image/emoji/family.png',
+    'disk' => '/rsrc/image/emoji/family.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fast_forward.png' =>
+  array(
+    'hash' => 'd8fbfabfea3e3df6c833e19bf32c5adf',
+    'uri' => '/res/d8fbfabf/rsrc/image/emoji/fast_forward.png',
+    'disk' => '/rsrc/image/emoji/fast_forward.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fax.png' =>
+  array(
+    'hash' => 'e696afe4ae61aad5105c00d7d6805266',
+    'uri' => '/res/e696afe4/rsrc/image/emoji/fax.png',
+    'disk' => '/rsrc/image/emoji/fax.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fearful.png' =>
+  array(
+    'hash' => '51b88ad4f9107bdc3b0bddba0ac07b23',
+    'uri' => '/res/51b88ad4/rsrc/image/emoji/fearful.png',
+    'disk' => '/rsrc/image/emoji/fearful.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/feelsgood.png' =>
+  array(
+    'hash' => 'cfa3321a77691d70af75ce6b8f511017',
+    'uri' => '/res/cfa3321a/rsrc/image/emoji/feelsgood.png',
+    'disk' => '/rsrc/image/emoji/feelsgood.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/feet.png' =>
+  array(
+    'hash' => 'a58bbbcc14c86e350c80de6c3edd97dd',
+    'uri' => '/res/a58bbbcc/rsrc/image/emoji/feet.png',
+    'disk' => '/rsrc/image/emoji/feet.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ferris_wheel.png' =>
+  array(
+    'hash' => '0034e7fa2d5e9f8ee47ca090745fcda2',
+    'uri' => '/res/0034e7fa/rsrc/image/emoji/ferris_wheel.png',
+    'disk' => '/rsrc/image/emoji/ferris_wheel.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/file_folder.png' =>
+  array(
+    'hash' => 'db13afa17829c8ce595b038c02a81f30',
+    'uri' => '/res/db13afa1/rsrc/image/emoji/file_folder.png',
+    'disk' => '/rsrc/image/emoji/file_folder.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/finnadie.png' =>
+  array(
+    'hash' => '0873927c233303d3f19229467f510026',
+    'uri' => '/res/0873927c/rsrc/image/emoji/finnadie.png',
+    'disk' => '/rsrc/image/emoji/finnadie.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fire.png' =>
+  array(
+    'hash' => 'b41fcdc2801039e3bf5e81a58b0bac6a',
+    'uri' => '/res/b41fcdc2/rsrc/image/emoji/fire.png',
+    'disk' => '/rsrc/image/emoji/fire.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fire_engine.png' =>
+  array(
+    'hash' => '4bd32377301a6b9ff43371ea5bb7d73d',
+    'uri' => '/res/4bd32377/rsrc/image/emoji/fire_engine.png',
+    'disk' => '/rsrc/image/emoji/fire_engine.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fireworks.png' =>
+  array(
+    'hash' => '7381d7d1e308eed0536968093a08609a',
+    'uri' => '/res/7381d7d1/rsrc/image/emoji/fireworks.png',
+    'disk' => '/rsrc/image/emoji/fireworks.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/first_quarter_moon.png' =>
+  array(
+    'hash' => '08eba015b84e143e6ac9fcb711a2e8fa',
+    'uri' => '/res/08eba015/rsrc/image/emoji/first_quarter_moon.png',
+    'disk' => '/rsrc/image/emoji/first_quarter_moon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/first_quarter_moon_with_face.png' =>
+  array(
+    'hash' => '6dc16fc274790c8fd69ec6b7537b4830',
+    'uri' => '/res/6dc16fc2/rsrc/image/emoji/first_quarter_moon_with_face.png',
+    'disk' => '/rsrc/image/emoji/first_quarter_moon_with_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fish.png' =>
+  array(
+    'hash' => '91de0f12b94912ac2d9bbafd5181acd8',
+    'uri' => '/res/91de0f12/rsrc/image/emoji/fish.png',
+    'disk' => '/rsrc/image/emoji/fish.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fish_cake.png' =>
+  array(
+    'hash' => '3631afdcb0ef8d8a836fef05e28515e1',
+    'uri' => '/res/3631afdc/rsrc/image/emoji/fish_cake.png',
+    'disk' => '/rsrc/image/emoji/fish_cake.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fishing_pole_and_fish.png' =>
+  array(
+    'hash' => '6bd15482755b76c411016a71b8e2c042',
+    'uri' => '/res/6bd15482/rsrc/image/emoji/fishing_pole_and_fish.png',
+    'disk' => '/rsrc/image/emoji/fishing_pole_and_fish.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fist.png' =>
+  array(
+    'hash' => '11beb6252f51ede0a23e4375fa88ba34',
+    'uri' => '/res/11beb625/rsrc/image/emoji/fist.png',
+    'disk' => '/rsrc/image/emoji/fist.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/five.png' =>
+  array(
+    'hash' => '043ec18a0399e677df1ad8fdccabf87c',
+    'uri' => '/res/043ec18a/rsrc/image/emoji/five.png',
+    'disk' => '/rsrc/image/emoji/five.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/flags.png' =>
+  array(
+    'hash' => '4988ad9eb85beb73339c2fb1df5e4f01',
+    'uri' => '/res/4988ad9e/rsrc/image/emoji/flags.png',
+    'disk' => '/rsrc/image/emoji/flags.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/flashlight.png' =>
+  array(
+    'hash' => '02687c6e10eb99c00273df1b14468d6d',
+    'uri' => '/res/02687c6e/rsrc/image/emoji/flashlight.png',
+    'disk' => '/rsrc/image/emoji/flashlight.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/floppy_disk.png' =>
+  array(
+    'hash' => 'd38ea4e5b475cdff7296a24db499a194',
+    'uri' => '/res/d38ea4e5/rsrc/image/emoji/floppy_disk.png',
+    'disk' => '/rsrc/image/emoji/floppy_disk.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/flower_playing_cards.png' =>
+  array(
+    'hash' => '887dbb0804da677b1467851e6135caac',
+    'uri' => '/res/887dbb08/rsrc/image/emoji/flower_playing_cards.png',
+    'disk' => '/rsrc/image/emoji/flower_playing_cards.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/flushed.png' =>
+  array(
+    'hash' => '4cbe6f689b69136ce0669c7b9546ab91',
+    'uri' => '/res/4cbe6f68/rsrc/image/emoji/flushed.png',
+    'disk' => '/rsrc/image/emoji/flushed.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/foggy.png' =>
+  array(
+    'hash' => 'b86b2adf9825675549b9ad662dd63a00',
+    'uri' => '/res/b86b2adf/rsrc/image/emoji/foggy.png',
+    'disk' => '/rsrc/image/emoji/foggy.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/football.png' =>
+  array(
+    'hash' => 'dc9df076950677d1d29e1a18dd12e93c',
+    'uri' => '/res/dc9df076/rsrc/image/emoji/football.png',
+    'disk' => '/rsrc/image/emoji/football.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fork_and_knife.png' =>
+  array(
+    'hash' => 'a5f6c47c4856efebcf3db4eec4f3a3e6',
+    'uri' => '/res/a5f6c47c/rsrc/image/emoji/fork_and_knife.png',
+    'disk' => '/rsrc/image/emoji/fork_and_knife.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fountain.png' =>
+  array(
+    'hash' => '501fae2f38ff443e4eb030fb205be63d',
+    'uri' => '/res/501fae2f/rsrc/image/emoji/fountain.png',
+    'disk' => '/rsrc/image/emoji/fountain.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/four.png' =>
+  array(
+    'hash' => '741b36cf8b5fe00155ffaeabce9713de',
+    'uri' => '/res/741b36cf/rsrc/image/emoji/four.png',
+    'disk' => '/rsrc/image/emoji/four.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/four_leaf_clover.png' =>
+  array(
+    'hash' => '8332824fef90306b7ced46f76960eeef',
+    'uri' => '/res/8332824f/rsrc/image/emoji/four_leaf_clover.png',
+    'disk' => '/rsrc/image/emoji/four_leaf_clover.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fr.png' =>
+  array(
+    'hash' => '2f7bb1885eb3ebb909ac016170425e7f',
+    'uri' => '/res/2f7bb188/rsrc/image/emoji/fr.png',
+    'disk' => '/rsrc/image/emoji/fr.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/free.png' =>
+  array(
+    'hash' => '083491cf14dfdcd79d4c1477e52d611c',
+    'uri' => '/res/083491cf/rsrc/image/emoji/free.png',
+    'disk' => '/rsrc/image/emoji/free.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fried_shrimp.png' =>
+  array(
+    'hash' => 'f1b7b61e9655334e2a44dd9009105257',
+    'uri' => '/res/f1b7b61e/rsrc/image/emoji/fried_shrimp.png',
+    'disk' => '/rsrc/image/emoji/fried_shrimp.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fries.png' =>
+  array(
+    'hash' => 'b3f00943a2bb37f0b0c2d600f13a3b28',
+    'uri' => '/res/b3f00943/rsrc/image/emoji/fries.png',
+    'disk' => '/rsrc/image/emoji/fries.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/frog.png' =>
+  array(
+    'hash' => 'f829f181e938857e6875d9f8d4b47130',
+    'uri' => '/res/f829f181/rsrc/image/emoji/frog.png',
+    'disk' => '/rsrc/image/emoji/frog.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/frowning.png' =>
+  array(
+    'hash' => 'f188881354964f23de2b7d60ea1f320a',
+    'uri' => '/res/f1888813/rsrc/image/emoji/frowning.png',
+    'disk' => '/rsrc/image/emoji/frowning.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/fuelpump.png' =>
+  array(
+    'hash' => '0afe2d909986e4f18ef55cd4c913b229',
+    'uri' => '/res/0afe2d90/rsrc/image/emoji/fuelpump.png',
+    'disk' => '/rsrc/image/emoji/fuelpump.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/full_moon.png' =>
+  array(
+    'hash' => '7c75ec80f992e3c3479c1b696943e793',
+    'uri' => '/res/7c75ec80/rsrc/image/emoji/full_moon.png',
+    'disk' => '/rsrc/image/emoji/full_moon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/full_moon_with_face.png' =>
+  array(
+    'hash' => 'a542344b2114e17c9effc9f796f19ee8',
+    'uri' => '/res/a542344b/rsrc/image/emoji/full_moon_with_face.png',
+    'disk' => '/rsrc/image/emoji/full_moon_with_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/game_die.png' =>
+  array(
+    'hash' => '6fa256e221820d6fbb6446671dfb8f30',
+    'uri' => '/res/6fa256e2/rsrc/image/emoji/game_die.png',
+    'disk' => '/rsrc/image/emoji/game_die.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/gb.png' =>
+  array(
+    'hash' => 'bcb506bdee24c965bb2075cf68527598',
+    'uri' => '/res/bcb506bd/rsrc/image/emoji/gb.png',
+    'disk' => '/rsrc/image/emoji/gb.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/gem.png' =>
+  array(
+    'hash' => '3c6b1c0a93b65a069bb366d36f02cadc',
+    'uri' => '/res/3c6b1c0a/rsrc/image/emoji/gem.png',
+    'disk' => '/rsrc/image/emoji/gem.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/gemini.png' =>
+  array(
+    'hash' => 'faae1012cc8c017ea10d6bec0bbaf870',
+    'uri' => '/res/faae1012/rsrc/image/emoji/gemini.png',
+    'disk' => '/rsrc/image/emoji/gemini.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ghost.png' =>
+  array(
+    'hash' => 'ae8c1d5767f07e3b22c3901b067a0366',
+    'uri' => '/res/ae8c1d57/rsrc/image/emoji/ghost.png',
+    'disk' => '/rsrc/image/emoji/ghost.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/gift.png' =>
+  array(
+    'hash' => '261315caf0be3a8f3c1d7148bb72d83f',
+    'uri' => '/res/261315ca/rsrc/image/emoji/gift.png',
+    'disk' => '/rsrc/image/emoji/gift.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/gift_heart.png' =>
+  array(
+    'hash' => '1906eb172b73200c25a1a93d126374eb',
+    'uri' => '/res/1906eb17/rsrc/image/emoji/gift_heart.png',
+    'disk' => '/rsrc/image/emoji/gift_heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/girl.png' =>
+  array(
+    'hash' => 'f332cd92dfd75916afe05548efdfc0d8',
+    'uri' => '/res/f332cd92/rsrc/image/emoji/girl.png',
+    'disk' => '/rsrc/image/emoji/girl.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/globe_with_meridians.png' =>
+  array(
+    'hash' => '4f74472d86b23d4a7bf9281388b1938f',
+    'uri' => '/res/4f74472d/rsrc/image/emoji/globe_with_meridians.png',
+    'disk' => '/rsrc/image/emoji/globe_with_meridians.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/goat.png' =>
+  array(
+    'hash' => 'b39c7c6e09b735021721fd6234c9d370',
+    'uri' => '/res/b39c7c6e/rsrc/image/emoji/goat.png',
+    'disk' => '/rsrc/image/emoji/goat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/goberserk.png' =>
+  array(
+    'hash' => '0992212e4213a0b4d3115e9ed1b964e6',
+    'uri' => '/res/0992212e/rsrc/image/emoji/goberserk.png',
+    'disk' => '/rsrc/image/emoji/goberserk.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/godmode.png' =>
+  array(
+    'hash' => '6573d12438dc9e986ce1fbbb17bf9885',
+    'uri' => '/res/6573d124/rsrc/image/emoji/godmode.png',
+    'disk' => '/rsrc/image/emoji/godmode.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/golf.png' =>
+  array(
+    'hash' => '3fd3a6452453a24c77988936d62a9b22',
+    'uri' => '/res/3fd3a645/rsrc/image/emoji/golf.png',
+    'disk' => '/rsrc/image/emoji/golf.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/grapes.png' =>
+  array(
+    'hash' => '89d028ddff30cce4c644c92ef1f0d493',
+    'uri' => '/res/89d028dd/rsrc/image/emoji/grapes.png',
+    'disk' => '/rsrc/image/emoji/grapes.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/green_apple.png' =>
+  array(
+    'hash' => '926f793bbff2efca41344031a8b8ae9f',
+    'uri' => '/res/926f793b/rsrc/image/emoji/green_apple.png',
+    'disk' => '/rsrc/image/emoji/green_apple.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/green_book.png' =>
+  array(
+    'hash' => '991001a158c9330c5555a90e29f89477',
+    'uri' => '/res/991001a1/rsrc/image/emoji/green_book.png',
+    'disk' => '/rsrc/image/emoji/green_book.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/green_heart.png' =>
+  array(
+    'hash' => 'bfba7a462cd90ed973d7f8fa3dd9505d',
+    'uri' => '/res/bfba7a46/rsrc/image/emoji/green_heart.png',
+    'disk' => '/rsrc/image/emoji/green_heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/grey_exclamation.png' =>
+  array(
+    'hash' => 'efa1d04e1aa4afca9cd38addb563633d',
+    'uri' => '/res/efa1d04e/rsrc/image/emoji/grey_exclamation.png',
+    'disk' => '/rsrc/image/emoji/grey_exclamation.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/grey_question.png' =>
+  array(
+    'hash' => 'bef2eb79b613427f34401a7bbdf65f52',
+    'uri' => '/res/bef2eb79/rsrc/image/emoji/grey_question.png',
+    'disk' => '/rsrc/image/emoji/grey_question.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/grimacing.png' =>
+  array(
+    'hash' => '96b67ae82e12bac612ddb8773a0cefaf',
+    'uri' => '/res/96b67ae8/rsrc/image/emoji/grimacing.png',
+    'disk' => '/rsrc/image/emoji/grimacing.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/grin.png' =>
+  array(
+    'hash' => 'b028be59b0a33533c51d49a72ade565f',
+    'uri' => '/res/b028be59/rsrc/image/emoji/grin.png',
+    'disk' => '/rsrc/image/emoji/grin.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/grinning.png' =>
+  array(
+    'hash' => '4ede9e57532a2b938cf012839f1fe3e5',
+    'uri' => '/res/4ede9e57/rsrc/image/emoji/grinning.png',
+    'disk' => '/rsrc/image/emoji/grinning.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/guardsman.png' =>
+  array(
+    'hash' => '3d0839ede678bc7d5fd0737915605db4',
+    'uri' => '/res/3d0839ed/rsrc/image/emoji/guardsman.png',
+    'disk' => '/rsrc/image/emoji/guardsman.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/guitar.png' =>
+  array(
+    'hash' => '52274fc522e2d5fabc1b4272ff5d5946',
+    'uri' => '/res/52274fc5/rsrc/image/emoji/guitar.png',
+    'disk' => '/rsrc/image/emoji/guitar.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/gun.png' =>
+  array(
+    'hash' => 'd7b569d35d766e65e3987703fb31a8e1',
+    'uri' => '/res/d7b569d3/rsrc/image/emoji/gun.png',
+    'disk' => '/rsrc/image/emoji/gun.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/haircut.png' =>
+  array(
+    'hash' => '67f01fade9ca5f77a3540393d36bbfd8',
+    'uri' => '/res/67f01fad/rsrc/image/emoji/haircut.png',
+    'disk' => '/rsrc/image/emoji/haircut.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hamburger.png' =>
+  array(
+    'hash' => '4c9abf0749c781671cd97fc2f961c474',
+    'uri' => '/res/4c9abf07/rsrc/image/emoji/hamburger.png',
+    'disk' => '/rsrc/image/emoji/hamburger.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hammer.png' =>
+  array(
+    'hash' => '1a1a645018c273dbcc11a6bf6f95387d',
+    'uri' => '/res/1a1a6450/rsrc/image/emoji/hammer.png',
+    'disk' => '/rsrc/image/emoji/hammer.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hamster.png' =>
+  array(
+    'hash' => '2c32560f392cc877c485a6b04e7bbf80',
+    'uri' => '/res/2c32560f/rsrc/image/emoji/hamster.png',
+    'disk' => '/rsrc/image/emoji/hamster.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hand.png' =>
+  array(
+    'hash' => '0ad3bde5ba8206b3b407fd95e42c9e97',
+    'uri' => '/res/0ad3bde5/rsrc/image/emoji/hand.png',
+    'disk' => '/rsrc/image/emoji/hand.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/handbag.png' =>
+  array(
+    'hash' => '020a08fe2290d35597b3366bb8788938',
+    'uri' => '/res/020a08fe/rsrc/image/emoji/handbag.png',
+    'disk' => '/rsrc/image/emoji/handbag.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hankey.png' =>
+  array(
+    'hash' => '8e0ce523face2eaa19eae54908e12043',
+    'uri' => '/res/8e0ce523/rsrc/image/emoji/hankey.png',
+    'disk' => '/rsrc/image/emoji/hankey.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hash.png' =>
+  array(
+    'hash' => '4aa62ce4a8aac5d70e2a50a0170bd396',
+    'uri' => '/res/4aa62ce4/rsrc/image/emoji/hash.png',
+    'disk' => '/rsrc/image/emoji/hash.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hatched_chick.png' =>
+  array(
+    'hash' => '05c32b4966fa8cc02ceb1d22e8aa2e41',
+    'uri' => '/res/05c32b49/rsrc/image/emoji/hatched_chick.png',
+    'disk' => '/rsrc/image/emoji/hatched_chick.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hatching_chick.png' =>
+  array(
+    'hash' => 'a20188d9db1996fa5d925887978f8d08',
+    'uri' => '/res/a20188d9/rsrc/image/emoji/hatching_chick.png',
+    'disk' => '/rsrc/image/emoji/hatching_chick.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/headphones.png' =>
+  array(
+    'hash' => 'cea938c1ce3f33881606242d48167869',
+    'uri' => '/res/cea938c1/rsrc/image/emoji/headphones.png',
+    'disk' => '/rsrc/image/emoji/headphones.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hear_no_evil.png' =>
+  array(
+    'hash' => 'f8ebb15951c63d4672638046f1fc1ff7',
+    'uri' => '/res/f8ebb159/rsrc/image/emoji/hear_no_evil.png',
+    'disk' => '/rsrc/image/emoji/hear_no_evil.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heart.png' =>
+  array(
+    'hash' => '444783b2cb217785c1a5940e59f549b1',
+    'uri' => '/res/444783b2/rsrc/image/emoji/heart.png',
+    'disk' => '/rsrc/image/emoji/heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heart_decoration.png' =>
+  array(
+    'hash' => 'ecba0e9031d6d37886c760c81458dd53',
+    'uri' => '/res/ecba0e90/rsrc/image/emoji/heart_decoration.png',
+    'disk' => '/rsrc/image/emoji/heart_decoration.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heart_eyes.png' =>
+  array(
+    'hash' => '2429e16662d417314e55e55eb3db1f8b',
+    'uri' => '/res/2429e166/rsrc/image/emoji/heart_eyes.png',
+    'disk' => '/rsrc/image/emoji/heart_eyes.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heart_eyes_cat.png' =>
+  array(
+    'hash' => '0de783367f8c10a4e8edf9d2446d7bc8',
+    'uri' => '/res/0de78336/rsrc/image/emoji/heart_eyes_cat.png',
+    'disk' => '/rsrc/image/emoji/heart_eyes_cat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heartbeat.png' =>
+  array(
+    'hash' => '70739545aa1069c800c19e9488169c9e',
+    'uri' => '/res/70739545/rsrc/image/emoji/heartbeat.png',
+    'disk' => '/rsrc/image/emoji/heartbeat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heartpulse.png' =>
+  array(
+    'hash' => '7d9e45abd15e6cf25b793e980e83f392',
+    'uri' => '/res/7d9e45ab/rsrc/image/emoji/heartpulse.png',
+    'disk' => '/rsrc/image/emoji/heartpulse.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hearts.png' =>
+  array(
+    'hash' => '61e820f68050cfff64485a13d66c7942',
+    'uri' => '/res/61e820f6/rsrc/image/emoji/hearts.png',
+    'disk' => '/rsrc/image/emoji/hearts.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heavy_check_mark.png' =>
+  array(
+    'hash' => 'add4ff5e92b635d7a070af6c58a65d1b',
+    'uri' => '/res/add4ff5e/rsrc/image/emoji/heavy_check_mark.png',
+    'disk' => '/rsrc/image/emoji/heavy_check_mark.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heavy_division_sign.png' =>
+  array(
+    'hash' => '2016975e1b979a1a4a1da9f16b14f158',
+    'uri' => '/res/2016975e/rsrc/image/emoji/heavy_division_sign.png',
+    'disk' => '/rsrc/image/emoji/heavy_division_sign.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heavy_dollar_sign.png' =>
+  array(
+    'hash' => '28d9609681e6d1a8f18d5bb7d64493f9',
+    'uri' => '/res/28d96096/rsrc/image/emoji/heavy_dollar_sign.png',
+    'disk' => '/rsrc/image/emoji/heavy_dollar_sign.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heavy_exclamation_mark.png' =>
+  array(
+    'hash' => '31122d5a3225f8fb2de14719fc17aa16',
+    'uri' => '/res/31122d5a/rsrc/image/emoji/heavy_exclamation_mark.png',
+    'disk' => '/rsrc/image/emoji/heavy_exclamation_mark.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heavy_minus_sign.png' =>
+  array(
+    'hash' => 'a528faf43e6226754673eb8e02888096',
+    'uri' => '/res/a528faf4/rsrc/image/emoji/heavy_minus_sign.png',
+    'disk' => '/rsrc/image/emoji/heavy_minus_sign.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heavy_multiplication_x.png' =>
+  array(
+    'hash' => '0f46e96529ab415e9dc13d1b0e7a6216',
+    'uri' => '/res/0f46e965/rsrc/image/emoji/heavy_multiplication_x.png',
+    'disk' => '/rsrc/image/emoji/heavy_multiplication_x.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/heavy_plus_sign.png' =>
+  array(
+    'hash' => 'a11f2b4ce423701e04913d58e94ef32c',
+    'uri' => '/res/a11f2b4c/rsrc/image/emoji/heavy_plus_sign.png',
+    'disk' => '/rsrc/image/emoji/heavy_plus_sign.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/helicopter.png' =>
+  array(
+    'hash' => '902a796641320312a90eaf319dbaab90',
+    'uri' => '/res/902a7966/rsrc/image/emoji/helicopter.png',
+    'disk' => '/rsrc/image/emoji/helicopter.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/herb.png' =>
+  array(
+    'hash' => '1b4cf8416b175f83b7d98e41d1b84b87',
+    'uri' => '/res/1b4cf841/rsrc/image/emoji/herb.png',
+    'disk' => '/rsrc/image/emoji/herb.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hibiscus.png' =>
+  array(
+    'hash' => 'dbcdf1e23a7ceacdebd7435ab4671b96',
+    'uri' => '/res/dbcdf1e2/rsrc/image/emoji/hibiscus.png',
+    'disk' => '/rsrc/image/emoji/hibiscus.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/high_brightness.png' =>
+  array(
+    'hash' => '7ad56ff3d3ccdf64a203f72db2841e06',
+    'uri' => '/res/7ad56ff3/rsrc/image/emoji/high_brightness.png',
+    'disk' => '/rsrc/image/emoji/high_brightness.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/high_heel.png' =>
+  array(
+    'hash' => '10f41fde5860adbbea76ca32c0ae4108',
+    'uri' => '/res/10f41fde/rsrc/image/emoji/high_heel.png',
+    'disk' => '/rsrc/image/emoji/high_heel.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hocho.png' =>
+  array(
+    'hash' => '9229c665c564f3aa4f193fc4d775d4bd',
+    'uri' => '/res/9229c665/rsrc/image/emoji/hocho.png',
+    'disk' => '/rsrc/image/emoji/hocho.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/honey_pot.png' =>
+  array(
+    'hash' => 'b8fee0a5748406ce675468b592bed0cb',
+    'uri' => '/res/b8fee0a5/rsrc/image/emoji/honey_pot.png',
+    'disk' => '/rsrc/image/emoji/honey_pot.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/honeybee.png' =>
+  array(
+    'hash' => '409e2cb5226728aaca116db750b16ef8',
+    'uri' => '/res/409e2cb5/rsrc/image/emoji/honeybee.png',
+    'disk' => '/rsrc/image/emoji/honeybee.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/horse.png' =>
+  array(
+    'hash' => '761645dc85362748737b06a74c246db1',
+    'uri' => '/res/761645dc/rsrc/image/emoji/horse.png',
+    'disk' => '/rsrc/image/emoji/horse.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/horse_racing.png' =>
+  array(
+    'hash' => 'a6d04663e2f12070f8d420e3a6b7c6b4',
+    'uri' => '/res/a6d04663/rsrc/image/emoji/horse_racing.png',
+    'disk' => '/rsrc/image/emoji/horse_racing.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hospital.png' =>
+  array(
+    'hash' => '0060dcbeea82a6c835f60feedb723616',
+    'uri' => '/res/0060dcbe/rsrc/image/emoji/hospital.png',
+    'disk' => '/rsrc/image/emoji/hospital.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hotel.png' =>
+  array(
+    'hash' => '6d3ee431adebc8f5d64f66bd866c573a',
+    'uri' => '/res/6d3ee431/rsrc/image/emoji/hotel.png',
+    'disk' => '/rsrc/image/emoji/hotel.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hotsprings.png' =>
+  array(
+    'hash' => 'b6c72c5f74704ad26ac940cc10dd9263',
+    'uri' => '/res/b6c72c5f/rsrc/image/emoji/hotsprings.png',
+    'disk' => '/rsrc/image/emoji/hotsprings.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hourglass.png' =>
+  array(
+    'hash' => '3a3d56b1a301bb24b3346bbc230969d0',
+    'uri' => '/res/3a3d56b1/rsrc/image/emoji/hourglass.png',
+    'disk' => '/rsrc/image/emoji/hourglass.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hourglass_flowing_sand.png' =>
+  array(
+    'hash' => 'dbc6774c8c2e3fb516af9ff731a43d1e',
+    'uri' => '/res/dbc6774c/rsrc/image/emoji/hourglass_flowing_sand.png',
+    'disk' => '/rsrc/image/emoji/hourglass_flowing_sand.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/house.png' =>
+  array(
+    'hash' => '3c511ee96cf15f12e675b9218842c38a',
+    'uri' => '/res/3c511ee9/rsrc/image/emoji/house.png',
+    'disk' => '/rsrc/image/emoji/house.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/house_with_garden.png' =>
+  array(
+    'hash' => 'def01383b8ea9d8cc8d1367a59615840',
+    'uri' => '/res/def01383/rsrc/image/emoji/house_with_garden.png',
+    'disk' => '/rsrc/image/emoji/house_with_garden.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hurtrealbad.png' =>
+  array(
+    'hash' => '36ea53ce752d718cb06fcd62b24c9654',
+    'uri' => '/res/36ea53ce/rsrc/image/emoji/hurtrealbad.png',
+    'disk' => '/rsrc/image/emoji/hurtrealbad.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/hushed.png' =>
+  array(
+    'hash' => '6cc4fd50f7470213382245ab620d9f28',
+    'uri' => '/res/6cc4fd50/rsrc/image/emoji/hushed.png',
+    'disk' => '/rsrc/image/emoji/hushed.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ice_cream.png' =>
+  array(
+    'hash' => 'b0c2a211562dab6c51d4e4be01406637',
+    'uri' => '/res/b0c2a211/rsrc/image/emoji/ice_cream.png',
+    'disk' => '/rsrc/image/emoji/ice_cream.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/icecream.png' =>
+  array(
+    'hash' => 'c5c82b1522321813d955c3a76cf8c7b7',
+    'uri' => '/res/c5c82b15/rsrc/image/emoji/icecream.png',
+    'disk' => '/rsrc/image/emoji/icecream.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/id.png' =>
+  array(
+    'hash' => 'f6777058790e9e8a9777e892a6171786',
+    'uri' => '/res/f6777058/rsrc/image/emoji/id.png',
+    'disk' => '/rsrc/image/emoji/id.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ideograph_advantage.png' =>
+  array(
+    'hash' => '88def41ab7de6f26f97028cd5bc5bcfb',
+    'uri' => '/res/88def41a/rsrc/image/emoji/ideograph_advantage.png',
+    'disk' => '/rsrc/image/emoji/ideograph_advantage.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/imp.png' =>
+  array(
+    'hash' => '453f308afd108479c054d1cde40ca16b',
+    'uri' => '/res/453f308a/rsrc/image/emoji/imp.png',
+    'disk' => '/rsrc/image/emoji/imp.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/inbox_tray.png' =>
+  array(
+    'hash' => 'c455faa31be166e9ed0bc1f7394c2068',
+    'uri' => '/res/c455faa3/rsrc/image/emoji/inbox_tray.png',
+    'disk' => '/rsrc/image/emoji/inbox_tray.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/incoming_envelope.png' =>
+  array(
+    'hash' => '925308091a5d09a9785569d64300ad9b',
+    'uri' => '/res/92530809/rsrc/image/emoji/incoming_envelope.png',
+    'disk' => '/rsrc/image/emoji/incoming_envelope.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/information_desk_person.png' =>
+  array(
+    'hash' => '2101551e18cf8a382df6140ea65ae1cb',
+    'uri' => '/res/2101551e/rsrc/image/emoji/information_desk_person.png',
+    'disk' => '/rsrc/image/emoji/information_desk_person.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/information_source.png' =>
+  array(
+    'hash' => '0dce6fb501ef2ed7eeade0da5d0ebaae',
+    'uri' => '/res/0dce6fb5/rsrc/image/emoji/information_source.png',
+    'disk' => '/rsrc/image/emoji/information_source.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/innocent.png' =>
+  array(
+    'hash' => '9b9462934dca97942f08595f430ba511',
+    'uri' => '/res/9b946293/rsrc/image/emoji/innocent.png',
+    'disk' => '/rsrc/image/emoji/innocent.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/interrobang.png' =>
+  array(
+    'hash' => 'ace6b7371f62c6e64dde26257dbbf50b',
+    'uri' => '/res/ace6b737/rsrc/image/emoji/interrobang.png',
+    'disk' => '/rsrc/image/emoji/interrobang.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/iphone.png' =>
+  array(
+    'hash' => 'c16a8cc45da2f529cbfdfb7d26f73414',
+    'uri' => '/res/c16a8cc4/rsrc/image/emoji/iphone.png',
+    'disk' => '/rsrc/image/emoji/iphone.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/it.png' =>
+  array(
+    'hash' => '74cf117b87fcefd48f95c5fd8aa56665',
+    'uri' => '/res/74cf117b/rsrc/image/emoji/it.png',
+    'disk' => '/rsrc/image/emoji/it.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/izakaya_lantern.png' =>
+  array(
+    'hash' => '745a38f3b6ac98e1936c88df402e2434',
+    'uri' => '/res/745a38f3/rsrc/image/emoji/izakaya_lantern.png',
+    'disk' => '/rsrc/image/emoji/izakaya_lantern.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/jack_o_lantern.png' =>
+  array(
+    'hash' => '19fc495f49ff7c2faf4a3f4fca75a50c',
+    'uri' => '/res/19fc495f/rsrc/image/emoji/jack_o_lantern.png',
+    'disk' => '/rsrc/image/emoji/jack_o_lantern.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/japan.png' =>
+  array(
+    'hash' => '2b1f6d38bd2f38f1149982d56cfb369a',
+    'uri' => '/res/2b1f6d38/rsrc/image/emoji/japan.png',
+    'disk' => '/rsrc/image/emoji/japan.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/japanese_castle.png' =>
+  array(
+    'hash' => '000fb5e964eeef90b14cf0db84e23b24',
+    'uri' => '/res/000fb5e9/rsrc/image/emoji/japanese_castle.png',
+    'disk' => '/rsrc/image/emoji/japanese_castle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/japanese_goblin.png' =>
+  array(
+    'hash' => '611088e2c749fb533d42b6d8df85b1df',
+    'uri' => '/res/611088e2/rsrc/image/emoji/japanese_goblin.png',
+    'disk' => '/rsrc/image/emoji/japanese_goblin.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/japanese_ogre.png' =>
+  array(
+    'hash' => '5754e14965565a6351b20cb919ce71a2',
+    'uri' => '/res/5754e149/rsrc/image/emoji/japanese_ogre.png',
+    'disk' => '/rsrc/image/emoji/japanese_ogre.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/jeans.png' =>
+  array(
+    'hash' => 'ba164b73cf15be8eb6d05689bb1e5bc8',
+    'uri' => '/res/ba164b73/rsrc/image/emoji/jeans.png',
+    'disk' => '/rsrc/image/emoji/jeans.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/joy.png' =>
+  array(
+    'hash' => '7d00e33e17c6245843641586b0ce8b81',
+    'uri' => '/res/7d00e33e/rsrc/image/emoji/joy.png',
+    'disk' => '/rsrc/image/emoji/joy.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/joy_cat.png' =>
+  array(
+    'hash' => '677f08fa45fed2ba0e9d2e511daaa08c',
+    'uri' => '/res/677f08fa/rsrc/image/emoji/joy_cat.png',
+    'disk' => '/rsrc/image/emoji/joy_cat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/jp.png' =>
+  array(
+    'hash' => 'cfbabf0c9745f2744886acfe8d483b1e',
+    'uri' => '/res/cfbabf0c/rsrc/image/emoji/jp.png',
+    'disk' => '/rsrc/image/emoji/jp.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/key.png' =>
+  array(
+    'hash' => '29e5aaf137ca1e7ba61025bb8723622a',
+    'uri' => '/res/29e5aaf1/rsrc/image/emoji/key.png',
+    'disk' => '/rsrc/image/emoji/key.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/keycap_ten.png' =>
+  array(
+    'hash' => '2d515810714a489d18732fccb4c6b47a',
+    'uri' => '/res/2d515810/rsrc/image/emoji/keycap_ten.png',
+    'disk' => '/rsrc/image/emoji/keycap_ten.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/kimono.png' =>
+  array(
+    'hash' => '5ee7ed1149dc588a4630870c0eb92252',
+    'uri' => '/res/5ee7ed11/rsrc/image/emoji/kimono.png',
+    'disk' => '/rsrc/image/emoji/kimono.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/kiss.png' =>
+  array(
+    'hash' => '8f4abe1ebc544e1fba11956f12205b18',
+    'uri' => '/res/8f4abe1e/rsrc/image/emoji/kiss.png',
+    'disk' => '/rsrc/image/emoji/kiss.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/kissing.png' =>
+  array(
+    'hash' => 'e6c9f6d96f1c58722bc3620696f8f291',
+    'uri' => '/res/e6c9f6d9/rsrc/image/emoji/kissing.png',
+    'disk' => '/rsrc/image/emoji/kissing.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/kissing_cat.png' =>
+  array(
+    'hash' => '26715358005246d2cba8697a2b5b7f52',
+    'uri' => '/res/26715358/rsrc/image/emoji/kissing_cat.png',
+    'disk' => '/rsrc/image/emoji/kissing_cat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/kissing_closed_eyes.png' =>
+  array(
+    'hash' => '6517bd83a48de7153958e7921c678e71',
+    'uri' => '/res/6517bd83/rsrc/image/emoji/kissing_closed_eyes.png',
+    'disk' => '/rsrc/image/emoji/kissing_closed_eyes.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/kissing_heart.png' =>
+  array(
+    'hash' => 'f2d5794e0ad2fe63c7cda111552e08ef',
+    'uri' => '/res/f2d5794e/rsrc/image/emoji/kissing_heart.png',
+    'disk' => '/rsrc/image/emoji/kissing_heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/kissing_smiling_eyes.png' =>
+  array(
+    'hash' => '05ffafe966c64a126786891d0bd9d93c',
+    'uri' => '/res/05ffafe9/rsrc/image/emoji/kissing_smiling_eyes.png',
+    'disk' => '/rsrc/image/emoji/kissing_smiling_eyes.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/koala.png' =>
+  array(
+    'hash' => 'abf68416ced9ca46e95013932a96b5d4',
+    'uri' => '/res/abf68416/rsrc/image/emoji/koala.png',
+    'disk' => '/rsrc/image/emoji/koala.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/koko.png' =>
+  array(
+    'hash' => '8d7251627ddf0a1eae41d0189bb656ce',
+    'uri' => '/res/8d725162/rsrc/image/emoji/koko.png',
+    'disk' => '/rsrc/image/emoji/koko.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/kr.png' =>
+  array(
+    'hash' => '56c69f07dfea685b3891da2c579a3a91',
+    'uri' => '/res/56c69f07/rsrc/image/emoji/kr.png',
+    'disk' => '/rsrc/image/emoji/kr.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/large_blue_circle.png' =>
+  array(
+    'hash' => '55f20df7048cd16b049ffca808f0c63a',
+    'uri' => '/res/55f20df7/rsrc/image/emoji/large_blue_circle.png',
+    'disk' => '/rsrc/image/emoji/large_blue_circle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/large_blue_diamond.png' =>
+  array(
+    'hash' => '0b8556aef6a9be51b48db1453e516b63',
+    'uri' => '/res/0b8556ae/rsrc/image/emoji/large_blue_diamond.png',
+    'disk' => '/rsrc/image/emoji/large_blue_diamond.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/large_orange_diamond.png' =>
+  array(
+    'hash' => '3c19a731db1899799f6a64a9985afe6f',
+    'uri' => '/res/3c19a731/rsrc/image/emoji/large_orange_diamond.png',
+    'disk' => '/rsrc/image/emoji/large_orange_diamond.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/last_quarter_moon.png' =>
+  array(
+    'hash' => 'b6b6e9e9c25e04ba2d742e8bb410570c',
+    'uri' => '/res/b6b6e9e9/rsrc/image/emoji/last_quarter_moon.png',
+    'disk' => '/rsrc/image/emoji/last_quarter_moon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/last_quarter_moon_with_face.png' =>
+  array(
+    'hash' => '261dcc8a4c7ce6884fa2935b2f81883a',
+    'uri' => '/res/261dcc8a/rsrc/image/emoji/last_quarter_moon_with_face.png',
+    'disk' => '/rsrc/image/emoji/last_quarter_moon_with_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/laughing.png' =>
+  array(
+    'hash' => 'f901284bb88fe7f1574ee831dcb69204',
+    'uri' => '/res/f901284b/rsrc/image/emoji/laughing.png',
+    'disk' => '/rsrc/image/emoji/laughing.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/leaves.png' =>
+  array(
+    'hash' => 'febd6843d01de017f1b13f0895b3f571',
+    'uri' => '/res/febd6843/rsrc/image/emoji/leaves.png',
+    'disk' => '/rsrc/image/emoji/leaves.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ledger.png' =>
+  array(
+    'hash' => 'e9613a9dcb88e48d45f01f4180770549',
+    'uri' => '/res/e9613a9d/rsrc/image/emoji/ledger.png',
+    'disk' => '/rsrc/image/emoji/ledger.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/left_luggage.png' =>
+  array(
+    'hash' => 'ab0a8f8d193b731816d59d0e36202aee',
+    'uri' => '/res/ab0a8f8d/rsrc/image/emoji/left_luggage.png',
+    'disk' => '/rsrc/image/emoji/left_luggage.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/left_right_arrow.png' =>
+  array(
+    'hash' => '061fff98e6a2069818338943ea0418e4',
+    'uri' => '/res/061fff98/rsrc/image/emoji/left_right_arrow.png',
+    'disk' => '/rsrc/image/emoji/left_right_arrow.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/leftwards_arrow_with_hook.png' =>
+  array(
+    'hash' => 'a37897d4c8ee970b43bf6783f4d7333a',
+    'uri' => '/res/a37897d4/rsrc/image/emoji/leftwards_arrow_with_hook.png',
+    'disk' => '/rsrc/image/emoji/leftwards_arrow_with_hook.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/lemon.png' =>
+  array(
+    'hash' => 'd92f636b3c6716867dc69c45a25cb424',
+    'uri' => '/res/d92f636b/rsrc/image/emoji/lemon.png',
+    'disk' => '/rsrc/image/emoji/lemon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/leo.png' =>
+  array(
+    'hash' => '4991d3149d3972179801616214e3c2e2',
+    'uri' => '/res/4991d314/rsrc/image/emoji/leo.png',
+    'disk' => '/rsrc/image/emoji/leo.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/leopard.png' =>
+  array(
+    'hash' => 'ded9b13c6df063b3c12c075be2544ef5',
+    'uri' => '/res/ded9b13c/rsrc/image/emoji/leopard.png',
+    'disk' => '/rsrc/image/emoji/leopard.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/libra.png' =>
+  array(
+    'hash' => 'efd03a0c9d7c8de8335b3cccb89bf16f',
+    'uri' => '/res/efd03a0c/rsrc/image/emoji/libra.png',
+    'disk' => '/rsrc/image/emoji/libra.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/light_rail.png' =>
+  array(
+    'hash' => '9fe24759bbc5eb2695ac9a1822269856',
+    'uri' => '/res/9fe24759/rsrc/image/emoji/light_rail.png',
+    'disk' => '/rsrc/image/emoji/light_rail.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/link.png' =>
+  array(
+    'hash' => 'd64b330968bcd48172e0de75e18b9340',
+    'uri' => '/res/d64b3309/rsrc/image/emoji/link.png',
+    'disk' => '/rsrc/image/emoji/link.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/lips.png' =>
+  array(
+    'hash' => '473b6d375c57dd8b20942cfc2ccbd2cd',
+    'uri' => '/res/473b6d37/rsrc/image/emoji/lips.png',
+    'disk' => '/rsrc/image/emoji/lips.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/lipstick.png' =>
+  array(
+    'hash' => 'c450be906932a30970f12b8d314e7c01',
+    'uri' => '/res/c450be90/rsrc/image/emoji/lipstick.png',
+    'disk' => '/rsrc/image/emoji/lipstick.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/lock.png' =>
+  array(
+    'hash' => '4ce95ce87aaba769be99d1a19dad7689',
+    'uri' => '/res/4ce95ce8/rsrc/image/emoji/lock.png',
+    'disk' => '/rsrc/image/emoji/lock.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/lock_with_ink_pen.png' =>
+  array(
+    'hash' => 'ddc0b21c4896cddd078ce00fde64bb4d',
+    'uri' => '/res/ddc0b21c/rsrc/image/emoji/lock_with_ink_pen.png',
+    'disk' => '/rsrc/image/emoji/lock_with_ink_pen.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/lollipop.png' =>
+  array(
+    'hash' => '3a5ca41114c57e8128f02d3ebeba017c',
+    'uri' => '/res/3a5ca411/rsrc/image/emoji/lollipop.png',
+    'disk' => '/rsrc/image/emoji/lollipop.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/loop.png' =>
+  array(
+    'hash' => 'bf1151bb0a552a797b8c4e05c93d7460',
+    'uri' => '/res/bf1151bb/rsrc/image/emoji/loop.png',
+    'disk' => '/rsrc/image/emoji/loop.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/loudspeaker.png' =>
+  array(
+    'hash' => 'c10f7b21d1f1caa63040b73d10614439',
+    'uri' => '/res/c10f7b21/rsrc/image/emoji/loudspeaker.png',
+    'disk' => '/rsrc/image/emoji/loudspeaker.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/love_hotel.png' =>
+  array(
+    'hash' => '32ec3ddf8f95bc7e4b9e7b640f918808',
+    'uri' => '/res/32ec3ddf/rsrc/image/emoji/love_hotel.png',
+    'disk' => '/rsrc/image/emoji/love_hotel.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/love_letter.png' =>
+  array(
+    'hash' => 'e0e11c75943ba5a8d1a0b062bd7f2f3f',
+    'uri' => '/res/e0e11c75/rsrc/image/emoji/love_letter.png',
+    'disk' => '/rsrc/image/emoji/love_letter.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/low_brightness.png' =>
+  array(
+    'hash' => 'd56501eed3edcb0a9ec50d34dc2274c6',
+    'uri' => '/res/d56501ee/rsrc/image/emoji/low_brightness.png',
+    'disk' => '/rsrc/image/emoji/low_brightness.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/m.png' =>
+  array(
+    'hash' => 'c53a5badea343ee315e40ed1ab02a02b',
+    'uri' => '/res/c53a5bad/rsrc/image/emoji/m.png',
+    'disk' => '/rsrc/image/emoji/m.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mag.png' =>
+  array(
+    'hash' => 'fdc8cdbd0972be207c57e00474010d69',
+    'uri' => '/res/fdc8cdbd/rsrc/image/emoji/mag.png',
+    'disk' => '/rsrc/image/emoji/mag.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mag_right.png' =>
+  array(
+    'hash' => 'ccb89de9bee719f1807d8175ba5edba6',
+    'uri' => '/res/ccb89de9/rsrc/image/emoji/mag_right.png',
+    'disk' => '/rsrc/image/emoji/mag_right.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mahjong.png' =>
+  array(
+    'hash' => 'a9900d923479a6994f9dfd7e6eab8821',
+    'uri' => '/res/a9900d92/rsrc/image/emoji/mahjong.png',
+    'disk' => '/rsrc/image/emoji/mahjong.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mailbox.png' =>
+  array(
+    'hash' => '2b55cf9ecb27cc877f0c5b81f80b2e9c',
+    'uri' => '/res/2b55cf9e/rsrc/image/emoji/mailbox.png',
+    'disk' => '/rsrc/image/emoji/mailbox.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mailbox_closed.png' =>
+  array(
+    'hash' => '24650dbfcfb427565153fd7a63692246',
+    'uri' => '/res/24650dbf/rsrc/image/emoji/mailbox_closed.png',
+    'disk' => '/rsrc/image/emoji/mailbox_closed.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mailbox_with_mail.png' =>
+  array(
+    'hash' => 'e8c58b011e96cc44f1f6b1d765c998f5',
+    'uri' => '/res/e8c58b01/rsrc/image/emoji/mailbox_with_mail.png',
+    'disk' => '/rsrc/image/emoji/mailbox_with_mail.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mailbox_with_no_mail.png' =>
+  array(
+    'hash' => 'd92986771221cc6770054f208d96d90d',
+    'uri' => '/res/d9298677/rsrc/image/emoji/mailbox_with_no_mail.png',
+    'disk' => '/rsrc/image/emoji/mailbox_with_no_mail.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/man.png' =>
+  array(
+    'hash' => '20035aa747400e8b956f6ae16efdab8c',
+    'uri' => '/res/20035aa7/rsrc/image/emoji/man.png',
+    'disk' => '/rsrc/image/emoji/man.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/man_with_gua_pi_mao.png' =>
+  array(
+    'hash' => '71fcd7ec778ff7ba78e9a2071ca36e11',
+    'uri' => '/res/71fcd7ec/rsrc/image/emoji/man_with_gua_pi_mao.png',
+    'disk' => '/rsrc/image/emoji/man_with_gua_pi_mao.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/man_with_turban.png' =>
+  array(
+    'hash' => 'd1c2363d6fbea35466f1dad60241b939',
+    'uri' => '/res/d1c2363d/rsrc/image/emoji/man_with_turban.png',
+    'disk' => '/rsrc/image/emoji/man_with_turban.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mans_shoe.png' =>
+  array(
+    'hash' => '684e5da399d280c53df0605591164086',
+    'uri' => '/res/684e5da3/rsrc/image/emoji/mans_shoe.png',
+    'disk' => '/rsrc/image/emoji/mans_shoe.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/maple_leaf.png' =>
+  array(
+    'hash' => 'ff3b54bfd6c55b11dc2ef40abc0f2d0b',
+    'uri' => '/res/ff3b54bf/rsrc/image/emoji/maple_leaf.png',
+    'disk' => '/rsrc/image/emoji/maple_leaf.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mask.png' =>
+  array(
+    'hash' => 'd2563ebb32cb64d4445c8f000bb16ad4',
+    'uri' => '/res/d2563ebb/rsrc/image/emoji/mask.png',
+    'disk' => '/rsrc/image/emoji/mask.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/massage.png' =>
+  array(
+    'hash' => '13685c34a9f682f1ba429e1afb1ad99f',
+    'uri' => '/res/13685c34/rsrc/image/emoji/massage.png',
+    'disk' => '/rsrc/image/emoji/massage.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/meat_on_bone.png' =>
+  array(
+    'hash' => '51b099e73f5d03be1bf05c99b5683639',
+    'uri' => '/res/51b099e7/rsrc/image/emoji/meat_on_bone.png',
+    'disk' => '/rsrc/image/emoji/meat_on_bone.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mega.png' =>
+  array(
+    'hash' => 'cf264fdfbec830baf6744b8c888fcb2b',
+    'uri' => '/res/cf264fdf/rsrc/image/emoji/mega.png',
+    'disk' => '/rsrc/image/emoji/mega.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/melon.png' =>
+  array(
+    'hash' => '4f043263803781451cdde58df6e3a50f',
+    'uri' => '/res/4f043263/rsrc/image/emoji/melon.png',
+    'disk' => '/rsrc/image/emoji/melon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/memo.png' =>
+  array(
+    'hash' => 'ddc4e0c554a565d119c8cebec28ad762',
+    'uri' => '/res/ddc4e0c5/rsrc/image/emoji/memo.png',
+    'disk' => '/rsrc/image/emoji/memo.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mens.png' =>
+  array(
+    'hash' => '9a56ba846d9b9c18a4a89a4eee56a0cf',
+    'uri' => '/res/9a56ba84/rsrc/image/emoji/mens.png',
+    'disk' => '/rsrc/image/emoji/mens.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/metal.png' =>
+  array(
+    'hash' => '4af6e68b5519d77b5a244961bdc42b55',
+    'uri' => '/res/4af6e68b/rsrc/image/emoji/metal.png',
+    'disk' => '/rsrc/image/emoji/metal.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/metro.png' =>
+  array(
+    'hash' => '600f0e01be2b8a62ecf8cd0e53c3ed58',
+    'uri' => '/res/600f0e01/rsrc/image/emoji/metro.png',
+    'disk' => '/rsrc/image/emoji/metro.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/microphone.png' =>
+  array(
+    'hash' => 'd50654229f79f9020a8e582f4bc6a333',
+    'uri' => '/res/d5065422/rsrc/image/emoji/microphone.png',
+    'disk' => '/rsrc/image/emoji/microphone.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/microscope.png' =>
+  array(
+    'hash' => '99b37fc2467128d5e67d73af9a6b7cd5',
+    'uri' => '/res/99b37fc2/rsrc/image/emoji/microscope.png',
+    'disk' => '/rsrc/image/emoji/microscope.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/milky_way.png' =>
+  array(
+    'hash' => '3cbb1422a67879304a81958f2980a65d',
+    'uri' => '/res/3cbb1422/rsrc/image/emoji/milky_way.png',
+    'disk' => '/rsrc/image/emoji/milky_way.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/minibus.png' =>
+  array(
+    'hash' => '9d8226d520e4602b9783bf5b8b529113',
+    'uri' => '/res/9d8226d5/rsrc/image/emoji/minibus.png',
+    'disk' => '/rsrc/image/emoji/minibus.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/minidisc.png' =>
+  array(
+    'hash' => '1b2e6292a5b8133e3031aee0ba35a99a',
+    'uri' => '/res/1b2e6292/rsrc/image/emoji/minidisc.png',
+    'disk' => '/rsrc/image/emoji/minidisc.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mobile_phone_off.png' =>
+  array(
+    'hash' => '0ad83fe136d4347aff4dcf80cd76b8cd',
+    'uri' => '/res/0ad83fe1/rsrc/image/emoji/mobile_phone_off.png',
+    'disk' => '/rsrc/image/emoji/mobile_phone_off.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/money_with_wings.png' =>
+  array(
+    'hash' => '5e06442866293cac1a8c1ee45e2287dd',
+    'uri' => '/res/5e064428/rsrc/image/emoji/money_with_wings.png',
+    'disk' => '/rsrc/image/emoji/money_with_wings.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/moneybag.png' =>
+  array(
+    'hash' => 'd0e8178c0c8f4be5732a4211b29806a5',
+    'uri' => '/res/d0e8178c/rsrc/image/emoji/moneybag.png',
+    'disk' => '/rsrc/image/emoji/moneybag.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/monkey.png' =>
+  array(
+    'hash' => 'f1e4dd5712227c31a6eebe122f3585a2',
+    'uri' => '/res/f1e4dd57/rsrc/image/emoji/monkey.png',
+    'disk' => '/rsrc/image/emoji/monkey.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/monkey_face.png' =>
+  array(
+    'hash' => '7241cc2c4f999176a643a42e30cc6e2a',
+    'uri' => '/res/7241cc2c/rsrc/image/emoji/monkey_face.png',
+    'disk' => '/rsrc/image/emoji/monkey_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/monorail.png' =>
+  array(
+    'hash' => '8faf41ec4270888aae80f4e1799f4fb5',
+    'uri' => '/res/8faf41ec/rsrc/image/emoji/monorail.png',
+    'disk' => '/rsrc/image/emoji/monorail.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/moon.png' =>
+  array(
+    'hash' => 'ad86aa738ba9decedb065932da7461d8',
+    'uri' => '/res/ad86aa73/rsrc/image/emoji/moon.png',
+    'disk' => '/rsrc/image/emoji/moon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mortar_board.png' =>
+  array(
+    'hash' => 'f164e032dc3537a4d15b503978f2ba3c',
+    'uri' => '/res/f164e032/rsrc/image/emoji/mortar_board.png',
+    'disk' => '/rsrc/image/emoji/mortar_board.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mount_fuji.png' =>
+  array(
+    'hash' => 'abaf02f4d5c7f7c0ebcf9619161fa1ba',
+    'uri' => '/res/abaf02f4/rsrc/image/emoji/mount_fuji.png',
+    'disk' => '/rsrc/image/emoji/mount_fuji.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mountain_bicyclist.png' =>
+  array(
+    'hash' => 'd967d173e6e241284f20bb2de785bafa',
+    'uri' => '/res/d967d173/rsrc/image/emoji/mountain_bicyclist.png',
+    'disk' => '/rsrc/image/emoji/mountain_bicyclist.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mountain_cableway.png' =>
+  array(
+    'hash' => '5f407d4a94678da9b4030a4ce17323dd',
+    'uri' => '/res/5f407d4a/rsrc/image/emoji/mountain_cableway.png',
+    'disk' => '/rsrc/image/emoji/mountain_cableway.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mountain_railway.png' =>
+  array(
+    'hash' => 'aa5f0f79356b0dea2b67930c030f4fd0',
+    'uri' => '/res/aa5f0f79/rsrc/image/emoji/mountain_railway.png',
+    'disk' => '/rsrc/image/emoji/mountain_railway.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mouse.png' =>
+  array(
+    'hash' => '9a02b77fccdedd656b3ce9a218a8bdce',
+    'uri' => '/res/9a02b77f/rsrc/image/emoji/mouse.png',
+    'disk' => '/rsrc/image/emoji/mouse.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mouse2.png' =>
+  array(
+    'hash' => '4b691ef17749e51ac490d08089afb37c',
+    'uri' => '/res/4b691ef1/rsrc/image/emoji/mouse2.png',
+    'disk' => '/rsrc/image/emoji/mouse2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/movie_camera.png' =>
+  array(
+    'hash' => '38846ce799b6aa4d8bb03413451ba51d',
+    'uri' => '/res/38846ce7/rsrc/image/emoji/movie_camera.png',
+    'disk' => '/rsrc/image/emoji/movie_camera.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/moyai.png' =>
+  array(
+    'hash' => '9e21b6ee43fed1699e585033fb172500',
+    'uri' => '/res/9e21b6ee/rsrc/image/emoji/moyai.png',
+    'disk' => '/rsrc/image/emoji/moyai.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/muscle.png' =>
+  array(
+    'hash' => '6c50dce08696552700c6ce64b3d8577c',
+    'uri' => '/res/6c50dce0/rsrc/image/emoji/muscle.png',
+    'disk' => '/rsrc/image/emoji/muscle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mushroom.png' =>
+  array(
+    'hash' => '47bb83294051df6c0b8d6253f770f70a',
+    'uri' => '/res/47bb8329/rsrc/image/emoji/mushroom.png',
+    'disk' => '/rsrc/image/emoji/mushroom.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/musical_keyboard.png' =>
+  array(
+    'hash' => 'ab9f528bbc9f13bfb7c1c6c06b12e3b9',
+    'uri' => '/res/ab9f528b/rsrc/image/emoji/musical_keyboard.png',
+    'disk' => '/rsrc/image/emoji/musical_keyboard.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/musical_note.png' =>
+  array(
+    'hash' => '555e23ec2c28e8746eeaaf8c1645cb95',
+    'uri' => '/res/555e23ec/rsrc/image/emoji/musical_note.png',
+    'disk' => '/rsrc/image/emoji/musical_note.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/musical_score.png' =>
+  array(
+    'hash' => '4da83a8a520095e15c068d8fb3fdadcd',
+    'uri' => '/res/4da83a8a/rsrc/image/emoji/musical_score.png',
+    'disk' => '/rsrc/image/emoji/musical_score.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/mute.png' =>
+  array(
+    'hash' => '024f5d6c88a77d2e4f2134e8d599b843',
+    'uri' => '/res/024f5d6c/rsrc/image/emoji/mute.png',
+    'disk' => '/rsrc/image/emoji/mute.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/nail_care.png' =>
+  array(
+    'hash' => 'a770a8e25c10a1c03b5ce52066ba3d91',
+    'uri' => '/res/a770a8e2/rsrc/image/emoji/nail_care.png',
+    'disk' => '/rsrc/image/emoji/nail_care.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/name_badge.png' =>
+  array(
+    'hash' => 'a3ca8f72aa549320a43b54873e8e1fbf',
+    'uri' => '/res/a3ca8f72/rsrc/image/emoji/name_badge.png',
+    'disk' => '/rsrc/image/emoji/name_badge.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/neckbeard.png' =>
+  array(
+    'hash' => 'b457a720a314857129a253ad16d0d630',
+    'uri' => '/res/b457a720/rsrc/image/emoji/neckbeard.png',
+    'disk' => '/rsrc/image/emoji/neckbeard.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/necktie.png' =>
+  array(
+    'hash' => '0758ad24c3715f23a1c74257d856a60a',
+    'uri' => '/res/0758ad24/rsrc/image/emoji/necktie.png',
+    'disk' => '/rsrc/image/emoji/necktie.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/negative_squared_cross_mark.png' =>
+  array(
+    'hash' => 'cc9a187a62e0a1edfdee6d5df51fbe9e',
+    'uri' => '/res/cc9a187a/rsrc/image/emoji/negative_squared_cross_mark.png',
+    'disk' => '/rsrc/image/emoji/negative_squared_cross_mark.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/neutral_face.png' =>
+  array(
+    'hash' => 'ed2a6eb5c32b997aab2b110421a5366b',
+    'uri' => '/res/ed2a6eb5/rsrc/image/emoji/neutral_face.png',
+    'disk' => '/rsrc/image/emoji/neutral_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/new.png' =>
+  array(
+    'hash' => '4f9168b2d72d0f618302ed6f7b0bf4ec',
+    'uri' => '/res/4f9168b2/rsrc/image/emoji/new.png',
+    'disk' => '/rsrc/image/emoji/new.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/new_moon.png' =>
+  array(
+    'hash' => '973132f01c9a8058713568c2ae8082ba',
+    'uri' => '/res/973132f0/rsrc/image/emoji/new_moon.png',
+    'disk' => '/rsrc/image/emoji/new_moon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/new_moon_with_face.png' =>
+  array(
+    'hash' => '6218c3b7dacf42265b41f3049cd97f3f',
+    'uri' => '/res/6218c3b7/rsrc/image/emoji/new_moon_with_face.png',
+    'disk' => '/rsrc/image/emoji/new_moon_with_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/newspaper.png' =>
+  array(
+    'hash' => '81398bfdd5478939b40a346e26160678',
+    'uri' => '/res/81398bfd/rsrc/image/emoji/newspaper.png',
+    'disk' => '/rsrc/image/emoji/newspaper.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ng.png' =>
+  array(
+    'hash' => '0789fd5022f4cd4a069f731b22ee4817',
+    'uri' => '/res/0789fd50/rsrc/image/emoji/ng.png',
+    'disk' => '/rsrc/image/emoji/ng.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/nine.png' =>
+  array(
+    'hash' => '261e6b0f9aa432141a932243907ce241',
+    'uri' => '/res/261e6b0f/rsrc/image/emoji/nine.png',
+    'disk' => '/rsrc/image/emoji/nine.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/no_bell.png' =>
+  array(
+    'hash' => '203301b8a58357394a45fe6441676222',
+    'uri' => '/res/203301b8/rsrc/image/emoji/no_bell.png',
+    'disk' => '/rsrc/image/emoji/no_bell.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/no_bicycles.png' =>
+  array(
+    'hash' => '97ca71293e0047140f118e5420393f46',
+    'uri' => '/res/97ca7129/rsrc/image/emoji/no_bicycles.png',
+    'disk' => '/rsrc/image/emoji/no_bicycles.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/no_entry.png' =>
+  array(
+    'hash' => 'd0e74d10ff86578d681c57ee214e3fa1',
+    'uri' => '/res/d0e74d10/rsrc/image/emoji/no_entry.png',
+    'disk' => '/rsrc/image/emoji/no_entry.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/no_entry_sign.png' =>
+  array(
+    'hash' => '7b4b6c3e8ff63ffcd209ad3d423c9ff8',
+    'uri' => '/res/7b4b6c3e/rsrc/image/emoji/no_entry_sign.png',
+    'disk' => '/rsrc/image/emoji/no_entry_sign.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/no_good.png' =>
+  array(
+    'hash' => '5fc96f668287507cbec35e7344477d83',
+    'uri' => '/res/5fc96f66/rsrc/image/emoji/no_good.png',
+    'disk' => '/rsrc/image/emoji/no_good.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/no_mobile_phones.png' =>
+  array(
+    'hash' => 'dd6a9fed303776b4ed40608352f01599',
+    'uri' => '/res/dd6a9fed/rsrc/image/emoji/no_mobile_phones.png',
+    'disk' => '/rsrc/image/emoji/no_mobile_phones.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/no_mouth.png' =>
+  array(
+    'hash' => '06df74a3d3cca5fd2fe00e35802e1485',
+    'uri' => '/res/06df74a3/rsrc/image/emoji/no_mouth.png',
+    'disk' => '/rsrc/image/emoji/no_mouth.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/no_pedestrians.png' =>
+  array(
+    'hash' => '73d36417bf41511a3d1caf989f18487d',
+    'uri' => '/res/73d36417/rsrc/image/emoji/no_pedestrians.png',
+    'disk' => '/rsrc/image/emoji/no_pedestrians.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/no_smoking.png' =>
+  array(
+    'hash' => '03a1de2fe9ebab163d99f38d81157d90',
+    'uri' => '/res/03a1de2f/rsrc/image/emoji/no_smoking.png',
+    'disk' => '/rsrc/image/emoji/no_smoking.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/non-potable_water.png' =>
+  array(
+    'hash' => 'f080a5ab14614a9e2be60db279e2e23c',
+    'uri' => '/res/f080a5ab/rsrc/image/emoji/non-potable_water.png',
+    'disk' => '/rsrc/image/emoji/non-potable_water.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/nose.png' =>
+  array(
+    'hash' => 'd2d794e23363a6469dd45ac47df5465f',
+    'uri' => '/res/d2d794e2/rsrc/image/emoji/nose.png',
+    'disk' => '/rsrc/image/emoji/nose.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/notebook.png' =>
+  array(
+    'hash' => '861e91d2e607be00dd2678c1a0fe8094',
+    'uri' => '/res/861e91d2/rsrc/image/emoji/notebook.png',
+    'disk' => '/rsrc/image/emoji/notebook.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/notebook_with_decorative_cover.png' =>
+  array(
+    'hash' => '4f3e4d749f66528015d57e4ac4eb9a67',
+    'uri' => '/res/4f3e4d74/rsrc/image/emoji/notebook_with_decorative_cover.png',
+    'disk' => '/rsrc/image/emoji/notebook_with_decorative_cover.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/notes.png' =>
+  array(
+    'hash' => 'af92686ebdc5cb8961e0310973920fc8',
+    'uri' => '/res/af92686e/rsrc/image/emoji/notes.png',
+    'disk' => '/rsrc/image/emoji/notes.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/nut_and_bolt.png' =>
+  array(
+    'hash' => 'b53551d900030c27c73ed3dacb76e26e',
+    'uri' => '/res/b53551d9/rsrc/image/emoji/nut_and_bolt.png',
+    'disk' => '/rsrc/image/emoji/nut_and_bolt.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/o.png' =>
+  array(
+    'hash' => '0765bedbbc8beca6805fd58752f0da30',
+    'uri' => '/res/0765bedb/rsrc/image/emoji/o.png',
+    'disk' => '/rsrc/image/emoji/o.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/o2.png' =>
+  array(
+    'hash' => 'fc3320ea0d9050b984d00bf95b6fa213',
+    'uri' => '/res/fc3320ea/rsrc/image/emoji/o2.png',
+    'disk' => '/rsrc/image/emoji/o2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ocean.png' =>
+  array(
+    'hash' => 'afc729cc770a53aa811de28bcb8d9109',
+    'uri' => '/res/afc729cc/rsrc/image/emoji/ocean.png',
+    'disk' => '/rsrc/image/emoji/ocean.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/octocat.png' =>
+  array(
+    'hash' => '262527acce475b2cf7efe47bdc4be07e',
+    'uri' => '/res/262527ac/rsrc/image/emoji/octocat.png',
+    'disk' => '/rsrc/image/emoji/octocat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/octopus.png' =>
+  array(
+    'hash' => '4120ad0722e5491fac68b4783e5def49',
+    'uri' => '/res/4120ad07/rsrc/image/emoji/octopus.png',
+    'disk' => '/rsrc/image/emoji/octopus.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/oden.png' =>
+  array(
+    'hash' => 'cc569ab645c6b220a66d109fb80391e3',
+    'uri' => '/res/cc569ab6/rsrc/image/emoji/oden.png',
+    'disk' => '/rsrc/image/emoji/oden.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/office.png' =>
+  array(
+    'hash' => '926839bd7a20a72af1ed8c625db3b9ed',
+    'uri' => '/res/926839bd/rsrc/image/emoji/office.png',
+    'disk' => '/rsrc/image/emoji/office.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ok.png' =>
+  array(
+    'hash' => 'd538f1b0091a304cebf271bbab42d6d6',
+    'uri' => '/res/d538f1b0/rsrc/image/emoji/ok.png',
+    'disk' => '/rsrc/image/emoji/ok.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ok_hand.png' =>
+  array(
+    'hash' => 'a76a0dae89328e77b60f9a00a042c385',
+    'uri' => '/res/a76a0dae/rsrc/image/emoji/ok_hand.png',
+    'disk' => '/rsrc/image/emoji/ok_hand.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ok_woman.png' =>
+  array(
+    'hash' => 'b0c063d1ef2f87e392d896a800d78db1',
+    'uri' => '/res/b0c063d1/rsrc/image/emoji/ok_woman.png',
+    'disk' => '/rsrc/image/emoji/ok_woman.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/older_man.png' =>
+  array(
+    'hash' => '6e62ebb9a42daead86b3680e09e78f3a',
+    'uri' => '/res/6e62ebb9/rsrc/image/emoji/older_man.png',
+    'disk' => '/rsrc/image/emoji/older_man.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/older_woman.png' =>
+  array(
+    'hash' => 'aed069bfcda67ae7d4508251f01d954d',
+    'uri' => '/res/aed069bf/rsrc/image/emoji/older_woman.png',
+    'disk' => '/rsrc/image/emoji/older_woman.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/on.png' =>
+  array(
+    'hash' => '12aba2787a5cd399bfdf51e982ed75c7',
+    'uri' => '/res/12aba278/rsrc/image/emoji/on.png',
+    'disk' => '/rsrc/image/emoji/on.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/oncoming_automobile.png' =>
+  array(
+    'hash' => 'b85111defd456b278a746ce6817891ba',
+    'uri' => '/res/b85111de/rsrc/image/emoji/oncoming_automobile.png',
+    'disk' => '/rsrc/image/emoji/oncoming_automobile.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/oncoming_bus.png' =>
+  array(
+    'hash' => '2a8c9304bf146a0cfea7a8385a6638ff',
+    'uri' => '/res/2a8c9304/rsrc/image/emoji/oncoming_bus.png',
+    'disk' => '/rsrc/image/emoji/oncoming_bus.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/oncoming_police_car.png' =>
+  array(
+    'hash' => '74a864149db6412891e22c23859c97d6',
+    'uri' => '/res/74a86414/rsrc/image/emoji/oncoming_police_car.png',
+    'disk' => '/rsrc/image/emoji/oncoming_police_car.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/oncoming_taxi.png' =>
+  array(
+    'hash' => '8f86490d1c6cd7430a7dde90992970a7',
+    'uri' => '/res/8f86490d/rsrc/image/emoji/oncoming_taxi.png',
+    'disk' => '/rsrc/image/emoji/oncoming_taxi.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/one.png' =>
+  array(
+    'hash' => 'bf12cf57fe80eef09c29c3d1fc89b950',
+    'uri' => '/res/bf12cf57/rsrc/image/emoji/one.png',
+    'disk' => '/rsrc/image/emoji/one.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/open_file_folder.png' =>
+  array(
+    'hash' => '3a39fc09b8ff6bf320f8c0761df53e4f',
+    'uri' => '/res/3a39fc09/rsrc/image/emoji/open_file_folder.png',
+    'disk' => '/rsrc/image/emoji/open_file_folder.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/open_hands.png' =>
+  array(
+    'hash' => 'a75be976366ab2e42c9d6eb062e17959',
+    'uri' => '/res/a75be976/rsrc/image/emoji/open_hands.png',
+    'disk' => '/rsrc/image/emoji/open_hands.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/open_mouth.png' =>
+  array(
+    'hash' => 'c3960010ce332cef018df4ace5096f44',
+    'uri' => '/res/c3960010/rsrc/image/emoji/open_mouth.png',
+    'disk' => '/rsrc/image/emoji/open_mouth.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ophiuchus.png' =>
+  array(
+    'hash' => '559637b3b90014c73a1852372ff6e54d',
+    'uri' => '/res/559637b3/rsrc/image/emoji/ophiuchus.png',
+    'disk' => '/rsrc/image/emoji/ophiuchus.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/orange_book.png' =>
+  array(
+    'hash' => '72dbed3b3852b6d245cba6352bb9b361',
+    'uri' => '/res/72dbed3b/rsrc/image/emoji/orange_book.png',
+    'disk' => '/rsrc/image/emoji/orange_book.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/outbox_tray.png' =>
+  array(
+    'hash' => 'c424e6fc32543e19804cc4bcbaf46010',
+    'uri' => '/res/c424e6fc/rsrc/image/emoji/outbox_tray.png',
+    'disk' => '/rsrc/image/emoji/outbox_tray.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ox.png' =>
+  array(
+    'hash' => 'd7f45c08292f6165ff29ade80b29c615',
+    'uri' => '/res/d7f45c08/rsrc/image/emoji/ox.png',
+    'disk' => '/rsrc/image/emoji/ox.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/page_facing_up.png' =>
+  array(
+    'hash' => '37b232759cf7f5192cb60434aa97a6e8',
+    'uri' => '/res/37b23275/rsrc/image/emoji/page_facing_up.png',
+    'disk' => '/rsrc/image/emoji/page_facing_up.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/page_with_curl.png' =>
+  array(
+    'hash' => 'd74fc573dba73588392c610d7c00540d',
+    'uri' => '/res/d74fc573/rsrc/image/emoji/page_with_curl.png',
+    'disk' => '/rsrc/image/emoji/page_with_curl.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pager.png' =>
+  array(
+    'hash' => 'dba9dfe88cc0b6e2ab597b38c85b66d3',
+    'uri' => '/res/dba9dfe8/rsrc/image/emoji/pager.png',
+    'disk' => '/rsrc/image/emoji/pager.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/palm_tree.png' =>
+  array(
+    'hash' => '8de91dfa5ea92fdff740d8a4f091301a',
+    'uri' => '/res/8de91dfa/rsrc/image/emoji/palm_tree.png',
+    'disk' => '/rsrc/image/emoji/palm_tree.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/panda_face.png' =>
+  array(
+    'hash' => 'c28df1d019b575692f6c268e267905cc',
+    'uri' => '/res/c28df1d0/rsrc/image/emoji/panda_face.png',
+    'disk' => '/rsrc/image/emoji/panda_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/paperclip.png' =>
+  array(
+    'hash' => 'a93bdba18fc9fa9292629d46ba443297',
+    'uri' => '/res/a93bdba1/rsrc/image/emoji/paperclip.png',
+    'disk' => '/rsrc/image/emoji/paperclip.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/parking.png' =>
+  array(
+    'hash' => 'af4f2b201f1f6923416e8e19e365ddf5',
+    'uri' => '/res/af4f2b20/rsrc/image/emoji/parking.png',
+    'disk' => '/rsrc/image/emoji/parking.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/part_alternation_mark.png' =>
+  array(
+    'hash' => 'de2582ffae91ca45871340028dfbf4c8',
+    'uri' => '/res/de2582ff/rsrc/image/emoji/part_alternation_mark.png',
+    'disk' => '/rsrc/image/emoji/part_alternation_mark.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/partly_sunny.png' =>
+  array(
+    'hash' => 'ce6e376f1fdc22bdade16ae8a96cdfb1',
+    'uri' => '/res/ce6e376f/rsrc/image/emoji/partly_sunny.png',
+    'disk' => '/rsrc/image/emoji/partly_sunny.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/passport_control.png' =>
+  array(
+    'hash' => '5d351a4f0e52eef5ead709b42fc6357b',
+    'uri' => '/res/5d351a4f/rsrc/image/emoji/passport_control.png',
+    'disk' => '/rsrc/image/emoji/passport_control.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/paw_prints.png' =>
+  array(
+    'hash' => '0398f009a5e9275fbc30e989f676b39b',
+    'uri' => '/res/0398f009/rsrc/image/emoji/paw_prints.png',
+    'disk' => '/rsrc/image/emoji/paw_prints.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/peach.png' =>
+  array(
+    'hash' => '1cc6e3cb08d9cf795fa78cfc59b66e20',
+    'uri' => '/res/1cc6e3cb/rsrc/image/emoji/peach.png',
+    'disk' => '/rsrc/image/emoji/peach.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pear.png' =>
+  array(
+    'hash' => 'c02b3a9b9400cf715aaa52ca55e8ca6e',
+    'uri' => '/res/c02b3a9b/rsrc/image/emoji/pear.png',
+    'disk' => '/rsrc/image/emoji/pear.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pencil.png' =>
+  array(
+    'hash' => '564e4e6d3fe8d098b0060f7115d6b0af',
+    'uri' => '/res/564e4e6d/rsrc/image/emoji/pencil.png',
+    'disk' => '/rsrc/image/emoji/pencil.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pencil2.png' =>
+  array(
+    'hash' => '30e977cb332c8dd04f5bf1546b514d7c',
+    'uri' => '/res/30e977cb/rsrc/image/emoji/pencil2.png',
+    'disk' => '/rsrc/image/emoji/pencil2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/penguin.png' =>
+  array(
+    'hash' => '07e303fa3ddfbb9bc3bcefa951d8ad80',
+    'uri' => '/res/07e303fa/rsrc/image/emoji/penguin.png',
+    'disk' => '/rsrc/image/emoji/penguin.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pensive.png' =>
+  array(
+    'hash' => 'e491d982de729326f11ae280a8a869e8',
+    'uri' => '/res/e491d982/rsrc/image/emoji/pensive.png',
+    'disk' => '/rsrc/image/emoji/pensive.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/performing_arts.png' =>
+  array(
+    'hash' => '1dbf0c7cfcf2409ec837c3ce74719c8a',
+    'uri' => '/res/1dbf0c7c/rsrc/image/emoji/performing_arts.png',
+    'disk' => '/rsrc/image/emoji/performing_arts.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/persevere.png' =>
+  array(
+    'hash' => '98143e16032c2b25bc430f1beb97c4ab',
+    'uri' => '/res/98143e16/rsrc/image/emoji/persevere.png',
+    'disk' => '/rsrc/image/emoji/persevere.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/person_frowning.png' =>
+  array(
+    'hash' => 'b6f24c5b82277e1a7b4b2eb7a7218d2d',
+    'uri' => '/res/b6f24c5b/rsrc/image/emoji/person_frowning.png',
+    'disk' => '/rsrc/image/emoji/person_frowning.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/person_with_blond_hair.png' =>
+  array(
+    'hash' => 'ebbacffb84aa34ef961c3ed1b3f4a536',
+    'uri' => '/res/ebbacffb/rsrc/image/emoji/person_with_blond_hair.png',
+    'disk' => '/rsrc/image/emoji/person_with_blond_hair.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/person_with_pouting_face.png' =>
+  array(
+    'hash' => '4c1baa6615defd7ea6bd7ae92b3498cd',
+    'uri' => '/res/4c1baa66/rsrc/image/emoji/person_with_pouting_face.png',
+    'disk' => '/rsrc/image/emoji/person_with_pouting_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/phone.png' =>
+  array(
+    'hash' => '7889e7695829e10b268d360a211d03d2',
+    'uri' => '/res/7889e769/rsrc/image/emoji/phone.png',
+    'disk' => '/rsrc/image/emoji/phone.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pig.png' =>
+  array(
+    'hash' => '12b6f1d8abf95422573037addb0e9f03',
+    'uri' => '/res/12b6f1d8/rsrc/image/emoji/pig.png',
+    'disk' => '/rsrc/image/emoji/pig.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pig2.png' =>
+  array(
+    'hash' => 'b4fe8429ab2e418207e7322ba75b4cdb',
+    'uri' => '/res/b4fe8429/rsrc/image/emoji/pig2.png',
+    'disk' => '/rsrc/image/emoji/pig2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pig_nose.png' =>
+  array(
+    'hash' => '21878694ae2f2d3afeecc21af64da286',
+    'uri' => '/res/21878694/rsrc/image/emoji/pig_nose.png',
+    'disk' => '/rsrc/image/emoji/pig_nose.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pill.png' =>
+  array(
+    'hash' => 'bfb266d272e298f5c8a82f01cc8a4457',
+    'uri' => '/res/bfb266d2/rsrc/image/emoji/pill.png',
+    'disk' => '/rsrc/image/emoji/pill.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pineapple.png' =>
+  array(
+    'hash' => 'fdf35278c3f6c233fb86cfb3c9aa4df9',
+    'uri' => '/res/fdf35278/rsrc/image/emoji/pineapple.png',
+    'disk' => '/rsrc/image/emoji/pineapple.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pisces.png' =>
+  array(
+    'hash' => 'd41ebd42d334394c22e747dbb5390819',
+    'uri' => '/res/d41ebd42/rsrc/image/emoji/pisces.png',
+    'disk' => '/rsrc/image/emoji/pisces.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pizza.png' =>
+  array(
+    'hash' => 'af2683c6fe4757b3c1ad677b68452813',
+    'uri' => '/res/af2683c6/rsrc/image/emoji/pizza.png',
+    'disk' => '/rsrc/image/emoji/pizza.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/point_down.png' =>
+  array(
+    'hash' => '74058cffb956d4a0c01990bfd4d32bae',
+    'uri' => '/res/74058cff/rsrc/image/emoji/point_down.png',
+    'disk' => '/rsrc/image/emoji/point_down.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/point_left.png' =>
+  array(
+    'hash' => '01562ebc366f2fb3b5a662355a88cd91',
+    'uri' => '/res/01562ebc/rsrc/image/emoji/point_left.png',
+    'disk' => '/rsrc/image/emoji/point_left.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/point_right.png' =>
+  array(
+    'hash' => '4593cc53fe162c9c9283189a224193a2',
+    'uri' => '/res/4593cc53/rsrc/image/emoji/point_right.png',
+    'disk' => '/rsrc/image/emoji/point_right.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/point_up.png' =>
+  array(
+    'hash' => '06e6635c9015af4f42e2bfde90fc5fd3',
+    'uri' => '/res/06e6635c/rsrc/image/emoji/point_up.png',
+    'disk' => '/rsrc/image/emoji/point_up.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/point_up_2.png' =>
+  array(
+    'hash' => 'ea9357041f56495c0989df58213841d5',
+    'uri' => '/res/ea935704/rsrc/image/emoji/point_up_2.png',
+    'disk' => '/rsrc/image/emoji/point_up_2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/police_car.png' =>
+  array(
+    'hash' => 'a2ecbcb9ec32913c1f28ccc778fb2427',
+    'uri' => '/res/a2ecbcb9/rsrc/image/emoji/police_car.png',
+    'disk' => '/rsrc/image/emoji/police_car.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/poodle.png' =>
+  array(
+    'hash' => '406a453f4f98c9c758d8a14dabc566ad',
+    'uri' => '/res/406a453f/rsrc/image/emoji/poodle.png',
+    'disk' => '/rsrc/image/emoji/poodle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/poop.png' =>
+  array(
+    'hash' => '5b112252ae62e21c22c3baa1c3472c43',
+    'uri' => '/res/5b112252/rsrc/image/emoji/poop.png',
+    'disk' => '/rsrc/image/emoji/poop.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/post_office.png' =>
+  array(
+    'hash' => '07d3006fc37954c56670947ce376adf4',
+    'uri' => '/res/07d3006f/rsrc/image/emoji/post_office.png',
+    'disk' => '/rsrc/image/emoji/post_office.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/postal_horn.png' =>
+  array(
+    'hash' => '2848746114dfa77877b83cc9ee81fb75',
+    'uri' => '/res/28487461/rsrc/image/emoji/postal_horn.png',
+    'disk' => '/rsrc/image/emoji/postal_horn.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/postbox.png' =>
+  array(
+    'hash' => '9388d205f1ee389de1bca2aa0b51246b',
+    'uri' => '/res/9388d205/rsrc/image/emoji/postbox.png',
+    'disk' => '/rsrc/image/emoji/postbox.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/potable_water.png' =>
+  array(
+    'hash' => '383a2be6c8d902ccd7a1c90e8419be5d',
+    'uri' => '/res/383a2be6/rsrc/image/emoji/potable_water.png',
+    'disk' => '/rsrc/image/emoji/potable_water.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pouch.png' =>
+  array(
+    'hash' => '6ca806f4fc6aad7dbcc1d3fd417fddc8',
+    'uri' => '/res/6ca806f4/rsrc/image/emoji/pouch.png',
+    'disk' => '/rsrc/image/emoji/pouch.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/poultry_leg.png' =>
+  array(
+    'hash' => '3a973351bca58f518c151196c358bcf7',
+    'uri' => '/res/3a973351/rsrc/image/emoji/poultry_leg.png',
+    'disk' => '/rsrc/image/emoji/poultry_leg.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pound.png' =>
+  array(
+    'hash' => 'b2ef832b6485a65d5b5f6737e8184d62',
+    'uri' => '/res/b2ef832b/rsrc/image/emoji/pound.png',
+    'disk' => '/rsrc/image/emoji/pound.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pouting_cat.png' =>
+  array(
+    'hash' => 'c927f6f53abba20dba613085de83d212',
+    'uri' => '/res/c927f6f5/rsrc/image/emoji/pouting_cat.png',
+    'disk' => '/rsrc/image/emoji/pouting_cat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pray.png' =>
+  array(
+    'hash' => '93c183c54744a1db06dbfa5ce3f2a8ae',
+    'uri' => '/res/93c183c5/rsrc/image/emoji/pray.png',
+    'disk' => '/rsrc/image/emoji/pray.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/princess.png' =>
+  array(
+    'hash' => '86f0ec8caef6f340efd525e7bd4e6af4',
+    'uri' => '/res/86f0ec8c/rsrc/image/emoji/princess.png',
+    'disk' => '/rsrc/image/emoji/princess.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/punch.png' =>
+  array(
+    'hash' => '84ea7c55ea4cea3eda8efbc664dd926e',
+    'uri' => '/res/84ea7c55/rsrc/image/emoji/punch.png',
+    'disk' => '/rsrc/image/emoji/punch.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/purple_heart.png' =>
+  array(
+    'hash' => 'b265952309394df3054eafeab5e3df68',
+    'uri' => '/res/b2659523/rsrc/image/emoji/purple_heart.png',
+    'disk' => '/rsrc/image/emoji/purple_heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/purse.png' =>
+  array(
+    'hash' => '2b854675f2f21aecef87bad1cef97a87',
+    'uri' => '/res/2b854675/rsrc/image/emoji/purse.png',
+    'disk' => '/rsrc/image/emoji/purse.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/pushpin.png' =>
+  array(
+    'hash' => 'beb7da01a072ff6e9c42bb0afb6c59f9',
+    'uri' => '/res/beb7da01/rsrc/image/emoji/pushpin.png',
+    'disk' => '/rsrc/image/emoji/pushpin.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/put_litter_in_its_place.png' =>
+  array(
+    'hash' => 'b6928e335643788f46faf537985a5165',
+    'uri' => '/res/b6928e33/rsrc/image/emoji/put_litter_in_its_place.png',
+    'disk' => '/rsrc/image/emoji/put_litter_in_its_place.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/question.png' =>
+  array(
+    'hash' => '98550930e1bbfbc2d3f73324127f91f9',
+    'uri' => '/res/98550930/rsrc/image/emoji/question.png',
+    'disk' => '/rsrc/image/emoji/question.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rabbit.png' =>
+  array(
+    'hash' => '32a873567ce2e9e2d98110f7eb22651a',
+    'uri' => '/res/32a87356/rsrc/image/emoji/rabbit.png',
+    'disk' => '/rsrc/image/emoji/rabbit.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rabbit2.png' =>
+  array(
+    'hash' => 'e80e06dfe3e8d46c3972984cd8043a8a',
+    'uri' => '/res/e80e06df/rsrc/image/emoji/rabbit2.png',
+    'disk' => '/rsrc/image/emoji/rabbit2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/racehorse.png' =>
+  array(
+    'hash' => '3045bc9fae72766b7a66f705fd11b1f7',
+    'uri' => '/res/3045bc9f/rsrc/image/emoji/racehorse.png',
+    'disk' => '/rsrc/image/emoji/racehorse.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/radio.png' =>
+  array(
+    'hash' => 'f7544ca1dbde67f4edb20203b3b52ed8',
+    'uri' => '/res/f7544ca1/rsrc/image/emoji/radio.png',
+    'disk' => '/rsrc/image/emoji/radio.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/radio_button.png' =>
+  array(
+    'hash' => '0f2eb1fa44b23b3bec93319f9f4ae1d8',
+    'uri' => '/res/0f2eb1fa/rsrc/image/emoji/radio_button.png',
+    'disk' => '/rsrc/image/emoji/radio_button.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rage.png' =>
+  array(
+    'hash' => '8a004a7a1110610f4b78aa93c3a9a89a',
+    'uri' => '/res/8a004a7a/rsrc/image/emoji/rage.png',
+    'disk' => '/rsrc/image/emoji/rage.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rage1.png' =>
+  array(
+    'hash' => '6e2c6635a2aaedefab6c7cd826f71a8e',
+    'uri' => '/res/6e2c6635/rsrc/image/emoji/rage1.png',
+    'disk' => '/rsrc/image/emoji/rage1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rage2.png' =>
+  array(
+    'hash' => 'dee8041980677fb3378de2640a993adf',
+    'uri' => '/res/dee80419/rsrc/image/emoji/rage2.png',
+    'disk' => '/rsrc/image/emoji/rage2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rage3.png' =>
+  array(
+    'hash' => '400a1d9661c26025a3b54187c12eb598',
+    'uri' => '/res/400a1d96/rsrc/image/emoji/rage3.png',
+    'disk' => '/rsrc/image/emoji/rage3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rage4.png' =>
+  array(
+    'hash' => '14b3a6e2c50fa85ce80ac4b2a05ce6b7',
+    'uri' => '/res/14b3a6e2/rsrc/image/emoji/rage4.png',
+    'disk' => '/rsrc/image/emoji/rage4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/railway_car.png' =>
+  array(
+    'hash' => 'f344064566c1eda75cc49eb75ed91059',
+    'uri' => '/res/f3440645/rsrc/image/emoji/railway_car.png',
+    'disk' => '/rsrc/image/emoji/railway_car.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rainbow.png' =>
+  array(
+    'hash' => 'aa43b3b7e13e27a4490a34a1f11232c3',
+    'uri' => '/res/aa43b3b7/rsrc/image/emoji/rainbow.png',
+    'disk' => '/rsrc/image/emoji/rainbow.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/raised_hand.png' =>
+  array(
+    'hash' => '53d3a8622abf51630bfce0060829b9fd',
+    'uri' => '/res/53d3a862/rsrc/image/emoji/raised_hand.png',
+    'disk' => '/rsrc/image/emoji/raised_hand.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/raised_hands.png' =>
+  array(
+    'hash' => '523b8ffea0a5032a89911f5b592106ca',
+    'uri' => '/res/523b8ffe/rsrc/image/emoji/raised_hands.png',
+    'disk' => '/rsrc/image/emoji/raised_hands.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ram.png' =>
+  array(
+    'hash' => '11dba8e31909293aab21cb275cff96c3',
+    'uri' => '/res/11dba8e3/rsrc/image/emoji/ram.png',
+    'disk' => '/rsrc/image/emoji/ram.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ramen.png' =>
+  array(
+    'hash' => '1fd5c7d982ab09242c956563df539d6f',
+    'uri' => '/res/1fd5c7d9/rsrc/image/emoji/ramen.png',
+    'disk' => '/rsrc/image/emoji/ramen.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rat.png' =>
+  array(
+    'hash' => '878fd48ab095b8f5bfbecbe186976627',
+    'uri' => '/res/878fd48a/rsrc/image/emoji/rat.png',
+    'disk' => '/rsrc/image/emoji/rat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/recycle.png' =>
+  array(
+    'hash' => '93accb8bc7129a8a535d9a4b3e50e544',
+    'uri' => '/res/93accb8b/rsrc/image/emoji/recycle.png',
+    'disk' => '/rsrc/image/emoji/recycle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/red_car.png' =>
+  array(
+    'hash' => 'a77d66e0a7a3cd4372383f3ee853d282',
+    'uri' => '/res/a77d66e0/rsrc/image/emoji/red_car.png',
+    'disk' => '/rsrc/image/emoji/red_car.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/red_circle.png' =>
+  array(
+    'hash' => '2e016a0a5116dfb2504041e2a92743b4',
+    'uri' => '/res/2e016a0a/rsrc/image/emoji/red_circle.png',
+    'disk' => '/rsrc/image/emoji/red_circle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/registered.png' =>
+  array(
+    'hash' => '25421af2f26449d50d26d1fde7fe20d6',
+    'uri' => '/res/25421af2/rsrc/image/emoji/registered.png',
+    'disk' => '/rsrc/image/emoji/registered.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/relaxed.png' =>
+  array(
+    'hash' => 'db85dddc99d5f303bbb1392b19bb0cf4',
+    'uri' => '/res/db85dddc/rsrc/image/emoji/relaxed.png',
+    'disk' => '/rsrc/image/emoji/relaxed.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/relieved.png' =>
+  array(
+    'hash' => '84db2f47eb7434a48809cee7ac1c73cb',
+    'uri' => '/res/84db2f47/rsrc/image/emoji/relieved.png',
+    'disk' => '/rsrc/image/emoji/relieved.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/repeat.png' =>
+  array(
+    'hash' => '53ec067e37de1ac7c2e0fead2dafd344',
+    'uri' => '/res/53ec067e/rsrc/image/emoji/repeat.png',
+    'disk' => '/rsrc/image/emoji/repeat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/repeat_one.png' =>
+  array(
+    'hash' => 'b0f413677a3e9a3863de0e5f248f4385',
+    'uri' => '/res/b0f41367/rsrc/image/emoji/repeat_one.png',
+    'disk' => '/rsrc/image/emoji/repeat_one.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/restroom.png' =>
+  array(
+    'hash' => '12408071738cd271266c7ed6a0548ed3',
+    'uri' => '/res/12408071/rsrc/image/emoji/restroom.png',
+    'disk' => '/rsrc/image/emoji/restroom.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/revolving_hearts.png' =>
+  array(
+    'hash' => '1ff2b44c9dc1b62f3cc3edd8cb2d56a4',
+    'uri' => '/res/1ff2b44c/rsrc/image/emoji/revolving_hearts.png',
+    'disk' => '/rsrc/image/emoji/revolving_hearts.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rewind.png' =>
+  array(
+    'hash' => 'c8a81272b54790e3d0edafb42447ac6d',
+    'uri' => '/res/c8a81272/rsrc/image/emoji/rewind.png',
+    'disk' => '/rsrc/image/emoji/rewind.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ribbon.png' =>
+  array(
+    'hash' => 'a0e09205d7f734d44708e483fbf9dca1',
+    'uri' => '/res/a0e09205/rsrc/image/emoji/ribbon.png',
+    'disk' => '/rsrc/image/emoji/ribbon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rice.png' =>
+  array(
+    'hash' => '1d18454a991900df599764ff18b7cf3f',
+    'uri' => '/res/1d18454a/rsrc/image/emoji/rice.png',
+    'disk' => '/rsrc/image/emoji/rice.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rice_ball.png' =>
+  array(
+    'hash' => '808ead12a9022961b050f8c3df47adbe',
+    'uri' => '/res/808ead12/rsrc/image/emoji/rice_ball.png',
+    'disk' => '/rsrc/image/emoji/rice_ball.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rice_cracker.png' =>
+  array(
+    'hash' => '10db2766eaab666e337fa5f1abfa175a',
+    'uri' => '/res/10db2766/rsrc/image/emoji/rice_cracker.png',
+    'disk' => '/rsrc/image/emoji/rice_cracker.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rice_scene.png' =>
+  array(
+    'hash' => 'e1a9bdd02a6d266690e2a2533317ce88',
+    'uri' => '/res/e1a9bdd0/rsrc/image/emoji/rice_scene.png',
+    'disk' => '/rsrc/image/emoji/rice_scene.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ring.png' =>
+  array(
+    'hash' => '946af425e8a8f1ea2ba48d499531cd7e',
+    'uri' => '/res/946af425/rsrc/image/emoji/ring.png',
+    'disk' => '/rsrc/image/emoji/ring.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rocket.png' =>
+  array(
+    'hash' => '08c32c62ddb83cdf20c7cf1a38bbd169',
+    'uri' => '/res/08c32c62/rsrc/image/emoji/rocket.png',
+    'disk' => '/rsrc/image/emoji/rocket.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/roller_coaster.png' =>
+  array(
+    'hash' => 'b68e50c1b9d5cb703de6f1b35c276990',
+    'uri' => '/res/b68e50c1/rsrc/image/emoji/roller_coaster.png',
+    'disk' => '/rsrc/image/emoji/roller_coaster.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rooster.png' =>
+  array(
+    'hash' => '07daad995121aa7796ab3a84b0c58457',
+    'uri' => '/res/07daad99/rsrc/image/emoji/rooster.png',
+    'disk' => '/rsrc/image/emoji/rooster.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rose.png' =>
+  array(
+    'hash' => 'ab39d33818c34f68ea685d45f3c3f5dd',
+    'uri' => '/res/ab39d338/rsrc/image/emoji/rose.png',
+    'disk' => '/rsrc/image/emoji/rose.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rotating_light.png' =>
+  array(
+    'hash' => '698739da120adfd24be11b763cdabad9',
+    'uri' => '/res/698739da/rsrc/image/emoji/rotating_light.png',
+    'disk' => '/rsrc/image/emoji/rotating_light.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/round_pushpin.png' =>
+  array(
+    'hash' => 'd4b97b6719cf7518a6ec13ec64546c2f',
+    'uri' => '/res/d4b97b67/rsrc/image/emoji/round_pushpin.png',
+    'disk' => '/rsrc/image/emoji/round_pushpin.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rowboat.png' =>
+  array(
+    'hash' => 'fb5477e05840889228ac9c2bafe2d32f',
+    'uri' => '/res/fb5477e0/rsrc/image/emoji/rowboat.png',
+    'disk' => '/rsrc/image/emoji/rowboat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ru.png' =>
+  array(
+    'hash' => '57d1c8f9b1cf86879ca56568604ba5ea',
+    'uri' => '/res/57d1c8f9/rsrc/image/emoji/ru.png',
+    'disk' => '/rsrc/image/emoji/ru.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/rugby_football.png' =>
+  array(
+    'hash' => 'f34bc8220c77f35a7ea02dd5441f7561',
+    'uri' => '/res/f34bc822/rsrc/image/emoji/rugby_football.png',
+    'disk' => '/rsrc/image/emoji/rugby_football.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/runner.png' =>
+  array(
+    'hash' => '7551675f859ff1a17b9e59a9fc6a7205',
+    'uri' => '/res/7551675f/rsrc/image/emoji/runner.png',
+    'disk' => '/rsrc/image/emoji/runner.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/running.png' =>
+  array(
+    'hash' => 'd15506fd78d21273cf1791572657c06c',
+    'uri' => '/res/d15506fd/rsrc/image/emoji/running.png',
+    'disk' => '/rsrc/image/emoji/running.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/running_shirt_with_sash.png' =>
+  array(
+    'hash' => 'e57e3aa70a64f1f9bbf484090e76032f',
+    'uri' => '/res/e57e3aa7/rsrc/image/emoji/running_shirt_with_sash.png',
+    'disk' => '/rsrc/image/emoji/running_shirt_with_sash.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sa.png' =>
+  array(
+    'hash' => '7bb360707788753d6a49708c13276394',
+    'uri' => '/res/7bb36070/rsrc/image/emoji/sa.png',
+    'disk' => '/rsrc/image/emoji/sa.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sagittarius.png' =>
+  array(
+    'hash' => '1274e60d20eb75b660015137acf14341',
+    'uri' => '/res/1274e60d/rsrc/image/emoji/sagittarius.png',
+    'disk' => '/rsrc/image/emoji/sagittarius.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sailboat.png' =>
+  array(
+    'hash' => '7132939fffca38c398416621cd6c0bae',
+    'uri' => '/res/7132939f/rsrc/image/emoji/sailboat.png',
+    'disk' => '/rsrc/image/emoji/sailboat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sake.png' =>
+  array(
+    'hash' => '08d576df85b53f538618fcca937f09f6',
+    'uri' => '/res/08d576df/rsrc/image/emoji/sake.png',
+    'disk' => '/rsrc/image/emoji/sake.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sandal.png' =>
+  array(
+    'hash' => '65ad3d79cfded5e58be8b51e3931f637',
+    'uri' => '/res/65ad3d79/rsrc/image/emoji/sandal.png',
+    'disk' => '/rsrc/image/emoji/sandal.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/santa.png' =>
+  array(
+    'hash' => '6ce42de44f042896fe095536651ca03c',
+    'uri' => '/res/6ce42de4/rsrc/image/emoji/santa.png',
+    'disk' => '/rsrc/image/emoji/santa.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/satellite.png' =>
+  array(
+    'hash' => '881164bb503b18366d9c4afd339230ce',
+    'uri' => '/res/881164bb/rsrc/image/emoji/satellite.png',
+    'disk' => '/rsrc/image/emoji/satellite.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/satisfied.png' =>
+  array(
+    'hash' => '4ede7e0cb7ef0acdf3b6f7ccdca9de81',
+    'uri' => '/res/4ede7e0c/rsrc/image/emoji/satisfied.png',
+    'disk' => '/rsrc/image/emoji/satisfied.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/saxophone.png' =>
+  array(
+    'hash' => 'ba8cdaff501fe2041be622e149d5f989',
+    'uri' => '/res/ba8cdaff/rsrc/image/emoji/saxophone.png',
+    'disk' => '/rsrc/image/emoji/saxophone.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/school.png' =>
+  array(
+    'hash' => '40cf3fe616774a7c95b7ac0a39d870fc',
+    'uri' => '/res/40cf3fe6/rsrc/image/emoji/school.png',
+    'disk' => '/rsrc/image/emoji/school.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/school_satchel.png' =>
+  array(
+    'hash' => '738af2e523e91ca9ea7cf493e8e1f2b1',
+    'uri' => '/res/738af2e5/rsrc/image/emoji/school_satchel.png',
+    'disk' => '/rsrc/image/emoji/school_satchel.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/scissors.png' =>
+  array(
+    'hash' => '28db682fffdde81017385f07f01fec30',
+    'uri' => '/res/28db682f/rsrc/image/emoji/scissors.png',
+    'disk' => '/rsrc/image/emoji/scissors.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/scorpius.png' =>
+  array(
+    'hash' => '8d9771f6e4e62c6c69ba68dc86fce86f',
+    'uri' => '/res/8d9771f6/rsrc/image/emoji/scorpius.png',
+    'disk' => '/rsrc/image/emoji/scorpius.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/scream.png' =>
+  array(
+    'hash' => '8625b1f8c16c694723ce7b5b529dd642',
+    'uri' => '/res/8625b1f8/rsrc/image/emoji/scream.png',
+    'disk' => '/rsrc/image/emoji/scream.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/scream_cat.png' =>
+  array(
+    'hash' => 'd6f7298583686fef5c8b13058ec2697f',
+    'uri' => '/res/d6f72985/rsrc/image/emoji/scream_cat.png',
+    'disk' => '/rsrc/image/emoji/scream_cat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/scroll.png' =>
+  array(
+    'hash' => 'f6214c9bb8e340b3fe34bb8086e409f3',
+    'uri' => '/res/f6214c9b/rsrc/image/emoji/scroll.png',
+    'disk' => '/rsrc/image/emoji/scroll.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/seat.png' =>
+  array(
+    'hash' => 'c1c565f2393aeef93167e3e8d3e714a0',
+    'uri' => '/res/c1c565f2/rsrc/image/emoji/seat.png',
+    'disk' => '/rsrc/image/emoji/seat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/secret.png' =>
+  array(
+    'hash' => '3cb603d214215fb1f7f3a2e6fd111754',
+    'uri' => '/res/3cb603d2/rsrc/image/emoji/secret.png',
+    'disk' => '/rsrc/image/emoji/secret.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/see_no_evil.png' =>
+  array(
+    'hash' => '1b830d764d959a585d9a82f8f354ca6f',
+    'uri' => '/res/1b830d76/rsrc/image/emoji/see_no_evil.png',
+    'disk' => '/rsrc/image/emoji/see_no_evil.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/seedling.png' =>
+  array(
+    'hash' => '4bca9f3939faef5438fc673a21975f4a',
+    'uri' => '/res/4bca9f39/rsrc/image/emoji/seedling.png',
+    'disk' => '/rsrc/image/emoji/seedling.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/seven.png' =>
+  array(
+    'hash' => '87017134924d689b43f76d8f7b09a877',
+    'uri' => '/res/87017134/rsrc/image/emoji/seven.png',
+    'disk' => '/rsrc/image/emoji/seven.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/shaved_ice.png' =>
+  array(
+    'hash' => '6ae12106b578369455d56248a851f640',
+    'uri' => '/res/6ae12106/rsrc/image/emoji/shaved_ice.png',
+    'disk' => '/rsrc/image/emoji/shaved_ice.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sheep.png' =>
+  array(
+    'hash' => '94f581ac222684ae5333ed395ef4e735',
+    'uri' => '/res/94f581ac/rsrc/image/emoji/sheep.png',
+    'disk' => '/rsrc/image/emoji/sheep.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/shell.png' =>
+  array(
+    'hash' => 'd2dfc8500690710b74ccab7fd5dbf834',
+    'uri' => '/res/d2dfc850/rsrc/image/emoji/shell.png',
+    'disk' => '/rsrc/image/emoji/shell.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ship.png' =>
+  array(
+    'hash' => 'e9716e9d14f7b16f3db3b48573e68018',
+    'uri' => '/res/e9716e9d/rsrc/image/emoji/ship.png',
+    'disk' => '/rsrc/image/emoji/ship.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/shipit.png' =>
+  array(
+    'hash' => 'f4c913c932b0a80a4618a76bc84435e9',
+    'uri' => '/res/f4c913c9/rsrc/image/emoji/shipit.png',
+    'disk' => '/rsrc/image/emoji/shipit.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/shirt.png' =>
+  array(
+    'hash' => '9e603abbb6005ccf79c8a8ead60dc628',
+    'uri' => '/res/9e603abb/rsrc/image/emoji/shirt.png',
+    'disk' => '/rsrc/image/emoji/shirt.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/shit.png' =>
+  array(
+    'hash' => '95c3040d4351d09f5ceb8a299744b5ea',
+    'uri' => '/res/95c3040d/rsrc/image/emoji/shit.png',
+    'disk' => '/rsrc/image/emoji/shit.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/shoe.png' =>
+  array(
+    'hash' => '2655266aea8743bf5a60aae2feb86f00',
+    'uri' => '/res/2655266a/rsrc/image/emoji/shoe.png',
+    'disk' => '/rsrc/image/emoji/shoe.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/shower.png' =>
+  array(
+    'hash' => '302df0c05fcee926414357f6e7e5bf62',
+    'uri' => '/res/302df0c0/rsrc/image/emoji/shower.png',
+    'disk' => '/rsrc/image/emoji/shower.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/signal_strength.png' =>
+  array(
+    'hash' => '1fbded8529626f7ea341a5f1470152cc',
+    'uri' => '/res/1fbded85/rsrc/image/emoji/signal_strength.png',
+    'disk' => '/rsrc/image/emoji/signal_strength.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/six.png' =>
+  array(
+    'hash' => '774eebfa35ba5b884d85f9f7c87b190c',
+    'uri' => '/res/774eebfa/rsrc/image/emoji/six.png',
+    'disk' => '/rsrc/image/emoji/six.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/six_pointed_star.png' =>
+  array(
+    'hash' => '6178366d395893f07fcf8681934a62b0',
+    'uri' => '/res/6178366d/rsrc/image/emoji/six_pointed_star.png',
+    'disk' => '/rsrc/image/emoji/six_pointed_star.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ski.png' =>
+  array(
+    'hash' => '38782aef0d699e0c4b5f15a5eeaf88af',
+    'uri' => '/res/38782aef/rsrc/image/emoji/ski.png',
+    'disk' => '/rsrc/image/emoji/ski.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/skull.png' =>
+  array(
+    'hash' => '3474270397d2e20c7fd986709f899ded',
+    'uri' => '/res/34742703/rsrc/image/emoji/skull.png',
+    'disk' => '/rsrc/image/emoji/skull.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sleeping.png' =>
+  array(
+    'hash' => 'a4c8a8d00d887745b0f70e58c4e1c9d4',
+    'uri' => '/res/a4c8a8d0/rsrc/image/emoji/sleeping.png',
+    'disk' => '/rsrc/image/emoji/sleeping.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sleepy.png' =>
+  array(
+    'hash' => '0440033f220f428859432943e85a4f58',
+    'uri' => '/res/0440033f/rsrc/image/emoji/sleepy.png',
+    'disk' => '/rsrc/image/emoji/sleepy.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/slot_machine.png' =>
+  array(
+    'hash' => '2bea710e7e679ccad9153933c62d7481',
+    'uri' => '/res/2bea710e/rsrc/image/emoji/slot_machine.png',
+    'disk' => '/rsrc/image/emoji/slot_machine.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/small_blue_diamond.png' =>
+  array(
+    'hash' => '2d4a251c03afa07776ae3a53c4080b24',
+    'uri' => '/res/2d4a251c/rsrc/image/emoji/small_blue_diamond.png',
+    'disk' => '/rsrc/image/emoji/small_blue_diamond.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/small_orange_diamond.png' =>
+  array(
+    'hash' => '038bb728297fbfacbff14d330ad3ba8f',
+    'uri' => '/res/038bb728/rsrc/image/emoji/small_orange_diamond.png',
+    'disk' => '/rsrc/image/emoji/small_orange_diamond.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/small_red_triangle.png' =>
+  array(
+    'hash' => 'b494ad5b63db1ec42dba15fdda3eb12e',
+    'uri' => '/res/b494ad5b/rsrc/image/emoji/small_red_triangle.png',
+    'disk' => '/rsrc/image/emoji/small_red_triangle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/small_red_triangle_down.png' =>
+  array(
+    'hash' => '8d1d452d549d2c316fbb4118cac47049',
+    'uri' => '/res/8d1d452d/rsrc/image/emoji/small_red_triangle_down.png',
+    'disk' => '/rsrc/image/emoji/small_red_triangle_down.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/smile.png' =>
+  array(
+    'hash' => '44d71ea68d570a64133fdb820989e9e5',
+    'uri' => '/res/44d71ea6/rsrc/image/emoji/smile.png',
+    'disk' => '/rsrc/image/emoji/smile.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/smile_cat.png' =>
+  array(
+    'hash' => 'fd56ff316a351254ff2bd4e13949de65',
+    'uri' => '/res/fd56ff31/rsrc/image/emoji/smile_cat.png',
+    'disk' => '/rsrc/image/emoji/smile_cat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/smiley.png' =>
+  array(
+    'hash' => 'f676e42d8b9fcaafb865dadf29014e9f',
+    'uri' => '/res/f676e42d/rsrc/image/emoji/smiley.png',
+    'disk' => '/rsrc/image/emoji/smiley.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/smiley_cat.png' =>
+  array(
+    'hash' => 'b116031586f29535a207bbb0099b8c75',
+    'uri' => '/res/b1160315/rsrc/image/emoji/smiley_cat.png',
+    'disk' => '/rsrc/image/emoji/smiley_cat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/smiling_imp.png' =>
+  array(
+    'hash' => '520015d37d5b86f2a6dbf81cf4500fe6',
+    'uri' => '/res/520015d3/rsrc/image/emoji/smiling_imp.png',
+    'disk' => '/rsrc/image/emoji/smiling_imp.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/smirk.png' =>
+  array(
+    'hash' => '9d53fbd3ebd66424af0efa18fb69d532',
+    'uri' => '/res/9d53fbd3/rsrc/image/emoji/smirk.png',
+    'disk' => '/rsrc/image/emoji/smirk.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/smirk_cat.png' =>
+  array(
+    'hash' => 'e1c10120dc77a1a548d3844cc638b592',
+    'uri' => '/res/e1c10120/rsrc/image/emoji/smirk_cat.png',
+    'disk' => '/rsrc/image/emoji/smirk_cat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/smoking.png' =>
+  array(
+    'hash' => 'e60c301207f0ab587e77dba02b9a0411',
+    'uri' => '/res/e60c3012/rsrc/image/emoji/smoking.png',
+    'disk' => '/rsrc/image/emoji/smoking.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/snail.png' =>
+  array(
+    'hash' => '82f57b836868855cf568df30440da03e',
+    'uri' => '/res/82f57b83/rsrc/image/emoji/snail.png',
+    'disk' => '/rsrc/image/emoji/snail.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/snake.png' =>
+  array(
+    'hash' => 'c862e19d04fd1f1c427faf934cb007af',
+    'uri' => '/res/c862e19d/rsrc/image/emoji/snake.png',
+    'disk' => '/rsrc/image/emoji/snake.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/snowboarder.png' =>
+  array(
+    'hash' => '844deda74f24e5927e7039043561fff4',
+    'uri' => '/res/844deda7/rsrc/image/emoji/snowboarder.png',
+    'disk' => '/rsrc/image/emoji/snowboarder.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/snowflake.png' =>
+  array(
+    'hash' => '2d9ea72185c99628be31a369cab4afa8',
+    'uri' => '/res/2d9ea721/rsrc/image/emoji/snowflake.png',
+    'disk' => '/rsrc/image/emoji/snowflake.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/snowman.png' =>
+  array(
+    'hash' => '2002e3837e61e728fcd4fb304999180e',
+    'uri' => '/res/2002e383/rsrc/image/emoji/snowman.png',
+    'disk' => '/rsrc/image/emoji/snowman.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sob.png' =>
+  array(
+    'hash' => '551ab5ebff5a01cf4a5f678f30ec21c9',
+    'uri' => '/res/551ab5eb/rsrc/image/emoji/sob.png',
+    'disk' => '/rsrc/image/emoji/sob.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/soccer.png' =>
+  array(
+    'hash' => '0b2ad04f707f122e8e88875c78f125db',
+    'uri' => '/res/0b2ad04f/rsrc/image/emoji/soccer.png',
+    'disk' => '/rsrc/image/emoji/soccer.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/soon.png' =>
+  array(
+    'hash' => '417e18a4d7b9c6335a537e724cf47047',
+    'uri' => '/res/417e18a4/rsrc/image/emoji/soon.png',
+    'disk' => '/rsrc/image/emoji/soon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sos.png' =>
+  array(
+    'hash' => 'c2254a4a55f0ae8736857c3fab29fc02',
+    'uri' => '/res/c2254a4a/rsrc/image/emoji/sos.png',
+    'disk' => '/rsrc/image/emoji/sos.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sound.png' =>
+  array(
+    'hash' => '7321e665061561c3166d1c046a2e8791',
+    'uri' => '/res/7321e665/rsrc/image/emoji/sound.png',
+    'disk' => '/rsrc/image/emoji/sound.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/space_invader.png' =>
+  array(
+    'hash' => '4c11c50641cd25fd5fc856826f31499e',
+    'uri' => '/res/4c11c506/rsrc/image/emoji/space_invader.png',
+    'disk' => '/rsrc/image/emoji/space_invader.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/spades.png' =>
+  array(
+    'hash' => 'e80002c2c26274830b7ac468d3686ac8',
+    'uri' => '/res/e80002c2/rsrc/image/emoji/spades.png',
+    'disk' => '/rsrc/image/emoji/spades.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/spaghetti.png' =>
+  array(
+    'hash' => 'c51e627dbfabc33a1450f56aa0a5081e',
+    'uri' => '/res/c51e627d/rsrc/image/emoji/spaghetti.png',
+    'disk' => '/rsrc/image/emoji/spaghetti.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sparkler.png' =>
+  array(
+    'hash' => '974b0130545fc009a5ec5732176930af',
+    'uri' => '/res/974b0130/rsrc/image/emoji/sparkler.png',
+    'disk' => '/rsrc/image/emoji/sparkler.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sparkles.png' =>
+  array(
+    'hash' => 'c8841cd6887b862d6953e9e960dbb41e',
+    'uri' => '/res/c8841cd6/rsrc/image/emoji/sparkles.png',
+    'disk' => '/rsrc/image/emoji/sparkles.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sparkling_heart.png' =>
+  array(
+    'hash' => 'c338afa41f39aaadf6aa675eeb573e54',
+    'uri' => '/res/c338afa4/rsrc/image/emoji/sparkling_heart.png',
+    'disk' => '/rsrc/image/emoji/sparkling_heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/speak_no_evil.png' =>
+  array(
+    'hash' => 'af2ab1106a6f1f199c02522706b73276',
+    'uri' => '/res/af2ab110/rsrc/image/emoji/speak_no_evil.png',
+    'disk' => '/rsrc/image/emoji/speak_no_evil.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/speaker.png' =>
+  array(
+    'hash' => '8867f492a3d20a6bb6e9227c99939cb7',
+    'uri' => '/res/8867f492/rsrc/image/emoji/speaker.png',
+    'disk' => '/rsrc/image/emoji/speaker.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/speech_balloon.png' =>
+  array(
+    'hash' => 'b688f50f0835ef5afa3183921b7b49a5',
+    'uri' => '/res/b688f50f/rsrc/image/emoji/speech_balloon.png',
+    'disk' => '/rsrc/image/emoji/speech_balloon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/speedboat.png' =>
+  array(
+    'hash' => '22e247c3095a278b0ade5d69b5407bec',
+    'uri' => '/res/22e247c3/rsrc/image/emoji/speedboat.png',
+    'disk' => '/rsrc/image/emoji/speedboat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/squirrel.png' =>
+  array(
+    'hash' => '590728a08afce9d1124862b54b0b57d1',
+    'uri' => '/res/590728a0/rsrc/image/emoji/squirrel.png',
+    'disk' => '/rsrc/image/emoji/squirrel.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/star.png' =>
+  array(
+    'hash' => '3bed3d396de6c917087ba734723b26a7',
+    'uri' => '/res/3bed3d39/rsrc/image/emoji/star.png',
+    'disk' => '/rsrc/image/emoji/star.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/star2.png' =>
+  array(
+    'hash' => '61700f022fa1943b87d7221d4a34e0ab',
+    'uri' => '/res/61700f02/rsrc/image/emoji/star2.png',
+    'disk' => '/rsrc/image/emoji/star2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/stars.png' =>
+  array(
+    'hash' => 'a3a6d701bf64cc72ca351362bc632f31',
+    'uri' => '/res/a3a6d701/rsrc/image/emoji/stars.png',
+    'disk' => '/rsrc/image/emoji/stars.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/station.png' =>
+  array(
+    'hash' => 'ec83f5767d2ab9ebf6c830a7a3e80213',
+    'uri' => '/res/ec83f576/rsrc/image/emoji/station.png',
+    'disk' => '/rsrc/image/emoji/station.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/statue_of_liberty.png' =>
+  array(
+    'hash' => '71e5d5a15f2bfcdc711f44cb7427dd2b',
+    'uri' => '/res/71e5d5a1/rsrc/image/emoji/statue_of_liberty.png',
+    'disk' => '/rsrc/image/emoji/statue_of_liberty.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/steam_locomotive.png' =>
+  array(
+    'hash' => '61fb3c99d54241eed8b9455375480a3c',
+    'uri' => '/res/61fb3c99/rsrc/image/emoji/steam_locomotive.png',
+    'disk' => '/rsrc/image/emoji/steam_locomotive.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/stew.png' =>
+  array(
+    'hash' => '8bbf4c109cdc7fe96651d285411e75ee',
+    'uri' => '/res/8bbf4c10/rsrc/image/emoji/stew.png',
+    'disk' => '/rsrc/image/emoji/stew.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/straight_ruler.png' =>
+  array(
+    'hash' => 'c7d1b7247457180d0c8c9f8a4178dd28',
+    'uri' => '/res/c7d1b724/rsrc/image/emoji/straight_ruler.png',
+    'disk' => '/rsrc/image/emoji/straight_ruler.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/strawberry.png' =>
+  array(
+    'hash' => '8b77abe6ff1d9602a96517029fcd3b71',
+    'uri' => '/res/8b77abe6/rsrc/image/emoji/strawberry.png',
+    'disk' => '/rsrc/image/emoji/strawberry.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/stuck_out_tongue.png' =>
+  array(
+    'hash' => '3d62555af78b301a870de1ff51444d19',
+    'uri' => '/res/3d62555a/rsrc/image/emoji/stuck_out_tongue.png',
+    'disk' => '/rsrc/image/emoji/stuck_out_tongue.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/stuck_out_tongue_closed_eyes.png' =>
+  array(
+    'hash' => '088c92254769cac74a9f03e0e35b2ad7',
+    'uri' => '/res/088c9225/rsrc/image/emoji/stuck_out_tongue_closed_eyes.png',
+    'disk' => '/rsrc/image/emoji/stuck_out_tongue_closed_eyes.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/stuck_out_tongue_winking_eye.png' =>
+  array(
+    'hash' => 'cecb7c0e09b7bcc2f268264e08df959f',
+    'uri' => '/res/cecb7c0e/rsrc/image/emoji/stuck_out_tongue_winking_eye.png',
+    'disk' => '/rsrc/image/emoji/stuck_out_tongue_winking_eye.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sun_with_face.png' =>
+  array(
+    'hash' => 'a68a2005b3359993d8457051433da136',
+    'uri' => '/res/a68a2005/rsrc/image/emoji/sun_with_face.png',
+    'disk' => '/rsrc/image/emoji/sun_with_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sunflower.png' =>
+  array(
+    'hash' => 'f24169685f0704277bdce988d0d289f8',
+    'uri' => '/res/f2416968/rsrc/image/emoji/sunflower.png',
+    'disk' => '/rsrc/image/emoji/sunflower.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sunglasses.png' =>
+  array(
+    'hash' => '84b0131f7b16d02fc5d0f2e6b0740c90',
+    'uri' => '/res/84b0131f/rsrc/image/emoji/sunglasses.png',
+    'disk' => '/rsrc/image/emoji/sunglasses.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sunny.png' =>
+  array(
+    'hash' => '94fd16231e3742d2039ee2de70f44d98',
+    'uri' => '/res/94fd1623/rsrc/image/emoji/sunny.png',
+    'disk' => '/rsrc/image/emoji/sunny.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sunrise.png' =>
+  array(
+    'hash' => '285eafe7d20508798f976fa08eee89b4',
+    'uri' => '/res/285eafe7/rsrc/image/emoji/sunrise.png',
+    'disk' => '/rsrc/image/emoji/sunrise.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sunrise_over_mountains.png' =>
+  array(
+    'hash' => 'c68778375335c22cd7131090bdc3b43d',
+    'uri' => '/res/c6877837/rsrc/image/emoji/sunrise_over_mountains.png',
+    'disk' => '/rsrc/image/emoji/sunrise_over_mountains.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/surfer.png' =>
+  array(
+    'hash' => '725c7b6fcb2c60ada0d6618ad346b9a3',
+    'uri' => '/res/725c7b6f/rsrc/image/emoji/surfer.png',
+    'disk' => '/rsrc/image/emoji/surfer.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sushi.png' =>
+  array(
+    'hash' => '132f936ac18901f0a7b6e3d8a755e431',
+    'uri' => '/res/132f936a/rsrc/image/emoji/sushi.png',
+    'disk' => '/rsrc/image/emoji/sushi.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/suspect.png' =>
+  array(
+    'hash' => 'c02e0ab6939a8cdf04873295250ed2fa',
+    'uri' => '/res/c02e0ab6/rsrc/image/emoji/suspect.png',
+    'disk' => '/rsrc/image/emoji/suspect.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/suspension_railway.png' =>
+  array(
+    'hash' => '187c3a5d553d86279135ecdde566d5c9',
+    'uri' => '/res/187c3a5d/rsrc/image/emoji/suspension_railway.png',
+    'disk' => '/rsrc/image/emoji/suspension_railway.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sweat.png' =>
+  array(
+    'hash' => '850f818744712013ad0206e13a120512',
+    'uri' => '/res/850f8187/rsrc/image/emoji/sweat.png',
+    'disk' => '/rsrc/image/emoji/sweat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sweat_drops.png' =>
+  array(
+    'hash' => '2d1607201b4571e2197adc7919b7bb15',
+    'uri' => '/res/2d160720/rsrc/image/emoji/sweat_drops.png',
+    'disk' => '/rsrc/image/emoji/sweat_drops.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sweat_smile.png' =>
+  array(
+    'hash' => 'ed1b498ff89b6f31a6672c2407d4a32a',
+    'uri' => '/res/ed1b498f/rsrc/image/emoji/sweat_smile.png',
+    'disk' => '/rsrc/image/emoji/sweat_smile.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/sweet_potato.png' =>
+  array(
+    'hash' => '4513867aaa76aa527c58d047d97e4251',
+    'uri' => '/res/4513867a/rsrc/image/emoji/sweet_potato.png',
+    'disk' => '/rsrc/image/emoji/sweet_potato.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/swimmer.png' =>
+  array(
+    'hash' => 'f1661d1839f66851071ead67e893315d',
+    'uri' => '/res/f1661d18/rsrc/image/emoji/swimmer.png',
+    'disk' => '/rsrc/image/emoji/swimmer.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/symbols.png' =>
+  array(
+    'hash' => 'c4d9200092562e9ccacde6490f27381c',
+    'uri' => '/res/c4d92000/rsrc/image/emoji/symbols.png',
+    'disk' => '/rsrc/image/emoji/symbols.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/syringe.png' =>
+  array(
+    'hash' => '24ea247beeef9780f25f4af66c2d89c4',
+    'uri' => '/res/24ea247b/rsrc/image/emoji/syringe.png',
+    'disk' => '/rsrc/image/emoji/syringe.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tada.png' =>
+  array(
+    'hash' => '2de95799de12e911d0e095e987ed8af6',
+    'uri' => '/res/2de95799/rsrc/image/emoji/tada.png',
+    'disk' => '/rsrc/image/emoji/tada.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tanabata_tree.png' =>
+  array(
+    'hash' => '58bc7af4d2f6f25b0d9d889f4619dd12',
+    'uri' => '/res/58bc7af4/rsrc/image/emoji/tanabata_tree.png',
+    'disk' => '/rsrc/image/emoji/tanabata_tree.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tangerine.png' =>
+  array(
+    'hash' => 'bd201334600951770a85fb0b7da5a707',
+    'uri' => '/res/bd201334/rsrc/image/emoji/tangerine.png',
+    'disk' => '/rsrc/image/emoji/tangerine.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/taurus.png' =>
+  array(
+    'hash' => 'ebd6fe48991c3994e1f4191661c34017',
+    'uri' => '/res/ebd6fe48/rsrc/image/emoji/taurus.png',
+    'disk' => '/rsrc/image/emoji/taurus.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/taxi.png' =>
+  array(
+    'hash' => 'c6b18a5383f8cf85159c22875e51ef5a',
+    'uri' => '/res/c6b18a53/rsrc/image/emoji/taxi.png',
+    'disk' => '/rsrc/image/emoji/taxi.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tea.png' =>
+  array(
+    'hash' => '433aab1cc7cc58a926323a96ccb95be8',
+    'uri' => '/res/433aab1c/rsrc/image/emoji/tea.png',
+    'disk' => '/rsrc/image/emoji/tea.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/telephone.png' =>
+  array(
+    'hash' => '1a8f90da0088bffa5344b8ce49543fc9',
+    'uri' => '/res/1a8f90da/rsrc/image/emoji/telephone.png',
+    'disk' => '/rsrc/image/emoji/telephone.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/telephone_receiver.png' =>
+  array(
+    'hash' => '448d948e995a4c8dd76e04d4a4bbd6bd',
+    'uri' => '/res/448d948e/rsrc/image/emoji/telephone_receiver.png',
+    'disk' => '/rsrc/image/emoji/telephone_receiver.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/telescope.png' =>
+  array(
+    'hash' => '2fe909d5de539eb6f8464e5899d766c7',
+    'uri' => '/res/2fe909d5/rsrc/image/emoji/telescope.png',
+    'disk' => '/rsrc/image/emoji/telescope.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tennis.png' =>
+  array(
+    'hash' => '3cbacada33141f59f5a91caaca7c483b',
+    'uri' => '/res/3cbacada/rsrc/image/emoji/tennis.png',
+    'disk' => '/rsrc/image/emoji/tennis.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tent.png' =>
+  array(
+    'hash' => 'ae87d89cce05b354e620eaf541743a8a',
+    'uri' => '/res/ae87d89c/rsrc/image/emoji/tent.png',
+    'disk' => '/rsrc/image/emoji/tent.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/thought_balloon.png' =>
+  array(
+    'hash' => 'a34cfb359fb5f2b16f3a3ccd1ae3a087',
+    'uri' => '/res/a34cfb35/rsrc/image/emoji/thought_balloon.png',
+    'disk' => '/rsrc/image/emoji/thought_balloon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/three.png' =>
+  array(
+    'hash' => 'b5e2323d3e871eaa87add3a5f1b43cc4',
+    'uri' => '/res/b5e2323d/rsrc/image/emoji/three.png',
+    'disk' => '/rsrc/image/emoji/three.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/thumbsdown.png' =>
+  array(
+    'hash' => '7a990681748cd842279202c98db461be',
+    'uri' => '/res/7a990681/rsrc/image/emoji/thumbsdown.png',
+    'disk' => '/rsrc/image/emoji/thumbsdown.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/thumbsup.png' =>
+  array(
+    'hash' => 'afd94c6e13a31b576a97a765366d201a',
+    'uri' => '/res/afd94c6e/rsrc/image/emoji/thumbsup.png',
+    'disk' => '/rsrc/image/emoji/thumbsup.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/ticket.png' =>
+  array(
+    'hash' => 'cc3eb05c330abfd57750667a29748436',
+    'uri' => '/res/cc3eb05c/rsrc/image/emoji/ticket.png',
+    'disk' => '/rsrc/image/emoji/ticket.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tiger.png' =>
+  array(
+    'hash' => 'a3defc258b3a2c960915b5a6887e3d3c',
+    'uri' => '/res/a3defc25/rsrc/image/emoji/tiger.png',
+    'disk' => '/rsrc/image/emoji/tiger.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tiger2.png' =>
+  array(
+    'hash' => '0997e516b20348b39290e1cdc158666a',
+    'uri' => '/res/0997e516/rsrc/image/emoji/tiger2.png',
+    'disk' => '/rsrc/image/emoji/tiger2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tired_face.png' =>
+  array(
+    'hash' => '8a82cde30b7949856992dab0a68a744f',
+    'uri' => '/res/8a82cde3/rsrc/image/emoji/tired_face.png',
+    'disk' => '/rsrc/image/emoji/tired_face.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tm.png' =>
+  array(
+    'hash' => '30737550f42f9f92b2f13baeb3f37ebe',
+    'uri' => '/res/30737550/rsrc/image/emoji/tm.png',
+    'disk' => '/rsrc/image/emoji/tm.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/toilet.png' =>
+  array(
+    'hash' => '1ae87f8b2dc607eb60c96a9c663c044d',
+    'uri' => '/res/1ae87f8b/rsrc/image/emoji/toilet.png',
+    'disk' => '/rsrc/image/emoji/toilet.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tokyo_tower.png' =>
+  array(
+    'hash' => '5a642d8835ea483596bf80067517f39b',
+    'uri' => '/res/5a642d88/rsrc/image/emoji/tokyo_tower.png',
+    'disk' => '/rsrc/image/emoji/tokyo_tower.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tomato.png' =>
+  array(
+    'hash' => 'aff70b0ce3d862d9bddc9d3d6d7dafbb',
+    'uri' => '/res/aff70b0c/rsrc/image/emoji/tomato.png',
+    'disk' => '/rsrc/image/emoji/tomato.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tongue.png' =>
+  array(
+    'hash' => 'e276e26c40cc617aac7d19b5cad30e61',
+    'uri' => '/res/e276e26c/rsrc/image/emoji/tongue.png',
+    'disk' => '/rsrc/image/emoji/tongue.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/top.png' =>
+  array(
+    'hash' => '0ab91effc322c9b6d38b4fc1617302ce',
+    'uri' => '/res/0ab91eff/rsrc/image/emoji/top.png',
+    'disk' => '/rsrc/image/emoji/top.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tophat.png' =>
+  array(
+    'hash' => '57447a43b352b82f10b0558c157f17c9',
+    'uri' => '/res/57447a43/rsrc/image/emoji/tophat.png',
+    'disk' => '/rsrc/image/emoji/tophat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tractor.png' =>
+  array(
+    'hash' => 'f620ae7c852646025e0cc8ba0d54e7a7',
+    'uri' => '/res/f620ae7c/rsrc/image/emoji/tractor.png',
+    'disk' => '/rsrc/image/emoji/tractor.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/traffic_light.png' =>
+  array(
+    'hash' => '7164a6e75ff683a0576f3e921670645b',
+    'uri' => '/res/7164a6e7/rsrc/image/emoji/traffic_light.png',
+    'disk' => '/rsrc/image/emoji/traffic_light.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/train.png' =>
+  array(
+    'hash' => '93cbc5367d3e9b66e770400d96248550',
+    'uri' => '/res/93cbc536/rsrc/image/emoji/train.png',
+    'disk' => '/rsrc/image/emoji/train.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/train2.png' =>
+  array(
+    'hash' => 'baf4764c20caf7244c2ca212ca6848f4',
+    'uri' => '/res/baf4764c/rsrc/image/emoji/train2.png',
+    'disk' => '/rsrc/image/emoji/train2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tram.png' =>
+  array(
+    'hash' => '8382d7c9fce553375f42801b9ed1225c',
+    'uri' => '/res/8382d7c9/rsrc/image/emoji/tram.png',
+    'disk' => '/rsrc/image/emoji/tram.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/triangular_flag_on_post.png' =>
+  array(
+    'hash' => '19d263fa7628ca92916dc4160f5b77ce',
+    'uri' => '/res/19d263fa/rsrc/image/emoji/triangular_flag_on_post.png',
+    'disk' => '/rsrc/image/emoji/triangular_flag_on_post.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/triangular_ruler.png' =>
+  array(
+    'hash' => 'ebf34fc044410fa856d69c1cb8c7cbbc',
+    'uri' => '/res/ebf34fc0/rsrc/image/emoji/triangular_ruler.png',
+    'disk' => '/rsrc/image/emoji/triangular_ruler.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/trident.png' =>
+  array(
+    'hash' => 'daca50b2163fbde71a3e76ae7b1937ac',
+    'uri' => '/res/daca50b2/rsrc/image/emoji/trident.png',
+    'disk' => '/rsrc/image/emoji/trident.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/triumph.png' =>
+  array(
+    'hash' => 'd3861fe2c43d1b65a550d1164cf7873f',
+    'uri' => '/res/d3861fe2/rsrc/image/emoji/triumph.png',
+    'disk' => '/rsrc/image/emoji/triumph.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/trolleybus.png' =>
+  array(
+    'hash' => '796cb91f842b351763790ca16b465ede',
+    'uri' => '/res/796cb91f/rsrc/image/emoji/trolleybus.png',
+    'disk' => '/rsrc/image/emoji/trolleybus.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/trollface.png' =>
+  array(
+    'hash' => 'fecaa1b4f20a80216fb0d3c0df9651f1',
+    'uri' => '/res/fecaa1b4/rsrc/image/emoji/trollface.png',
+    'disk' => '/rsrc/image/emoji/trollface.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/trophy.png' =>
+  array(
+    'hash' => '2894101a9f965202813d1fe9e52a0165',
+    'uri' => '/res/2894101a/rsrc/image/emoji/trophy.png',
+    'disk' => '/rsrc/image/emoji/trophy.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tropical_drink.png' =>
+  array(
+    'hash' => '4b55f8518e4e42e4839a6e9b4b83c063',
+    'uri' => '/res/4b55f851/rsrc/image/emoji/tropical_drink.png',
+    'disk' => '/rsrc/image/emoji/tropical_drink.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tropical_fish.png' =>
+  array(
+    'hash' => 'cb501731af503b284ab71efc422fcd80',
+    'uri' => '/res/cb501731/rsrc/image/emoji/tropical_fish.png',
+    'disk' => '/rsrc/image/emoji/tropical_fish.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/truck.png' =>
+  array(
+    'hash' => '6e7cb573f8de4a777e3c76e07751ef78',
+    'uri' => '/res/6e7cb573/rsrc/image/emoji/truck.png',
+    'disk' => '/rsrc/image/emoji/truck.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/trumpet.png' =>
+  array(
+    'hash' => '094f34dddb7f4ab1889b82c28baad363',
+    'uri' => '/res/094f34dd/rsrc/image/emoji/trumpet.png',
+    'disk' => '/rsrc/image/emoji/trumpet.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tshirt.png' =>
+  array(
+    'hash' => '3f7c8ebafb65d226aaf1e2b6821355c3',
+    'uri' => '/res/3f7c8eba/rsrc/image/emoji/tshirt.png',
+    'disk' => '/rsrc/image/emoji/tshirt.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tulip.png' =>
+  array(
+    'hash' => '6338069e0882b19d6250f7c47a6369ec',
+    'uri' => '/res/6338069e/rsrc/image/emoji/tulip.png',
+    'disk' => '/rsrc/image/emoji/tulip.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/turtle.png' =>
+  array(
+    'hash' => 'a021242b498ed517ab81dd14b206b998',
+    'uri' => '/res/a021242b/rsrc/image/emoji/turtle.png',
+    'disk' => '/rsrc/image/emoji/turtle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/tv.png' =>
+  array(
+    'hash' => '9d02f643fbb0dc96b42a38cb0c636d55',
+    'uri' => '/res/9d02f643/rsrc/image/emoji/tv.png',
+    'disk' => '/rsrc/image/emoji/tv.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/twisted_rightwards_arrows.png' =>
+  array(
+    'hash' => '23455177df584a575f690257600f1da4',
+    'uri' => '/res/23455177/rsrc/image/emoji/twisted_rightwards_arrows.png',
+    'disk' => '/rsrc/image/emoji/twisted_rightwards_arrows.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/two.png' =>
+  array(
+    'hash' => '3363eca53dbfa8237bce19a390a85cdb',
+    'uri' => '/res/3363eca5/rsrc/image/emoji/two.png',
+    'disk' => '/rsrc/image/emoji/two.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/two_hearts.png' =>
+  array(
+    'hash' => 'b2230470f53d649b85ed11c659093b75',
+    'uri' => '/res/b2230470/rsrc/image/emoji/two_hearts.png',
+    'disk' => '/rsrc/image/emoji/two_hearts.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/two_men_holding_hands.png' =>
+  array(
+    'hash' => '4f65cd0bb051b0a07ae8a0bc8d9ae7e2',
+    'uri' => '/res/4f65cd0b/rsrc/image/emoji/two_men_holding_hands.png',
+    'disk' => '/rsrc/image/emoji/two_men_holding_hands.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/two_women_holding_hands.png' =>
+  array(
+    'hash' => '5b47813cee0785011f9ddeb06520738c',
+    'uri' => '/res/5b47813c/rsrc/image/emoji/two_women_holding_hands.png',
+    'disk' => '/rsrc/image/emoji/two_women_holding_hands.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u5272.png' =>
+  array(
+    'hash' => 'd2316889b4e0ac081f66c17d618851b5',
+    'uri' => '/res/d2316889/rsrc/image/emoji/u5272.png',
+    'disk' => '/rsrc/image/emoji/u5272.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u5408.png' =>
+  array(
+    'hash' => '2286036060a7c76149d1ac90f157d036',
+    'uri' => '/res/22860360/rsrc/image/emoji/u5408.png',
+    'disk' => '/rsrc/image/emoji/u5408.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u55b6.png' =>
+  array(
+    'hash' => 'ecf63f752ceea5d63329a1c207e7e011',
+    'uri' => '/res/ecf63f75/rsrc/image/emoji/u55b6.png',
+    'disk' => '/rsrc/image/emoji/u55b6.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u6307.png' =>
+  array(
+    'hash' => '63e4360874bc1be48dcc03aa9c7c2ad2',
+    'uri' => '/res/63e43608/rsrc/image/emoji/u6307.png',
+    'disk' => '/rsrc/image/emoji/u6307.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u6708.png' =>
+  array(
+    'hash' => '58349f1c353b26a0b4db4ded282f8d6b',
+    'uri' => '/res/58349f1c/rsrc/image/emoji/u6708.png',
+    'disk' => '/rsrc/image/emoji/u6708.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u6709.png' =>
+  array(
+    'hash' => 'e6fc5a5591637cf8b910d1156f9d2651',
+    'uri' => '/res/e6fc5a55/rsrc/image/emoji/u6709.png',
+    'disk' => '/rsrc/image/emoji/u6709.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u6e80.png' =>
+  array(
+    'hash' => 'f5df57a99b0629ebf4208c7d97f4f603',
+    'uri' => '/res/f5df57a9/rsrc/image/emoji/u6e80.png',
+    'disk' => '/rsrc/image/emoji/u6e80.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u7121.png' =>
+  array(
+    'hash' => 'cc78a43f2f9c1004b7b12860a780dd4f',
+    'uri' => '/res/cc78a43f/rsrc/image/emoji/u7121.png',
+    'disk' => '/rsrc/image/emoji/u7121.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u7533.png' =>
+  array(
+    'hash' => '762e30ef15befb6da48063f7afc05795',
+    'uri' => '/res/762e30ef/rsrc/image/emoji/u7533.png',
+    'disk' => '/rsrc/image/emoji/u7533.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u7981.png' =>
+  array(
+    'hash' => '1a686fb1e7e7c6884b4e8f2a4bc383f1',
+    'uri' => '/res/1a686fb1/rsrc/image/emoji/u7981.png',
+    'disk' => '/rsrc/image/emoji/u7981.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/u7a7a.png' =>
+  array(
+    'hash' => '0782c18e0bebb24ed2b54b0c9e5aff97',
+    'uri' => '/res/0782c18e/rsrc/image/emoji/u7a7a.png',
+    'disk' => '/rsrc/image/emoji/u7a7a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/uk.png' =>
+  array(
+    'hash' => '3d28e69f3b3c62d8bf2b5a750fcd5e12',
+    'uri' => '/res/3d28e69f/rsrc/image/emoji/uk.png',
+    'disk' => '/rsrc/image/emoji/uk.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/umbrella.png' =>
+  array(
+    'hash' => '0920f7b4196faf1a51a1106ed9415bb6',
+    'uri' => '/res/0920f7b4/rsrc/image/emoji/umbrella.png',
+    'disk' => '/rsrc/image/emoji/umbrella.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unamused.png' =>
+  array(
+    'hash' => '7e1cfc445f90b41e3513d26334790da0',
+    'uri' => '/res/7e1cfc44/rsrc/image/emoji/unamused.png',
+    'disk' => '/rsrc/image/emoji/unamused.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/underage.png' =>
+  array(
+    'hash' => '81806c2f0d20635961c36c8982683cee',
+    'uri' => '/res/81806c2f/rsrc/image/emoji/underage.png',
+    'disk' => '/rsrc/image/emoji/underage.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f0cf.png' =>
+  array(
+    'hash' => 'f5b2a32dfcfafa74b7c55a83f720ec26',
+    'uri' => '/res/f5b2a32d/rsrc/image/emoji/unicode/1f0cf.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f0cf.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f191.png' =>
+  array(
+    'hash' => 'b6da1c2f47559c1b56e689f20657ff04',
+    'uri' => '/res/b6da1c2f/rsrc/image/emoji/unicode/1f191.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f191.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f193.png' =>
+  array(
+    'hash' => '1f46449dd06ad52b1a23b3e3c496a18b',
+    'uri' => '/res/1f46449d/rsrc/image/emoji/unicode/1f193.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f193.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f196.png' =>
+  array(
+    'hash' => '0026b666426a9fa6007e26797ad599db',
+    'uri' => '/res/0026b666/rsrc/image/emoji/unicode/1f196.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f196.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f198.png' =>
+  array(
+    'hash' => 'a4fe32c64b87fd780acb6fa4d321f41c',
+    'uri' => '/res/a4fe32c6/rsrc/image/emoji/unicode/1f198.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f198.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f232.png' =>
+  array(
+    'hash' => '51c6271c77f6326d939d7ba783eab012',
+    'uri' => '/res/51c6271c/rsrc/image/emoji/unicode/1f232.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f232.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f234.png' =>
+  array(
+    'hash' => '47d1e4737f40d5d4f396957a62bff901',
+    'uri' => '/res/47d1e473/rsrc/image/emoji/unicode/1f234.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f234.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f251.png' =>
+  array(
+    'hash' => '35d7a53918926dad0d67e0fadf92382d',
+    'uri' => '/res/35d7a539/rsrc/image/emoji/unicode/1f251.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f251.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f301.png' =>
+  array(
+    'hash' => '598cd5a1f1fce28639be670b12b233d8',
+    'uri' => '/res/598cd5a1/rsrc/image/emoji/unicode/1f301.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f301.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f309.png' =>
+  array(
+    'hash' => '8be86ac7b157b1c4d6bb828d9330f90f',
+    'uri' => '/res/8be86ac7/rsrc/image/emoji/unicode/1f309.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f309.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f30b.png' =>
+  array(
+    'hash' => '034e8a8595da527f59dc3bf640e975b6',
+    'uri' => '/res/034e8a85/rsrc/image/emoji/unicode/1f30b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f30b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f30c.png' =>
+  array(
+    'hash' => '4d53bdb148a4bdc13b03522ae10cbd1a',
+    'uri' => '/res/4d53bdb1/rsrc/image/emoji/unicode/1f30c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f30c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f30d.png' =>
+  array(
+    'hash' => '14a120643dd5927c4b9992fb350eb8b5',
+    'uri' => '/res/14a12064/rsrc/image/emoji/unicode/1f30d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f30d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f30e.png' =>
+  array(
+    'hash' => 'dd77c193e671772bf3a73f710a7bdd8d',
+    'uri' => '/res/dd77c193/rsrc/image/emoji/unicode/1f30e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f30e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f30f.png' =>
+  array(
+    'hash' => 'ea3baaf4e3fa1ce4a4ebf8b9da252247',
+    'uri' => '/res/ea3baaf4/rsrc/image/emoji/unicode/1f30f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f30f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f310.png' =>
+  array(
+    'hash' => '157c5ec03eb9c0566fdb8ae4c2d43312',
+    'uri' => '/res/157c5ec0/rsrc/image/emoji/unicode/1f310.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f310.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f311.png' =>
+  array(
+    'hash' => 'fed6b9f4a16ca240cfc5c1c123422f23',
+    'uri' => '/res/fed6b9f4/rsrc/image/emoji/unicode/1f311.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f311.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f312.png' =>
+  array(
+    'hash' => 'c992b0d4b6e3ffab4c12f2e61336c03b',
+    'uri' => '/res/c992b0d4/rsrc/image/emoji/unicode/1f312.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f312.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f313.png' =>
+  array(
+    'hash' => '3e3efc886b3197705921228c690a925d',
+    'uri' => '/res/3e3efc88/rsrc/image/emoji/unicode/1f313.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f313.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f314.png' =>
+  array(
+    'hash' => '6ad9b3a9309012b4ebf84cb253de1cb6',
+    'uri' => '/res/6ad9b3a9/rsrc/image/emoji/unicode/1f314.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f314.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f315.png' =>
+  array(
+    'hash' => 'c4bd777bb5a3c7248bbbbdaf34d0e4bd',
+    'uri' => '/res/c4bd777b/rsrc/image/emoji/unicode/1f315.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f315.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f316.png' =>
+  array(
+    'hash' => '4b3b660beeba6e117ebfbe9831997634',
+    'uri' => '/res/4b3b660b/rsrc/image/emoji/unicode/1f316.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f316.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f317.png' =>
+  array(
+    'hash' => '3819ce26cbc794f99206efc50a3436fb',
+    'uri' => '/res/3819ce26/rsrc/image/emoji/unicode/1f317.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f317.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f318.png' =>
+  array(
+    'hash' => 'a44cd25b3320177d0659244a28740d44',
+    'uri' => '/res/a44cd25b/rsrc/image/emoji/unicode/1f318.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f318.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f31a.png' =>
+  array(
+    'hash' => '4e7d64b94ccdbd6bb05e5e9fbc8cdcd5',
+    'uri' => '/res/4e7d64b9/rsrc/image/emoji/unicode/1f31a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f31a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f31b.png' =>
+  array(
+    'hash' => '8b4f5477ec317db6041e86ac844c798f',
+    'uri' => '/res/8b4f5477/rsrc/image/emoji/unicode/1f31b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f31b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f31c.png' =>
+  array(
+    'hash' => '9a7c23b84d5afabeb1b64afcef51f3af',
+    'uri' => '/res/9a7c23b8/rsrc/image/emoji/unicode/1f31c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f31c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f31d.png' =>
+  array(
+    'hash' => '3d93523a93f612b20cdb36812603fd18',
+    'uri' => '/res/3d93523a/rsrc/image/emoji/unicode/1f31d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f31d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f31e.png' =>
+  array(
+    'hash' => '757325b2e94015477b95cf5fa3db5659',
+    'uri' => '/res/757325b2/rsrc/image/emoji/unicode/1f31e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f31e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f330.png' =>
+  array(
+    'hash' => '6429f6969f9996ef30e2ebce29284387',
+    'uri' => '/res/6429f696/rsrc/image/emoji/unicode/1f330.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f330.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f331.png' =>
+  array(
+    'hash' => '920f131c9b2cf4a2e565c449866e48f0',
+    'uri' => '/res/920f131c/rsrc/image/emoji/unicode/1f331.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f331.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f332.png' =>
+  array(
+    'hash' => '40a9ecb7cb93c7f203b4ef8aff962403',
+    'uri' => '/res/40a9ecb7/rsrc/image/emoji/unicode/1f332.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f332.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f333.png' =>
+  array(
+    'hash' => '632d7a6f22cc7195d45768fabc1cf23f',
+    'uri' => '/res/632d7a6f/rsrc/image/emoji/unicode/1f333.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f333.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f33c.png' =>
+  array(
+    'hash' => 'd114b28df6be29792561d0e4e04ca2a3',
+    'uri' => '/res/d114b28d/rsrc/image/emoji/unicode/1f33c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f33c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f33d.png' =>
+  array(
+    'hash' => '405b1f640c91a5b5d65143235ec0d7af',
+    'uri' => '/res/405b1f64/rsrc/image/emoji/unicode/1f33d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f33d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f33f.png' =>
+  array(
+    'hash' => '1f258be150856b380e688122599de477',
+    'uri' => '/res/1f258be1/rsrc/image/emoji/unicode/1f33f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f33f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f344.png' =>
+  array(
+    'hash' => '1accccfdd28373acb48dbcae56af17f3',
+    'uri' => '/res/1accccfd/rsrc/image/emoji/unicode/1f344.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f344.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f347.png' =>
+  array(
+    'hash' => '93e46200b186bf23823a03bdfc6a4e13',
+    'uri' => '/res/93e46200/rsrc/image/emoji/unicode/1f347.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f347.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f348.png' =>
+  array(
+    'hash' => 'b7d8daeba79932e0f91e135a75a1be5e',
+    'uri' => '/res/b7d8daeb/rsrc/image/emoji/unicode/1f348.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f348.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f34b.png' =>
+  array(
+    'hash' => 'bb840502aa2706f31d155ea50c1d6998',
+    'uri' => '/res/bb840502/rsrc/image/emoji/unicode/1f34b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f34b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f34c.png' =>
+  array(
+    'hash' => '63e5cfde5020043bb33850cc15c2b812',
+    'uri' => '/res/63e5cfde/rsrc/image/emoji/unicode/1f34c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f34c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f34d.png' =>
+  array(
+    'hash' => '629c856fa36593c34217348a45bee881',
+    'uri' => '/res/629c856f/rsrc/image/emoji/unicode/1f34d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f34d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f34f.png' =>
+  array(
+    'hash' => 'b278e3984a1a9eb66c0490f43b82348b',
+    'uri' => '/res/b278e398/rsrc/image/emoji/unicode/1f34f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f34f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f350.png' =>
+  array(
+    'hash' => 'f25504eefcc2ebe6d7cb4b503b6de9e1',
+    'uri' => '/res/f25504ee/rsrc/image/emoji/unicode/1f350.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f350.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f351.png' =>
+  array(
+    'hash' => '309240a1bf658f8e976e4282081d062c',
+    'uri' => '/res/309240a1/rsrc/image/emoji/unicode/1f351.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f351.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f352.png' =>
+  array(
+    'hash' => '7165b35ce515a5d73d2314197ae23e5c',
+    'uri' => '/res/7165b35c/rsrc/image/emoji/unicode/1f352.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f352.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f355.png' =>
+  array(
+    'hash' => '8f997304d8e13172b5e5d9fb8410a332',
+    'uri' => '/res/8f997304/rsrc/image/emoji/unicode/1f355.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f355.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f356.png' =>
+  array(
+    'hash' => 'a53e329f75c572b9a0822441dfe10859',
+    'uri' => '/res/a53e329f/rsrc/image/emoji/unicode/1f356.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f356.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f357.png' =>
+  array(
+    'hash' => '8eabd2e122a69c7ee4e6a4ea72c44a8a',
+    'uri' => '/res/8eabd2e1/rsrc/image/emoji/unicode/1f357.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f357.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f360.png' =>
+  array(
+    'hash' => '3cc1907e2a8ad5c5cb915df86e79f0f4',
+    'uri' => '/res/3cc1907e/rsrc/image/emoji/unicode/1f360.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f360.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f364.png' =>
+  array(
+    'hash' => '3ea49f2ed0e68e23f2ecf2571c8b2ec0',
+    'uri' => '/res/3ea49f2e/rsrc/image/emoji/unicode/1f364.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f364.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f365.png' =>
+  array(
+    'hash' => 'fb6b72f91ded955a63e6ccf4c0a37598',
+    'uri' => '/res/fb6b72f9/rsrc/image/emoji/unicode/1f365.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f365.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f368.png' =>
+  array(
+    'hash' => 'c953640cdc5116cbc1671875801cf312',
+    'uri' => '/res/c953640c/rsrc/image/emoji/unicode/1f368.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f368.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f369.png' =>
+  array(
+    'hash' => '91da3c0bc85aa660bf8e1cc7df9d3389',
+    'uri' => '/res/91da3c0b/rsrc/image/emoji/unicode/1f369.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f369.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f36a.png' =>
+  array(
+    'hash' => '82e8b1dac52fad21ae8eeea89cbb6255',
+    'uri' => '/res/82e8b1da/rsrc/image/emoji/unicode/1f36a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f36a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f36b.png' =>
+  array(
+    'hash' => 'c49a64c0f7c4acdf5c8ec2ba0483383d',
+    'uri' => '/res/c49a64c0/rsrc/image/emoji/unicode/1f36b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f36b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f36c.png' =>
+  array(
+    'hash' => '6be4226037be30594fa989d577659ce9',
+    'uri' => '/res/6be42260/rsrc/image/emoji/unicode/1f36c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f36c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f36d.png' =>
+  array(
+    'hash' => '96365c96ee589951e0996069fb20956c',
+    'uri' => '/res/96365c96/rsrc/image/emoji/unicode/1f36d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f36d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f36e.png' =>
+  array(
+    'hash' => '9593c9993b4c91c38e0208bd2d51ac8a',
+    'uri' => '/res/9593c999/rsrc/image/emoji/unicode/1f36e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f36e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f36f.png' =>
+  array(
+    'hash' => '424d07885d31ba37a44f6b47e75c2318',
+    'uri' => '/res/424d0788/rsrc/image/emoji/unicode/1f36f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f36f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f377.png' =>
+  array(
+    'hash' => 'c8913335ba1f0f32902a23967b7c31ca',
+    'uri' => '/res/c8913335/rsrc/image/emoji/unicode/1f377.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f377.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f379.png' =>
+  array(
+    'hash' => 'ff232b8920cb8da04246046955b1fcfd',
+    'uri' => '/res/ff232b89/rsrc/image/emoji/unicode/1f379.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f379.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f37c.png' =>
+  array(
+    'hash' => '93142cf1b40c2afc7aa1e4cac59fe955',
+    'uri' => '/res/93142cf1/rsrc/image/emoji/unicode/1f37c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f37c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f38a.png' =>
+  array(
+    'hash' => '06916017907144129504a8f38a1e9374',
+    'uri' => '/res/06916017/rsrc/image/emoji/unicode/1f38a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f38a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f38b.png' =>
+  array(
+    'hash' => '9c742ee863fabc0643d06cc513693a11',
+    'uri' => '/res/9c742ee8/rsrc/image/emoji/unicode/1f38b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f38b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3a0.png' =>
+  array(
+    'hash' => '6ae271d9567610a8acc88e86f4d46535',
+    'uri' => '/res/6ae271d9/rsrc/image/emoji/unicode/1f3a0.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3a0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3a3.png' =>
+  array(
+    'hash' => '0b78f32ff0449a6c1911a4be7a450b20',
+    'uri' => '/res/0b78f32f/rsrc/image/emoji/unicode/1f3a3.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3a3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3aa.png' =>
+  array(
+    'hash' => '52b34a6e8110b4ef9e3814fff8b5c682',
+    'uri' => '/res/52b34a6e/rsrc/image/emoji/unicode/1f3aa.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3aa.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3ad.png' =>
+  array(
+    'hash' => '96df449a60d7337c4eda9a79e2e0afc7',
+    'uri' => '/res/96df449a/rsrc/image/emoji/unicode/1f3ad.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3ad.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3ae.png' =>
+  array(
+    'hash' => '7ecf86c04d80200fd5d7ddb8866b749e',
+    'uri' => '/res/7ecf86c0/rsrc/image/emoji/unicode/1f3ae.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3ae.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3b2.png' =>
+  array(
+    'hash' => 'ab19cd04877bfcd9062e8b2cc39909ad',
+    'uri' => '/res/ab19cd04/rsrc/image/emoji/unicode/1f3b2.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3b2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3b3.png' =>
+  array(
+    'hash' => 'd63d4c2bcec3551ff7f9aeee00175cbe',
+    'uri' => '/res/d63d4c2b/rsrc/image/emoji/unicode/1f3b3.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3b3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3b4.png' =>
+  array(
+    'hash' => '846698ed26f9a89574ef3d26771bce89',
+    'uri' => '/res/846698ed/rsrc/image/emoji/unicode/1f3b4.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3b4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3b9.png' =>
+  array(
+    'hash' => 'e4378e0bd4194041536c28999978f216',
+    'uri' => '/res/e4378e0b/rsrc/image/emoji/unicode/1f3b9.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3b9.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3bb.png' =>
+  array(
+    'hash' => '0ee21b213b3e6c9d70abe1a8accdb077',
+    'uri' => '/res/0ee21b21/rsrc/image/emoji/unicode/1f3bb.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3bb.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3bc.png' =>
+  array(
+    'hash' => '773cef18445258420528095d44f98c3a',
+    'uri' => '/res/773cef18/rsrc/image/emoji/unicode/1f3bc.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3bc.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3bd.png' =>
+  array(
+    'hash' => '9a402eb58bed72dae39e1a928bb84e1f',
+    'uri' => '/res/9a402eb5/rsrc/image/emoji/unicode/1f3bd.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3bd.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3c2.png' =>
+  array(
+    'hash' => '9bc0bac4c539e71fcc70a49eeff5537c',
+    'uri' => '/res/9bc0bac4/rsrc/image/emoji/unicode/1f3c2.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3c2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3c7.png' =>
+  array(
+    'hash' => '48d9fa9e7f04efd09ead19fb8e5dbd19',
+    'uri' => '/res/48d9fa9e/rsrc/image/emoji/unicode/1f3c7.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3c7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3c9.png' =>
+  array(
+    'hash' => '3732be85402679336ff411ad0ccf4afa',
+    'uri' => '/res/3732be85/rsrc/image/emoji/unicode/1f3c9.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3c9.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3e1.png' =>
+  array(
+    'hash' => 'aab482be145e2408ad34a109926b458f',
+    'uri' => '/res/aab482be/rsrc/image/emoji/unicode/1f3e1.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3e1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3e4.png' =>
+  array(
+    'hash' => '7fa5977846f66995340eda94ec84badd',
+    'uri' => '/res/7fa59778/rsrc/image/emoji/unicode/1f3e4.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3e4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f3ee.png' =>
+  array(
+    'hash' => '64a0b2abb1fa14b664bc91fe34b30398',
+    'uri' => '/res/64a0b2ab/rsrc/image/emoji/unicode/1f3ee.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f3ee.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f400.png' =>
+  array(
+    'hash' => '265f90a72eb35b8863884c04fa721a2a',
+    'uri' => '/res/265f90a7/rsrc/image/emoji/unicode/1f400.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f400.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f401.png' =>
+  array(
+    'hash' => '306b9fd354236e17d67ebca39a1407e0',
+    'uri' => '/res/306b9fd3/rsrc/image/emoji/unicode/1f401.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f401.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f402.png' =>
+  array(
+    'hash' => '6078555b936d8be4ddd19c11caacfd81',
+    'uri' => '/res/6078555b/rsrc/image/emoji/unicode/1f402.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f402.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f403.png' =>
+  array(
+    'hash' => 'c7d0ccb58ac5bf5cdb696886df83eff8',
+    'uri' => '/res/c7d0ccb5/rsrc/image/emoji/unicode/1f403.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f403.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f404.png' =>
+  array(
+    'hash' => '23eb82bb45e66897d5a75d6b41eac7c3',
+    'uri' => '/res/23eb82bb/rsrc/image/emoji/unicode/1f404.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f404.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f405.png' =>
+  array(
+    'hash' => 'dac6581c054db42784dbd73070cbfdf7',
+    'uri' => '/res/dac6581c/rsrc/image/emoji/unicode/1f405.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f405.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f406.png' =>
+  array(
+    'hash' => '419100ec9d2e0f2f52e4dbc2f40a5bd8',
+    'uri' => '/res/419100ec/rsrc/image/emoji/unicode/1f406.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f406.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f407.png' =>
+  array(
+    'hash' => '23420c39a8d16684f54a847cb08004a4',
+    'uri' => '/res/23420c39/rsrc/image/emoji/unicode/1f407.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f407.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f408.png' =>
+  array(
+    'hash' => '573ba8b01fae87dcfc3b03ac31c172c8',
+    'uri' => '/res/573ba8b0/rsrc/image/emoji/unicode/1f408.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f408.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f409.png' =>
+  array(
+    'hash' => 'e12d370cfecb283124ddfc53d9e1f3a6',
+    'uri' => '/res/e12d370c/rsrc/image/emoji/unicode/1f409.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f409.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f40a.png' =>
+  array(
+    'hash' => 'fd87491fd0d26fe4f6e0bdd2e7d73c55',
+    'uri' => '/res/fd87491f/rsrc/image/emoji/unicode/1f40a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f40a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f40b.png' =>
+  array(
+    'hash' => 'fe5049614c3169964461d52457e3a4c3',
+    'uri' => '/res/fe504961/rsrc/image/emoji/unicode/1f40b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f40b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f40c.png' =>
+  array(
+    'hash' => '8b25f8314ce2d7666d5eb805d43d666a',
+    'uri' => '/res/8b25f831/rsrc/image/emoji/unicode/1f40c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f40c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f40f.png' =>
+  array(
+    'hash' => '55e1e141b160294ca575f8cdac6d61ea',
+    'uri' => '/res/55e1e141/rsrc/image/emoji/unicode/1f40f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f40f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f410.png' =>
+  array(
+    'hash' => 'd04ca6640dedc49e85b1243a6c4b5b0d',
+    'uri' => '/res/d04ca664/rsrc/image/emoji/unicode/1f410.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f410.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f413.png' =>
+  array(
+    'hash' => '02f9f349444ec0ca494923b0f16c3cba',
+    'uri' => '/res/02f9f349/rsrc/image/emoji/unicode/1f413.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f413.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f415.png' =>
+  array(
+    'hash' => '7a52db3e763a737997c2dad88b490daf',
+    'uri' => '/res/7a52db3e/rsrc/image/emoji/unicode/1f415.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f415.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f416.png' =>
+  array(
+    'hash' => '974ff3073be780382147f9d9f75fe719',
+    'uri' => '/res/974ff307/rsrc/image/emoji/unicode/1f416.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f416.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f41c.png' =>
+  array(
+    'hash' => '1c2d80ca93ffa6e681f628b2c470d5bf',
+    'uri' => '/res/1c2d80ca/rsrc/image/emoji/unicode/1f41c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f41c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f41d.png' =>
+  array(
+    'hash' => 'ad315aaa6e2645787d078f174b1f3644',
+    'uri' => '/res/ad315aaa/rsrc/image/emoji/unicode/1f41d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f41d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f41e.png' =>
+  array(
+    'hash' => '659b5b24b8c7cc28dbd3668ee32b5c88',
+    'uri' => '/res/659b5b24/rsrc/image/emoji/unicode/1f41e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f41e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f421.png' =>
+  array(
+    'hash' => '0811e999904a40134296644aa86e795e',
+    'uri' => '/res/0811e999/rsrc/image/emoji/unicode/1f421.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f421.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f422.png' =>
+  array(
+    'hash' => '766b8020b8c0a6f2f0086ca247efd776',
+    'uri' => '/res/766b8020/rsrc/image/emoji/unicode/1f422.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f422.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f423.png' =>
+  array(
+    'hash' => '6eeae4668c2b6409720f5029516edf06',
+    'uri' => '/res/6eeae466/rsrc/image/emoji/unicode/1f423.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f423.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f425.png' =>
+  array(
+    'hash' => 'ae5cd243a28460adedbac286c8818fe4',
+    'uri' => '/res/ae5cd243/rsrc/image/emoji/unicode/1f425.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f425.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f429.png' =>
+  array(
+    'hash' => '8eccaa3816dde1e35bbda853ff31271a',
+    'uri' => '/res/8eccaa38/rsrc/image/emoji/unicode/1f429.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f429.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f42a.png' =>
+  array(
+    'hash' => 'e6a1cb00694f2a255af4d17c8f37c155',
+    'uri' => '/res/e6a1cb00/rsrc/image/emoji/unicode/1f42a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f42a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f432.png' =>
+  array(
+    'hash' => '3979bc7925934c92a7cd2f62d94c8215',
+    'uri' => '/res/3979bc79/rsrc/image/emoji/unicode/1f432.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f432.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f43c.png' =>
+  array(
+    'hash' => '1bc594b47c2efb49e5f19e60a630d4a3',
+    'uri' => '/res/1bc594b4/rsrc/image/emoji/unicode/1f43c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f43c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f43d.png' =>
+  array(
+    'hash' => '278a1d620098da7ffbab1242d4079314',
+    'uri' => '/res/278a1d62/rsrc/image/emoji/unicode/1f43d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f43d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f43e.png' =>
+  array(
+    'hash' => '7ba1951a30a694b9c2d2f6c04ecd7854',
+    'uri' => '/res/7ba1951a/rsrc/image/emoji/unicode/1f43e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f43e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f445.png' =>
+  array(
+    'hash' => '53f46b88b57cf8f93486f670b3a4414f',
+    'uri' => '/res/53f46b88/rsrc/image/emoji/unicode/1f445.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f445.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f453.png' =>
+  array(
+    'hash' => '1345b94027c87c26b6330fab3cfcedaf',
+    'uri' => '/res/1345b940/rsrc/image/emoji/unicode/1f453.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f453.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f456.png' =>
+  array(
+    'hash' => '8ed7e62c042f210b0cc0c1e1184471db',
+    'uri' => '/res/8ed7e62c/rsrc/image/emoji/unicode/1f456.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f456.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f45a.png' =>
+  array(
+    'hash' => 'b58d6cde08a7a9cb52bdbc2602c8940c',
+    'uri' => '/res/b58d6cde/rsrc/image/emoji/unicode/1f45a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f45a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f45b.png' =>
+  array(
+    'hash' => '252b9e786d27b53283b5ac8437b54f5c',
+    'uri' => '/res/252b9e78/rsrc/image/emoji/unicode/1f45b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f45b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f45d.png' =>
+  array(
+    'hash' => 'fb1dd7eee0c792d4add9cc9a97dd8fe3',
+    'uri' => '/res/fb1dd7ee/rsrc/image/emoji/unicode/1f45d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f45d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f45e.png' =>
+  array(
+    'hash' => 'ba7206bfe04a2b8376281363d7c340c2',
+    'uri' => '/res/ba7206bf/rsrc/image/emoji/unicode/1f45e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f45e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f464.png' =>
+  array(
+    'hash' => '5691e7b67f0bff2640f0d4d6ca77eb2f',
+    'uri' => '/res/5691e7b6/rsrc/image/emoji/unicode/1f464.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f464.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f465.png' =>
+  array(
+    'hash' => '59832182ac3137161e242907265fbd01',
+    'uri' => '/res/59832182/rsrc/image/emoji/unicode/1f465.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f465.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f46a.png' =>
+  array(
+    'hash' => '8a14d75fc212a5e30aa0937dff71c6ea',
+    'uri' => '/res/8a14d75f/rsrc/image/emoji/unicode/1f46a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f46a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f46c.png' =>
+  array(
+    'hash' => '970fc36f15ed0f3ac9712704ab44e9e4',
+    'uri' => '/res/970fc36f/rsrc/image/emoji/unicode/1f46c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f46c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f46d.png' =>
+  array(
+    'hash' => '36d5a2613ad8bf35903adf3e44b8af10',
+    'uri' => '/res/36d5a261/rsrc/image/emoji/unicode/1f46d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f46d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f470.png' =>
+  array(
+    'hash' => 'f05068bdf40ed16e309f0729704c9be5',
+    'uri' => '/res/f05068bd/rsrc/image/emoji/unicode/1f470.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f470.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f479.png' =>
+  array(
+    'hash' => '7fe86ec53732f5fd5d7178a4b45b9d31',
+    'uri' => '/res/7fe86ec5/rsrc/image/emoji/unicode/1f479.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f479.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f47a.png' =>
+  array(
+    'hash' => '66e627146e57ab46fb569d7e275ab934',
+    'uri' => '/res/66e62714/rsrc/image/emoji/unicode/1f47a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f47a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f48c.png' =>
+  array(
+    'hash' => 'fe427cf7a40a54892c62a18b4f7f2ff9',
+    'uri' => '/res/fe427cf7/rsrc/image/emoji/unicode/1f48c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f48c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f495.png' =>
+  array(
+    'hash' => 'd74d506bfa3cc6c37a93cf97cf9a483c',
+    'uri' => '/res/d74d506b/rsrc/image/emoji/unicode/1f495.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f495.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f496.png' =>
+  array(
+    'hash' => '1fe42ab164c82965fe12a21c279b74f5',
+    'uri' => '/res/1fe42ab1/rsrc/image/emoji/unicode/1f496.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f496.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f49e.png' =>
+  array(
+    'hash' => '321e23600e87e5593d48427397dfee6c',
+    'uri' => '/res/321e2360/rsrc/image/emoji/unicode/1f49e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f49e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4a0.png' =>
+  array(
+    'hash' => 'dfa8654eb308d3947b04c26e63e1186a',
+    'uri' => '/res/dfa8654e/rsrc/image/emoji/unicode/1f4a0.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4a0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4a5.png' =>
+  array(
+    'hash' => 'a50dca0d873e05a47ed8d5604a64c8f6',
+    'uri' => '/res/a50dca0d/rsrc/image/emoji/unicode/1f4a5.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4a5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4a7.png' =>
+  array(
+    'hash' => '1a742853ea32ab8fcb3bdc6746cd465d',
+    'uri' => '/res/1a742853/rsrc/image/emoji/unicode/1f4a7.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4a7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ab.png' =>
+  array(
+    'hash' => '12dd83bf38947ae04cb456adf143484c',
+    'uri' => '/res/12dd83bf/rsrc/image/emoji/unicode/1f4ab.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ab.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ac.png' =>
+  array(
+    'hash' => '69d8bc5803878b3c513e6e6267fd464a',
+    'uri' => '/res/69d8bc58/rsrc/image/emoji/unicode/1f4ac.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ac.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ad.png' =>
+  array(
+    'hash' => 'dc1b0b9e2ad1d25fd11a4bf7776d8c0c',
+    'uri' => '/res/dc1b0b9e/rsrc/image/emoji/unicode/1f4ad.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ad.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ae.png' =>
+  array(
+    'hash' => '1f0f4c06770361ad3af6f5d05d0720c5',
+    'uri' => '/res/1f0f4c06/rsrc/image/emoji/unicode/1f4ae.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ae.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4af.png' =>
+  array(
+    'hash' => '4ade8b5d150daed55dc9659d0b368dfb',
+    'uri' => '/res/4ade8b5d/rsrc/image/emoji/unicode/1f4af.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4af.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4b2.png' =>
+  array(
+    'hash' => '9e9ad82010d651b4d4afd5a3bbd9bd4f',
+    'uri' => '/res/9e9ad820/rsrc/image/emoji/unicode/1f4b2.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4b2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4b3.png' =>
+  array(
+    'hash' => 'a7df29f4d9c4c961c60c2b3e0af07379',
+    'uri' => '/res/a7df29f4/rsrc/image/emoji/unicode/1f4b3.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4b3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4b4.png' =>
+  array(
+    'hash' => '51fd0bdcc5321410008e666aab6e15cf',
+    'uri' => '/res/51fd0bdc/rsrc/image/emoji/unicode/1f4b4.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4b4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4b5.png' =>
+  array(
+    'hash' => '07f6ed924b1db78f3295ca8131e34a0f',
+    'uri' => '/res/07f6ed92/rsrc/image/emoji/unicode/1f4b5.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4b5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4b6.png' =>
+  array(
+    'hash' => 'ebcd6d56b22893880c996d31027eebe4',
+    'uri' => '/res/ebcd6d56/rsrc/image/emoji/unicode/1f4b6.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4b6.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4b7.png' =>
+  array(
+    'hash' => 'f149480c7e5ad51164afc10589a4ea5b',
+    'uri' => '/res/f149480c/rsrc/image/emoji/unicode/1f4b7.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4b7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4b8.png' =>
+  array(
+    'hash' => 'ed47e7a927372e216945c99e3f6c2817',
+    'uri' => '/res/ed47e7a9/rsrc/image/emoji/unicode/1f4b8.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4b8.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4be.png' =>
+  array(
+    'hash' => 'bf425a2c4b4e2fa2fb20ce2c1d470b4a',
+    'uri' => '/res/bf425a2c/rsrc/image/emoji/unicode/1f4be.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4be.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4c1.png' =>
+  array(
+    'hash' => '77290125ce5871f92090ec0437f7bc15',
+    'uri' => '/res/77290125/rsrc/image/emoji/unicode/1f4c1.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4c1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4c2.png' =>
+  array(
+    'hash' => '216bb6a9157be26930e2339aa0fa2079',
+    'uri' => '/res/216bb6a9/rsrc/image/emoji/unicode/1f4c2.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4c2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4c3.png' =>
+  array(
+    'hash' => '6c371fdecc5fac4cd38db77a3dad4262',
+    'uri' => '/res/6c371fde/rsrc/image/emoji/unicode/1f4c3.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4c3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4c4.png' =>
+  array(
+    'hash' => '5e9417611a38deb094371cbe4dd62ecf',
+    'uri' => '/res/5e941761/rsrc/image/emoji/unicode/1f4c4.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4c4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4c5.png' =>
+  array(
+    'hash' => '2cec33627acc6729fb2b3da3748a4eb4',
+    'uri' => '/res/2cec3362/rsrc/image/emoji/unicode/1f4c5.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4c5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4c6.png' =>
+  array(
+    'hash' => '2072afc24007a851b7a428764188fde3',
+    'uri' => '/res/2072afc2/rsrc/image/emoji/unicode/1f4c6.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4c6.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4c7.png' =>
+  array(
+    'hash' => 'e0154da7f19a7505727df5ae592f1064',
+    'uri' => '/res/e0154da7/rsrc/image/emoji/unicode/1f4c7.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4c7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4c8.png' =>
+  array(
+    'hash' => '80deca794eb6e1b0a1826b2b4bd21217',
+    'uri' => '/res/80deca79/rsrc/image/emoji/unicode/1f4c8.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4c8.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4c9.png' =>
+  array(
+    'hash' => 'dafebf4fb11ffb61c6f08c0bb43564e3',
+    'uri' => '/res/dafebf4f/rsrc/image/emoji/unicode/1f4c9.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4c9.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ca.png' =>
+  array(
+    'hash' => '5720482b0f89d367dd91a77da4c5a678',
+    'uri' => '/res/5720482b/rsrc/image/emoji/unicode/1f4ca.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ca.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4cb.png' =>
+  array(
+    'hash' => '3d6199c176f8917d5aab46d272b5e2a7',
+    'uri' => '/res/3d6199c1/rsrc/image/emoji/unicode/1f4cb.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4cb.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4cc.png' =>
+  array(
+    'hash' => '11afc33cbdb87bd543d1622bdbdfc411',
+    'uri' => '/res/11afc33c/rsrc/image/emoji/unicode/1f4cc.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4cc.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4cd.png' =>
+  array(
+    'hash' => '5e51611f4dd6b0d1a4481f6ac51e5671',
+    'uri' => '/res/5e51611f/rsrc/image/emoji/unicode/1f4cd.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4cd.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ce.png' =>
+  array(
+    'hash' => 'e8fe082012a56de4ff21a9da37619923',
+    'uri' => '/res/e8fe0820/rsrc/image/emoji/unicode/1f4ce.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ce.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4cf.png' =>
+  array(
+    'hash' => 'c5752cd8af8bacaca83541536b6987c5',
+    'uri' => '/res/c5752cd8/rsrc/image/emoji/unicode/1f4cf.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4cf.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4d0.png' =>
+  array(
+    'hash' => 'a3018cfaa5069a6fe887e9e1cbca1a0a',
+    'uri' => '/res/a3018cfa/rsrc/image/emoji/unicode/1f4d0.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4d0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4d1.png' =>
+  array(
+    'hash' => 'cd0cf49733b17274a642d9ef63568fef',
+    'uri' => '/res/cd0cf497/rsrc/image/emoji/unicode/1f4d1.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4d1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4d2.png' =>
+  array(
+    'hash' => '7e87a56c31aaac994bea484d32b46105',
+    'uri' => '/res/7e87a56c/rsrc/image/emoji/unicode/1f4d2.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4d2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4d3.png' =>
+  array(
+    'hash' => '03dd91f328cd24989fd93e4952b334db',
+    'uri' => '/res/03dd91f3/rsrc/image/emoji/unicode/1f4d3.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4d3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4d4.png' =>
+  array(
+    'hash' => '8b963814c28e1498a6707685a96b9688',
+    'uri' => '/res/8b963814/rsrc/image/emoji/unicode/1f4d4.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4d4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4d5.png' =>
+  array(
+    'hash' => '14ddc48cf29348f09c29406de88c1cbc',
+    'uri' => '/res/14ddc48c/rsrc/image/emoji/unicode/1f4d5.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4d5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4d7.png' =>
+  array(
+    'hash' => '2b0a103266b882e60d030ecfee98391f',
+    'uri' => '/res/2b0a1032/rsrc/image/emoji/unicode/1f4d7.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4d7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4d8.png' =>
+  array(
+    'hash' => '84eae72b802ccc5e56a638b6a9a6601b',
+    'uri' => '/res/84eae72b/rsrc/image/emoji/unicode/1f4d8.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4d8.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4d9.png' =>
+  array(
+    'hash' => '13748640179804275901e5ba4324aee1',
+    'uri' => '/res/13748640/rsrc/image/emoji/unicode/1f4d9.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4d9.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4da.png' =>
+  array(
+    'hash' => '76041fae299f5640896e3355e758126d',
+    'uri' => '/res/76041fae/rsrc/image/emoji/unicode/1f4da.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4da.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4db.png' =>
+  array(
+    'hash' => '210bb2436037aeb6cad829ed54e08ae3',
+    'uri' => '/res/210bb243/rsrc/image/emoji/unicode/1f4db.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4db.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4dc.png' =>
+  array(
+    'hash' => '588a83dd0a034bf0fa37f8c4d94107fb',
+    'uri' => '/res/588a83dd/rsrc/image/emoji/unicode/1f4dc.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4dc.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4de.png' =>
+  array(
+    'hash' => '5d5e9f46e294e43ffebce7aee6e61de7',
+    'uri' => '/res/5d5e9f46/rsrc/image/emoji/unicode/1f4de.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4de.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4df.png' =>
+  array(
+    'hash' => 'df4a3a391a01ab34412c87e97044bb66',
+    'uri' => '/res/df4a3a39/rsrc/image/emoji/unicode/1f4df.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4df.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4e4.png' =>
+  array(
+    'hash' => '847c63ad46d1b07c6946e4755db1d4d0',
+    'uri' => '/res/847c63ad/rsrc/image/emoji/unicode/1f4e4.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4e4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4e5.png' =>
+  array(
+    'hash' => '5c002fd9e73775de3f79dc9e3ea7909d',
+    'uri' => '/res/5c002fd9/rsrc/image/emoji/unicode/1f4e5.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4e5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4e7.png' =>
+  array(
+    'hash' => '34d037c7cf1756c91e315435f2fe402d',
+    'uri' => '/res/34d037c7/rsrc/image/emoji/unicode/1f4e7.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4e7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4e8.png' =>
+  array(
+    'hash' => '7e6e60cb488a551513ec9f50d4f289e0',
+    'uri' => '/res/7e6e60cb/rsrc/image/emoji/unicode/1f4e8.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4e8.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ea.png' =>
+  array(
+    'hash' => 'ad2c872e1d1dfa4eb09d73f50cd6728c',
+    'uri' => '/res/ad2c872e/rsrc/image/emoji/unicode/1f4ea.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ea.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ec.png' =>
+  array(
+    'hash' => '52aa7bc75804574820b790c311421594',
+    'uri' => '/res/52aa7bc7/rsrc/image/emoji/unicode/1f4ec.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ec.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ed.png' =>
+  array(
+    'hash' => '98f273f27fb92475b59934703e263a09',
+    'uri' => '/res/98f273f2/rsrc/image/emoji/unicode/1f4ed.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ed.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4ef.png' =>
+  array(
+    'hash' => '572940ee4f3a3d41b8372331681d2ced',
+    'uri' => '/res/572940ee/rsrc/image/emoji/unicode/1f4ef.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4ef.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4f0.png' =>
+  array(
+    'hash' => 'b425320d53148d7d46c8613334f7328b',
+    'uri' => '/res/b425320d/rsrc/image/emoji/unicode/1f4f0.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4f0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4f5.png' =>
+  array(
+    'hash' => '8ac55fd0a55737e48cb959dedbb4e09a',
+    'uri' => '/res/8ac55fd0/rsrc/image/emoji/unicode/1f4f5.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4f5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f4f9.png' =>
+  array(
+    'hash' => '89a2138c92554eff179bb61b0ea0c470',
+    'uri' => '/res/89a2138c/rsrc/image/emoji/unicode/1f4f9.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f4f9.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f500.png' =>
+  array(
+    'hash' => 'fa5029871a9ca320541ecc8346f5a8d6',
+    'uri' => '/res/fa502987/rsrc/image/emoji/unicode/1f500.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f500.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f501.png' =>
+  array(
+    'hash' => '42cae1fdf83b34847281102d84095044',
+    'uri' => '/res/42cae1fd/rsrc/image/emoji/unicode/1f501.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f501.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f502.png' =>
+  array(
+    'hash' => '454430df9c676036d66939ca3ba2f639',
+    'uri' => '/res/454430df/rsrc/image/emoji/unicode/1f502.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f502.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f503.png' =>
+  array(
+    'hash' => '0ca65192850f861dd304bc6c4688ef53',
+    'uri' => '/res/0ca65192/rsrc/image/emoji/unicode/1f503.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f503.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f504.png' =>
+  array(
+    'hash' => 'c20fd8127d8a79844526660dfa2da2d1',
+    'uri' => '/res/c20fd812/rsrc/image/emoji/unicode/1f504.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f504.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f505.png' =>
+  array(
+    'hash' => '779950ba9ee27d99e02fca0b7df2333f',
+    'uri' => '/res/779950ba/rsrc/image/emoji/unicode/1f505.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f505.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f506.png' =>
+  array(
+    'hash' => 'd3f25dff336557ab3d59cbcbbb340561',
+    'uri' => '/res/d3f25dff/rsrc/image/emoji/unicode/1f506.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f506.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f507.png' =>
+  array(
+    'hash' => 'af6c4bb995e20dd4c7cb5547bd07f0a3',
+    'uri' => '/res/af6c4bb9/rsrc/image/emoji/unicode/1f507.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f507.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f509.png' =>
+  array(
+    'hash' => 'd0460950a8d82980d7210e9b433e3fec',
+    'uri' => '/res/d0460950/rsrc/image/emoji/unicode/1f509.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f509.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f50b.png' =>
+  array(
+    'hash' => '6005c532de9f5c644642113a427e21a6',
+    'uri' => '/res/6005c532/rsrc/image/emoji/unicode/1f50b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f50b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f50c.png' =>
+  array(
+    'hash' => 'ed452b3e23864a36aeae1408b1d9a0fe',
+    'uri' => '/res/ed452b3e/rsrc/image/emoji/unicode/1f50c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f50c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f50e.png' =>
+  array(
+    'hash' => '968f404b11671a2effbdbeced74650de',
+    'uri' => '/res/968f404b/rsrc/image/emoji/unicode/1f50e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f50e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f50f.png' =>
+  array(
+    'hash' => '72b7ea17a8d2a5b0ee4b31ef2981eca4',
+    'uri' => '/res/72b7ea17/rsrc/image/emoji/unicode/1f50f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f50f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f510.png' =>
+  array(
+    'hash' => '1e05fda6defa7fbe00670f67c5b4ed3a',
+    'uri' => '/res/1e05fda6/rsrc/image/emoji/unicode/1f510.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f510.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f515.png' =>
+  array(
+    'hash' => 'f746fe179ec352c619003ba59d6002aa',
+    'uri' => '/res/f746fe17/rsrc/image/emoji/unicode/1f515.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f515.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f516.png' =>
+  array(
+    'hash' => '810d52fc2c9f7695e039a33b2174c5b9',
+    'uri' => '/res/810d52fc/rsrc/image/emoji/unicode/1f516.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f516.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f517.png' =>
+  array(
+    'hash' => '374a0dee93fd247f03ff9de8d7c266af',
+    'uri' => '/res/374a0dee/rsrc/image/emoji/unicode/1f517.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f517.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f518.png' =>
+  array(
+    'hash' => '96a98bb7b50e190a3b514f9bda50b8e5',
+    'uri' => '/res/96a98bb7/rsrc/image/emoji/unicode/1f518.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f518.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f51a.png' =>
+  array(
+    'hash' => 'fe1d2152bb5f41d96b3c3088c30f3281',
+    'uri' => '/res/fe1d2152/rsrc/image/emoji/unicode/1f51a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f51a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f51b.png' =>
+  array(
+    'hash' => '2b67518aafbb97d94cdd8595169b155a',
+    'uri' => '/res/2b67518a/rsrc/image/emoji/unicode/1f51b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f51b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f51c.png' =>
+  array(
+    'hash' => 'c898f25f0bbb1086b124e7bb70a4d72f',
+    'uri' => '/res/c898f25f/rsrc/image/emoji/unicode/1f51c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f51c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f51f.png' =>
+  array(
+    'hash' => '1e9350a1644ee20f7b3cdae209060c74',
+    'uri' => '/res/1e9350a1/rsrc/image/emoji/unicode/1f51f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f51f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f520.png' =>
+  array(
+    'hash' => 'ac36a8b77daf229c4dabb9a495c25977',
+    'uri' => '/res/ac36a8b7/rsrc/image/emoji/unicode/1f520.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f520.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f521.png' =>
+  array(
+    'hash' => '32da4c3cbc7324541132f47a628356ac',
+    'uri' => '/res/32da4c3c/rsrc/image/emoji/unicode/1f521.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f521.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f522.png' =>
+  array(
+    'hash' => '9e1e292d49c90f93a999051174dd12ca',
+    'uri' => '/res/9e1e292d/rsrc/image/emoji/unicode/1f522.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f522.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f523.png' =>
+  array(
+    'hash' => '2b04fbaac833eca15712d965625e989c',
+    'uri' => '/res/2b04fbaa/rsrc/image/emoji/unicode/1f523.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f523.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f524.png' =>
+  array(
+    'hash' => '3d38ef37de6d0864ded2744c67d6ec8c',
+    'uri' => '/res/3d38ef37/rsrc/image/emoji/unicode/1f524.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f524.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f526.png' =>
+  array(
+    'hash' => '9e101c921fa981aea2046f48381df509',
+    'uri' => '/res/9e101c92/rsrc/image/emoji/unicode/1f526.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f526.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f527.png' =>
+  array(
+    'hash' => '7b0d4cebbf142016981b765eaf64535f',
+    'uri' => '/res/7b0d4ceb/rsrc/image/emoji/unicode/1f527.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f527.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f529.png' =>
+  array(
+    'hash' => 'b396679b6ce126f7d5ec4828e4940916',
+    'uri' => '/res/b396679b/rsrc/image/emoji/unicode/1f529.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f529.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f52a.png' =>
+  array(
+    'hash' => '748732fb2b89e188f903ac1aa70ada52',
+    'uri' => '/res/748732fb/rsrc/image/emoji/unicode/1f52a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f52a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f52c.png' =>
+  array(
+    'hash' => '0bb59e8a00e18a8b95bfda3aa7805d1a',
+    'uri' => '/res/0bb59e8a/rsrc/image/emoji/unicode/1f52c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f52c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f52d.png' =>
+  array(
+    'hash' => 'f8b6f7a984c15be471e5b6b05e7dfcf0',
+    'uri' => '/res/f8b6f7a9/rsrc/image/emoji/unicode/1f52d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f52d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f52e.png' =>
+  array(
+    'hash' => '14c2b5ef9f6f8f0e7e74619d9ea22154',
+    'uri' => '/res/14c2b5ef/rsrc/image/emoji/unicode/1f52e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f52e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f532.png' =>
+  array(
+    'hash' => 'e7d77a16a892d6cfcfdc9c9de113caf3',
+    'uri' => '/res/e7d77a16/rsrc/image/emoji/unicode/1f532.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f532.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f533.png' =>
+  array(
+    'hash' => '12f8c545fd96a72c58b72198a124b4b4',
+    'uri' => '/res/12f8c545/rsrc/image/emoji/unicode/1f533.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f533.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f535.png' =>
+  array(
+    'hash' => '9775f0d93c8406e0ce09387286e9c62d',
+    'uri' => '/res/9775f0d9/rsrc/image/emoji/unicode/1f535.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f535.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f536.png' =>
+  array(
+    'hash' => '2232fafc1ada64d738a8f2b58950b5de',
+    'uri' => '/res/2232fafc/rsrc/image/emoji/unicode/1f536.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f536.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f537.png' =>
+  array(
+    'hash' => '8716f2526ef4b92853e7763e9affee30',
+    'uri' => '/res/8716f252/rsrc/image/emoji/unicode/1f537.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f537.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f538.png' =>
+  array(
+    'hash' => '3b4f87bb64fb81385a257c73b0ef0a9a',
+    'uri' => '/res/3b4f87bb/rsrc/image/emoji/unicode/1f538.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f538.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f539.png' =>
+  array(
+    'hash' => '966bcac5ace2778262717a531c58c7e2',
+    'uri' => '/res/966bcac5/rsrc/image/emoji/unicode/1f539.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f539.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f53a.png' =>
+  array(
+    'hash' => '409ad652e7534d8f54f07c48627e2864',
+    'uri' => '/res/409ad652/rsrc/image/emoji/unicode/1f53a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f53a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f53b.png' =>
+  array(
+    'hash' => '98121145bbdfde12e1aa9b6d638e2f1a',
+    'uri' => '/res/98121145/rsrc/image/emoji/unicode/1f53b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f53b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f53c.png' =>
+  array(
+    'hash' => 'bfb5d4f6d6f9d3b91bfd2f244137d641',
+    'uri' => '/res/bfb5d4f6/rsrc/image/emoji/unicode/1f53c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f53c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f53d.png' =>
+  array(
+    'hash' => 'e08f211016f326e011b689ba7e895e15',
+    'uri' => '/res/e08f2110/rsrc/image/emoji/unicode/1f53d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f53d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f55c.png' =>
+  array(
+    'hash' => '0f1e3964434195178b1bafdeef3834f4',
+    'uri' => '/res/0f1e3964/rsrc/image/emoji/unicode/1f55c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f55c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f55d.png' =>
+  array(
+    'hash' => '41b89196d89883ccbbd7efe8e48637a3',
+    'uri' => '/res/41b89196/rsrc/image/emoji/unicode/1f55d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f55d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f55e.png' =>
+  array(
+    'hash' => '46a0ed506a4983389e7e686f6714f220',
+    'uri' => '/res/46a0ed50/rsrc/image/emoji/unicode/1f55e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f55e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f55f.png' =>
+  array(
+    'hash' => '981b76b3873b573c4fc6f46741d1fc38',
+    'uri' => '/res/981b76b3/rsrc/image/emoji/unicode/1f55f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f55f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f560.png' =>
+  array(
+    'hash' => '681f2675d50fc6b24a52328ae3c1f3a8',
+    'uri' => '/res/681f2675/rsrc/image/emoji/unicode/1f560.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f560.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f561.png' =>
+  array(
+    'hash' => '7cc1911330acc2e490a9199716a3d566',
+    'uri' => '/res/7cc19113/rsrc/image/emoji/unicode/1f561.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f561.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f562.png' =>
+  array(
+    'hash' => '24950fdf9fc34c89f0d38d9d4ad321c6',
+    'uri' => '/res/24950fdf/rsrc/image/emoji/unicode/1f562.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f562.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f563.png' =>
+  array(
+    'hash' => '0aa01658c190d8be9e457656fecd8218',
+    'uri' => '/res/0aa01658/rsrc/image/emoji/unicode/1f563.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f563.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f564.png' =>
+  array(
+    'hash' => '1031b260cd6cbb97b508edb019381e5c',
+    'uri' => '/res/1031b260/rsrc/image/emoji/unicode/1f564.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f564.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f565.png' =>
+  array(
+    'hash' => '819c0229e3a5adf7d75de4a29d0cbefe',
+    'uri' => '/res/819c0229/rsrc/image/emoji/unicode/1f565.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f565.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f566.png' =>
+  array(
+    'hash' => 'e27fc67c2328969acc25c4fd274591a6',
+    'uri' => '/res/e27fc67c/rsrc/image/emoji/unicode/1f566.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f566.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f567.png' =>
+  array(
+    'hash' => '4595222a76c99ad9e6f6be0967158a90',
+    'uri' => '/res/4595222a/rsrc/image/emoji/unicode/1f567.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f567.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f5fe.png' =>
+  array(
+    'hash' => 'b689431b741db8fb0a348c0612ca4fb5',
+    'uri' => '/res/b689431b/rsrc/image/emoji/unicode/1f5fe.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f5fe.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f5ff.png' =>
+  array(
+    'hash' => '4a5b0fe623cd975c1e5dd7d560b4d390',
+    'uri' => '/res/4a5b0fe6/rsrc/image/emoji/unicode/1f5ff.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f5ff.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f600.png' =>
+  array(
+    'hash' => '87b14e3fb215e57e4ee1a4a31be5214b',
+    'uri' => '/res/87b14e3f/rsrc/image/emoji/unicode/1f600.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f600.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f605.png' =>
+  array(
+    'hash' => 'd8ecf67630026ea5ed372b65e25e988b',
+    'uri' => '/res/d8ecf676/rsrc/image/emoji/unicode/1f605.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f605.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f606.png' =>
+  array(
+    'hash' => '5f39911413b8fccf2fd577b305f62d6f',
+    'uri' => '/res/5f399114/rsrc/image/emoji/unicode/1f606.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f606.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f607.png' =>
+  array(
+    'hash' => 'ffaa889045901e57348f42b89f81d3d8',
+    'uri' => '/res/ffaa8890/rsrc/image/emoji/unicode/1f607.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f607.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f608.png' =>
+  array(
+    'hash' => 'b8b8b7871575d64bcc1535e9f346f070',
+    'uri' => '/res/b8b8b787/rsrc/image/emoji/unicode/1f608.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f608.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f60b.png' =>
+  array(
+    'hash' => '2fb75857c8f19facbba54e7251fc58f0',
+    'uri' => '/res/2fb75857/rsrc/image/emoji/unicode/1f60b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f60b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f60e.png' =>
+  array(
+    'hash' => '5e09ad06ac5634e94e530fa90c1235df',
+    'uri' => '/res/5e09ad06/rsrc/image/emoji/unicode/1f60e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f60e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f610.png' =>
+  array(
+    'hash' => '1c0c608f6792417855474b09eea06c92',
+    'uri' => '/res/1c0c608f/rsrc/image/emoji/unicode/1f610.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f610.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f611.png' =>
+  array(
+    'hash' => '4ff78b49fc9ba3483212f6a9dc833a82',
+    'uri' => '/res/4ff78b49/rsrc/image/emoji/unicode/1f611.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f611.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f615.png' =>
+  array(
+    'hash' => '95e8f1fd2eef93deb778c00b1ba238bf',
+    'uri' => '/res/95e8f1fd/rsrc/image/emoji/unicode/1f615.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f615.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f617.png' =>
+  array(
+    'hash' => 'a9dbd833d80b4758cb1e6745f8402001',
+    'uri' => '/res/a9dbd833/rsrc/image/emoji/unicode/1f617.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f617.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f619.png' =>
+  array(
+    'hash' => 'b393bd29f6a6051af813a2cb395d3824',
+    'uri' => '/res/b393bd29/rsrc/image/emoji/unicode/1f619.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f619.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f61b.png' =>
+  array(
+    'hash' => 'ebd9f3ffa3acbe7bf071ca5e3be4e4fd',
+    'uri' => '/res/ebd9f3ff/rsrc/image/emoji/unicode/1f61b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f61b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f61f.png' =>
+  array(
+    'hash' => '3372bccefc0e30ba882c057fbd423860',
+    'uri' => '/res/3372bcce/rsrc/image/emoji/unicode/1f61f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f61f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f624.png' =>
+  array(
+    'hash' => '0552d31faab459d593c05fafac872c4a',
+    'uri' => '/res/0552d31f/rsrc/image/emoji/unicode/1f624.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f624.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f626.png' =>
+  array(
+    'hash' => 'cc550cc898ed21969654b03dbe0d5a93',
+    'uri' => '/res/cc550cc8/rsrc/image/emoji/unicode/1f626.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f626.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f627.png' =>
+  array(
+    'hash' => 'd23605763a467eb82f05c9ca1463e2a6',
+    'uri' => '/res/d2360576/rsrc/image/emoji/unicode/1f627.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f627.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f629.png' =>
+  array(
+    'hash' => '274f58273d9a5ea11c187d744f6dc594',
+    'uri' => '/res/274f5827/rsrc/image/emoji/unicode/1f629.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f629.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f62b.png' =>
+  array(
+    'hash' => '85cf41cb9af28a30f83eeef86ccbd6c7',
+    'uri' => '/res/85cf41cb/rsrc/image/emoji/unicode/1f62b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f62b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f62c.png' =>
+  array(
+    'hash' => '7adf763cc57356a34dc48978092fee39',
+    'uri' => '/res/7adf763c/rsrc/image/emoji/unicode/1f62c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f62c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f62e.png' =>
+  array(
+    'hash' => '28ac7a3b2e975194693a250c0ccf8c3a',
+    'uri' => '/res/28ac7a3b/rsrc/image/emoji/unicode/1f62e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f62e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f62f.png' =>
+  array(
+    'hash' => '191c92e8284f324a6516d5b5ac9896ff',
+    'uri' => '/res/191c92e8/rsrc/image/emoji/unicode/1f62f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f62f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f634.png' =>
+  array(
+    'hash' => '2a65043f6a49c5b7ebcc9b997033234d',
+    'uri' => '/res/2a65043f/rsrc/image/emoji/unicode/1f634.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f634.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f635.png' =>
+  array(
+    'hash' => '1338c732544dd13c5b7133cba58f11d5',
+    'uri' => '/res/1338c732/rsrc/image/emoji/unicode/1f635.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f635.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f636.png' =>
+  array(
+    'hash' => '054222db66a9f13e2b887f2a080f7736',
+    'uri' => '/res/054222db/rsrc/image/emoji/unicode/1f636.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f636.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f638.png' =>
+  array(
+    'hash' => 'aec1c83b3aace998edb2ffbfc5f87c51',
+    'uri' => '/res/aec1c83b/rsrc/image/emoji/unicode/1f638.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f638.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f639.png' =>
+  array(
+    'hash' => '2bd3084e9fb91a7e4f22dc30025caf53',
+    'uri' => '/res/2bd3084e/rsrc/image/emoji/unicode/1f639.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f639.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f63a.png' =>
+  array(
+    'hash' => 'db71e1e1b44c52fefe7a016c94c81534',
+    'uri' => '/res/db71e1e1/rsrc/image/emoji/unicode/1f63a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f63a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f63b.png' =>
+  array(
+    'hash' => 'dcd999cb4c25c7792946297673b0f1c8',
+    'uri' => '/res/dcd999cb/rsrc/image/emoji/unicode/1f63b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f63b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f63c.png' =>
+  array(
+    'hash' => 'b884eb5c5c26f1d1fd4cee7451212c05',
+    'uri' => '/res/b884eb5c/rsrc/image/emoji/unicode/1f63c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f63c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f63d.png' =>
+  array(
+    'hash' => '5eeea9cbb5709a136eda802e2205e20e',
+    'uri' => '/res/5eeea9cb/rsrc/image/emoji/unicode/1f63d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f63d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f63e.png' =>
+  array(
+    'hash' => '5150fb696e73e7376f130f544cc4821e',
+    'uri' => '/res/5150fb69/rsrc/image/emoji/unicode/1f63e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f63e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f63f.png' =>
+  array(
+    'hash' => 'fe3834f5eb43a1b4ffca9421bb23b14e',
+    'uri' => '/res/fe3834f5/rsrc/image/emoji/unicode/1f63f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f63f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f640.png' =>
+  array(
+    'hash' => 'f14a36eaaf878fb64b434e04162e8807',
+    'uri' => '/res/f14a36ea/rsrc/image/emoji/unicode/1f640.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f640.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f648.png' =>
+  array(
+    'hash' => 'c0d1a191bae096d1530b7d63369fbb22',
+    'uri' => '/res/c0d1a191/rsrc/image/emoji/unicode/1f648.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f648.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f649.png' =>
+  array(
+    'hash' => 'dc682b767b844e18c820a14f6e73edca',
+    'uri' => '/res/dc682b76/rsrc/image/emoji/unicode/1f649.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f649.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f64a.png' =>
+  array(
+    'hash' => 'd1256c44b77e207b671b5bfe3b91ccb2',
+    'uri' => '/res/d1256c44/rsrc/image/emoji/unicode/1f64a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f64a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f64b.png' =>
+  array(
+    'hash' => 'a95e30a97241601637e10df5790a0c38',
+    'uri' => '/res/a95e30a9/rsrc/image/emoji/unicode/1f64b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f64b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f64d.png' =>
+  array(
+    'hash' => '9c602ce99b614a5a29988f7cc4a4a848',
+    'uri' => '/res/9c602ce9/rsrc/image/emoji/unicode/1f64d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f64d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f64e.png' =>
+  array(
+    'hash' => 'a944b374e80bdd83a9b822e5d180812e',
+    'uri' => '/res/a944b374/rsrc/image/emoji/unicode/1f64e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f64e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f681.png' =>
+  array(
+    'hash' => '716cb1ff22ff5593ab589e367bb792c8',
+    'uri' => '/res/716cb1ff/rsrc/image/emoji/unicode/1f681.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f681.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f682.png' =>
+  array(
+    'hash' => '7920f00c102934b831c57b13926196e9',
+    'uri' => '/res/7920f00c/rsrc/image/emoji/unicode/1f682.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f682.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f683.png' =>
+  array(
+    'hash' => 'b65a8245b04ab23cda505418ac18dc2e',
+    'uri' => '/res/b65a8245/rsrc/image/emoji/unicode/1f683.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f683.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f686.png' =>
+  array(
+    'hash' => '1281a6a33d6335dbf171715666f8141a',
+    'uri' => '/res/1281a6a3/rsrc/image/emoji/unicode/1f686.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f686.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f688.png' =>
+  array(
+    'hash' => 'b9e67554abc736cee8c5c890f51f3f3b',
+    'uri' => '/res/b9e67554/rsrc/image/emoji/unicode/1f688.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f688.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f68a.png' =>
+  array(
+    'hash' => '7f3df6f242777459036e827d4702962c',
+    'uri' => '/res/7f3df6f2/rsrc/image/emoji/unicode/1f68a.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f68a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f68d.png' =>
+  array(
+    'hash' => 'b339d24b4854a4b1166f7a0fe5a82b26',
+    'uri' => '/res/b339d24b/rsrc/image/emoji/unicode/1f68d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f68d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f68e.png' =>
+  array(
+    'hash' => 'd663250105e916a8421715450926a99a',
+    'uri' => '/res/d6632501/rsrc/image/emoji/unicode/1f68e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f68e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f690.png' =>
+  array(
+    'hash' => 'dcf89c7f6f0d39f8e9dde9c10ddeeac1',
+    'uri' => '/res/dcf89c7f/rsrc/image/emoji/unicode/1f690.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f690.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f694.png' =>
+  array(
+    'hash' => '8d085bb539eee36b6513086fbe641a0c',
+    'uri' => '/res/8d085bb5/rsrc/image/emoji/unicode/1f694.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f694.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f696.png' =>
+  array(
+    'hash' => '3dd395aa6aad70049e60a13967c78ddd',
+    'uri' => '/res/3dd395aa/rsrc/image/emoji/unicode/1f696.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f696.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f698.png' =>
+  array(
+    'hash' => '5c3ba2540d2722f58c7e735715f52170',
+    'uri' => '/res/5c3ba254/rsrc/image/emoji/unicode/1f698.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f698.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f69b.png' =>
+  array(
+    'hash' => '2fd97c393b42c70834dbe121c0a93d65',
+    'uri' => '/res/2fd97c39/rsrc/image/emoji/unicode/1f69b.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f69b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f69c.png' =>
+  array(
+    'hash' => 'd13f6390b340422b5e018408f9684307',
+    'uri' => '/res/d13f6390/rsrc/image/emoji/unicode/1f69c.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f69c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f69d.png' =>
+  array(
+    'hash' => 'd693593164b855491ab0eab0c12a03ec',
+    'uri' => '/res/d6935931/rsrc/image/emoji/unicode/1f69d.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f69d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f69e.png' =>
+  array(
+    'hash' => '4531fd991ac5279013b229daaeb684bd',
+    'uri' => '/res/4531fd99/rsrc/image/emoji/unicode/1f69e.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f69e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f69f.png' =>
+  array(
+    'hash' => '42f1d3a7754d12f5d4ec8cb5fce61b54',
+    'uri' => '/res/42f1d3a7/rsrc/image/emoji/unicode/1f69f.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f69f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6a0.png' =>
+  array(
+    'hash' => 'ae6fc0560025dab2f992856bc303b33a',
+    'uri' => '/res/ae6fc056/rsrc/image/emoji/unicode/1f6a0.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6a0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6a1.png' =>
+  array(
+    'hash' => 'ca24bf181502b2edda0eeaafdf6cb1e1',
+    'uri' => '/res/ca24bf18/rsrc/image/emoji/unicode/1f6a1.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6a1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6a3.png' =>
+  array(
+    'hash' => 'f4eaa9e5b85f47267cf6eb36079e25aa',
+    'uri' => '/res/f4eaa9e5/rsrc/image/emoji/unicode/1f6a3.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6a3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6a6.png' =>
+  array(
+    'hash' => '661f8fb5dfef2a3f9f7cae54d281572c',
+    'uri' => '/res/661f8fb5/rsrc/image/emoji/unicode/1f6a6.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6a6.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6a8.png' =>
+  array(
+    'hash' => '5be18d7e956768024443805e94255c38',
+    'uri' => '/res/5be18d7e/rsrc/image/emoji/unicode/1f6a8.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6a8.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6a9.png' =>
+  array(
+    'hash' => 'f4d714409c29db71a6f08596648ac9f0',
+    'uri' => '/res/f4d71440/rsrc/image/emoji/unicode/1f6a9.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6a9.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6aa.png' =>
+  array(
+    'hash' => '7014fe4f1e1a2dbe098f293a18605a04',
+    'uri' => '/res/7014fe4f/rsrc/image/emoji/unicode/1f6aa.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6aa.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6ab.png' =>
+  array(
+    'hash' => '628523c8c21affe9e12643bb71665e8d',
+    'uri' => '/res/628523c8/rsrc/image/emoji/unicode/1f6ab.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6ab.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6ae.png' =>
+  array(
+    'hash' => '4832d5fff5500513619877098fe5f53c',
+    'uri' => '/res/4832d5ff/rsrc/image/emoji/unicode/1f6ae.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6ae.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6af.png' =>
+  array(
+    'hash' => '358a8e72cc7b22b17426509eac40d1c0',
+    'uri' => '/res/358a8e72/rsrc/image/emoji/unicode/1f6af.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6af.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6b0.png' =>
+  array(
+    'hash' => 'dfd74228380ac958b4b804aa0c4e4426',
+    'uri' => '/res/dfd74228/rsrc/image/emoji/unicode/1f6b0.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6b0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6b1.png' =>
+  array(
+    'hash' => 'f1fecfff4870307f76643fa045f60542',
+    'uri' => '/res/f1fecfff/rsrc/image/emoji/unicode/1f6b1.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6b1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6b3.png' =>
+  array(
+    'hash' => 'a3a183895a9af324a31d7865321a0079',
+    'uri' => '/res/a3a18389/rsrc/image/emoji/unicode/1f6b3.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6b3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6b4.png' =>
+  array(
+    'hash' => 'e4e4ace6d5163117051bd9a68b6d9801',
+    'uri' => '/res/e4e4ace6/rsrc/image/emoji/unicode/1f6b4.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6b4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6b5.png' =>
+  array(
+    'hash' => '2ed7d3a9814aa46eb37719c277e692d3',
+    'uri' => '/res/2ed7d3a9/rsrc/image/emoji/unicode/1f6b5.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6b5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6b7.png' =>
+  array(
+    'hash' => '53cf8a07207f020e779a03124a738779',
+    'uri' => '/res/53cf8a07/rsrc/image/emoji/unicode/1f6b7.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6b7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6b8.png' =>
+  array(
+    'hash' => '4a46f3dd390ea77e39bd9a45e89440be',
+    'uri' => '/res/4a46f3dd/rsrc/image/emoji/unicode/1f6b8.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6b8.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6bf.png' =>
+  array(
+    'hash' => '2b27b9e763d78e0498b07242ee38f056',
+    'uri' => '/res/2b27b9e7/rsrc/image/emoji/unicode/1f6bf.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6bf.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6c1.png' =>
+  array(
+    'hash' => '70463e706bdc21502ce3900e82f7d82e',
+    'uri' => '/res/70463e70/rsrc/image/emoji/unicode/1f6c1.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6c1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6c2.png' =>
+  array(
+    'hash' => '190bf554ad178212c43441518488ffac',
+    'uri' => '/res/190bf554/rsrc/image/emoji/unicode/1f6c2.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6c2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6c3.png' =>
+  array(
+    'hash' => '8f7b87a64e63c3b06b7e63085583b040',
+    'uri' => '/res/8f7b87a6/rsrc/image/emoji/unicode/1f6c3.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6c3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6c4.png' =>
+  array(
+    'hash' => '8f77e15f9c9345909bbe8964d0613294',
+    'uri' => '/res/8f77e15f/rsrc/image/emoji/unicode/1f6c4.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6c4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/1f6c5.png' =>
+  array(
+    'hash' => '496faddfb0e946959aca4398ae88234c',
+    'uri' => '/res/496faddf/rsrc/image/emoji/unicode/1f6c5.png',
+    'disk' => '/rsrc/image/emoji/unicode/1f6c5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/203c.png' =>
+  array(
+    'hash' => 'b6f31644f0205d9956f250f57a35e635',
+    'uri' => '/res/b6f31644/rsrc/image/emoji/unicode/203c.png',
+    'disk' => '/rsrc/image/emoji/unicode/203c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2049.png' =>
+  array(
+    'hash' => '4a8a0c3cf4e28d46715014bfa6f5c97b',
+    'uri' => '/res/4a8a0c3c/rsrc/image/emoji/unicode/2049.png',
+    'disk' => '/rsrc/image/emoji/unicode/2049.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2139.png' =>
+  array(
+    'hash' => '63040767a65e29be995ca6415f0921ce',
+    'uri' => '/res/63040767/rsrc/image/emoji/unicode/2139.png',
+    'disk' => '/rsrc/image/emoji/unicode/2139.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2194.png' =>
+  array(
+    'hash' => '0742119e78dbe5c6692a9cf8fab46f36',
+    'uri' => '/res/0742119e/rsrc/image/emoji/unicode/2194.png',
+    'disk' => '/rsrc/image/emoji/unicode/2194.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2195.png' =>
+  array(
+    'hash' => 'dd24ac7e771787768be819b5d261fdec',
+    'uri' => '/res/dd24ac7e/rsrc/image/emoji/unicode/2195.png',
+    'disk' => '/rsrc/image/emoji/unicode/2195.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/21a9.png' =>
+  array(
+    'hash' => '4b0f2d5570ca4bfbefbfdcde33b75931',
+    'uri' => '/res/4b0f2d55/rsrc/image/emoji/unicode/21a9.png',
+    'disk' => '/rsrc/image/emoji/unicode/21a9.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/21aa.png' =>
+  array(
+    'hash' => '19c28d9d66d364e9901b17a1a79381e4',
+    'uri' => '/res/19c28d9d/rsrc/image/emoji/unicode/21aa.png',
+    'disk' => '/rsrc/image/emoji/unicode/21aa.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/231a.png' =>
+  array(
+    'hash' => '96e6ff6db0eafb33c6e8ed49fa4d8250',
+    'uri' => '/res/96e6ff6d/rsrc/image/emoji/unicode/231a.png',
+    'disk' => '/rsrc/image/emoji/unicode/231a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/231b.png' =>
+  array(
+    'hash' => 'f6916fc5835514b9e789e601f4302e97',
+    'uri' => '/res/f6916fc5/rsrc/image/emoji/unicode/231b.png',
+    'disk' => '/rsrc/image/emoji/unicode/231b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/23eb.png' =>
+  array(
+    'hash' => '3fd73084df7eed267004aa7b08fb732b',
+    'uri' => '/res/3fd73084/rsrc/image/emoji/unicode/23eb.png',
+    'disk' => '/rsrc/image/emoji/unicode/23eb.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/23ec.png' =>
+  array(
+    'hash' => 'c7f00ffa760448202553531eda228b8f',
+    'uri' => '/res/c7f00ffa/rsrc/image/emoji/unicode/23ec.png',
+    'disk' => '/rsrc/image/emoji/unicode/23ec.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/23f0.png' =>
+  array(
+    'hash' => '7f546dec0444f7ce31a0435b2a67650a',
+    'uri' => '/res/7f546dec/rsrc/image/emoji/unicode/23f0.png',
+    'disk' => '/rsrc/image/emoji/unicode/23f0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/23f3.png' =>
+  array(
+    'hash' => 'ac537a1d0abd3f457d5f9039829f3fa2',
+    'uri' => '/res/ac537a1d/rsrc/image/emoji/unicode/23f3.png',
+    'disk' => '/rsrc/image/emoji/unicode/23f3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/24c2.png' =>
+  array(
+    'hash' => '52b3cceefb1fd33829a924fe44b0013f',
+    'uri' => '/res/52b3ccee/rsrc/image/emoji/unicode/24c2.png',
+    'disk' => '/rsrc/image/emoji/unicode/24c2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2611.png' =>
+  array(
+    'hash' => '89dca058f6d873785ae4f29d13870003',
+    'uri' => '/res/89dca058/rsrc/image/emoji/unicode/2611.png',
+    'disk' => '/rsrc/image/emoji/unicode/2611.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/267b.png' =>
+  array(
+    'hash' => '8c882bfb76b2b3c4d61ad4fbc5fafff3',
+    'uri' => '/res/8c882bfb/rsrc/image/emoji/unicode/267b.png',
+    'disk' => '/rsrc/image/emoji/unicode/267b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2693.png' =>
+  array(
+    'hash' => '0523cc38d95813114560e91ac99e79a5',
+    'uri' => '/res/0523cc38/rsrc/image/emoji/unicode/2693.png',
+    'disk' => '/rsrc/image/emoji/unicode/2693.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/26aa.png' =>
+  array(
+    'hash' => '822475076a682a8ca8b484d587a8380e',
+    'uri' => '/res/82247507/rsrc/image/emoji/unicode/26aa.png',
+    'disk' => '/rsrc/image/emoji/unicode/26aa.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/26ab.png' =>
+  array(
+    'hash' => 'df637f9d035564c9dfd0bb9ff542681b',
+    'uri' => '/res/df637f9d/rsrc/image/emoji/unicode/26ab.png',
+    'disk' => '/rsrc/image/emoji/unicode/26ab.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/26c5.png' =>
+  array(
+    'hash' => '4aeb78782b8f3b0044d1843348c9e825',
+    'uri' => '/res/4aeb7878/rsrc/image/emoji/unicode/26c5.png',
+    'disk' => '/rsrc/image/emoji/unicode/26c5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/26d4.png' =>
+  array(
+    'hash' => '44e6edab21876bad88c17f03452a1f2e',
+    'uri' => '/res/44e6edab/rsrc/image/emoji/unicode/26d4.png',
+    'disk' => '/rsrc/image/emoji/unicode/26d4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2705.png' =>
+  array(
+    'hash' => '8dac8671a9e2f623cc6f4198f0ef767e',
+    'uri' => '/res/8dac8671/rsrc/image/emoji/unicode/2705.png',
+    'disk' => '/rsrc/image/emoji/unicode/2705.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2709.png' =>
+  array(
+    'hash' => '8fadb90916bdeed501c2c47b020352ae',
+    'uri' => '/res/8fadb909/rsrc/image/emoji/unicode/2709.png',
+    'disk' => '/rsrc/image/emoji/unicode/2709.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/270f.png' =>
+  array(
+    'hash' => 'f39d75428fb550200063d011882d5e36',
+    'uri' => '/res/f39d7542/rsrc/image/emoji/unicode/270f.png',
+    'disk' => '/rsrc/image/emoji/unicode/270f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2712.png' =>
+  array(
+    'hash' => '4a7a407d9ff799a8a11ff4d2166cd0d7',
+    'uri' => '/res/4a7a407d/rsrc/image/emoji/unicode/2712.png',
+    'disk' => '/rsrc/image/emoji/unicode/2712.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2714.png' =>
+  array(
+    'hash' => '6a1ff19c4009ed5f634d448e79c1ed61',
+    'uri' => '/res/6a1ff19c/rsrc/image/emoji/unicode/2714.png',
+    'disk' => '/rsrc/image/emoji/unicode/2714.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2716.png' =>
+  array(
+    'hash' => '2548da5dfcd5d6dcdf34438d31e2c3a9',
+    'uri' => '/res/2548da5d/rsrc/image/emoji/unicode/2716.png',
+    'disk' => '/rsrc/image/emoji/unicode/2716.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2744.png' =>
+  array(
+    'hash' => '6cb16955702509623a8b0ee785c345ec',
+    'uri' => '/res/6cb16955/rsrc/image/emoji/unicode/2744.png',
+    'disk' => '/rsrc/image/emoji/unicode/2744.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/274e.png' =>
+  array(
+    'hash' => '916cc12402ffcefe49c665a34d33c809',
+    'uri' => '/res/916cc124/rsrc/image/emoji/unicode/274e.png',
+    'disk' => '/rsrc/image/emoji/unicode/274e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2757.png' =>
+  array(
+    'hash' => '45352e5173fd858f3859a6d851dc0e35',
+    'uri' => '/res/45352e51/rsrc/image/emoji/unicode/2757.png',
+    'disk' => '/rsrc/image/emoji/unicode/2757.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2795.png' =>
+  array(
+    'hash' => '755dd6f7f036ed79e4dcb53aadf4764b',
+    'uri' => '/res/755dd6f7/rsrc/image/emoji/unicode/2795.png',
+    'disk' => '/rsrc/image/emoji/unicode/2795.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2796.png' =>
+  array(
+    'hash' => '48fc1ffefb10925efe739aefc3335dd9',
+    'uri' => '/res/48fc1ffe/rsrc/image/emoji/unicode/2796.png',
+    'disk' => '/rsrc/image/emoji/unicode/2796.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2797.png' =>
+  array(
+    'hash' => '206f823cafb1be0fae5229cf0466103c',
+    'uri' => '/res/206f823c/rsrc/image/emoji/unicode/2797.png',
+    'disk' => '/rsrc/image/emoji/unicode/2797.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/27b0.png' =>
+  array(
+    'hash' => 'f17522d50c95506cd4f18ed6248658e9',
+    'uri' => '/res/f17522d5/rsrc/image/emoji/unicode/27b0.png',
+    'disk' => '/rsrc/image/emoji/unicode/27b0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2934.png' =>
+  array(
+    'hash' => 'c099dc7705f58b38d3bb97ee2ae60748',
+    'uri' => '/res/c099dc77/rsrc/image/emoji/unicode/2934.png',
+    'disk' => '/rsrc/image/emoji/unicode/2934.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/2935.png' =>
+  array(
+    'hash' => '6dc8e82e012ec6dcee24b02bee5dee9b',
+    'uri' => '/res/6dc8e82e/rsrc/image/emoji/unicode/2935.png',
+    'disk' => '/rsrc/image/emoji/unicode/2935.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/3030.png' =>
+  array(
+    'hash' => 'fcc4d826dbbb29ed9b5ec73378570126',
+    'uri' => '/res/fcc4d826/rsrc/image/emoji/unicode/3030.png',
+    'disk' => '/rsrc/image/emoji/unicode/3030.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e001.png' =>
+  array(
+    'hash' => '9ebaf81b6b0c97675de081047e830295',
+    'uri' => '/res/9ebaf81b/rsrc/image/emoji/unicode/e001.png',
+    'disk' => '/rsrc/image/emoji/unicode/e001.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e002.png' =>
+  array(
+    'hash' => '59c149541a5acc1c447bd482ab37cb5c',
+    'uri' => '/res/59c14954/rsrc/image/emoji/unicode/e002.png',
+    'disk' => '/rsrc/image/emoji/unicode/e002.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e003.png' =>
+  array(
+    'hash' => '0ba14623f6634cefff5e11f1b6371e15',
+    'uri' => '/res/0ba14623/rsrc/image/emoji/unicode/e003.png',
+    'disk' => '/rsrc/image/emoji/unicode/e003.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e004.png' =>
+  array(
+    'hash' => '7b895c3a8cad6e9a32ac64a75b65cecb',
+    'uri' => '/res/7b895c3a/rsrc/image/emoji/unicode/e004.png',
+    'disk' => '/rsrc/image/emoji/unicode/e004.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e005.png' =>
+  array(
+    'hash' => '26772d765bd085b02e818b3e75dc9cde',
+    'uri' => '/res/26772d76/rsrc/image/emoji/unicode/e005.png',
+    'disk' => '/rsrc/image/emoji/unicode/e005.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e006.png' =>
+  array(
+    'hash' => '46caf0432c8364a880ff5ed04f6de0d0',
+    'uri' => '/res/46caf043/rsrc/image/emoji/unicode/e006.png',
+    'disk' => '/rsrc/image/emoji/unicode/e006.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e007.png' =>
+  array(
+    'hash' => 'c871963eb1dc8f53d0274200231fef12',
+    'uri' => '/res/c871963e/rsrc/image/emoji/unicode/e007.png',
+    'disk' => '/rsrc/image/emoji/unicode/e007.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e008.png' =>
+  array(
+    'hash' => '09e38a73036795a83b5efda6f4b08c6a',
+    'uri' => '/res/09e38a73/rsrc/image/emoji/unicode/e008.png',
+    'disk' => '/rsrc/image/emoji/unicode/e008.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e009.png' =>
+  array(
+    'hash' => '149de0ceb49563f30cb6dec317e335d5',
+    'uri' => '/res/149de0ce/rsrc/image/emoji/unicode/e009.png',
+    'disk' => '/rsrc/image/emoji/unicode/e009.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e00a.png' =>
+  array(
+    'hash' => '267faaadbc8a0d515055b77418b5fb27',
+    'uri' => '/res/267faaad/rsrc/image/emoji/unicode/e00a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e00a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e00b.png' =>
+  array(
+    'hash' => 'ba02c62b62043e8ed1e129751cb75fdc',
+    'uri' => '/res/ba02c62b/rsrc/image/emoji/unicode/e00b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e00b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e00c.png' =>
+  array(
+    'hash' => '45c3dbba216620cadc770d66a1a38f6f',
+    'uri' => '/res/45c3dbba/rsrc/image/emoji/unicode/e00c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e00c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e00d.png' =>
+  array(
+    'hash' => '16aa28f2eab50907785a5ff9e9802255',
+    'uri' => '/res/16aa28f2/rsrc/image/emoji/unicode/e00d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e00d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e00e.png' =>
+  array(
+    'hash' => 'd42c912f00f0cef5c437ab1850c81b20',
+    'uri' => '/res/d42c912f/rsrc/image/emoji/unicode/e00e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e00e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e00f.png' =>
+  array(
+    'hash' => '071027706df385f818b1f7b5d9e862b7',
+    'uri' => '/res/07102770/rsrc/image/emoji/unicode/e00f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e00f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e010.png' =>
+  array(
+    'hash' => '2ec58bb07737261d16ae25af5883760d',
+    'uri' => '/res/2ec58bb0/rsrc/image/emoji/unicode/e010.png',
+    'disk' => '/rsrc/image/emoji/unicode/e010.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e011.png' =>
+  array(
+    'hash' => 'eb11d76089288f6f061c008d253528c5',
+    'uri' => '/res/eb11d760/rsrc/image/emoji/unicode/e011.png',
+    'disk' => '/rsrc/image/emoji/unicode/e011.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e012.png' =>
+  array(
+    'hash' => '29fcde62c7498f7e7af6636a7c4166cc',
+    'uri' => '/res/29fcde62/rsrc/image/emoji/unicode/e012.png',
+    'disk' => '/rsrc/image/emoji/unicode/e012.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e013.png' =>
+  array(
+    'hash' => 'fdf2c192a1b8359c837d2c6c9b7a3db3',
+    'uri' => '/res/fdf2c192/rsrc/image/emoji/unicode/e013.png',
+    'disk' => '/rsrc/image/emoji/unicode/e013.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e014.png' =>
+  array(
+    'hash' => '60f2f015a20c2229bd429ce0f9e49013',
+    'uri' => '/res/60f2f015/rsrc/image/emoji/unicode/e014.png',
+    'disk' => '/rsrc/image/emoji/unicode/e014.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e015.png' =>
+  array(
+    'hash' => '533b189067c338a6c7ef951fb2fbfeb1',
+    'uri' => '/res/533b1890/rsrc/image/emoji/unicode/e015.png',
+    'disk' => '/rsrc/image/emoji/unicode/e015.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e016.png' =>
+  array(
+    'hash' => 'c933f55a44898763857a84fdeb0073df',
+    'uri' => '/res/c933f55a/rsrc/image/emoji/unicode/e016.png',
+    'disk' => '/rsrc/image/emoji/unicode/e016.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e017.png' =>
+  array(
+    'hash' => '9c942bcb8976f4c171a7d894822b4543',
+    'uri' => '/res/9c942bcb/rsrc/image/emoji/unicode/e017.png',
+    'disk' => '/rsrc/image/emoji/unicode/e017.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e018.png' =>
+  array(
+    'hash' => '383c4974b166bd49c12a2c8f82d7796c',
+    'uri' => '/res/383c4974/rsrc/image/emoji/unicode/e018.png',
+    'disk' => '/rsrc/image/emoji/unicode/e018.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e019.png' =>
+  array(
+    'hash' => 'd6d6bf4590bde2dd77f7283813b27684',
+    'uri' => '/res/d6d6bf45/rsrc/image/emoji/unicode/e019.png',
+    'disk' => '/rsrc/image/emoji/unicode/e019.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e01a.png' =>
+  array(
+    'hash' => 'fd6b6ef92a215d0f11ca5a0e42860306',
+    'uri' => '/res/fd6b6ef9/rsrc/image/emoji/unicode/e01a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e01a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e01b.png' =>
+  array(
+    'hash' => 'e668df934c1f53205786fa0fa2fc935b',
+    'uri' => '/res/e668df93/rsrc/image/emoji/unicode/e01b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e01b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e01c.png' =>
+  array(
+    'hash' => '9cba6e8a89cda3d7bacdd4df0aed2673',
+    'uri' => '/res/9cba6e8a/rsrc/image/emoji/unicode/e01c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e01c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e01d.png' =>
+  array(
+    'hash' => '19a776a3e1098961874e70b2f15d9e35',
+    'uri' => '/res/19a776a3/rsrc/image/emoji/unicode/e01d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e01d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e01e.png' =>
+  array(
+    'hash' => '7bcc488227414805d176f8dbfc06d4fe',
+    'uri' => '/res/7bcc4882/rsrc/image/emoji/unicode/e01e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e01e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e01f.png' =>
+  array(
+    'hash' => '3767af5db231c61b6c26079ef0b7d8fc',
+    'uri' => '/res/3767af5d/rsrc/image/emoji/unicode/e01f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e01f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e020.png' =>
+  array(
+    'hash' => 'a5e554320e5645d240a43e13a54aff60',
+    'uri' => '/res/a5e55432/rsrc/image/emoji/unicode/e020.png',
+    'disk' => '/rsrc/image/emoji/unicode/e020.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e021.png' =>
+  array(
+    'hash' => 'aff1ab47320f4380bdfb097db0a06b17',
+    'uri' => '/res/aff1ab47/rsrc/image/emoji/unicode/e021.png',
+    'disk' => '/rsrc/image/emoji/unicode/e021.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e022.png' =>
+  array(
+    'hash' => 'f574bbf94b5f5ac5c367c63143c141da',
+    'uri' => '/res/f574bbf9/rsrc/image/emoji/unicode/e022.png',
+    'disk' => '/rsrc/image/emoji/unicode/e022.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e023.png' =>
+  array(
+    'hash' => '5a9a5248e56e159f9667e44592d80af4',
+    'uri' => '/res/5a9a5248/rsrc/image/emoji/unicode/e023.png',
+    'disk' => '/rsrc/image/emoji/unicode/e023.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e024.png' =>
+  array(
+    'hash' => '8baacb7247d745382dcd3c5cedb4d027',
+    'uri' => '/res/8baacb72/rsrc/image/emoji/unicode/e024.png',
+    'disk' => '/rsrc/image/emoji/unicode/e024.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e025.png' =>
+  array(
+    'hash' => 'd64d0156012a5483684e6e2d765b4e9f',
+    'uri' => '/res/d64d0156/rsrc/image/emoji/unicode/e025.png',
+    'disk' => '/rsrc/image/emoji/unicode/e025.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e026.png' =>
+  array(
+    'hash' => 'b52c73b1e2b7b011eb32d0afe4ffb4a8',
+    'uri' => '/res/b52c73b1/rsrc/image/emoji/unicode/e026.png',
+    'disk' => '/rsrc/image/emoji/unicode/e026.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e027.png' =>
+  array(
+    'hash' => '3f65e11f93825fa7ec009bf39ed817d8',
+    'uri' => '/res/3f65e11f/rsrc/image/emoji/unicode/e027.png',
+    'disk' => '/rsrc/image/emoji/unicode/e027.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e028.png' =>
+  array(
+    'hash' => '680ec92d20adca6afd33ebe92efd3698',
+    'uri' => '/res/680ec92d/rsrc/image/emoji/unicode/e028.png',
+    'disk' => '/rsrc/image/emoji/unicode/e028.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e029.png' =>
+  array(
+    'hash' => '09c78e563f63414c72b36acf5fc4dcef',
+    'uri' => '/res/09c78e56/rsrc/image/emoji/unicode/e029.png',
+    'disk' => '/rsrc/image/emoji/unicode/e029.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e02a.png' =>
+  array(
+    'hash' => '0dc5c6498ad8b55fa1e819adecf645ca',
+    'uri' => '/res/0dc5c649/rsrc/image/emoji/unicode/e02a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e02a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e02b.png' =>
+  array(
+    'hash' => '27ff352ace1a25a49bfc8b99e2f837a1',
+    'uri' => '/res/27ff352a/rsrc/image/emoji/unicode/e02b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e02b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e02c.png' =>
+  array(
+    'hash' => 'e69ca86aeddf22adcbbb02ceb3043f14',
+    'uri' => '/res/e69ca86a/rsrc/image/emoji/unicode/e02c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e02c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e02d.png' =>
+  array(
+    'hash' => '4f96381317163aecf220c94b12290ae7',
+    'uri' => '/res/4f963813/rsrc/image/emoji/unicode/e02d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e02d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e02e.png' =>
+  array(
+    'hash' => 'db9636aaf40718af82dded71aed652b4',
+    'uri' => '/res/db9636aa/rsrc/image/emoji/unicode/e02e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e02e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e02f.png' =>
+  array(
+    'hash' => '12344cce6f2d36a44ab68d0b95689ef7',
+    'uri' => '/res/12344cce/rsrc/image/emoji/unicode/e02f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e02f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e030.png' =>
+  array(
+    'hash' => 'c02af49c15872b994eaecf1af29498d5',
+    'uri' => '/res/c02af49c/rsrc/image/emoji/unicode/e030.png',
+    'disk' => '/rsrc/image/emoji/unicode/e030.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e031.png' =>
+  array(
+    'hash' => 'ce156ff6cd5f0a2608195ce0064dcc90',
+    'uri' => '/res/ce156ff6/rsrc/image/emoji/unicode/e031.png',
+    'disk' => '/rsrc/image/emoji/unicode/e031.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e032.png' =>
+  array(
+    'hash' => 'cd7397b19712a5a43cb4c6ba24f0eb94',
+    'uri' => '/res/cd7397b1/rsrc/image/emoji/unicode/e032.png',
+    'disk' => '/rsrc/image/emoji/unicode/e032.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e033.png' =>
+  array(
+    'hash' => 'cdfd0d957345347e140551220376134d',
+    'uri' => '/res/cdfd0d95/rsrc/image/emoji/unicode/e033.png',
+    'disk' => '/rsrc/image/emoji/unicode/e033.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e034.png' =>
+  array(
+    'hash' => 'b62a9fbc831cda12c7b4a12c70b276f3',
+    'uri' => '/res/b62a9fbc/rsrc/image/emoji/unicode/e034.png',
+    'disk' => '/rsrc/image/emoji/unicode/e034.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e035.png' =>
+  array(
+    'hash' => '644d3c728ac4aa3f17771f56587822ab',
+    'uri' => '/res/644d3c72/rsrc/image/emoji/unicode/e035.png',
+    'disk' => '/rsrc/image/emoji/unicode/e035.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e036.png' =>
+  array(
+    'hash' => '4e4453baee6787c57e45d96bf5dfd5c7',
+    'uri' => '/res/4e4453ba/rsrc/image/emoji/unicode/e036.png',
+    'disk' => '/rsrc/image/emoji/unicode/e036.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e037.png' =>
+  array(
+    'hash' => '4ed2b6453fe151039cb03f3bd6a46b11',
+    'uri' => '/res/4ed2b645/rsrc/image/emoji/unicode/e037.png',
+    'disk' => '/rsrc/image/emoji/unicode/e037.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e038.png' =>
+  array(
+    'hash' => 'e153546f080f3471bb1e945b67f9b16b',
+    'uri' => '/res/e153546f/rsrc/image/emoji/unicode/e038.png',
+    'disk' => '/rsrc/image/emoji/unicode/e038.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e039.png' =>
+  array(
+    'hash' => 'ea2bc04c2b0ab099b4b5b59518770846',
+    'uri' => '/res/ea2bc04c/rsrc/image/emoji/unicode/e039.png',
+    'disk' => '/rsrc/image/emoji/unicode/e039.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e03a.png' =>
+  array(
+    'hash' => '2b4f1bc12666fcab596341178940d631',
+    'uri' => '/res/2b4f1bc1/rsrc/image/emoji/unicode/e03a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e03a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e03b.png' =>
+  array(
+    'hash' => 'a630f6a9b114bef595fdd3f2fe75ef09',
+    'uri' => '/res/a630f6a9/rsrc/image/emoji/unicode/e03b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e03b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e03c.png' =>
+  array(
+    'hash' => 'acf971f379b260c86f9abdd94d10b1fd',
+    'uri' => '/res/acf971f3/rsrc/image/emoji/unicode/e03c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e03c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e03d.png' =>
+  array(
+    'hash' => '2bbc817a206b3a2b0e63ccea68a2d538',
+    'uri' => '/res/2bbc817a/rsrc/image/emoji/unicode/e03d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e03d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e03e.png' =>
+  array(
+    'hash' => 'a37b3209eb787d5e0950f7eec217d7b1',
+    'uri' => '/res/a37b3209/rsrc/image/emoji/unicode/e03e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e03e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e03f.png' =>
+  array(
+    'hash' => '0cc28c943275f9c5d0dadea294dea540',
+    'uri' => '/res/0cc28c94/rsrc/image/emoji/unicode/e03f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e03f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e040.png' =>
+  array(
+    'hash' => 'db881e3744531e6190797f42d43e1c00',
+    'uri' => '/res/db881e37/rsrc/image/emoji/unicode/e040.png',
+    'disk' => '/rsrc/image/emoji/unicode/e040.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e041.png' =>
+  array(
+    'hash' => '2615bb2a8c8beadf76bccaf6d4c32b10',
+    'uri' => '/res/2615bb2a/rsrc/image/emoji/unicode/e041.png',
+    'disk' => '/rsrc/image/emoji/unicode/e041.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e042.png' =>
+  array(
+    'hash' => '65f4d39da5a332b3224e06175cf6916e',
+    'uri' => '/res/65f4d39d/rsrc/image/emoji/unicode/e042.png',
+    'disk' => '/rsrc/image/emoji/unicode/e042.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e043.png' =>
+  array(
+    'hash' => '4a8f35bf510e6c6760a3077872d7e4b5',
+    'uri' => '/res/4a8f35bf/rsrc/image/emoji/unicode/e043.png',
+    'disk' => '/rsrc/image/emoji/unicode/e043.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e044.png' =>
+  array(
+    'hash' => '1c521c5578cd1a50066165349c01ffb6',
+    'uri' => '/res/1c521c55/rsrc/image/emoji/unicode/e044.png',
+    'disk' => '/rsrc/image/emoji/unicode/e044.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e045.png' =>
+  array(
+    'hash' => '48be4e851f0b394d2623695072aab285',
+    'uri' => '/res/48be4e85/rsrc/image/emoji/unicode/e045.png',
+    'disk' => '/rsrc/image/emoji/unicode/e045.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e046.png' =>
+  array(
+    'hash' => 'bbe3bea1feb1fc944d36d56a9251a6f2',
+    'uri' => '/res/bbe3bea1/rsrc/image/emoji/unicode/e046.png',
+    'disk' => '/rsrc/image/emoji/unicode/e046.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e047.png' =>
+  array(
+    'hash' => '85619f919aa39bcdad470b8d94dad7ad',
+    'uri' => '/res/85619f91/rsrc/image/emoji/unicode/e047.png',
+    'disk' => '/rsrc/image/emoji/unicode/e047.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e048.png' =>
+  array(
+    'hash' => '5435c7af39df80b3c61aa789665be023',
+    'uri' => '/res/5435c7af/rsrc/image/emoji/unicode/e048.png',
+    'disk' => '/rsrc/image/emoji/unicode/e048.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e049.png' =>
+  array(
+    'hash' => '045afc70ef4764e77cb49f2cbeea9bbc',
+    'uri' => '/res/045afc70/rsrc/image/emoji/unicode/e049.png',
+    'disk' => '/rsrc/image/emoji/unicode/e049.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e04a.png' =>
+  array(
+    'hash' => 'a68f2d308cadda505d2c22f61de254e7',
+    'uri' => '/res/a68f2d30/rsrc/image/emoji/unicode/e04a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e04a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e04b.png' =>
+  array(
+    'hash' => '5ff46022ccb284793eedacd7e7270443',
+    'uri' => '/res/5ff46022/rsrc/image/emoji/unicode/e04b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e04b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e04c.png' =>
+  array(
+    'hash' => 'dc2b20ae48551d69ee90010172ad3931',
+    'uri' => '/res/dc2b20ae/rsrc/image/emoji/unicode/e04c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e04c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e04d.png' =>
+  array(
+    'hash' => 'd661da3cb4ad2c10724d17d03d631536',
+    'uri' => '/res/d661da3c/rsrc/image/emoji/unicode/e04d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e04d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e04e.png' =>
+  array(
+    'hash' => '6d4e4a076a337ef6c0ed75667572fbd0',
+    'uri' => '/res/6d4e4a07/rsrc/image/emoji/unicode/e04e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e04e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e04f.png' =>
+  array(
+    'hash' => '0ece938e01cffd3cefe7fa1af7ff1d41',
+    'uri' => '/res/0ece938e/rsrc/image/emoji/unicode/e04f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e04f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e050.png' =>
+  array(
+    'hash' => 'bcffa120fc94eaed997db25de0afe2ca',
+    'uri' => '/res/bcffa120/rsrc/image/emoji/unicode/e050.png',
+    'disk' => '/rsrc/image/emoji/unicode/e050.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e051.png' =>
+  array(
+    'hash' => '42a2a86008a6ebcd0ab8f8300d7a009d',
+    'uri' => '/res/42a2a860/rsrc/image/emoji/unicode/e051.png',
+    'disk' => '/rsrc/image/emoji/unicode/e051.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e052.png' =>
+  array(
+    'hash' => 'e2d4012b1d6f88fc985b4c6c99d7f174',
+    'uri' => '/res/e2d4012b/rsrc/image/emoji/unicode/e052.png',
+    'disk' => '/rsrc/image/emoji/unicode/e052.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e053.png' =>
+  array(
+    'hash' => 'f163a02ba390012645905bd82f66bcf6',
+    'uri' => '/res/f163a02b/rsrc/image/emoji/unicode/e053.png',
+    'disk' => '/rsrc/image/emoji/unicode/e053.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e054.png' =>
+  array(
+    'hash' => 'd36ab8f52561918f62817c53fd18d623',
+    'uri' => '/res/d36ab8f5/rsrc/image/emoji/unicode/e054.png',
+    'disk' => '/rsrc/image/emoji/unicode/e054.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e055.png' =>
+  array(
+    'hash' => 'f09fdf1cb8a4462e68ceec6215e0004b',
+    'uri' => '/res/f09fdf1c/rsrc/image/emoji/unicode/e055.png',
+    'disk' => '/rsrc/image/emoji/unicode/e055.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e056.png' =>
+  array(
+    'hash' => '2f5975cf49c3e3fa41600b7eec70d320',
+    'uri' => '/res/2f5975cf/rsrc/image/emoji/unicode/e056.png',
+    'disk' => '/rsrc/image/emoji/unicode/e056.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e057.png' =>
+  array(
+    'hash' => '419a1648a660ff7e5c4eb353a058b0e1',
+    'uri' => '/res/419a1648/rsrc/image/emoji/unicode/e057.png',
+    'disk' => '/rsrc/image/emoji/unicode/e057.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e058.png' =>
+  array(
+    'hash' => 'd6fda1c6411f464b2a4193d60e514e4a',
+    'uri' => '/res/d6fda1c6/rsrc/image/emoji/unicode/e058.png',
+    'disk' => '/rsrc/image/emoji/unicode/e058.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e059.png' =>
+  array(
+    'hash' => '7aef904d9f2d7a7eec8880dd4f2d5dc2',
+    'uri' => '/res/7aef904d/rsrc/image/emoji/unicode/e059.png',
+    'disk' => '/rsrc/image/emoji/unicode/e059.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e05a.png' =>
+  array(
+    'hash' => 'b3e7bafb6a842ec6d6e0bdf7d40ccc87',
+    'uri' => '/res/b3e7bafb/rsrc/image/emoji/unicode/e05a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e05a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e101.png' =>
+  array(
+    'hash' => '66e8496d49ca16e351537bd8f80a62ad',
+    'uri' => '/res/66e8496d/rsrc/image/emoji/unicode/e101.png',
+    'disk' => '/rsrc/image/emoji/unicode/e101.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e102.png' =>
+  array(
+    'hash' => 'e212243704c43f955fb7a59d868e4e2c',
+    'uri' => '/res/e2122437/rsrc/image/emoji/unicode/e102.png',
+    'disk' => '/rsrc/image/emoji/unicode/e102.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e103.png' =>
+  array(
+    'hash' => '53d4255fe79859309ad410547ba0e483',
+    'uri' => '/res/53d4255f/rsrc/image/emoji/unicode/e103.png',
+    'disk' => '/rsrc/image/emoji/unicode/e103.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e104.png' =>
+  array(
+    'hash' => 'ed1f260be2bbc35ac3467e7449e4b060',
+    'uri' => '/res/ed1f260b/rsrc/image/emoji/unicode/e104.png',
+    'disk' => '/rsrc/image/emoji/unicode/e104.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e105.png' =>
+  array(
+    'hash' => '2c16b9a2901ba6a3a4e2dcc24e0796b1',
+    'uri' => '/res/2c16b9a2/rsrc/image/emoji/unicode/e105.png',
+    'disk' => '/rsrc/image/emoji/unicode/e105.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e106.png' =>
+  array(
+    'hash' => '03dd0bda37893fd488c02e260d0e940d',
+    'uri' => '/res/03dd0bda/rsrc/image/emoji/unicode/e106.png',
+    'disk' => '/rsrc/image/emoji/unicode/e106.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e107.png' =>
+  array(
+    'hash' => 'dcc7c30e757ebff9f86e14bff18dd5d3',
+    'uri' => '/res/dcc7c30e/rsrc/image/emoji/unicode/e107.png',
+    'disk' => '/rsrc/image/emoji/unicode/e107.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e108.png' =>
+  array(
+    'hash' => '1befc6e269b9ae076ed142ea23b0029c',
+    'uri' => '/res/1befc6e2/rsrc/image/emoji/unicode/e108.png',
+    'disk' => '/rsrc/image/emoji/unicode/e108.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e109.png' =>
+  array(
+    'hash' => 'f62e78f3b6421534ce7c1104ba2952d2',
+    'uri' => '/res/f62e78f3/rsrc/image/emoji/unicode/e109.png',
+    'disk' => '/rsrc/image/emoji/unicode/e109.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e10a.png' =>
+  array(
+    'hash' => '2adf8840d5088bc7866e4f3e0bd2a237',
+    'uri' => '/res/2adf8840/rsrc/image/emoji/unicode/e10a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e10a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e10b.png' =>
+  array(
+    'hash' => '1a1236785e0f56442fcce9ab01476477',
+    'uri' => '/res/1a123678/rsrc/image/emoji/unicode/e10b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e10b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e10c.png' =>
+  array(
+    'hash' => 'db158c046358a4c5f1cde75934c6c01b',
+    'uri' => '/res/db158c04/rsrc/image/emoji/unicode/e10c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e10c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e10d.png' =>
+  array(
+    'hash' => '527b5f8ca6ca3530ec850c0bd0ff9878',
+    'uri' => '/res/527b5f8c/rsrc/image/emoji/unicode/e10d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e10d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e10e.png' =>
+  array(
+    'hash' => '4c54f5a76200e1e62c8f576259ddc9fb',
+    'uri' => '/res/4c54f5a7/rsrc/image/emoji/unicode/e10e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e10e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e10f.png' =>
+  array(
+    'hash' => '1a7470e32ec600c99857b020f4018379',
+    'uri' => '/res/1a7470e3/rsrc/image/emoji/unicode/e10f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e10f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e110.png' =>
+  array(
+    'hash' => 'd12eb8589dbaf35415fb9e5ac1a07246',
+    'uri' => '/res/d12eb858/rsrc/image/emoji/unicode/e110.png',
+    'disk' => '/rsrc/image/emoji/unicode/e110.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e111.png' =>
+  array(
+    'hash' => 'ab23474374da3f7e9555feda401f47a0',
+    'uri' => '/res/ab234743/rsrc/image/emoji/unicode/e111.png',
+    'disk' => '/rsrc/image/emoji/unicode/e111.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e112.png' =>
+  array(
+    'hash' => '3d66d2debe54e7226baec8b712a6d536',
+    'uri' => '/res/3d66d2de/rsrc/image/emoji/unicode/e112.png',
+    'disk' => '/rsrc/image/emoji/unicode/e112.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e113.png' =>
+  array(
+    'hash' => '16641705e1cc0d26e3fd6c0b1dd6e9f2',
+    'uri' => '/res/16641705/rsrc/image/emoji/unicode/e113.png',
+    'disk' => '/rsrc/image/emoji/unicode/e113.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e114.png' =>
+  array(
+    'hash' => 'b577ac850c88e2d0f617918decfbc024',
+    'uri' => '/res/b577ac85/rsrc/image/emoji/unicode/e114.png',
+    'disk' => '/rsrc/image/emoji/unicode/e114.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e115.png' =>
+  array(
+    'hash' => 'd6def9ccbaf2ee97bb05724e73d92057',
+    'uri' => '/res/d6def9cc/rsrc/image/emoji/unicode/e115.png',
+    'disk' => '/rsrc/image/emoji/unicode/e115.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e116.png' =>
+  array(
+    'hash' => '8794f8afc287303bf3bdac725660aff9',
+    'uri' => '/res/8794f8af/rsrc/image/emoji/unicode/e116.png',
+    'disk' => '/rsrc/image/emoji/unicode/e116.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e117.png' =>
+  array(
+    'hash' => '35346a5fd6290906f10d098e63b23939',
+    'uri' => '/res/35346a5f/rsrc/image/emoji/unicode/e117.png',
+    'disk' => '/rsrc/image/emoji/unicode/e117.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e118.png' =>
+  array(
+    'hash' => 'a12a1c71d4f673d98916c70fc90d1b80',
+    'uri' => '/res/a12a1c71/rsrc/image/emoji/unicode/e118.png',
+    'disk' => '/rsrc/image/emoji/unicode/e118.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e119.png' =>
+  array(
+    'hash' => '23f7420f04f6f5a010dc5c18fb0f8a3c',
+    'uri' => '/res/23f7420f/rsrc/image/emoji/unicode/e119.png',
+    'disk' => '/rsrc/image/emoji/unicode/e119.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e11a.png' =>
+  array(
+    'hash' => 'a14a1dbfd269d1c386477644f96f04c2',
+    'uri' => '/res/a14a1dbf/rsrc/image/emoji/unicode/e11a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e11a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e11b.png' =>
+  array(
+    'hash' => '87a005c68a32c026a645f1ad411b0154',
+    'uri' => '/res/87a005c6/rsrc/image/emoji/unicode/e11b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e11b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e11c.png' =>
+  array(
+    'hash' => '0453a4be46cf62854efe6b44643afa9b',
+    'uri' => '/res/0453a4be/rsrc/image/emoji/unicode/e11c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e11c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e11d.png' =>
+  array(
+    'hash' => '682b74d8d60935a8b528212750b8275b',
+    'uri' => '/res/682b74d8/rsrc/image/emoji/unicode/e11d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e11d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e11e.png' =>
+  array(
+    'hash' => '401d6adb1e4249c0182841e76db3edb9',
+    'uri' => '/res/401d6adb/rsrc/image/emoji/unicode/e11e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e11e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e11f.png' =>
+  array(
+    'hash' => '02646341abc7c26a6e7a128b7cc6cd2b',
+    'uri' => '/res/02646341/rsrc/image/emoji/unicode/e11f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e11f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e120.png' =>
+  array(
+    'hash' => '426c9cede12dda9732e8e4e327f515aa',
+    'uri' => '/res/426c9ced/rsrc/image/emoji/unicode/e120.png',
+    'disk' => '/rsrc/image/emoji/unicode/e120.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e121.png' =>
+  array(
+    'hash' => '7dba41f6181e9d3f65eb54cdda7e96eb',
+    'uri' => '/res/7dba41f6/rsrc/image/emoji/unicode/e121.png',
+    'disk' => '/rsrc/image/emoji/unicode/e121.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e122.png' =>
+  array(
+    'hash' => '632d549e51c6b274d2aeac576d4b0507',
+    'uri' => '/res/632d549e/rsrc/image/emoji/unicode/e122.png',
+    'disk' => '/rsrc/image/emoji/unicode/e122.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e123.png' =>
+  array(
+    'hash' => '1b5bfd4c33896fea4163c51adebd5c97',
+    'uri' => '/res/1b5bfd4c/rsrc/image/emoji/unicode/e123.png',
+    'disk' => '/rsrc/image/emoji/unicode/e123.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e124.png' =>
+  array(
+    'hash' => '3272919b1b27492130f0141dc089490d',
+    'uri' => '/res/3272919b/rsrc/image/emoji/unicode/e124.png',
+    'disk' => '/rsrc/image/emoji/unicode/e124.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e125.png' =>
+  array(
+    'hash' => '4b8a6af5c88b3d4f82506da1397ba4cb',
+    'uri' => '/res/4b8a6af5/rsrc/image/emoji/unicode/e125.png',
+    'disk' => '/rsrc/image/emoji/unicode/e125.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e126.png' =>
+  array(
+    'hash' => '217f405ca423b813f8ed3eb051679d91',
+    'uri' => '/res/217f405c/rsrc/image/emoji/unicode/e126.png',
+    'disk' => '/rsrc/image/emoji/unicode/e126.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e127.png' =>
+  array(
+    'hash' => '7d5ddd516722bf4307923e7b4eaa9902',
+    'uri' => '/res/7d5ddd51/rsrc/image/emoji/unicode/e127.png',
+    'disk' => '/rsrc/image/emoji/unicode/e127.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e128.png' =>
+  array(
+    'hash' => 'd3050569404b732f1915360c7521e2df',
+    'uri' => '/res/d3050569/rsrc/image/emoji/unicode/e128.png',
+    'disk' => '/rsrc/image/emoji/unicode/e128.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e129.png' =>
+  array(
+    'hash' => '5d347541dd37c278fe1133e7a648c35d',
+    'uri' => '/res/5d347541/rsrc/image/emoji/unicode/e129.png',
+    'disk' => '/rsrc/image/emoji/unicode/e129.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e12a.png' =>
+  array(
+    'hash' => '4acba06ac470b5b6becc930ea86ee0f5',
+    'uri' => '/res/4acba06a/rsrc/image/emoji/unicode/e12a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e12a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e12b.png' =>
+  array(
+    'hash' => 'c38f459b97af92cb7570eb77f89a41db',
+    'uri' => '/res/c38f459b/rsrc/image/emoji/unicode/e12b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e12b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e12c.png' =>
+  array(
+    'hash' => '516a8c904bee6d3fee78e5f95f721153',
+    'uri' => '/res/516a8c90/rsrc/image/emoji/unicode/e12c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e12c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e12d.png' =>
+  array(
+    'hash' => 'b40e6d34143b0dd06cfc51c9630321a7',
+    'uri' => '/res/b40e6d34/rsrc/image/emoji/unicode/e12d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e12d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e12e.png' =>
+  array(
+    'hash' => 'c0fab26458b1f61c529f83119055381d',
+    'uri' => '/res/c0fab264/rsrc/image/emoji/unicode/e12e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e12e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e12f.png' =>
+  array(
+    'hash' => '2a8fc6a9079e455fc3ae13e298a51c40',
+    'uri' => '/res/2a8fc6a9/rsrc/image/emoji/unicode/e12f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e12f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e130.png' =>
+  array(
+    'hash' => '69f9e01a338a1cbb7cced42702e8e9b1',
+    'uri' => '/res/69f9e01a/rsrc/image/emoji/unicode/e130.png',
+    'disk' => '/rsrc/image/emoji/unicode/e130.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e131.png' =>
+  array(
+    'hash' => '435e4230823b79782186c1d6bbb267ef',
+    'uri' => '/res/435e4230/rsrc/image/emoji/unicode/e131.png',
+    'disk' => '/rsrc/image/emoji/unicode/e131.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e132.png' =>
+  array(
+    'hash' => '46cf38154c5f81863ff4236147e68279',
+    'uri' => '/res/46cf3815/rsrc/image/emoji/unicode/e132.png',
+    'disk' => '/rsrc/image/emoji/unicode/e132.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e133.png' =>
+  array(
+    'hash' => 'fcf0554e3e0841e7f4af40d23cbac884',
+    'uri' => '/res/fcf0554e/rsrc/image/emoji/unicode/e133.png',
+    'disk' => '/rsrc/image/emoji/unicode/e133.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e134.png' =>
+  array(
+    'hash' => '6adc1be20422a5d178bb006d6436349e',
+    'uri' => '/res/6adc1be2/rsrc/image/emoji/unicode/e134.png',
+    'disk' => '/rsrc/image/emoji/unicode/e134.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e135.png' =>
+  array(
+    'hash' => 'ba136a9cb01d8f4ab2e50dc0ed82fe74',
+    'uri' => '/res/ba136a9c/rsrc/image/emoji/unicode/e135.png',
+    'disk' => '/rsrc/image/emoji/unicode/e135.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e136.png' =>
+  array(
+    'hash' => 'f4957f10b995fb29716977ea26a583a7',
+    'uri' => '/res/f4957f10/rsrc/image/emoji/unicode/e136.png',
+    'disk' => '/rsrc/image/emoji/unicode/e136.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e137.png' =>
+  array(
+    'hash' => 'f05a9573304845ee803a3a21c345035e',
+    'uri' => '/res/f05a9573/rsrc/image/emoji/unicode/e137.png',
+    'disk' => '/rsrc/image/emoji/unicode/e137.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e138.png' =>
+  array(
+    'hash' => '96f8f7d5b73a5b667044e60d39f01022',
+    'uri' => '/res/96f8f7d5/rsrc/image/emoji/unicode/e138.png',
+    'disk' => '/rsrc/image/emoji/unicode/e138.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e139.png' =>
+  array(
+    'hash' => '755c55547a0d781f809b85e606656fc0',
+    'uri' => '/res/755c5554/rsrc/image/emoji/unicode/e139.png',
+    'disk' => '/rsrc/image/emoji/unicode/e139.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e13a.png' =>
+  array(
+    'hash' => 'b71736b67c782a6e32408e0daf507c1a',
+    'uri' => '/res/b71736b6/rsrc/image/emoji/unicode/e13a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e13a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e13b.png' =>
+  array(
+    'hash' => '08fa86863c893ffa3bf2cc0037dc799b',
+    'uri' => '/res/08fa8686/rsrc/image/emoji/unicode/e13b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e13b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e13c.png' =>
+  array(
+    'hash' => 'd4ebb26d0f1faeaa317318787eb4ef77',
+    'uri' => '/res/d4ebb26d/rsrc/image/emoji/unicode/e13c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e13c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e13d.png' =>
+  array(
+    'hash' => '2dcc84c75c30a48efc353175c96d7e66',
+    'uri' => '/res/2dcc84c7/rsrc/image/emoji/unicode/e13d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e13d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e13e.png' =>
+  array(
+    'hash' => 'e5a195ed96cb265ec09adc55a33f2497',
+    'uri' => '/res/e5a195ed/rsrc/image/emoji/unicode/e13e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e13e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e13f.png' =>
+  array(
+    'hash' => '1ab9cf7058768027c73f261b19954488',
+    'uri' => '/res/1ab9cf70/rsrc/image/emoji/unicode/e13f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e13f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e140.png' =>
+  array(
+    'hash' => 'ab3875ddf51e99798eaa82bd9daee6c0',
+    'uri' => '/res/ab3875dd/rsrc/image/emoji/unicode/e140.png',
+    'disk' => '/rsrc/image/emoji/unicode/e140.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e141.png' =>
+  array(
+    'hash' => '8ec06586b23f9efbe88637b39d809d4f',
+    'uri' => '/res/8ec06586/rsrc/image/emoji/unicode/e141.png',
+    'disk' => '/rsrc/image/emoji/unicode/e141.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e142.png' =>
+  array(
+    'hash' => '00315065e9da249dfbe52f8494d1e145',
+    'uri' => '/res/00315065/rsrc/image/emoji/unicode/e142.png',
+    'disk' => '/rsrc/image/emoji/unicode/e142.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e143.png' =>
+  array(
+    'hash' => '5b3f1ad2cfd7abb48b8caec2cda86297',
+    'uri' => '/res/5b3f1ad2/rsrc/image/emoji/unicode/e143.png',
+    'disk' => '/rsrc/image/emoji/unicode/e143.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e144.png' =>
+  array(
+    'hash' => '317a76b9bf9e9980fb43cabede2e919f',
+    'uri' => '/res/317a76b9/rsrc/image/emoji/unicode/e144.png',
+    'disk' => '/rsrc/image/emoji/unicode/e144.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e145.png' =>
+  array(
+    'hash' => 'd7740e5b02829ac3c231dc540b29125d',
+    'uri' => '/res/d7740e5b/rsrc/image/emoji/unicode/e145.png',
+    'disk' => '/rsrc/image/emoji/unicode/e145.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e146.png' =>
+  array(
+    'hash' => '1bc0c2edb2fe2548902a3f9f1069cf02',
+    'uri' => '/res/1bc0c2ed/rsrc/image/emoji/unicode/e146.png',
+    'disk' => '/rsrc/image/emoji/unicode/e146.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e147.png' =>
+  array(
+    'hash' => '08dc4126bc748a4693c195ecf40825a0',
+    'uri' => '/res/08dc4126/rsrc/image/emoji/unicode/e147.png',
+    'disk' => '/rsrc/image/emoji/unicode/e147.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e148.png' =>
+  array(
+    'hash' => 'e63d4988da544d4bd05845e729edd339',
+    'uri' => '/res/e63d4988/rsrc/image/emoji/unicode/e148.png',
+    'disk' => '/rsrc/image/emoji/unicode/e148.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e149.png' =>
+  array(
+    'hash' => '2626723b898ae8fb62483129d17bed3b',
+    'uri' => '/res/2626723b/rsrc/image/emoji/unicode/e149.png',
+    'disk' => '/rsrc/image/emoji/unicode/e149.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e14a.png' =>
+  array(
+    'hash' => 'c126825b6c50601be696c7672c9adf11',
+    'uri' => '/res/c126825b/rsrc/image/emoji/unicode/e14a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e14a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e14b.png' =>
+  array(
+    'hash' => '2c8fa0a832fbb56f3564a721a8a3b973',
+    'uri' => '/res/2c8fa0a8/rsrc/image/emoji/unicode/e14b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e14b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e14c.png' =>
+  array(
+    'hash' => '0767f655be59e022aedc3c4c1c77bb1f',
+    'uri' => '/res/0767f655/rsrc/image/emoji/unicode/e14c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e14c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e14d.png' =>
+  array(
+    'hash' => 'e7f4ed224ed2a316ef7c41ade5554467',
+    'uri' => '/res/e7f4ed22/rsrc/image/emoji/unicode/e14d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e14d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e14e.png' =>
+  array(
+    'hash' => '0b03aed4afce1a76b61e85ea89f4a963',
+    'uri' => '/res/0b03aed4/rsrc/image/emoji/unicode/e14e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e14e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e14f.png' =>
+  array(
+    'hash' => '34da9495986ee9d3eeae1332630f8039',
+    'uri' => '/res/34da9495/rsrc/image/emoji/unicode/e14f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e14f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e150.png' =>
+  array(
+    'hash' => 'f756263b9d242659e313ba3da18f16a0',
+    'uri' => '/res/f756263b/rsrc/image/emoji/unicode/e150.png',
+    'disk' => '/rsrc/image/emoji/unicode/e150.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e151.png' =>
+  array(
+    'hash' => '4e46f43c603655d1290ef4706f47049d',
+    'uri' => '/res/4e46f43c/rsrc/image/emoji/unicode/e151.png',
+    'disk' => '/rsrc/image/emoji/unicode/e151.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e152.png' =>
+  array(
+    'hash' => 'c97d44593e1f50b32efbbe3b9de73f5b',
+    'uri' => '/res/c97d4459/rsrc/image/emoji/unicode/e152.png',
+    'disk' => '/rsrc/image/emoji/unicode/e152.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e153.png' =>
+  array(
+    'hash' => '133e3237f614d7c673ec8d9886285cf6',
+    'uri' => '/res/133e3237/rsrc/image/emoji/unicode/e153.png',
+    'disk' => '/rsrc/image/emoji/unicode/e153.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e154.png' =>
+  array(
+    'hash' => '00b32fe9a1bff5a41393786379403256',
+    'uri' => '/res/00b32fe9/rsrc/image/emoji/unicode/e154.png',
+    'disk' => '/rsrc/image/emoji/unicode/e154.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e155.png' =>
+  array(
+    'hash' => 'f053267b28148523e21c42e9519e3aab',
+    'uri' => '/res/f053267b/rsrc/image/emoji/unicode/e155.png',
+    'disk' => '/rsrc/image/emoji/unicode/e155.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e156.png' =>
+  array(
+    'hash' => 'b9aec1e4880476c87731d2c766d4b853',
+    'uri' => '/res/b9aec1e4/rsrc/image/emoji/unicode/e156.png',
+    'disk' => '/rsrc/image/emoji/unicode/e156.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e157.png' =>
+  array(
+    'hash' => 'fe8696ecf42bfebc2e6ade77f6ffac7a',
+    'uri' => '/res/fe8696ec/rsrc/image/emoji/unicode/e157.png',
+    'disk' => '/rsrc/image/emoji/unicode/e157.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e158.png' =>
+  array(
+    'hash' => '6fab0d8e9d9a47a6cfbe56534667df33',
+    'uri' => '/res/6fab0d8e/rsrc/image/emoji/unicode/e158.png',
+    'disk' => '/rsrc/image/emoji/unicode/e158.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e159.png' =>
+  array(
+    'hash' => '98e5030b911ec10ec617bbc0d96e5ed7',
+    'uri' => '/res/98e5030b/rsrc/image/emoji/unicode/e159.png',
+    'disk' => '/rsrc/image/emoji/unicode/e159.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e15a.png' =>
+  array(
+    'hash' => '161582577ff8b0bf497571b1390e0693',
+    'uri' => '/res/16158257/rsrc/image/emoji/unicode/e15a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e15a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e201.png' =>
+  array(
+    'hash' => 'cd846cf2b97036e5409d4d9bce969878',
+    'uri' => '/res/cd846cf2/rsrc/image/emoji/unicode/e201.png',
+    'disk' => '/rsrc/image/emoji/unicode/e201.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e202.png' =>
+  array(
+    'hash' => 'c7e1b374345546df50ac0f53d124c45c',
+    'uri' => '/res/c7e1b374/rsrc/image/emoji/unicode/e202.png',
+    'disk' => '/rsrc/image/emoji/unicode/e202.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e203.png' =>
+  array(
+    'hash' => '401b391d65f65b2c667e477e35596ef5',
+    'uri' => '/res/401b391d/rsrc/image/emoji/unicode/e203.png',
+    'disk' => '/rsrc/image/emoji/unicode/e203.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e204.png' =>
+  array(
+    'hash' => '62416ff75644fc5d2e7635e8af6c5925',
+    'uri' => '/res/62416ff7/rsrc/image/emoji/unicode/e204.png',
+    'disk' => '/rsrc/image/emoji/unicode/e204.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e205.png' =>
+  array(
+    'hash' => '0eb871bfc097bed55bb5c3cb54ca658a',
+    'uri' => '/res/0eb871bf/rsrc/image/emoji/unicode/e205.png',
+    'disk' => '/rsrc/image/emoji/unicode/e205.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e206.png' =>
+  array(
+    'hash' => '88a39185cf766ab3dd6949a7bb26a0ff',
+    'uri' => '/res/88a39185/rsrc/image/emoji/unicode/e206.png',
+    'disk' => '/rsrc/image/emoji/unicode/e206.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e207.png' =>
+  array(
+    'hash' => 'e7fd705eace2012aee9186e6f2c32044',
+    'uri' => '/res/e7fd705e/rsrc/image/emoji/unicode/e207.png',
+    'disk' => '/rsrc/image/emoji/unicode/e207.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e208.png' =>
+  array(
+    'hash' => '0bdbdb1e46fdf3e534de74e1fbfc03a6',
+    'uri' => '/res/0bdbdb1e/rsrc/image/emoji/unicode/e208.png',
+    'disk' => '/rsrc/image/emoji/unicode/e208.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e209.png' =>
+  array(
+    'hash' => '961ebcb61641d74049cbe49b1f40175f',
+    'uri' => '/res/961ebcb6/rsrc/image/emoji/unicode/e209.png',
+    'disk' => '/rsrc/image/emoji/unicode/e209.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e20a.png' =>
+  array(
+    'hash' => '4e58c6a5a32bb6ca97daf8ecc8beb59e',
+    'uri' => '/res/4e58c6a5/rsrc/image/emoji/unicode/e20a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e20a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e20b.png' =>
+  array(
+    'hash' => 'c5b425a1be35cb8eb67fe9e543439033',
+    'uri' => '/res/c5b425a1/rsrc/image/emoji/unicode/e20b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e20b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e20c.png' =>
+  array(
+    'hash' => 'c068bfddf2a5de60fb665f42b60d7e79',
+    'uri' => '/res/c068bfdd/rsrc/image/emoji/unicode/e20c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e20c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e20d.png' =>
+  array(
+    'hash' => 'fecd0447cab628d9d1193dbd90df4c9b',
+    'uri' => '/res/fecd0447/rsrc/image/emoji/unicode/e20d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e20d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e20e.png' =>
+  array(
+    'hash' => 'ce1916d81b00d5bfff391d5b6a536bbf',
+    'uri' => '/res/ce1916d8/rsrc/image/emoji/unicode/e20e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e20e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e20f.png' =>
+  array(
+    'hash' => 'c61561f25ef7222c186457a23f1e6117',
+    'uri' => '/res/c61561f2/rsrc/image/emoji/unicode/e20f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e20f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e210.png' =>
+  array(
+    'hash' => 'e54b01f3b494486d64c7207003165c2a',
+    'uri' => '/res/e54b01f3/rsrc/image/emoji/unicode/e210.png',
+    'disk' => '/rsrc/image/emoji/unicode/e210.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e211.png' =>
+  array(
+    'hash' => '26ed68c499ceca3289467452c65af103',
+    'uri' => '/res/26ed68c4/rsrc/image/emoji/unicode/e211.png',
+    'disk' => '/rsrc/image/emoji/unicode/e211.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e212.png' =>
+  array(
+    'hash' => '478be3993a95cc65589f9d536953c20e',
+    'uri' => '/res/478be399/rsrc/image/emoji/unicode/e212.png',
+    'disk' => '/rsrc/image/emoji/unicode/e212.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e213.png' =>
+  array(
+    'hash' => '897319c0c6721255e02092a9d8d35321',
+    'uri' => '/res/897319c0/rsrc/image/emoji/unicode/e213.png',
+    'disk' => '/rsrc/image/emoji/unicode/e213.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e214.png' =>
+  array(
+    'hash' => 'ed805fd2fe0755266c4067ee11252c55',
+    'uri' => '/res/ed805fd2/rsrc/image/emoji/unicode/e214.png',
+    'disk' => '/rsrc/image/emoji/unicode/e214.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e215.png' =>
+  array(
+    'hash' => 'edad2cf470b635836f0a12c034f4568b',
+    'uri' => '/res/edad2cf4/rsrc/image/emoji/unicode/e215.png',
+    'disk' => '/rsrc/image/emoji/unicode/e215.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e216.png' =>
+  array(
+    'hash' => '106ce14a76db04b38c4e8227307fba8a',
+    'uri' => '/res/106ce14a/rsrc/image/emoji/unicode/e216.png',
+    'disk' => '/rsrc/image/emoji/unicode/e216.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e217.png' =>
+  array(
+    'hash' => '1612a28e76569bb13e2307cd2706292d',
+    'uri' => '/res/1612a28e/rsrc/image/emoji/unicode/e217.png',
+    'disk' => '/rsrc/image/emoji/unicode/e217.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e218.png' =>
+  array(
+    'hash' => '97a92844891426a8830037ba0067657f',
+    'uri' => '/res/97a92844/rsrc/image/emoji/unicode/e218.png',
+    'disk' => '/rsrc/image/emoji/unicode/e218.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e219.png' =>
+  array(
+    'hash' => 'c70c71afd165321c5c5488fc593d2b0c',
+    'uri' => '/res/c70c71af/rsrc/image/emoji/unicode/e219.png',
+    'disk' => '/rsrc/image/emoji/unicode/e219.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e21a.png' =>
+  array(
+    'hash' => 'f3f9ff009c5a25a2ebb1b7ce4855c956',
+    'uri' => '/res/f3f9ff00/rsrc/image/emoji/unicode/e21a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e21a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e21b.png' =>
+  array(
+    'hash' => '33b933c25b2bb5d91825a4db7b88baf1',
+    'uri' => '/res/33b933c2/rsrc/image/emoji/unicode/e21b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e21b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e21c.png' =>
+  array(
+    'hash' => '39e1feee740bb9ff40f65b0298d09c08',
+    'uri' => '/res/39e1feee/rsrc/image/emoji/unicode/e21c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e21c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e21d.png' =>
+  array(
+    'hash' => 'bfdac6a71b73f4eb5fd787e7ea17bd4e',
+    'uri' => '/res/bfdac6a7/rsrc/image/emoji/unicode/e21d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e21d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e21e.png' =>
+  array(
+    'hash' => '647c2fc45fe25b26175c13384e557aec',
+    'uri' => '/res/647c2fc4/rsrc/image/emoji/unicode/e21e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e21e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e21f.png' =>
+  array(
+    'hash' => 'c9ed07e7045386ea5cb8faf65e42ba87',
+    'uri' => '/res/c9ed07e7/rsrc/image/emoji/unicode/e21f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e21f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e220.png' =>
+  array(
+    'hash' => '70e4f148e9e5df6ede632707951e215d',
+    'uri' => '/res/70e4f148/rsrc/image/emoji/unicode/e220.png',
+    'disk' => '/rsrc/image/emoji/unicode/e220.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e221.png' =>
+  array(
+    'hash' => '96f595486924ba41ffff825f45e8d81e',
+    'uri' => '/res/96f59548/rsrc/image/emoji/unicode/e221.png',
+    'disk' => '/rsrc/image/emoji/unicode/e221.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e222.png' =>
+  array(
+    'hash' => 'ddb90ca57a7819a6cb4ea35980c9a172',
+    'uri' => '/res/ddb90ca5/rsrc/image/emoji/unicode/e222.png',
+    'disk' => '/rsrc/image/emoji/unicode/e222.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e223.png' =>
+  array(
+    'hash' => 'b35d3f0c73fdd6e5f7ca10f40b2f745f',
+    'uri' => '/res/b35d3f0c/rsrc/image/emoji/unicode/e223.png',
+    'disk' => '/rsrc/image/emoji/unicode/e223.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e224.png' =>
+  array(
+    'hash' => '8c87a1675111c61918b04f798b4f1cba',
+    'uri' => '/res/8c87a167/rsrc/image/emoji/unicode/e224.png',
+    'disk' => '/rsrc/image/emoji/unicode/e224.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e225.png' =>
+  array(
+    'hash' => '146eaf0a94f8f282df88cbdde200edee',
+    'uri' => '/res/146eaf0a/rsrc/image/emoji/unicode/e225.png',
+    'disk' => '/rsrc/image/emoji/unicode/e225.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e226.png' =>
+  array(
+    'hash' => '90ff13b7c2bea43e7d62ccb1d19b5046',
+    'uri' => '/res/90ff13b7/rsrc/image/emoji/unicode/e226.png',
+    'disk' => '/rsrc/image/emoji/unicode/e226.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e227.png' =>
+  array(
+    'hash' => '2d3876e3c878bcd631f14d6f5cec4566',
+    'uri' => '/res/2d3876e3/rsrc/image/emoji/unicode/e227.png',
+    'disk' => '/rsrc/image/emoji/unicode/e227.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e228.png' =>
+  array(
+    'hash' => '159674cdbc91090f51e042e04e2d1f26',
+    'uri' => '/res/159674cd/rsrc/image/emoji/unicode/e228.png',
+    'disk' => '/rsrc/image/emoji/unicode/e228.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e229.png' =>
+  array(
+    'hash' => '4dc25e1f81c118636f8c18d8efc5e604',
+    'uri' => '/res/4dc25e1f/rsrc/image/emoji/unicode/e229.png',
+    'disk' => '/rsrc/image/emoji/unicode/e229.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e22a.png' =>
+  array(
+    'hash' => 'f1fcf32d2fc86aa2ff9ab6979b44876f',
+    'uri' => '/res/f1fcf32d/rsrc/image/emoji/unicode/e22a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e22a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e22b.png' =>
+  array(
+    'hash' => '35f8c7a2d2c1b8551c2126a6f1ba0bf3',
+    'uri' => '/res/35f8c7a2/rsrc/image/emoji/unicode/e22b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e22b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e22c.png' =>
+  array(
+    'hash' => '0a5ff9e13171b448150d634c622dffa3',
+    'uri' => '/res/0a5ff9e1/rsrc/image/emoji/unicode/e22c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e22c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e22d.png' =>
+  array(
+    'hash' => '6b762e454ae2ef9529ebc3eb0dbe96d1',
+    'uri' => '/res/6b762e45/rsrc/image/emoji/unicode/e22d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e22d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e22e.png' =>
+  array(
+    'hash' => '48f44ffccff05fa9525fc8e81585dfda',
+    'uri' => '/res/48f44ffc/rsrc/image/emoji/unicode/e22e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e22e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e22f.png' =>
+  array(
+    'hash' => '375e84c692716548fc7052af677c1f1c',
+    'uri' => '/res/375e84c6/rsrc/image/emoji/unicode/e22f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e22f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e230.png' =>
+  array(
+    'hash' => '6515317e9c70f3d465afac0d2a182b1b',
+    'uri' => '/res/6515317e/rsrc/image/emoji/unicode/e230.png',
+    'disk' => '/rsrc/image/emoji/unicode/e230.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e231.png' =>
+  array(
+    'hash' => '95ab54e5967e03afba05ed1567b87622',
+    'uri' => '/res/95ab54e5/rsrc/image/emoji/unicode/e231.png',
+    'disk' => '/rsrc/image/emoji/unicode/e231.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e232.png' =>
+  array(
+    'hash' => 'bb8ae03c47eb94eaddce0c0b791df70d',
+    'uri' => '/res/bb8ae03c/rsrc/image/emoji/unicode/e232.png',
+    'disk' => '/rsrc/image/emoji/unicode/e232.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e233.png' =>
+  array(
+    'hash' => '310b78c3a132e609a5fd532a77155a19',
+    'uri' => '/res/310b78c3/rsrc/image/emoji/unicode/e233.png',
+    'disk' => '/rsrc/image/emoji/unicode/e233.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e234.png' =>
+  array(
+    'hash' => 'a45f3e3a5714fdf38c37313e60c36b02',
+    'uri' => '/res/a45f3e3a/rsrc/image/emoji/unicode/e234.png',
+    'disk' => '/rsrc/image/emoji/unicode/e234.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e235.png' =>
+  array(
+    'hash' => '4dacbb095c64c7ad7039b5862e3563b6',
+    'uri' => '/res/4dacbb09/rsrc/image/emoji/unicode/e235.png',
+    'disk' => '/rsrc/image/emoji/unicode/e235.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e236.png' =>
+  array(
+    'hash' => '88adb2ef25d163cd574aef4e85893b38',
+    'uri' => '/res/88adb2ef/rsrc/image/emoji/unicode/e236.png',
+    'disk' => '/rsrc/image/emoji/unicode/e236.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e237.png' =>
+  array(
+    'hash' => 'ec55cba738bab8855588c59ff8eb1a3d',
+    'uri' => '/res/ec55cba7/rsrc/image/emoji/unicode/e237.png',
+    'disk' => '/rsrc/image/emoji/unicode/e237.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e238.png' =>
+  array(
+    'hash' => '47ab93d856868479ca1a625eb194a5d4',
+    'uri' => '/res/47ab93d8/rsrc/image/emoji/unicode/e238.png',
+    'disk' => '/rsrc/image/emoji/unicode/e238.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e239.png' =>
+  array(
+    'hash' => '30fc4c97c88cf76ccaf8e9441a9e775d',
+    'uri' => '/res/30fc4c97/rsrc/image/emoji/unicode/e239.png',
+    'disk' => '/rsrc/image/emoji/unicode/e239.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e23a.png' =>
+  array(
+    'hash' => 'dc4959f4561467e1edd80b715865f7f5',
+    'uri' => '/res/dc4959f4/rsrc/image/emoji/unicode/e23a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e23a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e23b.png' =>
+  array(
+    'hash' => 'cca3fb2f79ba50a390274fc2f4a09586',
+    'uri' => '/res/cca3fb2f/rsrc/image/emoji/unicode/e23b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e23b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e23c.png' =>
+  array(
+    'hash' => '7996d3b07f39801c730f659e094e621b',
+    'uri' => '/res/7996d3b0/rsrc/image/emoji/unicode/e23c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e23c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e23d.png' =>
+  array(
+    'hash' => '1444fc8644d7953f900b5e87803f32d0',
+    'uri' => '/res/1444fc86/rsrc/image/emoji/unicode/e23d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e23d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e23e.png' =>
+  array(
+    'hash' => '6c8f3964e6f11e670dafdb6afb68806a',
+    'uri' => '/res/6c8f3964/rsrc/image/emoji/unicode/e23e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e23e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e23f.png' =>
+  array(
+    'hash' => 'f897701f9db72ad6b0a85d54f20ca19a',
+    'uri' => '/res/f897701f/rsrc/image/emoji/unicode/e23f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e23f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e240.png' =>
+  array(
+    'hash' => '92b72fa6624f2c18908b486d0c8a0aaf',
+    'uri' => '/res/92b72fa6/rsrc/image/emoji/unicode/e240.png',
+    'disk' => '/rsrc/image/emoji/unicode/e240.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e241.png' =>
+  array(
+    'hash' => 'f238fc140201f644e922c75e61f23045',
+    'uri' => '/res/f238fc14/rsrc/image/emoji/unicode/e241.png',
+    'disk' => '/rsrc/image/emoji/unicode/e241.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e242.png' =>
+  array(
+    'hash' => '8f1defa9a01af57cea3c9c9b496034b7',
+    'uri' => '/res/8f1defa9/rsrc/image/emoji/unicode/e242.png',
+    'disk' => '/rsrc/image/emoji/unicode/e242.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e243.png' =>
+  array(
+    'hash' => '08576758c389b2d55cf6b2fc4bb4a69f',
+    'uri' => '/res/08576758/rsrc/image/emoji/unicode/e243.png',
+    'disk' => '/rsrc/image/emoji/unicode/e243.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e244.png' =>
+  array(
+    'hash' => '0e1a9397fd44a8fb5821e2591bf2f1bc',
+    'uri' => '/res/0e1a9397/rsrc/image/emoji/unicode/e244.png',
+    'disk' => '/rsrc/image/emoji/unicode/e244.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e245.png' =>
+  array(
+    'hash' => 'e3aa305d44ae37259c8ed8729b9b65b9',
+    'uri' => '/res/e3aa305d/rsrc/image/emoji/unicode/e245.png',
+    'disk' => '/rsrc/image/emoji/unicode/e245.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e246.png' =>
+  array(
+    'hash' => '1407f234756e224bfff1f06a54d61e78',
+    'uri' => '/res/1407f234/rsrc/image/emoji/unicode/e246.png',
+    'disk' => '/rsrc/image/emoji/unicode/e246.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e247.png' =>
+  array(
+    'hash' => '3ccb0566ec47e2c0f907c5b9a377bf58',
+    'uri' => '/res/3ccb0566/rsrc/image/emoji/unicode/e247.png',
+    'disk' => '/rsrc/image/emoji/unicode/e247.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e248.png' =>
+  array(
+    'hash' => '2694e38bc5211f3450a97a99546e4cec',
+    'uri' => '/res/2694e38b/rsrc/image/emoji/unicode/e248.png',
+    'disk' => '/rsrc/image/emoji/unicode/e248.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e249.png' =>
+  array(
+    'hash' => '392c091bbe6e0dc1f4b34b48933b0b7e',
+    'uri' => '/res/392c091b/rsrc/image/emoji/unicode/e249.png',
+    'disk' => '/rsrc/image/emoji/unicode/e249.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e24a.png' =>
+  array(
+    'hash' => 'c5d37a02240963589efbcaa58c457b7d',
+    'uri' => '/res/c5d37a02/rsrc/image/emoji/unicode/e24a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e24a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e24b.png' =>
+  array(
+    'hash' => '6f269692d9adf808add7ed4a4ce16619',
+    'uri' => '/res/6f269692/rsrc/image/emoji/unicode/e24b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e24b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e24c.png' =>
+  array(
+    'hash' => 'dcc989089c59c1a2ef33ed270a0214d4',
+    'uri' => '/res/dcc98908/rsrc/image/emoji/unicode/e24c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e24c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e24d.png' =>
+  array(
+    'hash' => '0fe3a8308a6372e2b635753ee52ed75c',
+    'uri' => '/res/0fe3a830/rsrc/image/emoji/unicode/e24d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e24d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e24e.png' =>
+  array(
+    'hash' => '5b21d65bd7135db3fe8f16b00f5a7fe0',
+    'uri' => '/res/5b21d65b/rsrc/image/emoji/unicode/e24e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e24e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e24f.png' =>
+  array(
+    'hash' => '4944b595a246292a5fbf7ed75a6a90fa',
+    'uri' => '/res/4944b595/rsrc/image/emoji/unicode/e24f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e24f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e250.png' =>
+  array(
+    'hash' => '9627bdf30dda31f9a5f559d307a3fc1c',
+    'uri' => '/res/9627bdf3/rsrc/image/emoji/unicode/e250.png',
+    'disk' => '/rsrc/image/emoji/unicode/e250.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e251.png' =>
+  array(
+    'hash' => '1446301907606554a5804cdf1d1848bb',
+    'uri' => '/res/14463019/rsrc/image/emoji/unicode/e251.png',
+    'disk' => '/rsrc/image/emoji/unicode/e251.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e252.png' =>
+  array(
+    'hash' => '500b1dbd117a75207a01bc54fcdb8f28',
+    'uri' => '/res/500b1dbd/rsrc/image/emoji/unicode/e252.png',
+    'disk' => '/rsrc/image/emoji/unicode/e252.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e253.png' =>
+  array(
+    'hash' => 'fb625476510314a49a721f5491d934d3',
+    'uri' => '/res/fb625476/rsrc/image/emoji/unicode/e253.png',
+    'disk' => '/rsrc/image/emoji/unicode/e253.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e301.png' =>
+  array(
+    'hash' => '3e297a11de738089257f010e42725afe',
+    'uri' => '/res/3e297a11/rsrc/image/emoji/unicode/e301.png',
+    'disk' => '/rsrc/image/emoji/unicode/e301.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e302.png' =>
+  array(
+    'hash' => '2f27e8b6aa6e61ef6ff34b716960d770',
+    'uri' => '/res/2f27e8b6/rsrc/image/emoji/unicode/e302.png',
+    'disk' => '/rsrc/image/emoji/unicode/e302.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e303.png' =>
+  array(
+    'hash' => '88957f9543175ea5bc63ff00d88ae71a',
+    'uri' => '/res/88957f95/rsrc/image/emoji/unicode/e303.png',
+    'disk' => '/rsrc/image/emoji/unicode/e303.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e304.png' =>
+  array(
+    'hash' => '20da09f6e1f4efa45b891f24b97ff783',
+    'uri' => '/res/20da09f6/rsrc/image/emoji/unicode/e304.png',
+    'disk' => '/rsrc/image/emoji/unicode/e304.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e305.png' =>
+  array(
+    'hash' => 'df9aedec8d18c62445376500edb4b1ec',
+    'uri' => '/res/df9aedec/rsrc/image/emoji/unicode/e305.png',
+    'disk' => '/rsrc/image/emoji/unicode/e305.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e306.png' =>
+  array(
+    'hash' => '7227e560fd5ddf8b61ad1dd2a676836c',
+    'uri' => '/res/7227e560/rsrc/image/emoji/unicode/e306.png',
+    'disk' => '/rsrc/image/emoji/unicode/e306.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e307.png' =>
+  array(
+    'hash' => '9054a02ef86fe79165b85339ad5f905a',
+    'uri' => '/res/9054a02e/rsrc/image/emoji/unicode/e307.png',
+    'disk' => '/rsrc/image/emoji/unicode/e307.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e308.png' =>
+  array(
+    'hash' => '5051dc772f751d2d8e4a6d667cc217be',
+    'uri' => '/res/5051dc77/rsrc/image/emoji/unicode/e308.png',
+    'disk' => '/rsrc/image/emoji/unicode/e308.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e309.png' =>
+  array(
+    'hash' => '381799d345da73f0a273709591b5e9b2',
+    'uri' => '/res/381799d3/rsrc/image/emoji/unicode/e309.png',
+    'disk' => '/rsrc/image/emoji/unicode/e309.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e30a.png' =>
+  array(
+    'hash' => 'de0093fd14f082fa3d78c715caf34471',
+    'uri' => '/res/de0093fd/rsrc/image/emoji/unicode/e30a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e30a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e30b.png' =>
+  array(
+    'hash' => 'c386491b85dfe90bc9199d06f0f63ced',
+    'uri' => '/res/c386491b/rsrc/image/emoji/unicode/e30b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e30b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e30c.png' =>
+  array(
+    'hash' => '16871755ab0887df427a3e4dc7d29d40',
+    'uri' => '/res/16871755/rsrc/image/emoji/unicode/e30c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e30c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e30d.png' =>
+  array(
+    'hash' => '7796264c3d4e088e347d627b6a574353',
+    'uri' => '/res/7796264c/rsrc/image/emoji/unicode/e30d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e30d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e30e.png' =>
+  array(
+    'hash' => '5cc4444d644cd8ea4dcd24fe92bf5f49',
+    'uri' => '/res/5cc4444d/rsrc/image/emoji/unicode/e30e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e30e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e30f.png' =>
+  array(
+    'hash' => 'b3bccfe322759a1660ed0e36ddef500d',
+    'uri' => '/res/b3bccfe3/rsrc/image/emoji/unicode/e30f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e30f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e310.png' =>
+  array(
+    'hash' => 'cc3c778519d933b960a7c34a86c8c9b2',
+    'uri' => '/res/cc3c7785/rsrc/image/emoji/unicode/e310.png',
+    'disk' => '/rsrc/image/emoji/unicode/e310.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e311.png' =>
+  array(
+    'hash' => '4c095a4fc4c1d0ec764a842edb0da736',
+    'uri' => '/res/4c095a4f/rsrc/image/emoji/unicode/e311.png',
+    'disk' => '/rsrc/image/emoji/unicode/e311.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e312.png' =>
+  array(
+    'hash' => '571a79369f6da32c4dfaac3d8f65bf97',
+    'uri' => '/res/571a7936/rsrc/image/emoji/unicode/e312.png',
+    'disk' => '/rsrc/image/emoji/unicode/e312.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e313.png' =>
+  array(
+    'hash' => '6a2538034f335ebb7172bee82c260750',
+    'uri' => '/res/6a253803/rsrc/image/emoji/unicode/e313.png',
+    'disk' => '/rsrc/image/emoji/unicode/e313.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e314.png' =>
+  array(
+    'hash' => '1b42b7b4afa06c3ce1de16ef30e7d460',
+    'uri' => '/res/1b42b7b4/rsrc/image/emoji/unicode/e314.png',
+    'disk' => '/rsrc/image/emoji/unicode/e314.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e315.png' =>
+  array(
+    'hash' => 'dad4b7774c3fee8512e27e3c297b8976',
+    'uri' => '/res/dad4b777/rsrc/image/emoji/unicode/e315.png',
+    'disk' => '/rsrc/image/emoji/unicode/e315.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e316.png' =>
+  array(
+    'hash' => '7f6bb46a5b030d38edd520d37ce1870a',
+    'uri' => '/res/7f6bb46a/rsrc/image/emoji/unicode/e316.png',
+    'disk' => '/rsrc/image/emoji/unicode/e316.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e317.png' =>
+  array(
+    'hash' => '4792c2608bc7499bc6c6faefe551c12b',
+    'uri' => '/res/4792c260/rsrc/image/emoji/unicode/e317.png',
+    'disk' => '/rsrc/image/emoji/unicode/e317.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e318.png' =>
+  array(
+    'hash' => 'a0982d5b7106c337dfc131bad3471d90',
+    'uri' => '/res/a0982d5b/rsrc/image/emoji/unicode/e318.png',
+    'disk' => '/rsrc/image/emoji/unicode/e318.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e319.png' =>
+  array(
+    'hash' => 'cb90aa217280509ef8e27bece79f0dbb',
+    'uri' => '/res/cb90aa21/rsrc/image/emoji/unicode/e319.png',
+    'disk' => '/rsrc/image/emoji/unicode/e319.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e31a.png' =>
+  array(
+    'hash' => '628735a563240f0b532d3debf8c0eb93',
+    'uri' => '/res/628735a5/rsrc/image/emoji/unicode/e31a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e31a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e31b.png' =>
+  array(
+    'hash' => 'e5bc6b7a963ea37d66d6fd13eff6097d',
+    'uri' => '/res/e5bc6b7a/rsrc/image/emoji/unicode/e31b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e31b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e31c.png' =>
+  array(
+    'hash' => '80b29ea20b2c7fd1fafb1fea2f77c23a',
+    'uri' => '/res/80b29ea2/rsrc/image/emoji/unicode/e31c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e31c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e31d.png' =>
+  array(
+    'hash' => 'af3ff3e679e877a9a6f4dd8244d6e35f',
+    'uri' => '/res/af3ff3e6/rsrc/image/emoji/unicode/e31d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e31d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e31e.png' =>
+  array(
+    'hash' => 'fbdd3addbecd6179671f802cb67c55fa',
+    'uri' => '/res/fbdd3add/rsrc/image/emoji/unicode/e31e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e31e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e31f.png' =>
+  array(
+    'hash' => 'ff5616aa6e18a93f1f9172371acec42d',
+    'uri' => '/res/ff5616aa/rsrc/image/emoji/unicode/e31f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e31f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e320.png' =>
+  array(
+    'hash' => '001a89d45435ddecfd8d7318a08d6fec',
+    'uri' => '/res/001a89d4/rsrc/image/emoji/unicode/e320.png',
+    'disk' => '/rsrc/image/emoji/unicode/e320.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e321.png' =>
+  array(
+    'hash' => '075ff88ac0e63bf3212930ab0760fb57',
+    'uri' => '/res/075ff88a/rsrc/image/emoji/unicode/e321.png',
+    'disk' => '/rsrc/image/emoji/unicode/e321.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e322.png' =>
+  array(
+    'hash' => 'b720845d56c22f0926bdb767eaced5d2',
+    'uri' => '/res/b720845d/rsrc/image/emoji/unicode/e322.png',
+    'disk' => '/rsrc/image/emoji/unicode/e322.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e323.png' =>
+  array(
+    'hash' => '92d5cf8865f75bbbe11b8307756dadbe',
+    'uri' => '/res/92d5cf88/rsrc/image/emoji/unicode/e323.png',
+    'disk' => '/rsrc/image/emoji/unicode/e323.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e324.png' =>
+  array(
+    'hash' => '045faba7c657900767aecbebdbbf96b2',
+    'uri' => '/res/045faba7/rsrc/image/emoji/unicode/e324.png',
+    'disk' => '/rsrc/image/emoji/unicode/e324.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e325.png' =>
+  array(
+    'hash' => '3230e4a223f8915d8c0aba58188193af',
+    'uri' => '/res/3230e4a2/rsrc/image/emoji/unicode/e325.png',
+    'disk' => '/rsrc/image/emoji/unicode/e325.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e326.png' =>
+  array(
+    'hash' => 'f918dc7b21dd1d10cb2a55dd3bd6f628',
+    'uri' => '/res/f918dc7b/rsrc/image/emoji/unicode/e326.png',
+    'disk' => '/rsrc/image/emoji/unicode/e326.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e327.png' =>
+  array(
+    'hash' => '5b6a4f830f6203daac429370e059e5c1',
+    'uri' => '/res/5b6a4f83/rsrc/image/emoji/unicode/e327.png',
+    'disk' => '/rsrc/image/emoji/unicode/e327.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e328.png' =>
+  array(
+    'hash' => 'dd668b7fb378372c2a8bb1df804d4b3e',
+    'uri' => '/res/dd668b7f/rsrc/image/emoji/unicode/e328.png',
+    'disk' => '/rsrc/image/emoji/unicode/e328.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e329.png' =>
+  array(
+    'hash' => '560cf6a6586273851e963193ab2851ec',
+    'uri' => '/res/560cf6a6/rsrc/image/emoji/unicode/e329.png',
+    'disk' => '/rsrc/image/emoji/unicode/e329.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e32a.png' =>
+  array(
+    'hash' => 'b68d05a9d79014620b75a8ea9502664d',
+    'uri' => '/res/b68d05a9/rsrc/image/emoji/unicode/e32a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e32a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e32b.png' =>
+  array(
+    'hash' => 'f1c0c1d77db49a959eb9e4dc7da899b8',
+    'uri' => '/res/f1c0c1d7/rsrc/image/emoji/unicode/e32b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e32b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e32c.png' =>
+  array(
+    'hash' => '6862f97f9016a9c62c49aa746d23c813',
+    'uri' => '/res/6862f97f/rsrc/image/emoji/unicode/e32c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e32c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e32d.png' =>
+  array(
+    'hash' => '8294a1c89cdadb73601cd999cadac059',
+    'uri' => '/res/8294a1c8/rsrc/image/emoji/unicode/e32d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e32d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e32e.png' =>
+  array(
+    'hash' => '5a3d403f81c6072433d2527da5322c96',
+    'uri' => '/res/5a3d403f/rsrc/image/emoji/unicode/e32e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e32e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e32f.png' =>
+  array(
+    'hash' => '6b24475de53208614d10371975d979d6',
+    'uri' => '/res/6b24475d/rsrc/image/emoji/unicode/e32f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e32f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e330.png' =>
+  array(
+    'hash' => 'edf5bc00deee7ec3a1620701734542c5',
+    'uri' => '/res/edf5bc00/rsrc/image/emoji/unicode/e330.png',
+    'disk' => '/rsrc/image/emoji/unicode/e330.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e331.png' =>
+  array(
+    'hash' => '9a76b4acfb7524ac3e222ae8e9cc883f',
+    'uri' => '/res/9a76b4ac/rsrc/image/emoji/unicode/e331.png',
+    'disk' => '/rsrc/image/emoji/unicode/e331.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e332.png' =>
+  array(
+    'hash' => '75ab9ed442a3ade9cc42f8241094378b',
+    'uri' => '/res/75ab9ed4/rsrc/image/emoji/unicode/e332.png',
+    'disk' => '/rsrc/image/emoji/unicode/e332.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e333.png' =>
+  array(
+    'hash' => '50b38f8bcaa8e6b87bf5e7439b43e97a',
+    'uri' => '/res/50b38f8b/rsrc/image/emoji/unicode/e333.png',
+    'disk' => '/rsrc/image/emoji/unicode/e333.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e334.png' =>
+  array(
+    'hash' => 'f0020ba34977994c33d0f938076115c6',
+    'uri' => '/res/f0020ba3/rsrc/image/emoji/unicode/e334.png',
+    'disk' => '/rsrc/image/emoji/unicode/e334.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e335.png' =>
+  array(
+    'hash' => 'ba63296002634a94d2b5288991cce249',
+    'uri' => '/res/ba632960/rsrc/image/emoji/unicode/e335.png',
+    'disk' => '/rsrc/image/emoji/unicode/e335.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e336.png' =>
+  array(
+    'hash' => 'a1a3d242ac489ceb1677c2a416f16572',
+    'uri' => '/res/a1a3d242/rsrc/image/emoji/unicode/e336.png',
+    'disk' => '/rsrc/image/emoji/unicode/e336.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e337.png' =>
+  array(
+    'hash' => 'c96fa01979ddbc27c955014aa50b2c4e',
+    'uri' => '/res/c96fa019/rsrc/image/emoji/unicode/e337.png',
+    'disk' => '/rsrc/image/emoji/unicode/e337.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e338.png' =>
+  array(
+    'hash' => '5d7bc2c84492f1c759467761c642c049',
+    'uri' => '/res/5d7bc2c8/rsrc/image/emoji/unicode/e338.png',
+    'disk' => '/rsrc/image/emoji/unicode/e338.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e339.png' =>
+  array(
+    'hash' => '1a39ff324a4bbfba0459701a0bbc4122',
+    'uri' => '/res/1a39ff32/rsrc/image/emoji/unicode/e339.png',
+    'disk' => '/rsrc/image/emoji/unicode/e339.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e33a.png' =>
+  array(
+    'hash' => 'f786d607f80362a19072f8ff5a49772c',
+    'uri' => '/res/f786d607/rsrc/image/emoji/unicode/e33a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e33a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e33b.png' =>
+  array(
+    'hash' => '308a26a5ebb3a0a100bf9c41eb8c1588',
+    'uri' => '/res/308a26a5/rsrc/image/emoji/unicode/e33b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e33b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e33c.png' =>
+  array(
+    'hash' => '0d917a6df37cd97e8f83245fcdc8d7a6',
+    'uri' => '/res/0d917a6d/rsrc/image/emoji/unicode/e33c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e33c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e33d.png' =>
+  array(
+    'hash' => '365030445ce12ecc4e9dd790a04e6d5f',
+    'uri' => '/res/36503044/rsrc/image/emoji/unicode/e33d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e33d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e33e.png' =>
+  array(
+    'hash' => '3eb5263829ab445e9a6508b56764ce75',
+    'uri' => '/res/3eb52638/rsrc/image/emoji/unicode/e33e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e33e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e33f.png' =>
+  array(
+    'hash' => '532ed0b4bc5bfe478d91be67cfa479a7',
+    'uri' => '/res/532ed0b4/rsrc/image/emoji/unicode/e33f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e33f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e340.png' =>
+  array(
+    'hash' => '4665e47d4b71ba22595adb4d76591614',
+    'uri' => '/res/4665e47d/rsrc/image/emoji/unicode/e340.png',
+    'disk' => '/rsrc/image/emoji/unicode/e340.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e341.png' =>
+  array(
+    'hash' => '33a8e981e5ae7f1758900b170a9ca02e',
+    'uri' => '/res/33a8e981/rsrc/image/emoji/unicode/e341.png',
+    'disk' => '/rsrc/image/emoji/unicode/e341.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e342.png' =>
+  array(
+    'hash' => '14277ed8c2256f5fc80f96fa23f2b532',
+    'uri' => '/res/14277ed8/rsrc/image/emoji/unicode/e342.png',
+    'disk' => '/rsrc/image/emoji/unicode/e342.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e343.png' =>
+  array(
+    'hash' => '40a5fa23f96fa1089aec8f6af5b62aaf',
+    'uri' => '/res/40a5fa23/rsrc/image/emoji/unicode/e343.png',
+    'disk' => '/rsrc/image/emoji/unicode/e343.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e344.png' =>
+  array(
+    'hash' => 'a2841db51985025b357c307c9c8073ad',
+    'uri' => '/res/a2841db5/rsrc/image/emoji/unicode/e344.png',
+    'disk' => '/rsrc/image/emoji/unicode/e344.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e345.png' =>
+  array(
+    'hash' => '7a0b5f4e32f3ef499ff6c6e9b41d4763',
+    'uri' => '/res/7a0b5f4e/rsrc/image/emoji/unicode/e345.png',
+    'disk' => '/rsrc/image/emoji/unicode/e345.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e346.png' =>
+  array(
+    'hash' => 'ba04eeac36def490d1c9eb429a76eb21',
+    'uri' => '/res/ba04eeac/rsrc/image/emoji/unicode/e346.png',
+    'disk' => '/rsrc/image/emoji/unicode/e346.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e347.png' =>
+  array(
+    'hash' => '440678aee44dba08783a10c94afe3c9d',
+    'uri' => '/res/440678ae/rsrc/image/emoji/unicode/e347.png',
+    'disk' => '/rsrc/image/emoji/unicode/e347.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e348.png' =>
+  array(
+    'hash' => '180b28d37b9b697da5fc721d29383ce5',
+    'uri' => '/res/180b28d3/rsrc/image/emoji/unicode/e348.png',
+    'disk' => '/rsrc/image/emoji/unicode/e348.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e349.png' =>
+  array(
+    'hash' => '5a3a5db24cc7ab8e0e9121d045852afc',
+    'uri' => '/res/5a3a5db2/rsrc/image/emoji/unicode/e349.png',
+    'disk' => '/rsrc/image/emoji/unicode/e349.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e34a.png' =>
+  array(
+    'hash' => 'c80a92c7f6e704d362fd2e7f71c4cdd6',
+    'uri' => '/res/c80a92c7/rsrc/image/emoji/unicode/e34a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e34a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e34b.png' =>
+  array(
+    'hash' => '8ea5c8629d79e1d1419f2bdeefeea36d',
+    'uri' => '/res/8ea5c862/rsrc/image/emoji/unicode/e34b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e34b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e34c.png' =>
+  array(
+    'hash' => 'ae421e4888dbe624f38e8a9e85e82f70',
+    'uri' => '/res/ae421e48/rsrc/image/emoji/unicode/e34c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e34c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e34d.png' =>
+  array(
+    'hash' => 'a55da7ffc03158bacc4b64998d112a06',
+    'uri' => '/res/a55da7ff/rsrc/image/emoji/unicode/e34d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e34d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e401.png' =>
+  array(
+    'hash' => 'e14845da30952d83fdc1e020d367b2c5',
+    'uri' => '/res/e14845da/rsrc/image/emoji/unicode/e401.png',
+    'disk' => '/rsrc/image/emoji/unicode/e401.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e402.png' =>
+  array(
+    'hash' => 'd1d08583e697ebc851a661b1b4bd971d',
+    'uri' => '/res/d1d08583/rsrc/image/emoji/unicode/e402.png',
+    'disk' => '/rsrc/image/emoji/unicode/e402.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e403.png' =>
+  array(
+    'hash' => '433a8c0d6fee94b4af4a81d429faefb9',
+    'uri' => '/res/433a8c0d/rsrc/image/emoji/unicode/e403.png',
+    'disk' => '/rsrc/image/emoji/unicode/e403.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e404.png' =>
+  array(
+    'hash' => 'ecd88bea9eecbae9da39f3e9d816b1a9',
+    'uri' => '/res/ecd88bea/rsrc/image/emoji/unicode/e404.png',
+    'disk' => '/rsrc/image/emoji/unicode/e404.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e405.png' =>
+  array(
+    'hash' => 'b143f49235893d38d23aa9563890f6f6',
+    'uri' => '/res/b143f492/rsrc/image/emoji/unicode/e405.png',
+    'disk' => '/rsrc/image/emoji/unicode/e405.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e406.png' =>
+  array(
+    'hash' => 'e1ef86b146155699b64baf564f8cf09b',
+    'uri' => '/res/e1ef86b1/rsrc/image/emoji/unicode/e406.png',
+    'disk' => '/rsrc/image/emoji/unicode/e406.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e407.png' =>
+  array(
+    'hash' => 'c1e6825262eae20dbddea483ce4a806d',
+    'uri' => '/res/c1e68252/rsrc/image/emoji/unicode/e407.png',
+    'disk' => '/rsrc/image/emoji/unicode/e407.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e408.png' =>
+  array(
+    'hash' => '4d262c2b5f9f674b8297211e3be56bc4',
+    'uri' => '/res/4d262c2b/rsrc/image/emoji/unicode/e408.png',
+    'disk' => '/rsrc/image/emoji/unicode/e408.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e409.png' =>
+  array(
+    'hash' => 'b0f5b6d5f1c659aa7990313d68339f99',
+    'uri' => '/res/b0f5b6d5/rsrc/image/emoji/unicode/e409.png',
+    'disk' => '/rsrc/image/emoji/unicode/e409.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e40a.png' =>
+  array(
+    'hash' => 'dc6fc9893c937af72b8d07873e53c651',
+    'uri' => '/res/dc6fc989/rsrc/image/emoji/unicode/e40a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e40a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e40b.png' =>
+  array(
+    'hash' => '37aca7d631f1272249007794c4d4ac72',
+    'uri' => '/res/37aca7d6/rsrc/image/emoji/unicode/e40b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e40b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e40c.png' =>
+  array(
+    'hash' => 'f067def5d5d4cde627a0b80aeed055d3',
+    'uri' => '/res/f067def5/rsrc/image/emoji/unicode/e40c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e40c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e40d.png' =>
+  array(
+    'hash' => 'e5e400c2bb19e5c060234f33a7e8701f',
+    'uri' => '/res/e5e400c2/rsrc/image/emoji/unicode/e40d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e40d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e40e.png' =>
+  array(
+    'hash' => 'ba4cc85df2212f04eb47cdd2cf7a5e9a',
+    'uri' => '/res/ba4cc85d/rsrc/image/emoji/unicode/e40e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e40e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e40f.png' =>
+  array(
+    'hash' => 'ba86eaa591e026108048231fccf6f5b5',
+    'uri' => '/res/ba86eaa5/rsrc/image/emoji/unicode/e40f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e40f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e410.png' =>
+  array(
+    'hash' => '77c5d3289d1b61c17290b6cad4fabe11',
+    'uri' => '/res/77c5d328/rsrc/image/emoji/unicode/e410.png',
+    'disk' => '/rsrc/image/emoji/unicode/e410.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e411.png' =>
+  array(
+    'hash' => 'a8f805761d097601393d193233ebcdea',
+    'uri' => '/res/a8f80576/rsrc/image/emoji/unicode/e411.png',
+    'disk' => '/rsrc/image/emoji/unicode/e411.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e412.png' =>
+  array(
+    'hash' => '8359ef64bc53bc2b5cb1d6d19ed35e1e',
+    'uri' => '/res/8359ef64/rsrc/image/emoji/unicode/e412.png',
+    'disk' => '/rsrc/image/emoji/unicode/e412.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e413.png' =>
+  array(
+    'hash' => 'bda1bd1fe8fcf744d4a0b4ffe5750c00',
+    'uri' => '/res/bda1bd1f/rsrc/image/emoji/unicode/e413.png',
+    'disk' => '/rsrc/image/emoji/unicode/e413.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e414.png' =>
+  array(
+    'hash' => '59c09a4cc55f17229a82ae1d1dae279e',
+    'uri' => '/res/59c09a4c/rsrc/image/emoji/unicode/e414.png',
+    'disk' => '/rsrc/image/emoji/unicode/e414.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e415.png' =>
+  array(
+    'hash' => 'e343c92e006b214dee7973a4bdf60392',
+    'uri' => '/res/e343c92e/rsrc/image/emoji/unicode/e415.png',
+    'disk' => '/rsrc/image/emoji/unicode/e415.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e416.png' =>
+  array(
+    'hash' => '031fd05ba3ad2474ef8af9d41f671889',
+    'uri' => '/res/031fd05b/rsrc/image/emoji/unicode/e416.png',
+    'disk' => '/rsrc/image/emoji/unicode/e416.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e417.png' =>
+  array(
+    'hash' => '5e18e492320d3be41f8c076d30c476b2',
+    'uri' => '/res/5e18e492/rsrc/image/emoji/unicode/e417.png',
+    'disk' => '/rsrc/image/emoji/unicode/e417.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e418.png' =>
+  array(
+    'hash' => '1a1ed570c0468bae9ff4fefaa5d6a463',
+    'uri' => '/res/1a1ed570/rsrc/image/emoji/unicode/e418.png',
+    'disk' => '/rsrc/image/emoji/unicode/e418.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e419.png' =>
+  array(
+    'hash' => 'cf7f0ca90181aa8ee6a31cdc300f97a5',
+    'uri' => '/res/cf7f0ca9/rsrc/image/emoji/unicode/e419.png',
+    'disk' => '/rsrc/image/emoji/unicode/e419.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e41a.png' =>
+  array(
+    'hash' => '54973125f1a2914190104853eb5c1475',
+    'uri' => '/res/54973125/rsrc/image/emoji/unicode/e41a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e41a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e41b.png' =>
+  array(
+    'hash' => 'abd4c73e28a8437550e58d2ed63e8520',
+    'uri' => '/res/abd4c73e/rsrc/image/emoji/unicode/e41b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e41b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e41c.png' =>
+  array(
+    'hash' => 'f2b9a0d5c83a7d43ec70188338d264b6',
+    'uri' => '/res/f2b9a0d5/rsrc/image/emoji/unicode/e41c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e41c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e41d.png' =>
+  array(
+    'hash' => 'ad3d11959f1bdf32c3a4a32aab679662',
+    'uri' => '/res/ad3d1195/rsrc/image/emoji/unicode/e41d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e41d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e41e.png' =>
+  array(
+    'hash' => 'c58234d32859944032471d0f8c8abbb2',
+    'uri' => '/res/c58234d3/rsrc/image/emoji/unicode/e41e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e41e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e41f.png' =>
+  array(
+    'hash' => '9c207e4ba0c49704c18b494b295ab398',
+    'uri' => '/res/9c207e4b/rsrc/image/emoji/unicode/e41f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e41f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e420.png' =>
+  array(
+    'hash' => '8523979e46029c3f237d3d00c768f1a0',
+    'uri' => '/res/8523979e/rsrc/image/emoji/unicode/e420.png',
+    'disk' => '/rsrc/image/emoji/unicode/e420.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e421.png' =>
+  array(
+    'hash' => '1e8ed88dc8b4a3daa9df613aa8baa932',
+    'uri' => '/res/1e8ed88d/rsrc/image/emoji/unicode/e421.png',
+    'disk' => '/rsrc/image/emoji/unicode/e421.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e422.png' =>
+  array(
+    'hash' => '9a96cf7573b494d056fcec3ae84ebd23',
+    'uri' => '/res/9a96cf75/rsrc/image/emoji/unicode/e422.png',
+    'disk' => '/rsrc/image/emoji/unicode/e422.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e423.png' =>
+  array(
+    'hash' => '018c4ec72395a335495af7ec314c21b2',
+    'uri' => '/res/018c4ec7/rsrc/image/emoji/unicode/e423.png',
+    'disk' => '/rsrc/image/emoji/unicode/e423.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e424.png' =>
+  array(
+    'hash' => '1f82de8a98c81f436e9e7e4e8e37c788',
+    'uri' => '/res/1f82de8a/rsrc/image/emoji/unicode/e424.png',
+    'disk' => '/rsrc/image/emoji/unicode/e424.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e425.png' =>
+  array(
+    'hash' => 'ee69fd284064ee96ba92be72b8498cc5',
+    'uri' => '/res/ee69fd28/rsrc/image/emoji/unicode/e425.png',
+    'disk' => '/rsrc/image/emoji/unicode/e425.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e426.png' =>
+  array(
+    'hash' => 'fa2430e4b4192069da36157999f182da',
+    'uri' => '/res/fa2430e4/rsrc/image/emoji/unicode/e426.png',
+    'disk' => '/rsrc/image/emoji/unicode/e426.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e427.png' =>
+  array(
+    'hash' => '32be955f551c2b6749a5020d633f9e45',
+    'uri' => '/res/32be955f/rsrc/image/emoji/unicode/e427.png',
+    'disk' => '/rsrc/image/emoji/unicode/e427.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e428.png' =>
+  array(
+    'hash' => 'd1f315ecb386c27d6f1f9c4b91279bea',
+    'uri' => '/res/d1f315ec/rsrc/image/emoji/unicode/e428.png',
+    'disk' => '/rsrc/image/emoji/unicode/e428.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e429.png' =>
+  array(
+    'hash' => 'a7de595671902c6ad397a62c08d4fa15',
+    'uri' => '/res/a7de5956/rsrc/image/emoji/unicode/e429.png',
+    'disk' => '/rsrc/image/emoji/unicode/e429.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e42a.png' =>
+  array(
+    'hash' => 'e70aa70259cfdf1898c34e908dbf5584',
+    'uri' => '/res/e70aa702/rsrc/image/emoji/unicode/e42a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e42a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e42b.png' =>
+  array(
+    'hash' => '0fa52592b8918575e134116e43ef8581',
+    'uri' => '/res/0fa52592/rsrc/image/emoji/unicode/e42b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e42b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e42c.png' =>
+  array(
+    'hash' => 'f782b4545e7158f911a4643b2adaa638',
+    'uri' => '/res/f782b454/rsrc/image/emoji/unicode/e42c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e42c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e42d.png' =>
+  array(
+    'hash' => '44e1be641d76808e516d4758e3659d72',
+    'uri' => '/res/44e1be64/rsrc/image/emoji/unicode/e42d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e42d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e42e.png' =>
+  array(
+    'hash' => '2f2be9a6bb0bc0f088251cf3c658bd4e',
+    'uri' => '/res/2f2be9a6/rsrc/image/emoji/unicode/e42e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e42e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e42f.png' =>
+  array(
+    'hash' => '77590243294d4fcf7c00978128601968',
+    'uri' => '/res/77590243/rsrc/image/emoji/unicode/e42f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e42f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e430.png' =>
+  array(
+    'hash' => '3f473f50fc3677c3701f457c84aeb4d5',
+    'uri' => '/res/3f473f50/rsrc/image/emoji/unicode/e430.png',
+    'disk' => '/rsrc/image/emoji/unicode/e430.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e431.png' =>
+  array(
+    'hash' => 'c402d5d45148ab6579a98f459c7ac218',
+    'uri' => '/res/c402d5d4/rsrc/image/emoji/unicode/e431.png',
+    'disk' => '/rsrc/image/emoji/unicode/e431.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e432.png' =>
+  array(
+    'hash' => 'ef1d0582452eab4bef2d96afc808f99e',
+    'uri' => '/res/ef1d0582/rsrc/image/emoji/unicode/e432.png',
+    'disk' => '/rsrc/image/emoji/unicode/e432.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e433.png' =>
+  array(
+    'hash' => '9d9708e093c6798197f8c05b9a5fcc1a',
+    'uri' => '/res/9d9708e0/rsrc/image/emoji/unicode/e433.png',
+    'disk' => '/rsrc/image/emoji/unicode/e433.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e434.png' =>
+  array(
+    'hash' => '111025c44437ba3bb0333cc0aaf5f83d',
+    'uri' => '/res/111025c4/rsrc/image/emoji/unicode/e434.png',
+    'disk' => '/rsrc/image/emoji/unicode/e434.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e435.png' =>
+  array(
+    'hash' => '5b66e78156845184942a9c6ab87e8d7d',
+    'uri' => '/res/5b66e781/rsrc/image/emoji/unicode/e435.png',
+    'disk' => '/rsrc/image/emoji/unicode/e435.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e436.png' =>
+  array(
+    'hash' => 'cc35c4cd242ea1ab3844674ea8c2a428',
+    'uri' => '/res/cc35c4cd/rsrc/image/emoji/unicode/e436.png',
+    'disk' => '/rsrc/image/emoji/unicode/e436.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e437.png' =>
+  array(
+    'hash' => '98d1c4fe4cc0441584fd623073569faa',
+    'uri' => '/res/98d1c4fe/rsrc/image/emoji/unicode/e437.png',
+    'disk' => '/rsrc/image/emoji/unicode/e437.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e438.png' =>
+  array(
+    'hash' => '0b732132ab0018e67c3302a5d1b8f8a4',
+    'uri' => '/res/0b732132/rsrc/image/emoji/unicode/e438.png',
+    'disk' => '/rsrc/image/emoji/unicode/e438.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e439.png' =>
+  array(
+    'hash' => '19850f2a7ce79fcd5df752b58ae81570',
+    'uri' => '/res/19850f2a/rsrc/image/emoji/unicode/e439.png',
+    'disk' => '/rsrc/image/emoji/unicode/e439.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e43a.png' =>
+  array(
+    'hash' => '5fc3e75eb25caa63656ee06dd7b853d1',
+    'uri' => '/res/5fc3e75e/rsrc/image/emoji/unicode/e43a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e43a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e43b.png' =>
+  array(
+    'hash' => '466479463cb8d08d8bf543ac58f84464',
+    'uri' => '/res/46647946/rsrc/image/emoji/unicode/e43b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e43b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e43c.png' =>
+  array(
+    'hash' => '76ebd6be56a12e0aa178cce508f5625d',
+    'uri' => '/res/76ebd6be/rsrc/image/emoji/unicode/e43c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e43c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e43d.png' =>
+  array(
+    'hash' => '414bc26554b70175b1d01ecb9f28cfd5',
+    'uri' => '/res/414bc265/rsrc/image/emoji/unicode/e43d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e43d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e43e.png' =>
+  array(
+    'hash' => 'c8386afa9c7bc2bbc166e77abffa527e',
+    'uri' => '/res/c8386afa/rsrc/image/emoji/unicode/e43e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e43e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e43f.png' =>
+  array(
+    'hash' => 'cb3c353100b11183491f0bc100278a6b',
+    'uri' => '/res/cb3c3531/rsrc/image/emoji/unicode/e43f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e43f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e440.png' =>
+  array(
+    'hash' => 'a72419fbdd3c2e2726fc37f3417d9167',
+    'uri' => '/res/a72419fb/rsrc/image/emoji/unicode/e440.png',
+    'disk' => '/rsrc/image/emoji/unicode/e440.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e441.png' =>
+  array(
+    'hash' => 'c3e55a4eb6ec7930aeb0616eeaae0212',
+    'uri' => '/res/c3e55a4e/rsrc/image/emoji/unicode/e441.png',
+    'disk' => '/rsrc/image/emoji/unicode/e441.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e442.png' =>
+  array(
+    'hash' => '4c3eceb6e7450175e9a6a26fd5052a99',
+    'uri' => '/res/4c3eceb6/rsrc/image/emoji/unicode/e442.png',
+    'disk' => '/rsrc/image/emoji/unicode/e442.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e443.png' =>
+  array(
+    'hash' => '0a8f3869d962bf019e580bf59e47120e',
+    'uri' => '/res/0a8f3869/rsrc/image/emoji/unicode/e443.png',
+    'disk' => '/rsrc/image/emoji/unicode/e443.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e444.png' =>
+  array(
+    'hash' => 'ead84b1f31ee62b2e802b23e879ecf05',
+    'uri' => '/res/ead84b1f/rsrc/image/emoji/unicode/e444.png',
+    'disk' => '/rsrc/image/emoji/unicode/e444.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e445.png' =>
+  array(
+    'hash' => '3711381d67725efbeb979ab6dc88a61a',
+    'uri' => '/res/3711381d/rsrc/image/emoji/unicode/e445.png',
+    'disk' => '/rsrc/image/emoji/unicode/e445.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e446.png' =>
+  array(
+    'hash' => '626c44ac485c6679c8b63ed2e163538b',
+    'uri' => '/res/626c44ac/rsrc/image/emoji/unicode/e446.png',
+    'disk' => '/rsrc/image/emoji/unicode/e446.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e447.png' =>
+  array(
+    'hash' => '2311968cd3ed3020967fa745da617002',
+    'uri' => '/res/2311968c/rsrc/image/emoji/unicode/e447.png',
+    'disk' => '/rsrc/image/emoji/unicode/e447.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e448.png' =>
+  array(
+    'hash' => '1682480915706d0627aa0032ac73e4b4',
+    'uri' => '/res/16824809/rsrc/image/emoji/unicode/e448.png',
+    'disk' => '/rsrc/image/emoji/unicode/e448.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e449.png' =>
+  array(
+    'hash' => 'e1cf7a7fde47fd625041c3f9de068460',
+    'uri' => '/res/e1cf7a7f/rsrc/image/emoji/unicode/e449.png',
+    'disk' => '/rsrc/image/emoji/unicode/e449.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e44a.png' =>
+  array(
+    'hash' => '8b5f977240c1b97981ff19b567a0ed64',
+    'uri' => '/res/8b5f9772/rsrc/image/emoji/unicode/e44a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e44a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e44b.png' =>
+  array(
+    'hash' => '1b4946bb1be41c7b42ec6ed7b724647d',
+    'uri' => '/res/1b4946bb/rsrc/image/emoji/unicode/e44b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e44b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e44c.png' =>
+  array(
+    'hash' => 'ee4cdbfe643920fe1af2b7635c9a08af',
+    'uri' => '/res/ee4cdbfe/rsrc/image/emoji/unicode/e44c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e44c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e501.png' =>
+  array(
+    'hash' => 'e960d252128d3845e04b39cbce90ac20',
+    'uri' => '/res/e960d252/rsrc/image/emoji/unicode/e501.png',
+    'disk' => '/rsrc/image/emoji/unicode/e501.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e502.png' =>
+  array(
+    'hash' => '36735fa3fc393c311129cd0f3b77f48c',
+    'uri' => '/res/36735fa3/rsrc/image/emoji/unicode/e502.png',
+    'disk' => '/rsrc/image/emoji/unicode/e502.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e503.png' =>
+  array(
+    'hash' => 'b8d26cda677f4d14a792ddeaf35638d8',
+    'uri' => '/res/b8d26cda/rsrc/image/emoji/unicode/e503.png',
+    'disk' => '/rsrc/image/emoji/unicode/e503.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e504.png' =>
+  array(
+    'hash' => '6bd6cb2c2b3c6461c3d4308456eb190d',
+    'uri' => '/res/6bd6cb2c/rsrc/image/emoji/unicode/e504.png',
+    'disk' => '/rsrc/image/emoji/unicode/e504.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e505.png' =>
+  array(
+    'hash' => '00d7dfe210bfec4d066d1a067ddd4987',
+    'uri' => '/res/00d7dfe2/rsrc/image/emoji/unicode/e505.png',
+    'disk' => '/rsrc/image/emoji/unicode/e505.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e506.png' =>
+  array(
+    'hash' => 'da70fcaadc24041d9d4d5d5a9d73d438',
+    'uri' => '/res/da70fcaa/rsrc/image/emoji/unicode/e506.png',
+    'disk' => '/rsrc/image/emoji/unicode/e506.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e507.png' =>
+  array(
+    'hash' => 'e72da57943d32127c6b4b7b1bf1bbcaa',
+    'uri' => '/res/e72da579/rsrc/image/emoji/unicode/e507.png',
+    'disk' => '/rsrc/image/emoji/unicode/e507.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e508.png' =>
+  array(
+    'hash' => '4b2f46a0a75f1ddb19e25f897837df02',
+    'uri' => '/res/4b2f46a0/rsrc/image/emoji/unicode/e508.png',
+    'disk' => '/rsrc/image/emoji/unicode/e508.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e509.png' =>
+  array(
+    'hash' => '01ab3ff2e01f07de60fe8ea65307b621',
+    'uri' => '/res/01ab3ff2/rsrc/image/emoji/unicode/e509.png',
+    'disk' => '/rsrc/image/emoji/unicode/e509.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e50a.png' =>
+  array(
+    'hash' => '28c9b5ca3857799a2b7045c587ce5821',
+    'uri' => '/res/28c9b5ca/rsrc/image/emoji/unicode/e50a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e50a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e50b.png' =>
+  array(
+    'hash' => '52fa190bda4e31a3d5622ea2a6984f3c',
+    'uri' => '/res/52fa190b/rsrc/image/emoji/unicode/e50b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e50b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e50c.png' =>
+  array(
+    'hash' => 'd20317488e9399d14ff0b00ae7746d6c',
+    'uri' => '/res/d2031748/rsrc/image/emoji/unicode/e50c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e50c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e50d.png' =>
+  array(
+    'hash' => '953bff74c2c10025f05e31202da2d4b8',
+    'uri' => '/res/953bff74/rsrc/image/emoji/unicode/e50d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e50d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e50e.png' =>
+  array(
+    'hash' => '363e9588988fb86b807998ec363428bb',
+    'uri' => '/res/363e9588/rsrc/image/emoji/unicode/e50e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e50e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e50f.png' =>
+  array(
+    'hash' => '6e4448d2bff287a53770b99a24b55ffb',
+    'uri' => '/res/6e4448d2/rsrc/image/emoji/unicode/e50f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e50f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e510.png' =>
+  array(
+    'hash' => '5fff27e491852dfa060b45fbec53f84e',
+    'uri' => '/res/5fff27e4/rsrc/image/emoji/unicode/e510.png',
+    'disk' => '/rsrc/image/emoji/unicode/e510.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e511.png' =>
+  array(
+    'hash' => '99f707ab599e7586a89ae7cd7592547e',
+    'uri' => '/res/99f707ab/rsrc/image/emoji/unicode/e511.png',
+    'disk' => '/rsrc/image/emoji/unicode/e511.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e512.png' =>
+  array(
+    'hash' => '06a05ac86efde27887ce1f8c7d462394',
+    'uri' => '/res/06a05ac8/rsrc/image/emoji/unicode/e512.png',
+    'disk' => '/rsrc/image/emoji/unicode/e512.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e513.png' =>
+  array(
+    'hash' => '59320602eef3444df98801f2df234cc2',
+    'uri' => '/res/59320602/rsrc/image/emoji/unicode/e513.png',
+    'disk' => '/rsrc/image/emoji/unicode/e513.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e514.png' =>
+  array(
+    'hash' => 'f6d6c55af3c35016a08966fa279dad6c',
+    'uri' => '/res/f6d6c55a/rsrc/image/emoji/unicode/e514.png',
+    'disk' => '/rsrc/image/emoji/unicode/e514.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e515.png' =>
+  array(
+    'hash' => '4392d1eb91774dd02ecdcefe8fb0ebbb',
+    'uri' => '/res/4392d1eb/rsrc/image/emoji/unicode/e515.png',
+    'disk' => '/rsrc/image/emoji/unicode/e515.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e516.png' =>
+  array(
+    'hash' => '73cb23e56a8140b0b59b0adc0f3b2d45',
+    'uri' => '/res/73cb23e5/rsrc/image/emoji/unicode/e516.png',
+    'disk' => '/rsrc/image/emoji/unicode/e516.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e517.png' =>
+  array(
+    'hash' => '995f86cca7a5ac7210df48c54d67057b',
+    'uri' => '/res/995f86cc/rsrc/image/emoji/unicode/e517.png',
+    'disk' => '/rsrc/image/emoji/unicode/e517.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e518.png' =>
+  array(
+    'hash' => 'ccd9d7f5e1657b51f5ae797b0eff69ba',
+    'uri' => '/res/ccd9d7f5/rsrc/image/emoji/unicode/e518.png',
+    'disk' => '/rsrc/image/emoji/unicode/e518.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e519.png' =>
+  array(
+    'hash' => '31e0ddb073cfaf5a49e424e94e38f8e3',
+    'uri' => '/res/31e0ddb0/rsrc/image/emoji/unicode/e519.png',
+    'disk' => '/rsrc/image/emoji/unicode/e519.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e51a.png' =>
+  array(
+    'hash' => '409e24cc71c2ff27f4af3faac3e1ad25',
+    'uri' => '/res/409e24cc/rsrc/image/emoji/unicode/e51a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e51a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e51b.png' =>
+  array(
+    'hash' => 'ceacb43ff01e211b5f51367a34c5290d',
+    'uri' => '/res/ceacb43f/rsrc/image/emoji/unicode/e51b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e51b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e51c.png' =>
+  array(
+    'hash' => '99e238812282deb39599bae4389c9e77',
+    'uri' => '/res/99e23881/rsrc/image/emoji/unicode/e51c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e51c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e51d.png' =>
+  array(
+    'hash' => '0fe5508660155878131ca58081e182da',
+    'uri' => '/res/0fe55086/rsrc/image/emoji/unicode/e51d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e51d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e51e.png' =>
+  array(
+    'hash' => '1120b1dca297d0604beeae323ae03671',
+    'uri' => '/res/1120b1dc/rsrc/image/emoji/unicode/e51e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e51e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e51f.png' =>
+  array(
+    'hash' => '74f0a9fa0654fc5c8382970753f4eafd',
+    'uri' => '/res/74f0a9fa/rsrc/image/emoji/unicode/e51f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e51f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e520.png' =>
+  array(
+    'hash' => '246fd4ed06931fe1a0342823aef84d3e',
+    'uri' => '/res/246fd4ed/rsrc/image/emoji/unicode/e520.png',
+    'disk' => '/rsrc/image/emoji/unicode/e520.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e521.png' =>
+  array(
+    'hash' => '00367698d8e49525d32a6eb151148857',
+    'uri' => '/res/00367698/rsrc/image/emoji/unicode/e521.png',
+    'disk' => '/rsrc/image/emoji/unicode/e521.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e522.png' =>
+  array(
+    'hash' => 'aa62e90310a1952bce0e78b2a56837ae',
+    'uri' => '/res/aa62e903/rsrc/image/emoji/unicode/e522.png',
+    'disk' => '/rsrc/image/emoji/unicode/e522.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e523.png' =>
+  array(
+    'hash' => '64d58756910ce02ba592b8fdd7f50b33',
+    'uri' => '/res/64d58756/rsrc/image/emoji/unicode/e523.png',
+    'disk' => '/rsrc/image/emoji/unicode/e523.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e524.png' =>
+  array(
+    'hash' => '296e50c439f75e99dd478b0d985ef9ee',
+    'uri' => '/res/296e50c4/rsrc/image/emoji/unicode/e524.png',
+    'disk' => '/rsrc/image/emoji/unicode/e524.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e525.png' =>
+  array(
+    'hash' => 'ed203f1daf003d0ad5e7906dc149c067',
+    'uri' => '/res/ed203f1d/rsrc/image/emoji/unicode/e525.png',
+    'disk' => '/rsrc/image/emoji/unicode/e525.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e526.png' =>
+  array(
+    'hash' => '45e8b94811bf90ab7d5d557e978cbe23',
+    'uri' => '/res/45e8b948/rsrc/image/emoji/unicode/e526.png',
+    'disk' => '/rsrc/image/emoji/unicode/e526.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e527.png' =>
+  array(
+    'hash' => '4c3f7276a925104a7e163002363c2043',
+    'uri' => '/res/4c3f7276/rsrc/image/emoji/unicode/e527.png',
+    'disk' => '/rsrc/image/emoji/unicode/e527.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e528.png' =>
+  array(
+    'hash' => '975b6a4ddaa9cc644ddc88c8caeb06a2',
+    'uri' => '/res/975b6a4d/rsrc/image/emoji/unicode/e528.png',
+    'disk' => '/rsrc/image/emoji/unicode/e528.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e529.png' =>
+  array(
+    'hash' => '553b44095b17e4e2ee2ec744949e52b9',
+    'uri' => '/res/553b4409/rsrc/image/emoji/unicode/e529.png',
+    'disk' => '/rsrc/image/emoji/unicode/e529.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e52a.png' =>
+  array(
+    'hash' => 'a238e9c8e7677ab76a751b8a6467aef2',
+    'uri' => '/res/a238e9c8/rsrc/image/emoji/unicode/e52a.png',
+    'disk' => '/rsrc/image/emoji/unicode/e52a.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e52b.png' =>
+  array(
+    'hash' => 'f0bec5b793de51a75fd964cf779d3844',
+    'uri' => '/res/f0bec5b7/rsrc/image/emoji/unicode/e52b.png',
+    'disk' => '/rsrc/image/emoji/unicode/e52b.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e52c.png' =>
+  array(
+    'hash' => '34676eaba67f558ef298e1ad2c45448e',
+    'uri' => '/res/34676eab/rsrc/image/emoji/unicode/e52c.png',
+    'disk' => '/rsrc/image/emoji/unicode/e52c.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e52d.png' =>
+  array(
+    'hash' => '6522d77df7858d9cd737f5c574309a31',
+    'uri' => '/res/6522d77d/rsrc/image/emoji/unicode/e52d.png',
+    'disk' => '/rsrc/image/emoji/unicode/e52d.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e52e.png' =>
+  array(
+    'hash' => 'b6a0a9c95fd8e70f581719a760536375',
+    'uri' => '/res/b6a0a9c9/rsrc/image/emoji/unicode/e52e.png',
+    'disk' => '/rsrc/image/emoji/unicode/e52e.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e52f.png' =>
+  array(
+    'hash' => '6fb06ec61b065edb558e80fa2e26cbed',
+    'uri' => '/res/6fb06ec6/rsrc/image/emoji/unicode/e52f.png',
+    'disk' => '/rsrc/image/emoji/unicode/e52f.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e530.png' =>
+  array(
+    'hash' => '2efe27d8c733966c5c696d55c929435c',
+    'uri' => '/res/2efe27d8/rsrc/image/emoji/unicode/e530.png',
+    'disk' => '/rsrc/image/emoji/unicode/e530.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e531.png' =>
+  array(
+    'hash' => '3f3c195dc81c576b9dd901ec75559e11',
+    'uri' => '/res/3f3c195d/rsrc/image/emoji/unicode/e531.png',
+    'disk' => '/rsrc/image/emoji/unicode/e531.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e532.png' =>
+  array(
+    'hash' => 'b7c028ba555200c970df100289f84091',
+    'uri' => '/res/b7c028ba/rsrc/image/emoji/unicode/e532.png',
+    'disk' => '/rsrc/image/emoji/unicode/e532.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e533.png' =>
+  array(
+    'hash' => '70e0d1602c31347a813bcd3d483ad7e1',
+    'uri' => '/res/70e0d160/rsrc/image/emoji/unicode/e533.png',
+    'disk' => '/rsrc/image/emoji/unicode/e533.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e534.png' =>
+  array(
+    'hash' => '67cf6ff4227377ee03a84718301b3df1',
+    'uri' => '/res/67cf6ff4/rsrc/image/emoji/unicode/e534.png',
+    'disk' => '/rsrc/image/emoji/unicode/e534.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e535.png' =>
+  array(
+    'hash' => '6955387a48b170e916fff6ab1684289f',
+    'uri' => '/res/6955387a/rsrc/image/emoji/unicode/e535.png',
+    'disk' => '/rsrc/image/emoji/unicode/e535.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e536.png' =>
+  array(
+    'hash' => 'f4bbe581b4dd942fd346b63ca45a19a0',
+    'uri' => '/res/f4bbe581/rsrc/image/emoji/unicode/e536.png',
+    'disk' => '/rsrc/image/emoji/unicode/e536.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unicode/e537.png' =>
+  array(
+    'hash' => '8a7d7ec737965715b2725acbecdcd705',
+    'uri' => '/res/8a7d7ec7/rsrc/image/emoji/unicode/e537.png',
+    'disk' => '/rsrc/image/emoji/unicode/e537.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/unlock.png' =>
+  array(
+    'hash' => 'df539e483eaf7521b74a239217de9ea6',
+    'uri' => '/res/df539e48/rsrc/image/emoji/unlock.png',
+    'disk' => '/rsrc/image/emoji/unlock.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/up.png' =>
+  array(
+    'hash' => '90a4e33c8c32b2db433f7249bb878661',
+    'uri' => '/res/90a4e33c/rsrc/image/emoji/up.png',
+    'disk' => '/rsrc/image/emoji/up.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/us.png' =>
+  array(
+    'hash' => 'a5370e98e19fa9cef56e5531ab7ac733',
+    'uri' => '/res/a5370e98/rsrc/image/emoji/us.png',
+    'disk' => '/rsrc/image/emoji/us.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/v.png' =>
+  array(
+    'hash' => '55b755e7160b50c3fc2f391083ceb0be',
+    'uri' => '/res/55b755e7/rsrc/image/emoji/v.png',
+    'disk' => '/rsrc/image/emoji/v.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/vertical_traffic_light.png' =>
+  array(
+    'hash' => '9489e1299541c3337e59ec3b0f319856',
+    'uri' => '/res/9489e129/rsrc/image/emoji/vertical_traffic_light.png',
+    'disk' => '/rsrc/image/emoji/vertical_traffic_light.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/vhs.png' =>
+  array(
+    'hash' => '183dcf10e02391271ee623c32f26086d',
+    'uri' => '/res/183dcf10/rsrc/image/emoji/vhs.png',
+    'disk' => '/rsrc/image/emoji/vhs.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/vibration_mode.png' =>
+  array(
+    'hash' => '74233f9f5d9f840201f67435fa094795',
+    'uri' => '/res/74233f9f/rsrc/image/emoji/vibration_mode.png',
+    'disk' => '/rsrc/image/emoji/vibration_mode.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/video_camera.png' =>
+  array(
+    'hash' => '4a811890cd627b704e3844c003abc1fc',
+    'uri' => '/res/4a811890/rsrc/image/emoji/video_camera.png',
+    'disk' => '/rsrc/image/emoji/video_camera.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/video_game.png' =>
+  array(
+    'hash' => 'd5edee222dd66f9b1e649439304ebe8c',
+    'uri' => '/res/d5edee22/rsrc/image/emoji/video_game.png',
+    'disk' => '/rsrc/image/emoji/video_game.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/violin.png' =>
+  array(
+    'hash' => '31f5e6d807f731648cf80df41afc038c',
+    'uri' => '/res/31f5e6d8/rsrc/image/emoji/violin.png',
+    'disk' => '/rsrc/image/emoji/violin.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/virgo.png' =>
+  array(
+    'hash' => 'f43d134b7d08e95137789814af9f5164',
+    'uri' => '/res/f43d134b/rsrc/image/emoji/virgo.png',
+    'disk' => '/rsrc/image/emoji/virgo.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/volcano.png' =>
+  array(
+    'hash' => 'b23b9f24d0c18462921207120f33a305',
+    'uri' => '/res/b23b9f24/rsrc/image/emoji/volcano.png',
+    'disk' => '/rsrc/image/emoji/volcano.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/vs.png' =>
+  array(
+    'hash' => '0e610a6cc13cbf8c970a5ff0ea185d21',
+    'uri' => '/res/0e610a6c/rsrc/image/emoji/vs.png',
+    'disk' => '/rsrc/image/emoji/vs.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/walking.png' =>
+  array(
+    'hash' => '3ab11e296243e43e6a000b99c9ea36cd',
+    'uri' => '/res/3ab11e29/rsrc/image/emoji/walking.png',
+    'disk' => '/rsrc/image/emoji/walking.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/waning_crescent_moon.png' =>
+  array(
+    'hash' => 'b614dc6d142137bd1cd08c7737ff2ac0',
+    'uri' => '/res/b614dc6d/rsrc/image/emoji/waning_crescent_moon.png',
+    'disk' => '/rsrc/image/emoji/waning_crescent_moon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/waning_gibbous_moon.png' =>
+  array(
+    'hash' => '933f048b69f36e1c277040645bebafb0',
+    'uri' => '/res/933f048b/rsrc/image/emoji/waning_gibbous_moon.png',
+    'disk' => '/rsrc/image/emoji/waning_gibbous_moon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/warning.png' =>
+  array(
+    'hash' => 'ee77394c21aaef009e20a9c1a999a624',
+    'uri' => '/res/ee77394c/rsrc/image/emoji/warning.png',
+    'disk' => '/rsrc/image/emoji/warning.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/watch.png' =>
+  array(
+    'hash' => '7f173fe7c1d9b9b6d32fc12b1f93a00f',
+    'uri' => '/res/7f173fe7/rsrc/image/emoji/watch.png',
+    'disk' => '/rsrc/image/emoji/watch.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/water_buffalo.png' =>
+  array(
+    'hash' => '7e54a5a1a0d9b207ebfbaf0a771c0eb6',
+    'uri' => '/res/7e54a5a1/rsrc/image/emoji/water_buffalo.png',
+    'disk' => '/rsrc/image/emoji/water_buffalo.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/watermelon.png' =>
+  array(
+    'hash' => '8043c61f064d8e5ee198e47ef7d1705c',
+    'uri' => '/res/8043c61f/rsrc/image/emoji/watermelon.png',
+    'disk' => '/rsrc/image/emoji/watermelon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wave.png' =>
+  array(
+    'hash' => 'fb0d2d0eedc3c9b6ad63805763f46886',
+    'uri' => '/res/fb0d2d0e/rsrc/image/emoji/wave.png',
+    'disk' => '/rsrc/image/emoji/wave.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wavy_dash.png' =>
+  array(
+    'hash' => '3449b27d99b878ec45b435695ad86bdb',
+    'uri' => '/res/3449b27d/rsrc/image/emoji/wavy_dash.png',
+    'disk' => '/rsrc/image/emoji/wavy_dash.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/waxing_crescent_moon.png' =>
+  array(
+    'hash' => 'b2a4fa8a91ddc2915432686157510d0d',
+    'uri' => '/res/b2a4fa8a/rsrc/image/emoji/waxing_crescent_moon.png',
+    'disk' => '/rsrc/image/emoji/waxing_crescent_moon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/waxing_gibbous_moon.png' =>
+  array(
+    'hash' => '319afee104c9bb2503c312c8d20d2811',
+    'uri' => '/res/319afee1/rsrc/image/emoji/waxing_gibbous_moon.png',
+    'disk' => '/rsrc/image/emoji/waxing_gibbous_moon.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wc.png' =>
+  array(
+    'hash' => '74207d07c2788cac6e09053b1c3ba594',
+    'uri' => '/res/74207d07/rsrc/image/emoji/wc.png',
+    'disk' => '/rsrc/image/emoji/wc.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/weary.png' =>
+  array(
+    'hash' => 'dd7d739076ce62c70d1ba256fb931f50',
+    'uri' => '/res/dd7d7390/rsrc/image/emoji/weary.png',
+    'disk' => '/rsrc/image/emoji/weary.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wedding.png' =>
+  array(
+    'hash' => '4ff91b40687680727bddde5f66a7ff61',
+    'uri' => '/res/4ff91b40/rsrc/image/emoji/wedding.png',
+    'disk' => '/rsrc/image/emoji/wedding.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/whale.png' =>
+  array(
+    'hash' => '00469ec895457db4852f1e7e21c5991d',
+    'uri' => '/res/00469ec8/rsrc/image/emoji/whale.png',
+    'disk' => '/rsrc/image/emoji/whale.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/whale2.png' =>
+  array(
+    'hash' => '979c4c56596e75d824f5dc07f7012494',
+    'uri' => '/res/979c4c56/rsrc/image/emoji/whale2.png',
+    'disk' => '/rsrc/image/emoji/whale2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wheelchair.png' =>
+  array(
+    'hash' => '78157517de4125015831c7c8504d748c',
+    'uri' => '/res/78157517/rsrc/image/emoji/wheelchair.png',
+    'disk' => '/rsrc/image/emoji/wheelchair.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/white_check_mark.png' =>
+  array(
+    'hash' => '47208a2f95e896d1bffb846755559ad6',
+    'uri' => '/res/47208a2f/rsrc/image/emoji/white_check_mark.png',
+    'disk' => '/rsrc/image/emoji/white_check_mark.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/white_circle.png' =>
+  array(
+    'hash' => '2bf86dfeb492e15fe5b10eb3257a8565',
+    'uri' => '/res/2bf86dfe/rsrc/image/emoji/white_circle.png',
+    'disk' => '/rsrc/image/emoji/white_circle.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/white_flower.png' =>
+  array(
+    'hash' => 'e16a75727b4ba275164e32e73526d600',
+    'uri' => '/res/e16a7572/rsrc/image/emoji/white_flower.png',
+    'disk' => '/rsrc/image/emoji/white_flower.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/white_square.png' =>
+  array(
+    'hash' => '085cd986d1f439d502b0250029be9858',
+    'uri' => '/res/085cd986/rsrc/image/emoji/white_square.png',
+    'disk' => '/rsrc/image/emoji/white_square.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/white_square_button.png' =>
+  array(
+    'hash' => 'e0dd9c9c1bb931caebf8bdeabc40d924',
+    'uri' => '/res/e0dd9c9c/rsrc/image/emoji/white_square_button.png',
+    'disk' => '/rsrc/image/emoji/white_square_button.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wind_chime.png' =>
+  array(
+    'hash' => '275fd5386c13b181a16c6f274ab30c9d',
+    'uri' => '/res/275fd538/rsrc/image/emoji/wind_chime.png',
+    'disk' => '/rsrc/image/emoji/wind_chime.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wine_glass.png' =>
+  array(
+    'hash' => '6856331e01870abf525d806a850a6f62',
+    'uri' => '/res/6856331e/rsrc/image/emoji/wine_glass.png',
+    'disk' => '/rsrc/image/emoji/wine_glass.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wink.png' =>
+  array(
+    'hash' => 'a6d1a5f3f9df6299e73b2d7c83e937ab',
+    'uri' => '/res/a6d1a5f3/rsrc/image/emoji/wink.png',
+    'disk' => '/rsrc/image/emoji/wink.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wolf.png' =>
+  array(
+    'hash' => '00456436a6ea605579164a4b34aef716',
+    'uri' => '/res/00456436/rsrc/image/emoji/wolf.png',
+    'disk' => '/rsrc/image/emoji/wolf.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/woman.png' =>
+  array(
+    'hash' => '5bd6db7b00c3aa039be65de9549e3625',
+    'uri' => '/res/5bd6db7b/rsrc/image/emoji/woman.png',
+    'disk' => '/rsrc/image/emoji/woman.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/womans_clothes.png' =>
+  array(
+    'hash' => 'e9ca52b7afc075aaad09816b3e2320ab',
+    'uri' => '/res/e9ca52b7/rsrc/image/emoji/womans_clothes.png',
+    'disk' => '/rsrc/image/emoji/womans_clothes.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/womans_hat.png' =>
+  array(
+    'hash' => '179bac54b722bba53c3538b49e7368e3',
+    'uri' => '/res/179bac54/rsrc/image/emoji/womans_hat.png',
+    'disk' => '/rsrc/image/emoji/womans_hat.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/womens.png' =>
+  array(
+    'hash' => 'f13ed70a7ce7e90471bd9963c1afef74',
+    'uri' => '/res/f13ed70a/rsrc/image/emoji/womens.png',
+    'disk' => '/rsrc/image/emoji/womens.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/worried.png' =>
+  array(
+    'hash' => 'dace294df69767eaa8d8e7c3e56d132f',
+    'uri' => '/res/dace294d/rsrc/image/emoji/worried.png',
+    'disk' => '/rsrc/image/emoji/worried.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/wrench.png' =>
+  array(
+    'hash' => '5db7be96f89d09646ea6f0c1bf5368d2',
+    'uri' => '/res/5db7be96/rsrc/image/emoji/wrench.png',
+    'disk' => '/rsrc/image/emoji/wrench.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/x.png' =>
+  array(
+    'hash' => '763dc88b12e9ef5ae1094f677749f478',
+    'uri' => '/res/763dc88b/rsrc/image/emoji/x.png',
+    'disk' => '/rsrc/image/emoji/x.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/yellow_heart.png' =>
+  array(
+    'hash' => '20b9b5e011dc90402eacf34653d15dc9',
+    'uri' => '/res/20b9b5e0/rsrc/image/emoji/yellow_heart.png',
+    'disk' => '/rsrc/image/emoji/yellow_heart.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/yen.png' =>
+  array(
+    'hash' => '384f34f40ad75e1ea7e9048dc3b0b44c',
+    'uri' => '/res/384f34f4/rsrc/image/emoji/yen.png',
+    'disk' => '/rsrc/image/emoji/yen.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/yum.png' =>
+  array(
+    'hash' => '5b9f5a1d6ff2c674650cb3f0d12fa042',
+    'uri' => '/res/5b9f5a1d/rsrc/image/emoji/yum.png',
+    'disk' => '/rsrc/image/emoji/yum.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/zap.png' =>
+  array(
+    'hash' => '83db52c9a018b3496fa6b1fc44ff653d',
+    'uri' => '/res/83db52c9/rsrc/image/emoji/zap.png',
+    'disk' => '/rsrc/image/emoji/zap.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/zero.png' =>
+  array(
+    'hash' => '9fa9ad691091cda70d0772416b341874',
+    'uri' => '/res/9fa9ad69/rsrc/image/emoji/zero.png',
+    'disk' => '/rsrc/image/emoji/zero.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/emoji/zzz.png' =>
+  array(
+    'hash' => 'd8b895a1164e68ccebb860c5f5cdefd5',
+    'uri' => '/res/d8b895a1/rsrc/image/emoji/zzz.png',
+    'disk' => '/rsrc/image/emoji/zzz.png',
     'type' => 'png',
   ),
   '/rsrc/image/grippy_texture.png' =>
@@ -825,7 +12746,7 @@ celerity_register_resource_map(array(
   ),
   'autosprite-css' =>
   array(
-    'uri' => '/res/eb1d17dd/rsrc/css/autosprite.css',
+    'uri' => '/res/b8e79551/rsrc/css/autosprite.css',
     'type' => 'css',
     'requires' =>
     array(
