@@ -40,7 +40,7 @@ final class PhabricatorRemarkupRuleEmoji
           'alt'    => $name,
           'width'  => '20',
           'height' => '20',
-          'style'  => 'vertical-align:middle;',
+          'style'  => 'vertical-align:middle;display:inline',
           'src'    => '/rsrc/image/emoji/'.$name.'.png',
         ),
         '');
