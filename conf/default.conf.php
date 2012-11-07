@@ -1,21 +1,5 @@
 <?php
 
-/*
- * Copyright 2012 Facebook, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 return array(
 
   // The root URI which Phabricator is installed on.
@@ -1140,8 +1124,33 @@ return array(
   // to work properly.
   'feed.public' => false,
 
+  // If you set this to a list of http URIs, when a feed story is published a
+  // task will be created for each uri that posts the story data to the uri.
+  // Daemons automagically retry failures 100 times, waiting $fail_count * 60s
+  // between each subsequent failure. Be sure to keep the daemon console
+  // (/daemon/) open while developing and testing your end points.
+  //
+  // NOTE: URIs are not validated, the URI must return http status 200 within
+  // 30 seconds, and no permission checks are performed.
+  'feed.http-hooks' => array(),
 
 // -- Drydock --------------------------------------------------------------- //
+
+  // Drydock is used to allocate various software resources. For example, it
+  // allocates working copies so continuous integration tests can be executed.
+  // It needs at least one host to allocate these resources on.
+  //
+  // Set this option to true to let Drydock use the localhost for allocations.
+  // This is the simplest configuration, but the least scalable. You MUST
+  // disable this if you run daemons on more than one machine -- if you do not,
+  // a daemon on machine A may allocate a resource locally, and then a daemon
+  // on machine B may try to access it.
+  'drydock.localhost.enabled' => true,
+
+  // If the localhost is available to Drydock, specify the path on disk where
+  // Drydock should write files. You should create this directory and make sure
+  // the user that the daemons run as has permission to write to it.
+  'drydock.localhost.path'    => '/var/drydock/',
 
   // If you want to use Drydock's builtin EC2 Blueprints, configure your AWS
   // EC2 credentials here.
