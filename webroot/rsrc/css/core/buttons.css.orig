@@ -7,6 +7,7 @@ button,
 a.button,
 a.button:visited,
 input.inputsubmit {
+<<<<<<< HEAD
   overflow: visible;
   width: auto;
   background: #0874C4;
@@ -25,15 +26,46 @@ input.inputsubmit {
   cursor: pointer;
   border-radius: 3px;
 }
-
-button {
-  *padding: 2px 4px 1px 8px;
-  _padding-right: 6px;
+||||||| parent of ead96f4... Rework buttons with new gradients, rounded corners.
+  background: #5e77aa url('/rsrc/image/sprite.png') 0 0 repeat-x;
+  border: 1px solid #29447e;
+  border-bottom-color: #1a356e;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  display: inline-block;
+  font-size: 13px;
+  overflow: visible;
+  padding: 2px 8px 3px 8px;
+  line-height: 18px;
+  vertical-align: baseline;
+  width: auto;
+  box-shadow: 0px 1px 0px rgba(0,0,0,.12);
+  -moz-box-shadow: 0px 1px 0px rgba(0,0,0,.12);
+  -webkit-box-shadow: 0px 1px 0px rgba(0,0,0,.12);
 }
+=======
+  background-color: #19558D;
+  background-image: url('/rsrc/image/button_gradients.png');
+  background-position: 0 -26px;
 
-a.button,
-a.button:visited {
-  *padding: 3px 8px 4px;
+  color: white;
+  min-width: 60px;
+  text-shadow: 0 -1px #19558D;
+  border: 1px solid #19558D;
+  cursor: pointer;
+  font-weight: bold;
+  display: inline-block;
+  padding: 3px 10px 4px;
+  text-align: center;
+  white-space: nowrap;
+>>>>>>> ead96f4... Rework buttons with new gradients, rounded corners.
+
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
 }
 
 /* Buttons with images (full size only) */
@@ -45,23 +77,42 @@ a.icon:visited {
   text-indent: 29px;
 }
 
-/* Fix for IE7 within table cells ? */
-td button {
-  *width: 100%;
-  *padding-right: 8px;
-}
-
 button:active,
 a.button:active {
+<<<<<<< HEAD
   background: #197CC7;
   background: -webkit-gradient(linear,0 0,0 100%,from(#1B8FD8),to(#197CC7)) background:-moz-linear-gradient(top,#1B8FD8,#197CC7);
   -webkit-box-shadow: 0 1px 2px #125A92 inset;
   box-shadow: 0 1px 2px #125A92 inset;
+||||||| parent of ead96f4... Rework buttons with new gradients, rounded corners.
+  background-color: #4f6aa3;
+  background-position: 0 -100px;
+  border-bottom-color: #29447e;
+=======
+  background-color: #19558D;
+  background-position: 0 0;
+}
+
+button.black,
+a.black,
+a.black:visited {
+  background-color: #383838;
+  background-position: 0 -182px;
+  border: 1px solid #333;
+  text-shadow: 0 -1px #000;
+  border-bottom-color: #000;
+}
+
+button.black:active,
+a.black:active {
+  background-position: 0 -156px;
+>>>>>>> ead96f4... Rework buttons with new gradients, rounded corners.
 }
 
 button.green,
 a.green,
 a.green:visited {
+<<<<<<< HEAD
   background: #8AB923;
   background: -webkit-gradient(linear,0 0,0 100%,from(#ADDA4D),to(#86B846));
   background: -moz-linear-gradient(top,#ADDA4D,#86B846);
@@ -73,16 +124,38 @@ a.green:visited {
   _width: 56px;
   -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset,0 1px 0 rgba(0, 0, 0, .2);
   box-shadow: 0 1px 0 rgba(255, 255, 255, .5) inset,0 1px 0 rgba(0, 0, 0, .2);
+||||||| parent of ead96f4... Rework buttons with new gradients, rounded corners.
+  background-color: #6da952;
+  background-position: 0 -50px;
+  border: 1px solid #3b6e22;
+  border-bottom-color: #2c5a15;
+=======
+  background-color: #006600;
+  background-position: 0 -130px;
+  border: 1px solid #3b6e22;
+  text-shadow: 0 -1px #006600;
+  border-bottom-color: #2c5a15;
+>>>>>>> ead96f4... Rework buttons with new gradients, rounded corners.
 }
 
 button.green:active,
 a.green:active {
+<<<<<<< HEAD
   background: #79A814;
   background: -webkit-gradient(linear,0 0,0 100%,from(#9AC244),to(#78A53E));
   background: -moz-linear-gradient(top,#9AC244,#78A53E);
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .3) inset;
   box-shadow: 0 1px 2px rgba(0, 0, 0, .3) inset;
+  }
+||||||| parent of ead96f4... Rework buttons with new gradients, rounded corners.
+  background-color: #5e9d43;
+  background-position: 0 -150px;
+  border-bottom-color: #3b6e22;
 }
+=======
+  background-position: 0 -104px;
+}
+>>>>>>> ead96f4... Rework buttons with new gradients, rounded corners.
 
 button.grey,
 input.inputaux,
@@ -91,6 +164,7 @@ a.grey:visited,
 a.button.disabled,
 button[disabled], /* Set by JX.Workflow. */
 button.disabled {
+<<<<<<< HEAD
   background: #F8F8F9;
   background: -webkit-gradient(linear,0 0,0 100%,from(#F8F8F9),to(#E6E6E8));
   background: -moz-linear-gradient(top,#F8F8F9,#E6E6E8);
@@ -106,6 +180,24 @@ button.disabled {
   padding: 4px 10px;
   cursor: pointer;
   border-radius: 3px;
+||||||| parent of ead96f4... Rework buttons with new gradients, rounded corners.
+  background-color: #e4e5e5;
+  background-position: 0 -250px;
+  border: 1px solid #999;
+  border-bottom-color: #888;
+  color: #333;
+  box-shadow: 0px 1px 0px rgba(0,0,0,.07);
+  -moz-box-shadow: 0px 1px 0px rgba(0,0,0,.07);
+  -webkit-box-shadow: 0px 1px 0px rgba(0,0,0,.07);
+=======
+  background-color: #f7f7f7;
+  background-image: url('/rsrc/image/button_gradients.png');
+  background-position: 0 -52px;
+  border-color: #aaa;
+  color: #333;
+  border-bottom-color: #999;
+  text-shadow: none;
+>>>>>>> ead96f4... Rework buttons with new gradients, rounded corners.
 }
 
 a.disabled,
@@ -120,6 +212,7 @@ button.grey:active,
 a.grey:active,
 button.grey_active,
 a.dropdown-open {
+<<<<<<< HEAD
   background: white;
   background: -webkit-gradient(linear,0 0,0 100%,from(#DDD),to(#DDD));
   background: -moz-linear-gradient(top,#DDD,#DDD);
@@ -140,6 +233,30 @@ button.green:focus::-moz-focus-inner {
 button.grey:active::-moz-focus-inner,
 button.grey:focus::-moz-focus-inner {
   border-color: #666;
+||||||| parent of ead96f4... Rework buttons with new gradients, rounded corners.
+  background-color: #dddddd;
+  background-position: 0 -200px;
+  border-bottom-color: #999;
+}
+
+button:active::-moz-focus-inner,
+button:focus::-moz-focus-inner {
+  border-color: #405071;
+}
+
+button.green:active::-moz-focus-inner,
+button.green:focus::-moz-focus-inner {
+  border-color: #4c713b;
+}
+
+button.grey:active::-moz-focus-inner,
+button.grey:focus::-moz-focus-inner {
+  border-color: #666;
+=======
+  background-color: #7d7d7d;
+  background-position: 0 -78px;
+  color: #777;
+>>>>>>> ead96f4... Rework buttons with new gradients, rounded corners.
 }
 
 a.button:hover {
