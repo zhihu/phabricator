@@ -6,7 +6,9 @@ abstract class DiffusionController extends PhabricatorController {
 
   public function willProcessRequest(array $data) {
     if (isset($data['callsign'])) {
-      $drequest = DiffusionRequest::newFromAphrontRequestDictionary($data);
+      $drequest = DiffusionRequest::newFromAphrontRequestDictionary(
+        $data,
+        $this->getRequest());
       $this->diffusionRequest = $drequest;
     }
   }
@@ -53,6 +55,11 @@ abstract class DiffusionController extends PhabricatorController {
     }
 
     $drequest = $this->getDiffusionRequest();
+    $branch = $drequest->loadBranch();
+
+    if ($branch && $branch->getLintCommit()) {
+      $navs['lint'] = 'Lint View';
+    }
 
     foreach ($navs as $action => $name) {
       $href = $drequest->generateURI(
@@ -83,7 +90,7 @@ abstract class DiffusionController extends PhabricatorController {
             '?repository='.phutil_escape_uri($drequest->getCallsign()).
             '&path='.phutil_escape_uri('/'.$drequest->getPath()),
         ),
-        'Search Owners'));
+        "Search Owners \xE2\x86\x97"));
 
     return $nav;
   }
@@ -243,6 +250,9 @@ abstract class DiffusionController extends PhabricatorController {
       case 'browse':
         $view_name = 'Browse';
         break;
+      case 'lint':
+        $view_name = 'Lint';
+        break;
       case 'change':
         $view_name = 'Change';
         $crumb_list[] = phutil_escape_html($path).' ('.$commit_link.')';
@@ -306,7 +316,7 @@ abstract class DiffusionController extends PhabricatorController {
         ),
         'Jump to HEAD');
       $last_crumb .= " @ {$commit_link} ({$jump_link})";
-    } else {
+    } else if ($spec['view'] != 'lint') {
       $last_crumb .= " @ HEAD";
     }
 

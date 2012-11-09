@@ -24,16 +24,8 @@ input.inputsubmit {
   padding: 4px 10px;
   cursor: pointer;
   border-radius: 3px;
-}
-
-button {
-  *padding: 2px 4px 1px 8px;
-  _padding-right: 6px;
-}
-
-a.button,
-a.button:visited {
-  *padding: 3px 8px 4px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
 }
 
 /* Buttons with images (full size only) */
@@ -43,12 +35,6 @@ a.icon:visited {
   padding-left: 0;
   position: relative;
   text-indent: 29px;
-}
-
-/* Fix for IE7 within table cells ? */
-td button {
-  *width: 100%;
-  *padding-right: 8px;
 }
 
 button:active,
@@ -165,6 +151,7 @@ button.link {
   font-size: inherit;
   border-bottom: none;
   text-decoration: none;
+  text-shadow: none;
   color: #3b5998;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -175,42 +162,6 @@ button.link:hover {
   text-decoration: underline;
 }
 
-a.toggle {
-  background: #d3d3d3;
-  padding: 2px 6px 3px;
-  font-weight: bold;
-  margin-right: 4px;
-  margin-bottom: 5px;
-  display: block;
-  float: left;
-  color: #777777;
-  border-radius: 8px;
-  -moz-border-radius: 8px;
-  -webkit-border-radius: 8px;
-  text-decoration: none;
-}
-
-a.toggle:hover {
-  background: #b0b0b0;
-  color: white;
-}
-
-a.toggle-selected {
-  background: #909090;
-  color: white;
-}
-
-a.toggle-fixed {
-  cursor: default;
-}
-
-a.toggle-fixed:hover {
-  background: #909090;
-}
-
-
-a.dropdown-open {
-}
 
 .dropdown-menu-frame {
   z-index: 32;

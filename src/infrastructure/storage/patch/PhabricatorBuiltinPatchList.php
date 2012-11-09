@@ -1012,6 +1012,22 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
         'type'    => 'sql',
         'name'    => $this->getPatchPath('drydockresourcetype.sql'),
       ),
+      'liskcounters.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('liskcounters.sql'),
+      ),
+      'liskcounters.php' => array(
+        'type'    => 'php',
+        'name'    => $this->getPatchPath('liskcounters.php'),
+      ),
+      'dropfileproxyimage.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('dropfileproxyimage.sql'),
+      ),
+      'repository-lint.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('repository-lint.sql'),
+      ),
     );
   }
 
