@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Phabricator Maintenance</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+    <h2 style="margin:10px 0;text-align:center;">Phabricator will be back soon, ;)</h2>
+    <div id="xkcd" style="margin:auto 0;text-align:center;"></div>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        $.ajax({
+            url: "http://dynamic.xkcd.com/api-0/jsonp/comic?callback=?",
+            dataType: "json",
+            jsonpCallback: "xkcddata",
+            success: function(data) {
+                var num = Math.floor(1 + Math.random() * data.num)
+                $.ajax({
+                    url: "http://dynamic.xkcd.com/api-0/jsonp/comic/" + num + "?callback=?",
+                    dataType: "json",
+                    jsonpCallback: "xkcddata",
+                    success: function(data) {
+                        $("#xkcd").append(
+                            $("<img />").attr({
+                                src: data.img,
+                                title: data.alt,
+                                alt: data.title
+                            })
+                        )
+                    }
+                })
+            }
+        });
+    </script>
+</body>
+</html>
