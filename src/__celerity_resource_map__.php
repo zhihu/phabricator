@@ -12474,6 +12474,664 @@ celerity_register_resource_map(array(
     'disk' => '/rsrc/image/icon/unsubscribe.png',
     'type' => 'png',
   ),
+  '/rsrc/image/icons_1x/arrow_left.png' =>
+  array(
+    'hash' => 'c656291dbc27450c2e02bffbbdb11961',
+    'uri' => '/res/c656291d/rsrc/image/icons_1x/arrow_left.png',
+    'disk' => '/rsrc/image/icons_1x/arrow_left.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/arrow_right.png' =>
+  array(
+    'hash' => '3dc7771a83803584c80acae096d27c64',
+    'uri' => '/res/3dc7771a/rsrc/image/icons_1x/arrow_right.png',
+    'disk' => '/rsrc/image/icons_1x/arrow_right.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/blame.png' =>
+  array(
+    'hash' => 'b4131e4dca801fcf77e14dda91c4eeba',
+    'uri' => '/res/b4131e4d/rsrc/image/icons_1x/blame.png',
+    'disk' => '/rsrc/image/icons_1x/blame.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/check.png' =>
+  array(
+    'hash' => '3e708d43e3959d005c459da0c92ce316',
+    'uri' => '/res/3e708d43/rsrc/image/icons_1x/check.png',
+    'disk' => '/rsrc/image/icons_1x/check.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/comment.png' =>
+  array(
+    'hash' => 'ccf530c3d2f7cc12b22c9798a1c22644',
+    'uri' => '/res/ccf530c3/rsrc/image/icons_1x/comment.png',
+    'disk' => '/rsrc/image/icons_1x/comment.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/create.png' =>
+  array(
+    'hash' => '7cd9272974635eb4f958c48c5c199723',
+    'uri' => '/res/7cd92729/rsrc/image/icons_1x/create.png',
+    'disk' => '/rsrc/image/icons_1x/create.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/delete.png' =>
+  array(
+    'hash' => '7ceb65b8d921038b073eb63287db5d0e',
+    'uri' => '/res/7ceb65b8/rsrc/image/icons_1x/delete.png',
+    'disk' => '/rsrc/image/icons_1x/delete.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/dislike.png' =>
+  array(
+    'hash' => 'dd555d658becfc2f152a8914f87e67a9',
+    'uri' => '/res/dd555d65/rsrc/image/icons_1x/dislike.png',
+    'disk' => '/rsrc/image/icons_1x/dislike.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/download.png' =>
+  array(
+    'hash' => '418bddecc7561c12d3b6ef1783348807',
+    'uri' => '/res/418bddec/rsrc/image/icons_1x/download.png',
+    'disk' => '/rsrc/image/icons_1x/download.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/edit.png' =>
+  array(
+    'hash' => 'bf0fbb8318d2538810156891716e5092',
+    'uri' => '/res/bf0fbb83/rsrc/image/icons_1x/edit.png',
+    'disk' => '/rsrc/image/icons_1x/edit.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/file.png' =>
+  array(
+    'hash' => 'c2df45e5d0435f0910b3ccdf0cc0c471',
+    'uri' => '/res/c2df45e5/rsrc/image/icons_1x/file.png',
+    'disk' => '/rsrc/image/icons_1x/file.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag-0.png' =>
+  array(
+    'hash' => '943dd90c42e4cb93ff9e44c97f769689',
+    'uri' => '/res/943dd90c/rsrc/image/icons_1x/flag-0.png',
+    'disk' => '/rsrc/image/icons_1x/flag-0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag-1.png' =>
+  array(
+    'hash' => '1f62532c28529675ab02ce97a6fd57c3',
+    'uri' => '/res/1f62532c/rsrc/image/icons_1x/flag-1.png',
+    'disk' => '/rsrc/image/icons_1x/flag-1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag-2.png' =>
+  array(
+    'hash' => '8162abb6b197b414acb30e2cda0524da',
+    'uri' => '/res/8162abb6/rsrc/image/icons_1x/flag-2.png',
+    'disk' => '/rsrc/image/icons_1x/flag-2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag-3.png' =>
+  array(
+    'hash' => '591aeaa5a9ec4e2175d8a837fcd8ecb9',
+    'uri' => '/res/591aeaa5/rsrc/image/icons_1x/flag-3.png',
+    'disk' => '/rsrc/image/icons_1x/flag-3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag-4.png' =>
+  array(
+    'hash' => 'c1bc7309a27aa34505c2a11ecf4a4491',
+    'uri' => '/res/c1bc7309/rsrc/image/icons_1x/flag-4.png',
+    'disk' => '/rsrc/image/icons_1x/flag-4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag-5.png' =>
+  array(
+    'hash' => '0a2c16710f413819ff73c120f97425eb',
+    'uri' => '/res/0a2c1671/rsrc/image/icons_1x/flag-5.png',
+    'disk' => '/rsrc/image/icons_1x/flag-5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag-6.png' =>
+  array(
+    'hash' => 'ec77d8a1800cdfcc491d33d64994b81d',
+    'uri' => '/res/ec77d8a1/rsrc/image/icons_1x/flag-6.png',
+    'disk' => '/rsrc/image/icons_1x/flag-6.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag-7.png' =>
+  array(
+    'hash' => '5f46070dcf3fa0fd11ef1aa5ae5070aa',
+    'uri' => '/res/5f46070d/rsrc/image/icons_1x/flag-7.png',
+    'disk' => '/rsrc/image/icons_1x/flag-7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag-ghost.png' =>
+  array(
+    'hash' => '6e91a6102ef0f0657741e270e9b65f70',
+    'uri' => '/res/6e91a610/rsrc/image/icons_1x/flag-ghost.png',
+    'disk' => '/rsrc/image/icons_1x/flag-ghost.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/flag.png' =>
+  array(
+    'hash' => '93fd4133aa2a703dd9e92db562b6be7d',
+    'uri' => '/res/93fd4133/rsrc/image/icons_1x/flag.png',
+    'disk' => '/rsrc/image/icons_1x/flag.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/fork.png' =>
+  array(
+    'hash' => '113f5c8db5abf08aaa664cba1fd2f497',
+    'uri' => '/res/113f5c8d/rsrc/image/icons_1x/fork.png',
+    'disk' => '/rsrc/image/icons_1x/fork.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/image.png' =>
+  array(
+    'hash' => 'e2cce856c3f7d36e59f87c3ab3abc78b',
+    'uri' => '/res/e2cce856/rsrc/image/icons_1x/image.png',
+    'disk' => '/rsrc/image/icons_1x/image.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/like.png' =>
+  array(
+    'hash' => '293b3aba72ba3456dd5cfb2f65b93b1e',
+    'uri' => '/res/293b3aba/rsrc/image/icons_1x/like.png',
+    'disk' => '/rsrc/image/icons_1x/like.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/link.png' =>
+  array(
+    'hash' => '2ee27dba178dd44fa2e9304d7a51b8be',
+    'uri' => '/res/2ee27dba/rsrc/image/icons_1x/link.png',
+    'disk' => '/rsrc/image/icons_1x/link.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/lock_closed.png' =>
+  array(
+    'hash' => 'f95a949799573640d324fddb301b14c2',
+    'uri' => '/res/f95a9497/rsrc/image/icons_1x/lock_closed.png',
+    'disk' => '/rsrc/image/icons_1x/lock_closed.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/love.png' =>
+  array(
+    'hash' => '9993d20058c4a8b5f4b1968a3615f40d',
+    'uri' => '/res/9993d200/rsrc/image/icons_1x/love.png',
+    'disk' => '/rsrc/image/icons_1x/love.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/merge.png' =>
+  array(
+    'hash' => '24b144969c5091c7d587b91426361efb',
+    'uri' => '/res/24b14496/rsrc/image/icons_1x/merge.png',
+    'disk' => '/rsrc/image/icons_1x/merge.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/message.png' =>
+  array(
+    'hash' => '3fb6983aae1bbd758d61c75b6a27a7cf',
+    'uri' => '/res/3fb6983a/rsrc/image/icons_1x/message.png',
+    'disk' => '/rsrc/image/icons_1x/message.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/move.png' =>
+  array(
+    'hash' => '6060b935c88d4ef12651079222fe00f8',
+    'uri' => '/res/6060b935/rsrc/image/icons_1x/move.png',
+    'disk' => '/rsrc/image/icons_1x/move.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/new.png' =>
+  array(
+    'hash' => '8c34c9b812ec38b65ea27f13984dcfb2',
+    'uri' => '/res/8c34c9b8/rsrc/image/icons_1x/new.png',
+    'disk' => '/rsrc/image/icons_1x/new.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/perflab.png' =>
+  array(
+    'hash' => 'c7e2e083ce8f6bdca23a24651a0fff46',
+    'uri' => '/res/c7e2e083/rsrc/image/icons_1x/perflab.png',
+    'disk' => '/rsrc/image/icons_1x/perflab.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/preview.png' =>
+  array(
+    'hash' => '4344f0f85bfb91cee23239b16ef085ad',
+    'uri' => '/res/4344f0f8/rsrc/image/icons_1x/preview.png',
+    'disk' => '/rsrc/image/icons_1x/preview.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/refresh.png' =>
+  array(
+    'hash' => 'fa9457bfcc4486bb61dc0d3ca4ce483b',
+    'uri' => '/res/fa9457bf/rsrc/image/icons_1x/refresh.png',
+    'disk' => '/rsrc/image/icons_1x/refresh.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/remove.png' =>
+  array(
+    'hash' => 'b458ab6b9f58d39866a44f7e3f155171',
+    'uri' => '/res/b458ab6b/rsrc/image/icons_1x/remove.png',
+    'disk' => '/rsrc/image/icons_1x/remove.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/search.png' =>
+  array(
+    'hash' => 'c29086a3ae69eb478f365467d005aab7',
+    'uri' => '/res/c29086a3/rsrc/image/icons_1x/search.png',
+    'disk' => '/rsrc/image/icons_1x/search.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/subscribe-add.png' =>
+  array(
+    'hash' => 'b7a71d0e021c4307bb41364c0702b1ac',
+    'uri' => '/res/b7a71d0e/rsrc/image/icons_1x/subscribe-add.png',
+    'disk' => '/rsrc/image/icons_1x/subscribe-add.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/subscribe-auto.png' =>
+  array(
+    'hash' => 'ca210d4b3e1e0b3e51eb6c1384b30870',
+    'uri' => '/res/ca210d4b/rsrc/image/icons_1x/subscribe-auto.png',
+    'disk' => '/rsrc/image/icons_1x/subscribe-auto.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/subscribe-delete.png' =>
+  array(
+    'hash' => 'cd7de55eae6a7448f2a9561d378c287b',
+    'uri' => '/res/cd7de55e/rsrc/image/icons_1x/subscribe-delete.png',
+    'disk' => '/rsrc/image/icons_1x/subscribe-delete.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/tag.png' =>
+  array(
+    'hash' => 'f1d338e97f3423aeed2a4c732c19b2a9',
+    'uri' => '/res/f1d338e9/rsrc/image/icons_1x/tag.png',
+    'disk' => '/rsrc/image/icons_1x/tag.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/transcript.png' =>
+  array(
+    'hash' => 'be12f1ccd7d502c819b5e5e10873673c',
+    'uri' => '/res/be12f1cc/rsrc/image/icons_1x/transcript.png',
+    'disk' => '/rsrc/image/icons_1x/transcript.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/undo.png' =>
+  array(
+    'hash' => 'afd2658f5eb838cdc06d56ba0c359df5',
+    'uri' => '/res/afd2658f/rsrc/image/icons_1x/undo.png',
+    'disk' => '/rsrc/image/icons_1x/undo.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/unlock.png' =>
+  array(
+    'hash' => '42b6db56e69cb285daacbcd9dc89330c',
+    'uri' => '/res/42b6db56/rsrc/image/icons_1x/unlock.png',
+    'disk' => '/rsrc/image/icons_1x/unlock.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/unmerge.png' =>
+  array(
+    'hash' => '8477d2582e3733b364906a1ac8da9fcd',
+    'uri' => '/res/8477d258/rsrc/image/icons_1x/unmerge.png',
+    'disk' => '/rsrc/image/icons_1x/unmerge.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/unpublish.png' =>
+  array(
+    'hash' => '10b2a0a48f138fa2ed6a014340093fe5',
+    'uri' => '/res/10b2a0a4/rsrc/image/icons_1x/unpublish.png',
+    'disk' => '/rsrc/image/icons_1x/unpublish.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/warning.png' =>
+  array(
+    'hash' => 'f22613a9bb134ab8d0f45a914c2f5be0',
+    'uri' => '/res/f22613a9/rsrc/image/icons_1x/warning.png',
+    'disk' => '/rsrc/image/icons_1x/warning.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_1x/world.png' =>
+  array(
+    'hash' => '5734a92ef4741ad5e15ee2c7c1ba9e33',
+    'uri' => '/res/5734a92e/rsrc/image/icons_1x/world.png',
+    'disk' => '/rsrc/image/icons_1x/world.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/arrow_left.png' =>
+  array(
+    'hash' => '6505002e5ee76926d0eb09bd6c9f7bac',
+    'uri' => '/res/6505002e/rsrc/image/icons_2x/arrow_left.png',
+    'disk' => '/rsrc/image/icons_2x/arrow_left.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/arrow_right.png' =>
+  array(
+    'hash' => 'fec6c7ff778fa47679e9227c5d302643',
+    'uri' => '/res/fec6c7ff/rsrc/image/icons_2x/arrow_right.png',
+    'disk' => '/rsrc/image/icons_2x/arrow_right.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/blame.png' =>
+  array(
+    'hash' => '01fdeb03d5f4fae22de423e463d295f8',
+    'uri' => '/res/01fdeb03/rsrc/image/icons_2x/blame.png',
+    'disk' => '/rsrc/image/icons_2x/blame.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/check.png' =>
+  array(
+    'hash' => 'c94fefbcef9357499ade5540f226453c',
+    'uri' => '/res/c94fefbc/rsrc/image/icons_2x/check.png',
+    'disk' => '/rsrc/image/icons_2x/check.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/comment.png' =>
+  array(
+    'hash' => '89f00a97bd0b95d8d598d9f6b7187171',
+    'uri' => '/res/89f00a97/rsrc/image/icons_2x/comment.png',
+    'disk' => '/rsrc/image/icons_2x/comment.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/create.png' =>
+  array(
+    'hash' => '1f242daaf7a63c8e89252cfaaacac882',
+    'uri' => '/res/1f242daa/rsrc/image/icons_2x/create.png',
+    'disk' => '/rsrc/image/icons_2x/create.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/delete.png' =>
+  array(
+    'hash' => '5fa62e0e5ce10d71661276a3841ec779',
+    'uri' => '/res/5fa62e0e/rsrc/image/icons_2x/delete.png',
+    'disk' => '/rsrc/image/icons_2x/delete.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/dislike.png' =>
+  array(
+    'hash' => '547600685438f01f1cc25b7f1e10c47a',
+    'uri' => '/res/54760068/rsrc/image/icons_2x/dislike.png',
+    'disk' => '/rsrc/image/icons_2x/dislike.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/download.png' =>
+  array(
+    'hash' => '51653935d0d21662117b9ae62588c1c8',
+    'uri' => '/res/51653935/rsrc/image/icons_2x/download.png',
+    'disk' => '/rsrc/image/icons_2x/download.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/edit.png' =>
+  array(
+    'hash' => 'ff2d83b0247066d718704da7ee68defb',
+    'uri' => '/res/ff2d83b0/rsrc/image/icons_2x/edit.png',
+    'disk' => '/rsrc/image/icons_2x/edit.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/file.png' =>
+  array(
+    'hash' => 'c282179b5929272c659e7d6b086f4816',
+    'uri' => '/res/c282179b/rsrc/image/icons_2x/file.png',
+    'disk' => '/rsrc/image/icons_2x/file.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag-0.png' =>
+  array(
+    'hash' => '3814087be19618b1aa25f29852fa86b4',
+    'uri' => '/res/3814087b/rsrc/image/icons_2x/flag-0.png',
+    'disk' => '/rsrc/image/icons_2x/flag-0.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag-1.png' =>
+  array(
+    'hash' => '9aee93b4727043004f020987024e8b1b',
+    'uri' => '/res/9aee93b4/rsrc/image/icons_2x/flag-1.png',
+    'disk' => '/rsrc/image/icons_2x/flag-1.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag-2.png' =>
+  array(
+    'hash' => 'f2a815e786d3a907931f7a639b107be1',
+    'uri' => '/res/f2a815e7/rsrc/image/icons_2x/flag-2.png',
+    'disk' => '/rsrc/image/icons_2x/flag-2.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag-3.png' =>
+  array(
+    'hash' => 'f2122cf5e786f24a4f21113d504637d3',
+    'uri' => '/res/f2122cf5/rsrc/image/icons_2x/flag-3.png',
+    'disk' => '/rsrc/image/icons_2x/flag-3.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag-4.png' =>
+  array(
+    'hash' => 'a9b997d0d9baa7f43b8605861f6707e8',
+    'uri' => '/res/a9b997d0/rsrc/image/icons_2x/flag-4.png',
+    'disk' => '/rsrc/image/icons_2x/flag-4.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag-5.png' =>
+  array(
+    'hash' => '3bb53b75c4c26aaac008d5b3fde0391c',
+    'uri' => '/res/3bb53b75/rsrc/image/icons_2x/flag-5.png',
+    'disk' => '/rsrc/image/icons_2x/flag-5.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag-6.png' =>
+  array(
+    'hash' => 'f198e3a7dd9baca4249d298f7fce4f4d',
+    'uri' => '/res/f198e3a7/rsrc/image/icons_2x/flag-6.png',
+    'disk' => '/rsrc/image/icons_2x/flag-6.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag-7.png' =>
+  array(
+    'hash' => '6cf8819adf5a95916c38bbfaafb1e049',
+    'uri' => '/res/6cf8819a/rsrc/image/icons_2x/flag-7.png',
+    'disk' => '/rsrc/image/icons_2x/flag-7.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag-ghost.png' =>
+  array(
+    'hash' => 'cf895b5af8c66e6a212a59f2c244d484',
+    'uri' => '/res/cf895b5a/rsrc/image/icons_2x/flag-ghost.png',
+    'disk' => '/rsrc/image/icons_2x/flag-ghost.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/flag.png' =>
+  array(
+    'hash' => '5c2c1ac08ca65186dcca49c71bb4e69e',
+    'uri' => '/res/5c2c1ac0/rsrc/image/icons_2x/flag.png',
+    'disk' => '/rsrc/image/icons_2x/flag.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/fork.png' =>
+  array(
+    'hash' => '9f628a9832d2260a4b2884ceb0c48d3e',
+    'uri' => '/res/9f628a98/rsrc/image/icons_2x/fork.png',
+    'disk' => '/rsrc/image/icons_2x/fork.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/image.png' =>
+  array(
+    'hash' => 'bb334d4897190f19f234c301e830e48e',
+    'uri' => '/res/bb334d48/rsrc/image/icons_2x/image.png',
+    'disk' => '/rsrc/image/icons_2x/image.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/like.png' =>
+  array(
+    'hash' => '8c5ba8bfa40b15fabfac090d21b32e51',
+    'uri' => '/res/8c5ba8bf/rsrc/image/icons_2x/like.png',
+    'disk' => '/rsrc/image/icons_2x/like.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/link.png' =>
+  array(
+    'hash' => '7d78030db1c146fe8d49c4805f663f91',
+    'uri' => '/res/7d78030d/rsrc/image/icons_2x/link.png',
+    'disk' => '/rsrc/image/icons_2x/link.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/lock_closed.png' =>
+  array(
+    'hash' => '2c736d1bb084793d6fc9db9a203690c6',
+    'uri' => '/res/2c736d1b/rsrc/image/icons_2x/lock_closed.png',
+    'disk' => '/rsrc/image/icons_2x/lock_closed.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/love.png' =>
+  array(
+    'hash' => 'f683cb77a326bc5749e94c435d653f65',
+    'uri' => '/res/f683cb77/rsrc/image/icons_2x/love.png',
+    'disk' => '/rsrc/image/icons_2x/love.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/merge.png' =>
+  array(
+    'hash' => 'fda403ac654a46292f2fe31864a22348',
+    'uri' => '/res/fda403ac/rsrc/image/icons_2x/merge.png',
+    'disk' => '/rsrc/image/icons_2x/merge.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/message.png' =>
+  array(
+    'hash' => '850ce3e022a10166361be97286d009bd',
+    'uri' => '/res/850ce3e0/rsrc/image/icons_2x/message.png',
+    'disk' => '/rsrc/image/icons_2x/message.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/move.png' =>
+  array(
+    'hash' => 'bec10aedfc259d92922a58e75956fa78',
+    'uri' => '/res/bec10aed/rsrc/image/icons_2x/move.png',
+    'disk' => '/rsrc/image/icons_2x/move.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/new.png' =>
+  array(
+    'hash' => '5082438527561bae4730a3e0a20bf7e9',
+    'uri' => '/res/50824385/rsrc/image/icons_2x/new.png',
+    'disk' => '/rsrc/image/icons_2x/new.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/perflab.png' =>
+  array(
+    'hash' => 'fa890c470885c4932f629f1d3718f276',
+    'uri' => '/res/fa890c47/rsrc/image/icons_2x/perflab.png',
+    'disk' => '/rsrc/image/icons_2x/perflab.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/preview.png' =>
+  array(
+    'hash' => '400407c4be870cebf84094d838f0f3ac',
+    'uri' => '/res/400407c4/rsrc/image/icons_2x/preview.png',
+    'disk' => '/rsrc/image/icons_2x/preview.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/refresh.png' =>
+  array(
+    'hash' => '38237a42008fdc54b7dd527b7fb327e5',
+    'uri' => '/res/38237a42/rsrc/image/icons_2x/refresh.png',
+    'disk' => '/rsrc/image/icons_2x/refresh.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/remove.png' =>
+  array(
+    'hash' => '77202fe299df75db88e17af97df3d26e',
+    'uri' => '/res/77202fe2/rsrc/image/icons_2x/remove.png',
+    'disk' => '/rsrc/image/icons_2x/remove.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/search.png' =>
+  array(
+    'hash' => '514864e209b3398fe532013304f8685e',
+    'uri' => '/res/514864e2/rsrc/image/icons_2x/search.png',
+    'disk' => '/rsrc/image/icons_2x/search.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/subscribe-add.png' =>
+  array(
+    'hash' => 'd3f0f8c82fa593722b43582407f2213b',
+    'uri' => '/res/d3f0f8c8/rsrc/image/icons_2x/subscribe-add.png',
+    'disk' => '/rsrc/image/icons_2x/subscribe-add.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/subscribe-auto.png' =>
+  array(
+    'hash' => 'b246f532caddbec3e57aa694f35b04fa',
+    'uri' => '/res/b246f532/rsrc/image/icons_2x/subscribe-auto.png',
+    'disk' => '/rsrc/image/icons_2x/subscribe-auto.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/subscribe-delete.png' =>
+  array(
+    'hash' => '1c930cb15b68f17abf6cfce0fbdcb57e',
+    'uri' => '/res/1c930cb1/rsrc/image/icons_2x/subscribe-delete.png',
+    'disk' => '/rsrc/image/icons_2x/subscribe-delete.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/tag.png' =>
+  array(
+    'hash' => '69ae80ff1cef4666fc719fb9512e4ea8',
+    'uri' => '/res/69ae80ff/rsrc/image/icons_2x/tag.png',
+    'disk' => '/rsrc/image/icons_2x/tag.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/transcript.png' =>
+  array(
+    'hash' => '82f20511ecff28b110be5c04034297b3',
+    'uri' => '/res/82f20511/rsrc/image/icons_2x/transcript.png',
+    'disk' => '/rsrc/image/icons_2x/transcript.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/undo.png' =>
+  array(
+    'hash' => '0cd9563fb18a89c48b5c0d1ff80639f4',
+    'uri' => '/res/0cd9563f/rsrc/image/icons_2x/undo.png',
+    'disk' => '/rsrc/image/icons_2x/undo.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/unlock.png' =>
+  array(
+    'hash' => '6e757189c070d170a292342faafaa477',
+    'uri' => '/res/6e757189/rsrc/image/icons_2x/unlock.png',
+    'disk' => '/rsrc/image/icons_2x/unlock.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/unmerge.png' =>
+  array(
+    'hash' => '4e38336909ec38b69034d7228fb6012e',
+    'uri' => '/res/4e383369/rsrc/image/icons_2x/unmerge.png',
+    'disk' => '/rsrc/image/icons_2x/unmerge.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/unpublish.png' =>
+  array(
+    'hash' => '20e58c3aa7b5e43c1a73b081b4c4cdb9',
+    'uri' => '/res/20e58c3a/rsrc/image/icons_2x/unpublish.png',
+    'disk' => '/rsrc/image/icons_2x/unpublish.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/warning.png' =>
+  array(
+    'hash' => '835819f8a37eef71d371fa5332e2b3cb',
+    'uri' => '/res/835819f8/rsrc/image/icons_2x/warning.png',
+    'disk' => '/rsrc/image/icons_2x/warning.png',
+    'type' => 'png',
+  ),
+  '/rsrc/image/icons_2x/world.png' =>
+  array(
+    'hash' => '64528843a33c04c49401d23d0cb420ec',
+    'uri' => '/res/64528843/rsrc/image/icons_2x/world.png',
+    'disk' => '/rsrc/image/icons_2x/world.png',
+    'type' => 'png',
+  ),
   '/rsrc/image/lines.png' =>
   array(
     'hash' => '0eb5778b34dd4fcee53b9924b88e0828',
@@ -14399,7 +15057,7 @@ celerity_register_resource_map(array(
   ),
   'phabricator-action-list-view-css' =>
   array(
-    'uri' => '/res/9e7d54e8/rsrc/css/layout/phabricator-action-list-view.css',
+    'uri' => '/res/05a6dbac/rsrc/css/layout/phabricator-action-list-view.css',
     'type' => 'css',
     'requires' =>
     array(
