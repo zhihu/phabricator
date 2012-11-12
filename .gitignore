@@ -9,6 +9,8 @@
 *#
 *~
 *.swp
+.*.un~
+*.orig
 
 # NetBeans project files
 /nbproject/
