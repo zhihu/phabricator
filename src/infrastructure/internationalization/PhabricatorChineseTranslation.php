@@ -37,9 +37,9 @@ final class PhabricatorChineseTranslation
 
       '%d line(s)' => array('%d line', '%d lines'),
 
-      'added %d commit(s): %s' => '添加了commit：%2$s',
+      'added %d commit(s): %s' => '添加了 commit：%2$s',
 
-      'removed %d commit(s): %s' => '移除了commit： %2$s',
+      'removed %d commit(s): %s' => '移除了 commit：%2$s',
 
       'changed %d commit(s), added %d: %s; removed %d: %s' =>
         'changed commits, added: %3$s; removed: %5$s',
@@ -49,7 +49,7 @@ final class PhabricatorChineseTranslation
         'ATTACHED COMMITS',
       ),
 
-      'added %d dependencie(s): %s' => '添加了子任务： %2$s',
+      'added %d dependencie(s): %s' => '添加了子任务：%2$s',
 
       'added %d dependent task(s): %s' => array(
         'added dependent task: %2$s',
@@ -81,9 +81,9 @@ final class PhabricatorChineseTranslation
         'DIFFERENTIAL REVISIONS',
       ),
 
-      'added %d revision(s): %s' => '添加了revision： %2$s',
+      'added %d revision(s): %s' => '添加了 revision：%2$s',
 
-      'removed %d revision(s): %s' => '移除了revision： %2$s',
+      'removed %d revision(s): %s' => '移除了 revision：%2$s',
 
       'changed %d revision(s), added %d: %s; removed %d: %s' =>
         'changed revisions, added %3$s; removed %5$s',
@@ -163,7 +163,7 @@ final class PhabricatorChineseTranslation
       'REPLY HANDLER ACTIONS' => '回复操作',
 
       'Retitled' => '更改了标题',
-      'changed the title from %s to %s' => '标题从%s改成了%s',
+      'changed the title from %s to %s' => '标题从 %s 改成了 %s',
       'Edited' => '编辑了',
       'updated the task description' => '更新了任务描述',
       'Commented On' => '评论了',
@@ -173,24 +173,24 @@ final class PhabricatorChineseTranslation
       'created this task' => '创建了这个任务',
       'triaged this task as "%s" priority' => '调整了这个任务的优先级为：%s',
       'added project %s' => '把任务添加进了项目：%s',
-      'added %s to CC' => '把 %s 加进了CC',
-      'added CCs: %s' => '把他们加进了CC：%s',
+      'added %s to CC' => '把 %s 加进了 CC',
+      'added CCs: %s' => '把他们加进了 CC：%s',
       'Closed' => '已关闭',
       'closed this task as "%s"' => '关闭了这个任务：%s',
       'assigned this task to %s' => '把这个任务分配给了：%s',
       'added %d dependent task(s): %s' => '添加了父任务：%2$s',
-      'lowered the priority of this task from "%s" to "%s"' => '把优先级从%s降低为了%s',
+      'lowered the priority of this task from "%s" to "%s"' => '把优先级从 %s 降低为了 %s',
       'placed this task up for grabs' => '把这个任务抛了出来求认领',
       'added projects: %s' => '把任务添加进了项目：%s',
       'reopened this task' => '重开了这个任务',
-      'removed %s from CC' => '把从CC中移除了%s',
-      'changed CCs, added: %s;  removed: %s' => '更新了CC列表，添加了：%s，移除了：%s',
+      'removed %s from CC' => '从 CC 中移除了 %s',
+      'changed CCs, added: %s;  removed: %s' => '更新了 CC 列表，添加了：%s，移除了：%s',
       'removed project %s' => '移除了项目：%s',
       'removed projects: %s' => '移除了项目：%s',
-      'reassigned this task from %s to %s' => '把任务从%s转给了%s',
-      'attached %s: %s' => '上传了%s：%s',
+      'reassigned this task from %s to %s' => '把任务从 %s 转给了 %s',
+      'attached %s: %s' => '上传了 %s：%s',
       'file(s)' => '文件',
-      'raised the priority of this task from "%s" to "%s"' => '将任务到优先级从：%s提高为：%s',
+      'raised the priority of this task from "%s" to "%s"' => '将任务到优先级从 %s 提高为 %s',
 
       'Status' => '状态',
       'Assigned To' => '负责人',
@@ -211,9 +211,9 @@ final class PhabricatorChineseTranslation
       'Edit Dependencies' => '管理子任务',
       'Edit Differential Revisions' => '编辑 Differential Revisions',
 
-      '%s requested code review of "%s".' => '%s发起了一个riview请求："%s"',
-      '%s updated the revision "%s".' => '%s更新了revision："%s"',
-      'Remove %s Flag' => '移除标记(%s)',
+      '%s requested code review of "%s".' => '%s 发起了一个 review 请求："%s"',
+      '%s updated the revision "%s".' => '%s 更新了 revision："%s"',
+      'Remove %s Flag' => '移除标记（%s）',
     );
   }
 
