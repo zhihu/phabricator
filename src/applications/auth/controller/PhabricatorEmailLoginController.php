@@ -65,6 +65,9 @@ final class PhabricatorEmailLoginController
 
   {$uri}
 
+
+如果不是在知乎办公室访问Phabricator，需要经过一个验证，用户名：ph，密码：haidaochuan
+
 EOBODY;
           } else {
             $body = <<<EOBODY

@@ -531,6 +531,7 @@ final class PhabricatorUser extends PhabricatorUserDAO implements PhutilPerson {
   {$uri}
 
 点击前往Phabricator
+
   {$base_uri}
 
 EOBODY;
