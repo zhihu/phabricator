@@ -24,16 +24,8 @@ input.inputsubmit {
   padding: 4px 10px;
   cursor: pointer;
   border-radius: 3px;
-}
-
-button {
-  *padding: 2px 4px 1px 8px;
-  _padding-right: 6px;
-}
-
-a.button,
-a.button:visited {
-  *padding: 3px 8px 4px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
 }
 
 /* Buttons with images (full size only) */
@@ -43,12 +35,6 @@ a.icon:visited {
   padding-left: 0;
   position: relative;
   text-indent: 29px;
-}
-
-/* Fix for IE7 within table cells ? */
-td button {
-  *width: 100%;
-  *padding-right: 8px;
 }
 
 button:active,
