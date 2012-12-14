@@ -372,7 +372,7 @@ final class ManiphestTransactionDetailView extends ManiphestView {
           }
         } else {
           $verb = pht('Changed CC');
-          $desc = pht('changed CCs, added: %s;  removed: %s', $this->renderHandles($removed), $this->renderHandles($added));
+          $desc = pht('changed CCs, added: %s; removed: %s', $this->renderHandles($added), $this->renderHandles($removed));
         }
         break;
       case ManiphestTransactionType::TYPE_EDGE:
