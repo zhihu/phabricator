@@ -17,14 +17,14 @@ ROOT=`pwd`/.. # You can hard-code the path here instead.
 if [ -e $ROOT/diviner ]
 then
   cd $ROOT/diviner
-  git pull
+  git pull origin master
 fi
 
 cd $ROOT/libphutil
-git pull
+git pull origin master
 
 cd $ROOT/arcanist
-git pull
+git pull origin master
 
 cd $ROOT/phabricator
 git checkout -- .
