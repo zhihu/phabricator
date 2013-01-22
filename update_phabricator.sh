@@ -28,7 +28,7 @@ git pull
 
 cd $ROOT/phabricator
 git checkout -- .
-git pull
+git pull origin master
 git submodule update --init
 
 
