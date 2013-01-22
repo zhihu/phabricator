@@ -11,6 +11,7 @@
 *.swp
 .*.un~
 *.orig
+tags
 
 # NetBeans project files
 /nbproject/

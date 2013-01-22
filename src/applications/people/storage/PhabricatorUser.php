@@ -519,20 +519,23 @@ final class PhabricatorUser extends PhabricatorUserDAO implements PhutilPerson {
     $base_uri = PhabricatorEnv::getProductionURI('/');
 
     $uri = $this->getEmailLoginURI();
+    $http_auth = PhabricatorEnv::getEnvConfig('http.auth');
     $body = <<<EOBODY
-欢迎使用Phabricator!
+欢迎使用 Phabricator！
 
-{$admin_username} ({$admin_realname}) 为你建了一个账号。
+{$admin_username} ({$admin_realname}) 为你创建了一个账号。
 
   用户名: {$user_username}
 
-点击下面的连接设置密码。
+请点击下面的链接设置密码：
 
   {$uri}
 
-点击前往Phabricator
+设置完成后，你可以通过下面的地址登录 Phabricator：
 
   {$base_uri}
+
+{$http_auth}
 
 EOBODY;
 
