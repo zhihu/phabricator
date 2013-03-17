@@ -365,7 +365,7 @@ return array(
 
   // Prefix prepended to mail sent by Maniphest. You can change this to
   // distinguish between testing and development installs, for example.
-  'metamta.maniphest.subject-prefix' => '', // previously '[Maniphest]', reduced to save space @tlxue
+  'metamta.maniphest.subject-prefix' => '[Maniphest]',
 
   // See 'metamta.maniphest.reply-handler-domain'. This does the same thing,
   // but allows email replies via Differential.
@@ -376,7 +376,7 @@ return array(
   'metamta.differential.reply-handler' => 'DifferentialReplyHandler',
 
   // Prefix prepended to mail sent by Differential.
-  'metamta.differential.subject-prefix' => '', // previously '[Differential]', reduced to save space @tlxue
+  'metamta.differential.subject-prefix' => '[Differential]',
 
   // Set this to true if you want patches to be attached to mail from
   // Differential. This won't work if you are using SendGrid as your mail
