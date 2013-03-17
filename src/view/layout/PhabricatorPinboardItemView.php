@@ -5,6 +5,7 @@ final class PhabricatorPinboardItemView extends AphrontView {
   private $imageURI;
   private $uri;
   private $header;
+  private $iconBlock = array();
 
   private $imageWidth;
   private $imageHeight;
@@ -30,25 +31,29 @@ final class PhabricatorPinboardItemView extends AphrontView {
     return $this;
   }
 
+  public function addIconCount($icon, $count) {
+    $this->iconBlock[] = array($icon, $count);
+    return $this;
+  }
+
   public function render() {
     $header = null;
     if ($this->header) {
-      $header = hsprintf('<a href="%s">%s</a>', $this->uri, $this->header);
-      $header = phutil_render_tag(
+      $header = phutil_tag(
         'div',
         array(
           'class' => 'phabricator-pinboard-item-header',
         ),
-        $header);
+        phutil_tag('a', array('href' => $this->uri), $this->header));
     }
 
-    $image = phutil_render_tag(
+    $image = phutil_tag(
       'a',
       array(
         'href' => $this->uri,
         'class' => 'phabricator-pinboard-item-image-link',
       ),
-      phutil_render_tag(
+      phutil_tag(
         'img',
         array(
           'src'     => $this->imageURI,
@@ -56,9 +61,36 @@ final class PhabricatorPinboardItemView extends AphrontView {
           'height'  => $this->imageHeight,
         )));
 
+    $icons = array();
+    if ($this->iconBlock) {
+      $icon_list = array();
+      foreach ($this->iconBlock as $block) {
+        $icon = phutil_tag(
+          'span',
+          array(
+            'class' =>
+              'phabricator-pinboard-icon sprite-icon action-'.$block[0].'-grey',
+          ),
+          '');
+        $count = phutil_tag('span', array(), $block[1]);
+        $icon_list[] = phutil_tag(
+          'span',
+          array(
+            'class' => 'phabricator-pinboard-item-count',
+          ),
+          array($icon, $count));
+      }
+      $icons = phutil_tag(
+        'div',
+        array(
+          'class' => 'phabricator-pinboard-icons',
+        ),
+        $icon_list);
+    }
+
     $content = $this->renderChildren();
     if ($content) {
-      $content = phutil_render_tag(
+      $content = phutil_tag(
         'div',
         array(
           'class' => 'phabricator-pinboard-item-content',
@@ -66,14 +98,17 @@ final class PhabricatorPinboardItemView extends AphrontView {
         $content);
     }
 
-    return phutil_render_tag(
+    return phutil_tag(
       'div',
       array(
         'class' => 'phabricator-pinboard-item-view',
       ),
-      $header.
-      $image.
-      $content);
+      array(
+        $header,
+        $image,
+        $icons,
+        $content,
+      ));
   }
 
 }

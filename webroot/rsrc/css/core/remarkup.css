@@ -49,6 +49,12 @@
   white-space: pre-wrap;
 }
 
+/* NOTE: You can currently produce this with [[link | `name`]]. Restore the
+   link color. */
+.phabricator-remarkup a tt {
+  color: #18559d;
+}
+
 .phabricator-remarkup ul {
   list-style: disc;
   margin: 1em 0 1em 3em;
@@ -311,4 +317,26 @@
 
 .remarkup-assist-right {
   float: right;
+}
+
+.phabricator-image-macro-hero {
+  margin: auto;
+  max-width: 95%;
+}
+
+/* phabricator-remarkup-dark assumes a dark backround with light text,
+   so here are custom rules to override remarkup defaults. */
+
+div.phabricator-remarkup-dark blockquote {
+  color: #999;
+}
+
+div.phabricator-remarkup-dark tt {
+  color: #EEE;
+  background: #444;
+}
+
+div.phabricator-remarkup-dark .remarkup-note,
+div.phabricator-remarkup-dark table {
+  color: #000;
 }

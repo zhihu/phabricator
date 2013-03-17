@@ -1,41 +1,66 @@
 <?php
 
-abstract class AphrontView {
+abstract class AphrontView extends Phobject
+  implements PhutilSafeHTMLProducerInterface {
 
+  protected $user;
   protected $children = array();
 
+  public function setUser(PhabricatorUser $user) {
+    $this->user = $user;
+    return $this;
+  }
+
+  protected function getUser() {
+    return $this->user;
+  }
+
+  protected function canAppendChild() {
+    return true;
+  }
+
   final public function appendChild($child) {
+    if (!$this->canAppendChild()) {
+      $class = get_class($this);
+      throw new Exception(
+        pht("View '%s' does not support children.", $class));
+    }
     $this->children[] = $child;
     return $this;
   }
 
   final protected function renderChildren() {
-    $out = array();
-    foreach ($this->children as $child) {
-      $out[] = $this->renderSingleView($child);
-    }
-    return implode('', $out);
+    return $this->children;
   }
 
+  /**
+   * @deprecated
+   */
   final protected function renderSingleView($child) {
-    if ($child instanceof AphrontView) {
-      return $child->render();
-    } else if (is_array($child)) {
-      $out = array();
-      foreach ($child as $element) {
-        $out[] = $this->renderSingleView($element);
+    phutil_deprecated(
+      'AphrontView->renderSingleView()',
+      "This method no longer does anything; it can be removed and replaced ".
+      "with its arguments.");
+    return $child;
+  }
+
+  final protected function isEmptyContent($content) {
+    if (is_array($content)) {
+      foreach ($content as $element) {
+        if (!$this->isEmptyContent($element)) {
+          return false;
+        }
       }
-      return implode('', $out);
+      return true;
     } else {
-      return $child;
+      return !strlen((string)$content);
     }
   }
 
   abstract public function render();
 
-  public function __set($name, $value) {
-    phlog('Wrote to undeclared property '.get_class($this).'::$'.$name.'.');
-    $this->$name = $value;
+  public function producePhutilSafeHTML() {
+    return $this->render();
   }
 
 }

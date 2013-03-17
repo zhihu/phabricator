@@ -3,14 +3,14 @@
 final class PhabricatorApplicationFlags extends PhabricatorApplication {
 
   public function getShortDescription() {
-    return 'Reminders';
+    return pht('Reminders');
   }
 
   public function getBaseURI() {
     return '/flag/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'flags';
   }
 
@@ -28,13 +28,12 @@ final class PhabricatorApplicationFlags extends PhabricatorApplication {
     $status = array();
 
     $flags = id(new PhabricatorFlagQuery())
+      ->setViewer($user)
       ->withOwnerPHIDs(array($user->getPHID()))
       ->execute();
 
     $count = count($flags);
-    $type = $count
-      ? PhabricatorApplicationStatusView::TYPE_INFO
-      : PhabricatorApplicationStatusView::TYPE_EMPTY;
+    $type = PhabricatorApplicationStatusView::TYPE_NEEDS_ATTENTION;
     $status[] = id(new PhabricatorApplicationStatusView())
       ->setType($type)
       ->setText(pht('%d Flagged Object(s)', $count))

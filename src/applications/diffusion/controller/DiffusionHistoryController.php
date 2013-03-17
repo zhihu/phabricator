@@ -39,13 +39,6 @@ final class DiffusionHistoryController extends DiffusionController {
 
     $content = array();
 
-    $content[] = $this->buildCrumbs(
-      array(
-        'branch' => true,
-        'path'   => true,
-        'view'   => 'history',
-      ));
-
     if ($request->getBool('copies')) {
       $button_title = 'Hide Copies/Branches';
       $copies_new = null;
@@ -54,15 +47,16 @@ final class DiffusionHistoryController extends DiffusionController {
       $copies_new = true;
     }
 
-    $button = phutil_render_tag(
+    $button = phutil_tag(
       'a',
       array(
         'class'   => 'button small grey',
         'href'    => $request->getRequestURI()->alter('copies', $copies_new),
       ),
-      phutil_escape_html($button_title));
+      $button_title);
 
     $history_table = new DiffusionHistoryTableView();
+    $history_table->setUser($request->getUser());
     $history_table->setDiffusionRequest($drequest);
     $history_table->setHistory($history);
     $history_table->loadRevisions();
@@ -81,6 +75,7 @@ final class DiffusionHistoryController extends DiffusionController {
     $history_panel->addButton($button);
     $history_panel->appendChild($history_table);
     $history_panel->appendChild($pager);
+    $history_panel->setNoBackground();
 
     $content[] = $history_panel;
 
@@ -89,8 +84,15 @@ final class DiffusionHistoryController extends DiffusionController {
 
     $nav = $this->buildSideNav('history', false);
     $nav->appendChild($content);
+    $crumbs = $this->buildCrumbs(
+      array(
+        'branch' => true,
+        'path'   => true,
+        'view'   => 'history',
+      ));
+    $nav->setCrumbs($crumbs);
 
-    return $this->buildStandardPageResponse(
+    return $this->buildApplicationPage(
       $nav,
       array(
         'title' => 'history',

@@ -155,6 +155,26 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
         'type'    => 'db',
         'name'    => 'xhprof',
       ),
+      'db.pholio' => array(
+        'type'    => 'db',
+        'name'    => 'pholio',
+      ),
+      'db.conpherence' => array(
+        'type'    => 'db',
+        'name'    => 'conpherence',
+      ),
+      'db.config' => array(
+        'type'    => 'db',
+        'name'    => 'config',
+      ),
+      'db.token' => array(
+        'type'    => 'db',
+        'name'    => 'token',
+      ),
+      'db.releeph' => array(
+        'type'    => 'db',
+        'name'    => 'releeph',
+      ),
       '0000.legacy.sql' => array(
         'type'    => 'sql',
         'name'    => $this->getPatchPath('0000.legacy.sql'),
@@ -1027,6 +1047,131 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
       'repository-lint.sql' => array(
         'type'    => 'sql',
         'name'    => $this->getPatchPath('repository-lint.sql'),
+      ),
+      'liskcounters-task.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('liskcounters-task.sql'),
+      ),
+      'pholio.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('pholio.sql'),
+      ),
+      'owners-exclude.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('owners-exclude.sql'),
+      ),
+      '20121209.pholioxactions.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20121209.pholioxactions.sql'),
+      ),
+      '20121209.xmacroadd.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20121209.xmacroadd.sql'),
+      ),
+      '20121209.xmacromigrate.php' => array(
+        'type'    => 'php',
+        'name'    => $this->getPatchPath('20121209.xmacromigrate.php'),
+      ),
+      '20121209.xmacromigratekey.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20121209.xmacromigratekey.sql'),
+      ),
+      '20121220.generalcache.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20121220.generalcache.sql'),
+      ),
+      '20121226.config.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20121226.config.sql'),
+      ),
+      '20130101.confxaction.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130101.confxaction.sql'),
+      ),
+      '20130102.metamtareceivedmailmessageidhash.sql' => array(
+        'type'    => 'sql',
+        'name'    =>
+          $this->getPatchPath('20130102.metamtareceivedmailmessageidhash.sql'),
+      ),
+      '20130103.filemetadata.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130103.filemetadata.sql'),
+      ),
+      '20130111.conpherence.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130111.conpherence.sql'),
+      ),
+      '20130127.altheraldtranscript.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130127.altheraldtranscript.sql'),
+      ),
+      '20130201.revisionunsubscribed.php' => array(
+        'type'    => 'php',
+        'name'    => $this->getPatchPath('20130201.revisionunsubscribed.php'),
+      ),
+      '20130201.revisionunsubscribed.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130201.revisionunsubscribed.sql'),
+      ),
+      '20130131.conpherencepics.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130131.conpherencepics.sql'),
+      ),
+      '20130214.chatlogchannel.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130214.chatlogchannel.sql'),
+      ),
+      '20130214.chatlogchannelid.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130214.chatlogchannelid.sql'),
+      ),
+      '20130214.token.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130214.token.sql'),
+      ),
+      '20130215.phabricatorfileaddttl.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130215.phabricatorfileaddttl.sql'),
+      ),
+      '20130217.cachettl.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130217.cachettl.sql'),
+      ),
+      '20130218.updatechannelid.php' => array(
+        'type'    => 'php',
+        'name'    => $this->getPatchPath('20130218.updatechannelid.php'),
+      ),
+      '20130218.longdaemon.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130218.longdaemon.sql'),
+      ),
+      '20130219.commitsummary.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130219.commitsummary.sql'),
+      ),
+      '20130219.commitsummarymig.php' => array(
+        'type'    => 'php',
+        'name'    => $this->getPatchPath('20130219.commitsummarymig.php'),
+      ),
+      '20130222.dropchannel.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130222.dropchannel.sql'),
+      ),
+      '20130226.commitkey.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130226.commitkey.sql'),
+      ),
+      '20131302.maniphestvalue.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20131302.maniphestvalue.sql'),
+      ),
+      '20130304.lintauthor.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130304.lintauthor.sql'),
+      ),
+      'releeph.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('releeph.sql'),
       ),
     );
   }

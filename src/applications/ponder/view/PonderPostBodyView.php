@@ -7,7 +7,6 @@ final class PonderPostBodyView extends AphrontView {
   private $handles;
   private $preview;
   private $anchorName;
-  private $user;
   private $action;
 
   public function setQuestion($question) {
@@ -36,11 +35,6 @@ final class PonderPostBodyView extends AphrontView {
     return $this;
   }
 
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
-
   public function render() {
 
     if (!$this->user) {
@@ -62,13 +56,15 @@ final class PonderPostBodyView extends AphrontView {
       $target->getMarkupField(),
       $this->user);
 
-    $content =
-      '<div class="phabricator-remarkup">'.
-        $content.
-      '</div>';
+    $content = phutil_tag(
+      'div',
+      array(
+        'class' => 'phabricator-remarkup',
+      ),
+      $content);
 
     $author = $this->handles[$target->getAuthorPHID()];
-    $actions = array($author->renderLink().' '.$this->action);
+    $actions = array(hsprintf('%s %s', $author->renderLink(), $this->action));
     $author_link = $author->renderLink();
     $xaction_view = id(new PhabricatorTransactionView())
       ->setUser($user)
@@ -78,8 +74,7 @@ final class PonderPostBodyView extends AphrontView {
 
     if ($this->target instanceof PonderAnswer) {
       $xaction_view->addClass("ponder-answer");
-    }
-    else {
+    } else {
       $xaction_view->addClass("ponder-question");
     }
 
@@ -95,10 +90,12 @@ final class PonderPostBodyView extends AphrontView {
     }
 
     $xaction_view->appendChild(
-      '<div class="ponder-post-core">'.
-      $content.
-      '</div>'
-    );
+      phutil_tag(
+        'div',
+        array(
+          'class' => 'ponder-post-core',
+        ),
+        $content));
 
     $outerview = $xaction_view;
     if (!$this->preview) {
@@ -110,8 +107,7 @@ final class PonderPostBodyView extends AphrontView {
 
       if ($this->target instanceof PonderAnswer) {
         $outerview->setURI('/ponder/answer/vote/');
-      }
-      else {
+      } else {
         $outerview->setURI('/ponder/question/vote/');
       }
 
@@ -120,15 +116,5 @@ final class PonderPostBodyView extends AphrontView {
 
     return $outerview->render();
   }
-
-  private function renderHandleList(array $phids) {
-    $result = array();
-    foreach ($phids as $phid) {
-      $result[] = $this->handles[$phid]->renderLink();
-    }
-    return implode(', ', $result);
-  }
-
-
 
 }

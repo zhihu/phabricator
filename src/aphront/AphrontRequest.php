@@ -9,7 +9,7 @@
 final class AphrontRequest {
 
   // NOTE: These magic request-type parameters are automatically included in
-  // certain requests (e.g., by phabricator_render_form(), JX.Request,
+  // certain requests (e.g., by phabricator_form(), JX.Request,
   // JX.Workflow, and ConduitClient) and help us figure out what sort of
   // response the client expects.
 
@@ -17,6 +17,8 @@ final class AphrontRequest {
   const TYPE_FORM = '__form__';
   const TYPE_CONDUIT = '__conduit__';
   const TYPE_WORKFLOW = '__wflow__';
+  const TYPE_CONTINUE = '__continue__';
+  const TYPE_PREVIEW = '__preview__';
 
   private $host;
   private $path;
@@ -161,6 +163,11 @@ final class AphrontRequest {
     return array_key_exists($name, $this->requestData);
   }
 
+  final public function getFileExists($name) {
+    return isset($_FILES[$name]) &&
+           (idx($_FILES[$name], 'error') !== UPLOAD_ERR_NO_FILE);
+  }
+
   final public function isHTTPPost() {
     return ($_SERVER['REQUEST_METHOD'] == 'POST');
   }
@@ -192,15 +199,7 @@ final class AphrontRequest {
     // No token in the request, check the HTTP header which is added for Ajax
     // requests.
     if (empty($token)) {
-
-      // PHP mangles HTTP headers by uppercasing them and replacing hyphens with
-      // underscores, then prepending 'HTTP_'.
-      $php_index = self::getCSRFHeaderName();
-      $php_index = strtoupper($php_index);
-      $php_index = str_replace('-', '_', $php_index);
-      $php_index = 'HTTP_'.$php_index;
-
-      $token = idx($_SERVER, $php_index);
+      $token = self::getHTTPHeader(self::getCSRFHeaderName());
     }
 
     $valid = $this->getUser()->validateCSRFToken($token);
@@ -219,6 +218,26 @@ final class AphrontRequest {
         $more_info = "(This was an Ajax request, {$token_info}.)";
       } else {
         $more_info = "(This was a web request, {$token_info}.)";
+      }
+
+      // Give a more detailed explanation of how to avoid the exception
+      // in developer mode.
+      if (PhabricatorEnv::getEnvConfig('phabricator.developer-mode')) {
+        $more_info = $more_info .
+          "To avoid this error, use phabricator_form() to construct forms. " .
+          "If you are already using phabricator_form(), make sure the form " .
+          "'action' uses a relative URI (i.e., begins with a '/'). Forms " .
+          "using absolute URIs do not include CSRF tokens, to prevent " .
+          "leaking tokens to external sites.\n\n" .
+          "If this page performs writes which do not require CSRF " .
+          "protection (usually, filling caches or logging), you can use " .
+          "AphrontWriteGuard::beginScopedUnguardedWrites() to temporarily " .
+          "bypass CSRF protection while writing. You should use this only " .
+          "for writes which can not be protected with normal CSRF " .
+          "mechanisms.\n\n" .
+          "Some UI elements (like PhabricatorActionListView) also have " .
+          "methods which will allow you to render links as forms (like " .
+          "setRenderAsForm(true)).";
       }
 
       // This should only be able to happen if you load a form, pull your
@@ -260,28 +279,35 @@ final class AphrontRequest {
 
   final public function setCookie($name, $value, $expire = null) {
 
-    // Ensure cookies are only set on the configured domain.
+    $is_secure = false;
 
+    // If a base URI has been configured, ensure cookies are only set on that
+    // domain. Also, use the URI protocol to control SSL-only cookies.
     $base_uri = PhabricatorEnv::getEnvConfig('phabricator.base-uri');
-    $base_uri = new PhutilURI($base_uri);
+    if ($base_uri) {
+      $base_uri = new PhutilURI($base_uri);
 
-    $base_domain = $base_uri->getDomain();
-    $base_protocol = $base_uri->getProtocol();
+      $base_domain = $base_uri->getDomain();
+      $base_protocol = $base_uri->getProtocol();
 
-    $host = $this->getHost();
+      $host = $this->getHost();
 
-    if ($base_domain != $host) {
-      throw new Exception(
-        "This install of Phabricator is configured as '{$base_domain}' but ".
-        "you are accessing it via '{$host}'. Access Phabricator via ".
-        "the primary configured domain.");
+      if ($base_domain != $host) {
+        throw new Exception(
+          "This install of Phabricator is configured as '{$base_domain}' but ".
+          "you are accessing it via '{$host}'. Access Phabricator via ".
+          "the primary configured domain.");
+      }
+
+      $is_secure = ($base_protocol == 'https');
+    } else {
+      $base_uri = new PhutilURI(PhabricatorEnv::getRequestBaseURI());
+      $base_domain = $base_uri->getDomain();
     }
 
     if ($expire === null) {
       $expire = time() + (60 * 60 * 24 * 365 * 5);
     }
-
-    $is_secure = ($base_protocol == 'https');
 
     setcookie(
       $name,
@@ -327,6 +353,83 @@ final class AphrontRequest {
       return false;
     }
     return true;
+  }
+
+  public function isContinueRequest() {
+    return $this->isFormPost() && $this->getStr('__continue__');
+  }
+
+  public function isPreviewRequest() {
+    return $this->isFormPost() && $this->getStr('__preview__');
+  }
+
+  /**
+   * Get application request parameters in a flattened form suitable for
+   * inclusion in an HTTP request, excluding parameters with special meanings.
+   * This is primarily useful if you want to ask the user for more input and
+   * then resubmit their request.
+   *
+   * @return  dict<string, string>  Original request parameters.
+   */
+  public function getPassthroughRequestParameters() {
+    return self::flattenData($this->getPassthroughRequestData());
+  }
+
+  /**
+   * Get request data other than "magic" parameters.
+   *
+   * @return dict<string, wild> Request data, with magic filtered out.
+   */
+  public function getPassthroughRequestData() {
+    $data = $this->getRequestData();
+
+    // Remove magic parameters like __dialog__ and __ajax__.
+    foreach ($data as $key => $value) {
+      if (strncmp($key, '__', 2)) {
+        unset($data[$key]);
+      }
+    }
+
+    return $data;
+  }
+
+
+  /**
+   * Flatten an array of key-value pairs (possibly including arrays as values)
+   * into a list of key-value pairs suitable for submitting via HTTP request
+   * (with arrays flattened).
+   *
+   * @param   dict<string, wild>    Data to flatten.
+   * @return  dict<string, string>  Flat data suitable for inclusion in an HTTP
+   *                                request.
+   */
+  public static function flattenData(array $data) {
+    $result = array();
+    foreach ($data as $key => $value) {
+      if (is_array($value)) {
+        foreach (self::flattenData($value) as $fkey => $fvalue) {
+          $fkey = '['.preg_replace('/(?=\[)|$/', ']', $fkey, $limit = 1);
+          $result[$key.$fkey] = $fvalue;
+        }
+      } else {
+        $result[$key] = (string)$value;
+      }
+    }
+
+    ksort($result);
+
+    return $result;
+  }
+
+
+  public static function getHTTPHeader($name, $default = null) {
+    // PHP mangles HTTP headers by uppercasing them and replacing hyphens with
+    // underscores, then prepending 'HTTP_'.
+    $php_index = strtoupper($name);
+    $php_index = str_replace('-', '_', $php_index);
+    $php_index = 'HTTP_'.$php_index;
+
+    return idx($_SERVER, $php_index, $default);
   }
 
 }

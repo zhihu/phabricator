@@ -41,7 +41,7 @@ final class PhabricatorMarkupEngine {
 
   private $objects = array();
   private $viewer;
-  private $version = 1;
+  private $version = 6;
 
 
 /* -(  Markup Pipeline  )---------------------------------------------------- */
@@ -188,10 +188,14 @@ final class PhabricatorMarkupEngine {
     }
 
     if ($use_cache) {
-      $blocks = id(new PhabricatorMarkupCache())->loadAllWhere(
-        'cacheKey IN (%Ls)',
-        array_keys($use_cache));
-      $blocks = mpull($blocks, null, 'getCacheKey');
+      try {
+        $blocks = id(new PhabricatorMarkupCache())->loadAllWhere(
+          'cacheKey IN (%Ls)',
+          array_keys($use_cache));
+        $blocks = mpull($blocks, null, 'getCacheKey');
+      } catch (Exception $ex) {
+        phlog($ex);
+      }
     }
 
     foreach ($objects as $key => $info) {
@@ -220,11 +224,7 @@ final class PhabricatorMarkupEngine {
       if (isset($use_cache[$key])) {
         // This is just filling a cache and always safe, even on a read pathway.
         $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
-          try {
-            $blocks[$key]->save();
-          } catch (AphrontQueryDuplicateKeyException $ex) {
-            // Ignore this, we just raced to write the cache.
-          }
+          $blocks[$key]->replace();
         unset($unguarded);
       }
     }
@@ -355,6 +355,7 @@ final class PhabricatorMarkupEngine {
         'uri.allowed-protocols'),
       'syntax-highlighter.engine' => PhabricatorEnv::getEnvConfig(
         'syntax-highlighter.engine'),
+      'preserve-linebreaks' => true,
     );
   }
 
@@ -362,13 +363,13 @@ final class PhabricatorMarkupEngine {
   /**
    * @task engine
    */
-  private static function newMarkupEngine(array $options) {
+  public static function newMarkupEngine(array $options) {
 
     $options += self::getMarkupEngineDefaultConfiguration();
 
     $engine = new PhutilRemarkupEngine();
 
-    $engine->setConfig('preserve-linebreaks', true);
+    $engine->setConfig('preserve-linebreaks', $options['preserve-linebreaks']);
     $engine->setConfig('pygments.enabled', $options['pygments']);
     $engine->setConfig(
       'uri.allowed-protocols',
@@ -397,30 +398,28 @@ final class PhabricatorMarkupEngine {
     }
 
     $rules[] = new PhutilRemarkupRuleHyperlink();
-    $rules[] = new PhabricatorRemarkupRulePhriction();
-
-    $rules[] = new PhabricatorRemarkupRuleDifferentialHandle();
-    $rules[] = new PhabricatorRemarkupRuleManiphestHandle();
+    $rules[] = new PhrictionRemarkupRule();
 
     $rules[] = new PhabricatorRemarkupRuleEmbedFile();
+    $rules[] = new PhabricatorCountdownRemarkupRule();
 
-    $rules[] = new PhabricatorRemarkupRuleDifferential();
-    $rules[] = new PhabricatorRemarkupRuleDiffusion();
-    $rules[] = new PhabricatorRemarkupRuleManiphest();
-    $rules[] = new PhabricatorRemarkupRulePaste();
-
-    $rules[] = new PhabricatorRemarkupRuleCountdown();
-
-    $rules[] = new PonderRuleQuestion();
+    $applications = PhabricatorApplication::getAllInstalledApplications();
+    foreach ($applications as $application) {
+      foreach ($application->getRemarkupRules() as $rule) {
+        $rules[] = $rule;
+      }
+    }
 
     if ($options['macros']) {
       $rules[] = new PhabricatorRemarkupRuleImageMacro();
+      $rules[] = new PhabricatorRemarkupRuleMeme();
     }
+
+    $rules[] = new DivinerRemarkupRuleSymbol();
 
     $rules[] = new PhabricatorRemarkupRuleMention();
 
     $rules[] = new PhabricatorRemarkupRuleEmoji();
-    $rules[] = new PhutilRemarkupRuleEscapeHTML();
     $rules[] = new PhutilRemarkupRuleBold();
     $rules[] = new PhutilRemarkupRuleItalic();
     $rules[] = new PhutilRemarkupRuleDel();
@@ -446,7 +445,6 @@ final class PhabricatorMarkupEngine {
     foreach ($blocks as $block) {
       if ($block instanceof PhutilRemarkupEngineRemarkupLiteralBlockRule) {
         $literal_rules = array();
-        $literal_rules[] = new PhutilRemarkupRuleEscapeHTML();
         $literal_rules[] = new PhutilRemarkupRuleLinebreaks();
         $block->setMarkupRules($literal_rules);
       } else if (
@@ -464,6 +462,7 @@ final class PhabricatorMarkupEngine {
     $mentions = array();
 
     $engine = self::newDifferentialMarkupEngine();
+    $engine->setConfig('viewer', PhabricatorUser::getOmnipotentUser());
 
     foreach ($content_blocks as $content_block) {
       $engine->markupText($content_block);
@@ -476,6 +475,23 @@ final class PhabricatorMarkupEngine {
     return $mentions;
   }
 
+  public static function extractFilePHIDsFromEmbeddedFiles(
+    array $content_blocks) {
+    $files = array();
+
+    $engine = self::newDifferentialMarkupEngine();
+    $engine->setConfig('viewer', PhabricatorUser::getOmnipotentUser());
+
+    foreach ($content_blocks as $content_block) {
+      $engine->markupText($content_block);
+      $ids = $engine->getTextMetadata(
+        PhabricatorRemarkupRuleEmbedFile::KEY_EMBED_FILE_PHIDS,
+        array());
+      $files += $ids;
+    }
+
+    return $files;
+  }
 
   /**
    * Produce a corpus summary, in a way that shortens the underlying text

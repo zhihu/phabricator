@@ -11,14 +11,22 @@
 final class ConduitCall {
 
   private $method;
-  private $params;
   private $request;
   private $user;
 
   public function __construct($method, array $params) {
     $this->method = $method;
-    $this->params = $params;
     $this->handler = $this->buildMethodHandler($method);
+
+    $invalid_params = array_diff_key(
+      $params,
+      $this->handler->defineParamTypes());
+    if ($invalid_params) {
+      throw new ConduitException(
+        "Method '{$method}' doesn't define these parameters: '" .
+        implode("', '", array_keys($invalid_params)) . "'.");
+    }
+
     $this->request = new ConduitAPIRequest($params);
   }
 
@@ -70,18 +78,34 @@ final class ConduitCall {
       // Discard, we provide a more specific exception below.
     }
     if (!$ok) {
-      throw new Exception(
+      throw new ConduitException(
         "Conduit method '{$method}' does not exist.");
     }
 
     $class_info = new ReflectionClass($method_class);
     if ($class_info->isAbstract()) {
-      throw new Exception(
+      throw new ConduitException(
         "Method '{$method}' is not valid; the implementation is an abstract ".
         "base class.");
     }
 
-    return newv($method_class, array());
+    $method = newv($method_class, array());
+
+    if (!($method instanceof ConduitAPIMethod)) {
+      throw new ConduitException(
+        "Method '{$method_class}' is not valid; the implementation must be ".
+        "a subclass of ConduitAPIMethod.");
+    }
+
+    $application = $method->getApplication();
+    if ($application && !$application->isInstalled()) {
+      $app_name = $application->getName();
+      throw new ConduitException(
+        "Method '{$method_class}' belongs to application '{$app_name}', ".
+        "which is not installed.");
+    }
+
+    return $method;
   }
 
 

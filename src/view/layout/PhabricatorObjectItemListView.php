@@ -5,6 +5,8 @@ final class PhabricatorObjectItemListView extends AphrontView {
   private $header;
   private $items;
   private $pager;
+  private $stackable;
+  private $cards;
   private $noDataString;
 
   public function setHeader($header) {
@@ -27,37 +29,62 @@ final class PhabricatorObjectItemListView extends AphrontView {
     return $this;
   }
 
+  public function setStackable($stackable) {
+    $this->stackable = $stackable;
+    return $this;
+  }
+
+  public function setCards($cards) {
+    $this->cards = $cards;
+    return $this;
+  }
+
   public function render() {
     require_celerity_resource('phabricator-object-item-list-view-css');
 
-    $header = phutil_render_tag(
-      'h1',
-      array(
-        'class' => 'phabricator-object-item-list-header',
-      ),
-      phutil_escape_html($this->header));
+    $classes = array();
+    $header = null;
+    if (strlen($this->header)) {
+      $header = phutil_tag(
+        'h1',
+        array(
+          'class' => 'phabricator-object-item-list-header',
+        ),
+        $this->header);
+    }
 
     if ($this->items) {
-      $items = $this->renderSingleView($this->items);
+      $items = $this->items;
     } else {
       $string = nonempty($this->noDataString, pht('No data.'));
       $items = id(new AphrontErrorView())
         ->setSeverity(AphrontErrorView::SEVERITY_NODATA)
-        ->appendChild(phutil_escape_html($string))
-        ->render();
+        ->appendChild($string);
     }
 
     $pager = null;
     if ($this->pager) {
-      $pager = $this->renderSingleView($this->pager);
+      $pager = $this->pager;
     }
 
-    return phutil_render_tag(
-      'div',
+    $classes[] = 'phabricator-object-item-list-view';
+    if ($this->stackable) {
+      $classes[] = 'phabricator-object-list-stackable';
+    }
+    if ($this->cards) {
+      $classes[] = 'phabricator-object-list-cards';
+    }
+
+    return phutil_tag(
+      'ul',
       array(
-        'class' => 'phabricator-object-item-list-view',
+        'class' => implode(' ', $classes),
       ),
-      $header.$items.$pager);
+      array(
+        $header,
+        $items,
+        $pager,
+      ));
   }
 
 }

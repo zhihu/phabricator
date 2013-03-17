@@ -8,7 +8,8 @@ final class PhabricatorFlagListController extends PhabricatorFlagController {
 
     $nav = new AphrontSideNavFilterView();
     $nav->setBaseURI(new PhutilURI('/flag/view/'));
-    $nav->addFilter('all', 'Flags');
+    $nav->addLabel(pht('Flags'));
+    $nav->addFilter('all', pht('Your Flags'));
     $nav->selectFilter('all', 'all');
 
     $query = new PhabricatorFlagQuery();
@@ -23,15 +24,16 @@ final class PhabricatorFlagListController extends PhabricatorFlagController {
     $view->setUser($user);
 
     $panel = new AphrontPanelView();
-    $panel->setHeader('Flags');
+    $panel->setHeader(pht('Flags'));
     $panel->appendChild($view);
+    $panel->setNoBackground();
 
     $nav->appendChild($panel);
 
     return $this->buildStandardPageResponse(
       $nav,
       array(
-        'title' => 'Flags',
+        'title' => pht('Flags'),
       ));
   }
 

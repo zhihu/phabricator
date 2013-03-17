@@ -9,46 +9,15 @@
 final class PhabricatorGarbageCollectorDaemon extends PhabricatorDaemon {
 
   public function run() {
-
-    // Keep track of when we start and stop the GC so we can emit useful log
-    // messages.
-    $just_ran = false;
-
     do {
-      $run_at   = PhabricatorEnv::getEnvConfig('gcdaemon.run-at');
-      $run_for  = PhabricatorEnv::getEnvConfig('gcdaemon.run-for');
-
-      // Just use the default timezone, we don't need to get fancy and try
-      // to localize this.
-      $start = strtotime($run_at);
-      if ($start === false) {
-        throw new Exception(
-          "Configuration 'gcdaemon.run-at' could not be parsed: '{$run_at}'.");
-      }
-
-      $now = time();
-
-      if ($now < $start || $now > ($start + $run_for)) {
-        if ($just_ran) {
-          $this->log("Stopped garbage collector.");
-          $just_ran = false;
-        }
-        // The configuration says we can't collect garbage right now, so
-        // just sleep until we can.
-        $this->sleep(300);
-        continue;
-      }
-
-      if (!$just_ran) {
-        $this->log("Started garbage collector.");
-        $just_ran = true;
-      }
-
       $n_herald = $this->collectHeraldTranscripts();
       $n_daemon = $this->collectDaemonLogs();
       $n_parse  = $this->collectParseCaches();
       $n_markup = $this->collectMarkupCaches();
       $n_tasks  = $this->collectArchivedTasks();
+      $n_cache_ttl = $this->collectGeneralCacheTTL();
+      $n_cache  = $this->collectGeneralCaches();
+      $n_files  = $this->collectExpiredFiles();
 
       $collected = array(
         'Herald Transcript'           => $n_herald,
@@ -56,6 +25,9 @@ final class PhabricatorGarbageCollectorDaemon extends PhabricatorDaemon {
         'Differential Parse Cache'    => $n_parse,
         'Markup Cache'                => $n_markup,
         'Archived Tasks'              => $n_tasks,
+        'General Cache TTL'           => $n_cache_ttl,
+        'General Cache Entries'       => $n_cache,
+        'Temporary Files'             => $n_files,
       );
       $collected = array_filter($collected);
 
@@ -68,8 +40,8 @@ final class PhabricatorGarbageCollectorDaemon extends PhabricatorDaemon {
       if ($total < 100) {
         // We didn't max out any of the GCs so we're basically caught up. Ease
         // off the GC loop so we don't keep doing table scans just to delete
-        // a handful of rows.
-        $this->sleep(300);
+        // a handful of rows; wake up in a few hours.
+        $this->sleep(4 * (60 * 60));
       } else {
         $this->stillWorking();
       }
@@ -198,6 +170,53 @@ final class PhabricatorGarbageCollectorDaemon extends PhabricatorDaemon {
     $table->saveTransaction();
 
     return count($task_ids);
+  }
+
+
+  private function collectGeneralCacheTTL() {
+    $cache = new PhabricatorKeyValueDatabaseCache();
+    $conn_w = $cache->establishConnection('w');
+
+    queryfx(
+      $conn_w,
+      'DELETE FROM %T WHERE cacheExpires < %d
+        ORDER BY cacheExpires ASC LIMIT 100',
+      $cache->getTableName(),
+      time());
+
+    return $conn_w->getAffectedRows();
+  }
+
+
+  private function collectGeneralCaches() {
+    $key = 'gcdaemon.ttl.general-cache';
+    $ttl = PhabricatorEnv::getEnvConfig($key);
+    if ($ttl <= 0) {
+      return 0;
+    }
+
+    $cache = new PhabricatorKeyValueDatabaseCache();
+    $conn_w = $cache->establishConnection('w');
+
+    queryfx(
+      $conn_w,
+      'DELETE FROM %T WHERE cacheCreated < %d
+        ORDER BY cacheCreated ASC LIMIT 100',
+      $cache->getTableName(),
+      time() - $ttl);
+
+    return $conn_w->getAffectedRows();
+  }
+
+  private function collectExpiredFiles() {
+    $files = id(new PhabricatorFile())->loadAllWhere('ttl < %d LIMIT 100',
+      time());
+
+    foreach ($files as $file) {
+      $file->delete();
+    }
+
+    return count($files);
   }
 
 }

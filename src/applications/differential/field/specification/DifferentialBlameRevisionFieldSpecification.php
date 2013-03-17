@@ -29,8 +29,9 @@ final class DifferentialBlameRevisionFieldSpecification
 
   public function renderEditControl() {
     return id(new AphrontFormTextControl())
-      ->setLabel('Blame Revision')
-      ->setCaption('Revision which broke the stuff which this change fixes.')
+      ->setLabel(pht('Blame Revision'))
+      ->setCaption(
+        pht('Revision which broke the stuff which this change fixes.'))
       ->setName($this->getStorageKey())
       ->setValue($this->value);
   }
@@ -40,7 +41,7 @@ final class DifferentialBlameRevisionFieldSpecification
   }
 
   public function renderLabelForRevisionView() {
-    return 'Blame Revision:';
+    return pht('Blame Revision:');
   }
 
   public function renderValueForRevisionView() {
@@ -48,6 +49,7 @@ final class DifferentialBlameRevisionFieldSpecification
       return null;
     }
     $engine = PhabricatorMarkupEngine::newDifferentialMarkupEngine();
+    $engine->setConfig('viewer', $this->getUser());
     return $engine->markupText($this->value);
   }
 

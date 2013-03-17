@@ -1,18 +1,12 @@
 <?php
 
 final class PonderUserProfileView extends AphrontView {
-  private $user;
   private $questionoffset;
   private $answeroffset;
   private $answers;
   private $pagesize;
   private $uri;
   private $aparam;
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
 
   public function setQuestionOffset($offset) {
     $this->questionoffset = $offset;
@@ -61,6 +55,7 @@ final class PonderUserProfileView extends AphrontView {
     $answers = $apagebuttons->sliceResults($answers);
 
     $view = new PhabricatorObjectItemListView();
+    $view->setUser($user);
     $view->setNoDataString(pht('No matching answers.'));
 
     foreach ($answers as $answer) {
@@ -68,26 +63,27 @@ final class PonderUserProfileView extends AphrontView {
       $author_phid = $question->getAuthorPHID();
 
       $item = new PhabricatorObjectItemView();
+      $item->setObject($answer);
       $href = id(new PhutilURI('/Q' . $question->getID()))
         ->setFragment('A' . $answer->getID());
       $item->setHeader(
-        'A'.$answer->getID().' '.self::abbreviate($answer->getContent())
-      );
+        'A'.$answer->getID().' '.self::abbreviate($answer->getContent()));
       $item->setHref($href);
 
-      $item->addDetail(
-        pht('Votes'),
-        $answer->getVoteCount()
-      );
+      $item->addAttribute(
+        pht('Created %s', phabricator_date($answer->getDateCreated(), $user)));
 
-      $item->addDetail(
-        pht('Question'),
-        self::abbreviate($question->getTitle())
-      );
+      $item->addAttribute(pht('%d Vote(s)', $answer->getVoteCount()));
 
       $item->addAttribute(
-        pht('Created %s', phabricator_date($answer->getDateCreated(), $user))
-      );
+        pht(
+          'Answer to %s',
+          phutil_tag(
+            'a',
+            array(
+              'href' => '/Q'.$question->getID(),
+            ),
+            self::abbreviate($question->getTitle()))));
 
       $view->addItem($item);
     }

@@ -10,7 +10,6 @@ final class DifferentialRevisionCommentView extends AphrontView {
   private $changesets;
   private $target;
   private $anchorName;
-  private $user;
   private $versusDiffID;
 
   public function setComment($comment) {
@@ -62,11 +61,6 @@ final class DifferentialRevisionCommentView extends AphrontView {
     return $this;
   }
 
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
-
   public function render() {
 
     if (!$this->user) {
@@ -93,10 +87,9 @@ final class DifferentialRevisionCommentView extends AphrontView {
         $comment,
         PhabricatorInlineCommentInterface::MARKUP_FIELD_BODY);
 
-      $content =
-        '<div class="phabricator-remarkup">'.
-          $content.
-        '</div>';
+      $content = hsprintf(
+        '<div class="phabricator-remarkup">%s</div>',
+        $content);
     }
 
     $inline_render = $this->renderInlineComments();
@@ -122,56 +115,75 @@ final class DifferentialRevisionCommentView extends AphrontView {
       array());
 
     $verb = DifferentialAction::getActionPastTenseVerb($comment->getAction());
-    $verb = phutil_escape_html($verb);
 
     $actions = array();
+    // TODO: i18n
     switch ($comment->getAction()) {
       case DifferentialAction::ACTION_ADDCCS:
-        $actions[] = "{$author_link} added CCs: ".
-          $this->renderHandleList($added_ccs).".";
+        $actions[] = hsprintf(
+          "%s added CCs: %s.",
+          $author_link,
+          $this->renderHandleList($added_ccs));
         $added_ccs = null;
         break;
       case DifferentialAction::ACTION_ADDREVIEWERS:
-        $actions[] = "{$author_link} added reviewers: ".
-          $this->renderHandleList($added_reviewers).".";
+        $actions[] = hsprintf(
+          "%s added reviewers: %s.",
+          $author_link,
+          $this->renderHandleList($added_reviewers));
         $added_reviewers = null;
         break;
       case DifferentialAction::ACTION_UPDATE:
         $diff_id = idx($metadata, DifferentialComment::METADATA_DIFF_ID);
         if ($diff_id) {
-          $diff_link = phutil_render_tag(
+          $diff_link = phutil_tag(
             'a',
             array(
               'href' => '/D'.$comment->getRevisionID().'?id='.$diff_id,
             ),
-            'Diff #'.phutil_escape_html($diff_id));
-          $actions[] = "{$author_link} updated this revision to {$diff_link}.";
+            'Diff #'.$diff_id);
+          $actions[] = hsprintf(
+            "%s updated this revision to %s.",
+            $author_link,
+            $diff_link);
         } else {
-          $actions[] = "{$author_link} {$verb} this revision.";
+          $actions[] = hsprintf(
+            "%s %s this revision.",
+            $author_link,
+            $verb);
         }
         break;
       default:
-        $actions[] = "{$author_link} {$verb} this revision.";
+        $actions[] = hsprintf(
+          "%s %s this revision.",
+          $author_link,
+          $verb);
         break;
     }
 
     if ($added_reviewers) {
-      $actions[] = "{$author_link} added reviewers: ".
-        $this->renderHandleList($added_reviewers).".";
+      $actions[] = hsprintf(
+        "%s added reviewers: %s.",
+        $author_link,
+        $this->renderHandleList($added_reviewers));
     }
 
     if ($removed_reviewers) {
-      $actions[] = "{$author_link} removed reviewers: ".
-        $this->renderHandleList($removed_reviewers).".";
+      $actions[] = hsprintf(
+        "%s removed reviewers: %s.",
+        $author_link,
+        $this->renderHandleList($removed_reviewers));
     }
 
     if ($added_ccs) {
-      $actions[] = "{$author_link} added CCs: ".
-        $this->renderHandleList($added_ccs).".";
+      $actions[] = hsprintf(
+        "%s added CCs: %s.",
+        $author_link,
+        $this->renderHandleList($added_ccs));
     }
 
     foreach ($actions as $key => $action) {
-      $actions[$key] = '<div>'.$action.'</div>';
+      $actions[$key] = phutil_tag('div', array(), $action);
     }
 
     $xaction_view = id(new PhabricatorTransactionView())
@@ -186,19 +198,19 @@ final class DifferentialRevisionCommentView extends AphrontView {
     } else {
       $xaction_view->setEpoch($comment->getDateCreated());
       if ($this->anchorName) {
-        $anchor_name = $this->anchorName;
-        $anchor_text = 'D'.$comment->getRevisionID().'#'.$anchor_name;
+        $anchor_text =
+          'D'.$comment->getRevisionID().
+          '#'.preg_replace('/^comment-/', '', $this->anchorName);
 
-        $xaction_view->setAnchor($anchor_name, $anchor_text);
+        $xaction_view->setAnchor($this->anchorName, $anchor_text);
       }
     }
 
     if (!$hide_comments) {
-      $xaction_view->appendChild(
-        '<div class="differential-comment-core">'.
-          $content.
-        '</div>'.
-        $this->renderSingleView($inline_render));
+      $xaction_view->appendChild(hsprintf(
+        '<div class="differential-comment-core">%s%s</div>',
+        $content,
+        $inline_render));
     }
 
     return $xaction_view->render();
@@ -209,7 +221,7 @@ final class DifferentialRevisionCommentView extends AphrontView {
     foreach ($phids as $phid) {
       $result[] = $this->handles[$phid]->renderLink();
     }
-    return implode(', ', $result);
+    return phutil_implode_html(', ', $result);
   }
 
   private function renderInlineComments() {

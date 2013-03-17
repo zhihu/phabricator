@@ -2,7 +2,7 @@
  * @provides javelin-behavior-aphront-drag-and-drop
  * @requires javelin-behavior
  *           javelin-dom
- *           javelin-util
+ *           phabricator-file-upload
  *           phabricator-drag-and-drop-file-upload
  */
 
@@ -17,14 +17,29 @@ JX.behavior('aphront-drag-and-drop', function(config) {
   // Show the control, since we have browser support.
   JX.$(config.control).style.display = '';
 
-  var files = config.value || {};
+  var files = {};
+  if (config.value) {
+    for (var k in config.value) {
+      var file = config.value[k];
+      files[k] = new JX.PhabricatorFileUpload()
+        .setPHID(file.phid)
+        .setMarkup(file.html);
+    }
+  }
   var pending = 0;
 
   var list = JX.$(config.list);
 
   var drop = new JX.PhabricatorDragAndDropFileUpload(JX.$(config.list))
-    .setActivatedClass(config.activatedClass)
     .setURI(config.uri);
+
+  drop.listen('didBeginDrag', function(e) {
+    JX.DOM.alterClass(list, config.activatedClass, true);
+  });
+
+  drop.listen('didEndDrag', function(e) {
+    JX.DOM.alterClass(list, config.activatedClass, false);
+  });
 
   drop.listen('willUpload', function(f) {
     pending++;
@@ -82,7 +97,7 @@ JX.behavior('aphront-drag-and-drop', function(config) {
       }
     } else {
       status = JX.$H(
-        'Uploading <strong>' + parseInt(pending, 10) + '<strong> files...');
+        'Uploading <strong>' + parseInt(pending, 10) + '</strong> files...');
     }
     status = JX.$N(
       'div',

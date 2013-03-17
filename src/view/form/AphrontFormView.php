@@ -7,23 +7,24 @@ final class AphrontFormView extends AphrontView {
   private $header;
   private $data = array();
   private $encType;
-  private $user;
   private $workflow;
   private $id;
   private $flexible;
+  private $noShading;
+  private $sigils = array();
 
   public function setFlexible($flexible) {
     $this->flexible = $flexible;
     return $this;
   }
 
-  public function setID($id) {
-    $this->id = $id;
+  public function setNoShading($shading) {
+    $this->noShading = $shading;
     return $this;
   }
 
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
+  public function setID($id) {
+    $this->id = $id;
     return $this;
   }
 
@@ -52,17 +53,20 @@ final class AphrontFormView extends AphrontView {
     return $this;
   }
 
+  public function addSigil($sigil) {
+    $this->sigils[] = $sigil;
+    return $this;
+  }
+
   public function render() {
     if ($this->flexible) {
       require_celerity_resource('phabricator-form-view-css');
     }
     require_celerity_resource('aphront-form-view-css');
 
-    Javelin::initBehavior('aphront-form-disable-on-submit');
-
     $layout = new AphrontFormLayoutView();
 
-    if (!$this->flexible) {
+    if ((!$this->flexible) && (!$this->noShading)) {
       $layout
         ->setBackgroundShading(true)
         ->setPadded(true);
@@ -73,17 +77,22 @@ final class AphrontFormView extends AphrontView {
       ->appendChild($this->renderChildren());
 
     if (!$this->user) {
-      throw new Exception('You must pass the user to AphrontFormView.');
+      throw new Exception(pht('You must pass the user to AphrontFormView.'));
     }
 
-    return phabricator_render_form(
+    $sigils = $this->sigils;
+    if ($this->workflow) {
+      $sigils[] = 'workflow';
+    }
+
+    return phabricator_form(
       $this->user,
       array(
         'class'   => $this->flexible ? 'phabricator-form-view' : null,
         'action'  => $this->action,
         'method'  => $this->method,
         'enctype' => $this->encType,
-        'sigil'   => $this->workflow ? 'workflow' : null,
+        'sigil'   => $sigils ? implode(' ', $sigils) : null,
         'id'      => $this->id,
       ),
       $layout->render());
@@ -95,7 +104,7 @@ final class AphrontFormView extends AphrontView {
       if ($value === null) {
         continue;
       }
-      $inputs[] = phutil_render_tag(
+      $inputs[] = phutil_tag(
         'input',
         array(
           'type'  => 'hidden',
@@ -103,7 +112,7 @@ final class AphrontFormView extends AphrontView {
           'value' => $value,
         ));
     }
-    return implode("\n", $inputs);
+    return $inputs;
   }
 
 }

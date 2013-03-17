@@ -16,8 +16,11 @@ final class PonderCommentSaveController extends PonderController {
       return new Aphront404Response();
     }
 
+    $question->attachRelated();
+
     $target = $request->getStr('target');
     $objects = id(new PhabricatorObjectHandleData(array($target)))
+      ->setViewer($user)
       ->loadHandles();
     if (!$objects) {
       return new Aphront404Response();
@@ -29,7 +32,8 @@ final class PonderCommentSaveController extends PonderController {
       $dialog = new AphrontDialogView();
       $dialog->setUser($request->getUser());
       $dialog->setTitle('Empty comment');
-      $dialog->appendChild('<p>Your comment must not be empty.</p>');
+      $dialog->appendChild(phutil_tag('p', array(), pht(
+        'Your comment must not be empty.')));
       $dialog->addCancelButton('/Q'.$question_id);
 
       return id(new AphrontDialogResponse())->setDialog($dialog);

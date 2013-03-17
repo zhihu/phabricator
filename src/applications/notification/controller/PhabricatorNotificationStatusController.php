@@ -24,13 +24,14 @@ final class PhabricatorNotificationStatusController
     } catch (Exception $ex) {
       $status = new AphrontErrorView();
       $status->setTitle("Notification Server Issue");
-      $status->appendChild(
+      $status->appendChild(hsprintf(
         'Unable to determine server status. This probably means the server '.
         'is not in great shape. The specific issue encountered was:'.
         '<br />'.
         '<br />'.
-        '<strong>'.phutil_escape_html(get_class($ex)).'</strong> '.
-        nl2br(phutil_escape_html($ex->getMessage())));
+        '<strong>%s</strong> %s',
+        get_class($ex),
+        phutil_escape_html_newlines($ex->getMessage())));
     }
 
     return $this->buildStandardPageResponse(
@@ -44,22 +45,19 @@ final class PhabricatorNotificationStatusController
 
     $rows = array();
     foreach ($status as $key => $value) {
-      $label = phutil_escape_html($key);
-
       switch ($key) {
         case 'uptime':
           $value /= 1000;
           $value = phabricator_format_relative_time_detailed($value);
           break;
         case 'log':
-          $value = phutil_escape_html($value);
           break;
         default:
-          $value = phutil_escape_html(number_format($value));
+          $value = number_format($value);
           break;
       }
 
-      $rows[] = array($label, $value);
+      $rows[] = array($key, $value);
     }
 
     $table = new AphrontTableView($rows);

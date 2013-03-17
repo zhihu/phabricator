@@ -7,8 +7,10 @@
  */
 
 JX.behavior('workflow', function() {
+
+  // Listen for both real
   JX.Stratcom.listen(
-    'submit',
+    ['submit', 'didSyntheticSubmit'],
     ['workflow', 'tag:form'],
     function(e) {
       if (JX.Stratcom.pass()) {
@@ -18,13 +20,15 @@ JX.behavior('workflow', function() {
       e.prevent();
       JX.Workflow.newFromForm(target).start();
     });
+
   JX.Stratcom.listen(
     'click',
     ['workflow', 'tag:a'],
     function(e) {
-      if (JX.Stratcom.pass()) {
+      if (!e.isNormalClick()) {
         return;
       }
+
       var target = e.getNode('workflow');
       if (!JX.DOM.isType(target, 'a')) {
         // This covers the case of an <a /> without workflow inside a <form />
@@ -32,14 +36,15 @@ JX.behavior('workflow', function() {
         return;
       }
 
-      var raw = e.getRawEvent();
-      if (raw.altKey || raw.ctrlKey || raw.metaKey || raw.shiftKey) {
+      if (JX.Stratcom.pass()) {
         return;
       }
+
       e.prevent();
       if(!target.href){
         target = e.getTarget()
       }
       JX.Workflow.newFromLink(target).start();
     });
+
 });

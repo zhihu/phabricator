@@ -8,23 +8,38 @@
   overflow-y: auto;
 }
 
-.device-desktop .phabricator-notification-menu {
-  position: fixed;
-  width: 380px;
-  top: 48px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, .2);
-  z-index: 9;
-  border: 1px solid #BBB;
+.phabricator-notification-menu-loading {
+  text-align: center;
+  padding: 10px 0;
+  color: #888888;
 }
 
-.device-tablet .phabricator-notification-menu,
-.device-phone .phabricator-notification-menu {
+.device-desktop .phabricator-notification-menu {
+  position: fixed;
+  width: 360px;
+  top: 42px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, .2);
+
+  border: 1px solid #BBB;
+  border-top-width: 0;
+  border-radius: 3px;
+}
+
+.device .phabricator-notification-menu {
   border-bottom: 1px solid #222222;
 }
 
-
 .phabricator-notification {
   padding: 8px 12px;
+  cursor: pointer;
+}
+
+.device-desktop .phabricator-notification:hover {
+  background: #f4f6f9;
+}
+
+.phabricator-notification + .phabricator-notification {
+  border-top: 1px solid #e9e9e9;
 }
 
 .phabricator-notification + .phabricator-notification {
@@ -40,9 +55,17 @@
   background: #DFECF8;
 }
 
-.view-all-notifications {
+.phabricator-notification-header {
+  font-weight: bold;
+  padding: 6px;
+  font-size: 12px;
+  border-bottom: 1px solid #e9e9e9;
+}
+
+.phabricator-notification-view-all {
   text-align: center;
   font-weight: bold;
-  background: #eeeeee;
-  border-top: 1px solid #dddddd;
+  background: #f7f7f7;
+  border-top: 1px solid #e9e9e9;
+  padding: 6px;
 }

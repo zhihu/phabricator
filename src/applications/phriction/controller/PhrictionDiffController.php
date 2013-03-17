@@ -48,9 +48,10 @@ final class PhrictionDiffController
     $text_l = $content_l->getContent();
     $text_r = $content_r->getContent();
 
-    $text_l = wordwrap($text_l, 80);
-    $text_r = wordwrap($text_r, 80);
-
+    $text_l = phutil_utf8_hard_wrap($text_l, 80);
+    $text_l = implode("\n", $text_l);
+    $text_r = phutil_utf8_hard_wrap($text_r, 80);
+    $text_r = implode("\n", $text_r);
 
     $engine = new PhabricatorDifferenceEngine();
     $changeset = $engine->generateChangesetFromFileContent($text_l, $text_r);
@@ -70,6 +71,11 @@ final class PhrictionDiffController
     $parser->setChangeset($changeset);
     $parser->setRenderingReference("{$l},{$r}");
     $parser->setWhitespaceMode($whitespace_mode);
+
+    $engine = new PhabricatorMarkupEngine();
+    $engine->setViewer($user);
+    $engine->process();
+    $parser->setMarkupEngine($engine);
 
     $spec = $request->getStr('range');
     list($range_s, $range_e, $mask) =
@@ -95,24 +101,22 @@ final class PhrictionDiffController
     $revert_l = $this->renderRevertButton($content_l, $current);
     $revert_r = $this->renderRevertButton($content_r, $current);
 
-    $crumbs = new AphrontCrumbsView();
-    $crumbs->setCrumbs(
-      array(
-        'Phriction',
-        phutil_render_tag(
-          'a',
-          array(
-            'href' => PhrictionDocument::getSlugURI($slug),
-          ),
-          phutil_escape_html($current->getTitle())),
-        phutil_render_tag(
-          'a',
-          array(
-            'href' => '/phriction/history/'.$document->getSlug().'/',
-          ),
-          'History'),
-        phutil_escape_html("Changes Between Version {$l} and Version {$r}"),
-      ));
+    $crumbs = $this->buildApplicationCrumbs();
+    $crumb_views = $this->renderBreadcrumbs($slug);
+    foreach ($crumb_views as $view) {
+      $crumbs->addCrumb($view);
+    }
+
+
+    $title = "Version $l vs $r";
+
+    $header = id(new PhabricatorHeaderView())
+      ->setHeader($title);
+
+    $crumbs->addCrumb(
+      id(new PhabricatorCrumbView())
+        ->setName($title));
+
 
     $comparison_table = $this->renderComparisonTable(
       array(
@@ -128,59 +132,67 @@ final class PhrictionDiffController
       $uri = $request->getRequestURI();
 
       if ($nav_l) {
-        $link_l = phutil_render_tag(
+        $link_l = phutil_tag(
           'a',
           array(
             'href' => $uri->alter('l', $l - 1)->alter('r', $r - 1),
           ),
-          "\xC2\xAB Previous Change");
+          pht("\xC2\xAB Previous Change"));
       } else {
-        $link_l = 'Original Change';
+        $link_l = pht('Original Change');
       }
 
       $link_r = null;
       if ($nav_r) {
-        $link_r = phutil_render_tag(
+        $link_r = phutil_tag(
           'a',
           array(
             'href' => $uri->alter('l', $l + 1)->alter('r', $r + 1),
           ),
-          "Next Change \xC2\xBB");
+          pht("Next Change \xC2\xBB"));
       } else {
-        $link_r = 'Most Recent Change';
+        $link_r = pht('Most Recent Change');
       }
 
-      $navigation_table =
+      $navigation_table = hsprintf(
         '<table class="phriction-history-nav-table">
           <tr>
-            <td class="nav-prev">'.$link_l.'</td>
-            <td class="nav-next">'.$link_r.'</td>
+            <td class="nav-prev">%s</td>
+            <td class="nav-next">%s</td>
           </tr>
-        </table>';
+        </table>',
+        $link_l,
+        $link_r);
     }
 
 
 
-    $output =
-      '<div class="phriction-document-history-diff">'.
-        $comparison_table->render().
-        '<br />'.
-        '<br />'.
-        $navigation_table.
+    $output = hsprintf(
+      '<br><div class="phriction-document-history-diff">'.
+        '%s<br /><br />%s'.
         '<table class="phriction-revert-table">'.
-          '<tr><td>'.$revert_l.'</td><td>'.$revert_r.'</td>'.
+          '<tr><td>%s</td><td>%s</td>'.
         '</table>'.
-        $output.
-      '</div>';
+        '%s'.
+      '</div>',
+      $comparison_table->render(),
+      $navigation_table,
+      $revert_l,
+      $revert_r,
+      $output);
 
-    return $this->buildStandardPageResponse(
+
+    return $this->buildApplicationPage(
       array(
         $crumbs,
+        $header,
         $output,
       ),
       array(
-        'title'     => 'Document History',
+        'title'     => pht('Document History'),
+        'device'    => true,
       ));
+
   }
 
   private function renderRevertButton(
@@ -197,23 +209,23 @@ final class PhrictionDiffController
     }
 
     if ($content->getID() == $current->getID()) {
-      return phutil_render_tag(
+      return phutil_tag(
         'a',
         array(
           'href'  => '/phriction/edit/'.$document_id.'/',
           'class' => 'button',
         ),
-        'Edit Current Version');
+        pht('Edit Current Version'));
     }
 
 
-    return phutil_render_tag(
+    return phutil_tag(
       'a',
       array(
         'href'  => '/phriction/edit/'.$document_id.'/?revert='.$version,
         'class' => 'button',
       ),
-      'Revert to Version '.phutil_escape_html($version).'...');
+      pht('Revert to Version %s...', $version));
   }
 
   private function renderComparisonTable(array $content) {
@@ -229,9 +241,9 @@ final class PhrictionDiffController
       $rows[] = array(
         phabricator_date($c->getDateCreated(), $user),
         phabricator_time($c->getDateCreated(), $user),
-        phutil_escape_html('Version '.$c->getVersion()),
+        'Version '.$c->getVersion(),
         $handles[$c->getAuthorPHID()]->renderLink(),
-        phutil_escape_html($c->getDescription()),
+        $c->getDescription(),
       );
     }
 
@@ -239,11 +251,11 @@ final class PhrictionDiffController
     $table = new AphrontTableView($rows);
     $table->setHeaders(
       array(
-        'Date',
-        'Time',
-        'Version',
-        'Author',
-        'Description',
+        pht('Date'),
+        pht('Time'),
+        pht('Version'),
+        pht('Author'),
+        pht('Description'),
       ));
     $table->setColumnClasses(
       array(

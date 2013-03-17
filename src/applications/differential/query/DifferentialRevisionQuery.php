@@ -60,6 +60,16 @@ final class DifferentialRevisionQuery {
   private $needDiffIDs        = false;
   private $needCommitPHIDs    = false;
   private $needHashes         = false;
+  private $viewer;
+
+  public function setViewer(PhabricatorUser $viewer) {
+    $this->viewer = $viewer;
+    return $this;
+  }
+
+  public function getViewer() {
+    return $this->viewer;
+  }
 
 
 /* -(  Query Configuration  )------------------------------------------------ */
@@ -891,29 +901,37 @@ final class DifferentialRevisionQuery {
     }
   }
 
-  public static function splitResponsible(array $revisions, $user_phid) {
+  public static function splitResponsible(array $revisions, array $user_phids) {
+    $blocking = array();
     $active = array();
     $waiting = array();
     $status_review = ArcanistDifferentialRevisionStatus::NEEDS_REVIEW;
 
-    // Bucket revisions into $active (revisions you need to do something
-    // about) and $waiting (revisions you're waiting on someone else to do
-    // something about).
+    // Bucket revisions into $blocking (revisions where you are blocking
+    // others), $active (revisions you need to do something about) and $waiting
+    // (revisions you're waiting on someone else to do something about).
     foreach ($revisions as $revision) {
       $needs_review = ($revision->getStatus() == $status_review);
-      $filter_is_author = ($revision->getAuthorPHID() == $user_phid);
+      $filter_is_author = in_array($revision->getAuthorPHID(), $user_phids);
+      if (!$revision->getReviewers()) {
+        $needs_review = false;
+      }
 
       // If exactly one of "needs review" and "the user is the author" is
       // true, the user needs to act on it. Otherwise, they're waiting on
       // it.
       if ($needs_review ^ $filter_is_author) {
-        $active[] = $revision;
+        if ($needs_review) {
+          array_unshift($blocking, $revision);
+        } else {
+          $active[] = $revision;
+        }
       } else {
         $waiting[] = $revision;
       }
     }
 
-    return array($active, $waiting);
+    return array($blocking, $active, $waiting);
   }
 
 

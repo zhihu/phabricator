@@ -47,39 +47,33 @@ extends PhabricatorOAuthClientAuthorizationBaseController {
       $updated = phabricator_datetime($authorization->getDateModified(),
         $current_user);
       $scope_doc_href = PhabricatorEnv::getDoclink(
-        'article/Using_the_Phabricator_OAuth_Server.html#scopes'
-      );
+        'article/Using_the_Phabricator_OAuth_Server.html#scopes');
       $row = array(
-        phutil_render_tag(
+        phutil_tag(
           'a',
           array(
             'href' => $client->getViewURI(),
           ),
-          phutil_escape_html($client->getName())
-        ),
-        phutil_render_tag(
+          $client->getName()),
+        phutil_tag(
           'a',
           array(
             'href' => $scope_doc_href,
           ),
-          $authorization->getScopeString()
-        ),
+          $authorization->getScopeString()),
         phabricator_datetime(
           $authorization->getDateCreated(),
-          $current_user
-        ),
+          $current_user),
         phabricator_datetime(
           $authorization->getDateModified(),
-          $current_user
-        ),
-        phutil_render_tag(
+          $current_user),
+        phutil_tag(
           'a',
           array(
             'class' => 'small button grey',
             'href'  => $authorization->getEditURI(),
           ),
-          'Edit'
-        ),
+          'Edit'),
       );
 
       $rows[] = $row;
@@ -97,8 +91,7 @@ extends PhabricatorOAuthClientAuthorizationBaseController {
         $this->getNoticeView(),
         $panel->appendChild($pager),
       ),
-      array('title' => $title)
-    );
+      array('title' => $title));
   }
 
   private function buildClientAuthorizationList($rows, $rowc, $title) {
@@ -122,8 +115,7 @@ extends PhabricatorOAuthClientAuthorizationBaseController {
       ));
     if (empty($rows)) {
       $table->setNoDataString(
-        'You have not authorized any clients for this OAuthServer.'
-      );
+        'You have not authorized any clients for this OAuthServer.');
     }
 
     $panel = new AphrontPanelView();
@@ -137,7 +129,6 @@ extends PhabricatorOAuthClientAuthorizationBaseController {
     $edited  = $this->getRequest()->getStr('edited');
     $deleted = $this->getRequest()->getBool('deleted');
     if ($edited) {
-      $edited = phutil_escape_html($edited);
       $title  = 'Successfully edited client authorization.';
     } else if ($deleted) {
       $title = 'Successfully deleted client authorization.';

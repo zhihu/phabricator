@@ -14,90 +14,177 @@ final class PhabricatorObjectHandleData {
     return $this;
   }
 
-  public static function loadOneHandle($phid, $viewer = null) {
+  public static function loadOneHandle($phid, PhabricatorUser $viewer) {
     $query = new PhabricatorObjectHandleData(array($phid));
-
-    if ($viewer) {
-      $query->setViewer($viewer);
-    }
-
+    $query->setViewer($viewer);
     $handles = $query->loadHandles();
     return $handles[$phid];
   }
 
   public function loadObjects() {
-    $types = array();
-    foreach ($this->phids as $phid) {
-      $type = phid_get_type($phid);
-      $types[$type][] = $phid;
-    }
+    $types = phid_group_by_type($this->phids);
 
     $objects = array();
     foreach ($types as $type => $phids) {
-      switch ($type) {
-        case PhabricatorPHIDConstants::PHID_TYPE_USER:
-          $user_dao = new PhabricatorUser();
-          $users = $user_dao->loadAllWhere(
-            'phid in (%Ls)',
-            $phids);
-          foreach ($users as $user) {
-            $objects[$user->getPHID()] = $user;
-          }
-          break;
-        case PhabricatorPHIDConstants::PHID_TYPE_CMIT:
-          $commit_dao = new PhabricatorRepositoryCommit();
-          $commits = $commit_dao->loadAllWhere(
-            'phid IN (%Ls)',
-            $phids);
-          $commit_data = array();
-          if ($commits) {
-            $data_dao = new PhabricatorRepositoryCommitData();
-            $commit_data = $data_dao->loadAllWhere(
-              'commitID IN (%Ld)',
-              mpull($commits, 'getID'));
-            $commit_data = mpull($commit_data, null, 'getCommitID');
-          }
-          foreach ($commits as $commit) {
-            $data = idx($commit_data, $commit->getID());
-            if ($data) {
-              $commit->attachCommitData($data);
-              $objects[$commit->getPHID()] = $commit;
-            } else {
-             // If we couldn't load the commit data, just act as though we
-             // couldn't load the object at all so we don't load half an object.
-            }
-          }
-          break;
-        case PhabricatorPHIDConstants::PHID_TYPE_TASK:
-          $task_dao = new ManiphestTask();
-          $tasks = $task_dao->loadAllWhere(
-            'phid IN (%Ls)',
-            $phids);
-          foreach ($tasks as $task) {
-            $objects[$task->getPHID()] = $task;
-          }
-          break;
-        case PhabricatorPHIDConstants::PHID_TYPE_DREV:
-          $revision_dao = new DifferentialRevision();
-          $revisions = $revision_dao->loadAllWhere(
-            'phid IN (%Ls)',
-            $phids);
-          foreach ($revisions as $revision) {
-            $objects[$revision->getPHID()] = $revision;
-          }
-          break;
-        case PhabricatorPHIDConstants::PHID_TYPE_QUES:
-          $questions = id(new PonderQuestionQuery())
-            ->withPHIDs($phids)
-            ->execute();
-          foreach ($questions as $question) {
-            $objects[$question->getPHID()] = $question;
-          }
-          break;
-      }
+      $objects += $this->loadObjectsOfType($type, $phids);
     }
 
     return $objects;
+  }
+
+  private function loadObjectsOfType($type, array $phids) {
+    if (!$this->viewer) {
+      throw new Exception(
+        "You must provide a viewer to load handles or objects.");
+    }
+
+    switch ($type) {
+
+      case PhabricatorPHIDConstants::PHID_TYPE_USER:
+        $user_dao = new PhabricatorUser();
+        $users = $user_dao->loadAllWhere(
+          'phid in (%Ls)',
+          $phids);
+        return mpull($users, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_CMIT:
+        $commits = id(new DiffusionCommitQuery())
+          ->setViewer($this->viewer)
+          ->withPHIDs($phids)
+          ->execute();
+        return mpull($commits, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_TASK:
+        $task_dao = new ManiphestTask();
+        $tasks = $task_dao->loadAllWhere(
+          'phid IN (%Ls)',
+          $phids);
+        return mpull($tasks, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_CONF:
+        $config_dao = new PhabricatorConfigEntry();
+        $entries = $config_dao->loadAllWhere(
+          'phid IN (%Ls)',
+          $phids);
+        return mpull($entries, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_FILE:
+        $object = new PhabricatorFile();
+        $files = $object->loadAllWhere('phid IN (%Ls)', $phids);
+        return mpull($files, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_PROJ:
+        $projects = id(new PhabricatorProjectQuery())
+          ->setViewer($this->viewer)
+          ->withPHIDs($phids)
+          ->execute();
+        return mpull($projects, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_REPO:
+        $object = new PhabricatorRepository();
+        $repositories = $object->loadAllWhere('phid in (%Ls)', $phids);
+        return mpull($repositories, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_OPKG:
+        $object = new PhabricatorOwnersPackage();
+        $packages = $object->loadAllWhere('phid in (%Ls)', $phids);
+        return mpull($packages, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_APRJ:
+        $project_dao = new PhabricatorRepositoryArcanistProject();
+        $projects = $project_dao->loadAllWhere(
+          'phid IN (%Ls)',
+          $phids);
+        return mpull($projects, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_MLST:
+        $object = new PhabricatorMetaMTAMailingList();
+        $lists = $object->loadAllWhere('phid IN (%Ls)', $phids);
+        return mpull($lists, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_DREV:
+        $revision_dao = new DifferentialRevision();
+        $revisions = $revision_dao->loadAllWhere(
+          'phid IN (%Ls)',
+          $phids);
+        return mpull($revisions, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_WIKI:
+        $document_dao = new PhrictionDocument();
+        $documents = $document_dao->loadAllWhere(
+          'phid IN (%Ls)',
+          $phids);
+        return mpull($documents, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_QUES:
+        $questions = id(new PonderQuestionQuery())
+          ->setViewer($this->viewer)
+          ->withPHIDs($phids)
+          ->execute();
+        return mpull($questions, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_MOCK:
+        $mocks = id(new PholioMockQuery())
+          ->setViewer($this->viewer)
+          ->withPHIDs($phids)
+          ->execute();
+        return mpull($mocks, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_XACT:
+        $subtypes = array();
+        foreach ($phids as $phid) {
+          $subtypes[phid_get_subtype($phid)][] = $phid;
+        }
+        $xactions = array();
+        foreach ($subtypes as $subtype => $subtype_phids) {
+          // TODO: Do this magically.
+          switch ($subtype) {
+            case PhabricatorPHIDConstants::PHID_TYPE_MOCK:
+              $results = id(new PholioTransactionQuery())
+                ->setViewer($this->viewer)
+                ->withPHIDs($subtype_phids)
+                ->execute();
+              $xactions += mpull($results, null, 'getPHID');
+              break;
+            case PhabricatorPHIDConstants::PHID_TYPE_MCRO:
+              $results = id(new PhabricatorMacroTransactionQuery())
+                ->setViewer($this->viewer)
+                ->withPHIDs($subtype_phids)
+                ->execute();
+              $xactions += mpull($results, null, 'getPHID');
+              break;
+          }
+        }
+        return mpull($xactions, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_MCRO:
+        $macros = id(new PhabricatorFileImageMacro())->loadAllWhere(
+          'phid IN (%Ls)',
+          $phids);
+        return mpull($macros, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_PSTE:
+        $pastes = id(new PhabricatorPasteQuery())
+          ->withPHIDs($phids)
+          ->setViewer($this->viewer)
+          ->execute();
+        return mpull($pastes, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_BLOG:
+        $blogs = id(new PhameBlogQuery())
+          ->withPHIDs($phids)
+          ->setViewer($this->viewer)
+          ->execute();
+        return mpull($blogs, null, 'getPHID');
+
+      case PhabricatorPHIDConstants::PHID_TYPE_POST:
+        $posts = id(new PhamePostQuery())
+          ->withPHIDs($phids)
+          ->setViewer($this->viewer)
+          ->execute();
+        return mpull($posts, null, 'getPHID');
+
+    }
   }
 
   public function loadHandles() {
@@ -109,7 +196,10 @@ final class PhabricatorObjectHandleData {
     $external_loaders = PhabricatorEnv::getEnvConfig('phid.external-loaders');
 
     foreach ($types as $type => $phids) {
+      $objects = $this->loadObjectsOfType($type, $phids);
+
       switch ($type) {
+
         case PhabricatorPHIDConstants::PHID_TYPE_MAGIC:
           // Black magic!
           foreach ($phids as $phid) {
@@ -134,13 +224,9 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
+
         case PhabricatorPHIDConstants::PHID_TYPE_USER:
-          $object = new PhabricatorUser();
-
-          $users = $object->loadAllWhere('phid IN (%Ls)', $phids);
-          $users = mpull($users, null, 'getPHID');
-
-          $image_phids = mpull($users, 'getProfileImagePHID');
+          $image_phids = mpull($objects, 'getProfileImagePHID');
           $image_phids = array_unique(array_filter($image_phids));
 
           $images = array();
@@ -158,10 +244,10 @@ final class PhabricatorObjectHandleData {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($users[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown User');
             } else {
-              $user = $users[$phid];
+              $user = $objects[$phid];
               $handle->setName($user->getUsername());
               $handle->setURI('/p/'.$user->getUsername().'/');
               $handle->setFullName(
@@ -169,12 +255,9 @@ final class PhabricatorObjectHandleData {
               $handle->setAlternateID($user->getID());
               $handle->setComplete(true);
               if (isset($statuses[$phid])) {
-                $status = $statuses[$phid]->getTextStatus();
-                if ($this->viewer) {
-                  $date = $statuses[$phid]->getDateTo();
-                  $status .= ' until '.phabricator_date($date, $this->viewer);
-                }
-                $handle->setStatus($status);
+                $handle->setStatus($statuses[$phid]->getTextStatus());
+                $handle->setTitle(
+                  $statuses[$phid]->getTerseSummary($this->viewer));
               }
               $handle->setDisabled($user->getIsDisabled());
 
@@ -189,20 +272,16 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
+
         case PhabricatorPHIDConstants::PHID_TYPE_MLST:
-          $object = new PhabricatorMetaMTAMailingList();
-
-          $lists = $object->loadAllWhere('phid IN (%Ls)', $phids);
-          $lists = mpull($lists, null, 'getPHID');
-
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($lists[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Mailing List');
             } else {
-              $list = $lists[$phid];
+              $list = $objects[$phid];
               $handle->setName($list->getName());
               $handle->setURI($list->getURI());
               $handle->setFullName($list->getName());
@@ -211,20 +290,16 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
+
         case PhabricatorPHIDConstants::PHID_TYPE_DREV:
-          $object = new DifferentialRevision();
-
-          $revs = $object->loadAllWhere('phid in (%Ls)', $phids);
-          $revs = mpull($revs, null, 'getPHID');
-
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($revs[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Revision');
             } else {
-              $rev = $revs[$phid];
+              $rev = $objects[$phid];
               $handle->setName($rev->getTitle());
               $handle->setURI('/D'.$rev->getID());
               $handle->setFullName('D'.$rev->getID().': '.$rev->getTitle());
@@ -241,65 +316,49 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
+
         case PhabricatorPHIDConstants::PHID_TYPE_CMIT:
-          $object = new PhabricatorRepositoryCommit();
-
-          $commits = $object->loadAllWhere('phid in (%Ls)', $phids);
-          $commits = mpull($commits, null, 'getPHID');
-
-          $repository_ids = array();
-          $callsigns = array();
-          if ($commits) {
-            $repository_ids = mpull($commits, 'getRepositoryID');
-            $repositories = id(new PhabricatorRepository())->loadAllWhere(
-              'id in (%Ld)', array_unique($repository_ids));
-            $callsigns = mpull($repositories, 'getCallsign');
-          }
-
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($commits[$phid]) ||
-                !isset($callsigns[$repository_ids[$phid]])) {
+
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Commit');
             } else {
-              $commit = $commits[$phid];
-              $callsign = $callsigns[$repository_ids[$phid]];
-              $repository = $repositories[$repository_ids[$phid]];
+              $repository = $objects[$phid]->getRepository();
+              $commit = $objects[$phid];
+              $callsign = $repository->getCallsign();
               $commit_identifier = $commit->getCommitIdentifier();
 
-              // In case where the repository for the commit was deleted,
-              // we don't have have info about the repository anymore.
-              if ($repository) {
-                $name = $repository->formatCommitName($commit_identifier);
-                $handle->setName($name);
+              $name = $repository->formatCommitName($commit_identifier);
+              $handle->setName($name);
+
+              $summary = $commit->getSummary();
+              if (strlen($summary)) {
+                $handle->setFullName($name.': '.$summary);
               } else {
-                $handle->setName('Commit '.'r'.$callsign.$commit_identifier);
+                $handle->setFullName($name);
               }
 
               $handle->setURI('/r'.$callsign.$commit_identifier);
-              $handle->setFullName('r'.$callsign.$commit_identifier);
               $handle->setTimestamp($commit->getEpoch());
               $handle->setComplete(true);
             }
+
             $handles[$phid] = $handle;
           }
           break;
+
         case PhabricatorPHIDConstants::PHID_TYPE_TASK:
-          $object = new ManiphestTask();
-
-          $tasks = $object->loadAllWhere('phid in (%Ls)', $phids);
-          $tasks = mpull($tasks, null, 'getPHID');
-
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($tasks[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Task');
             } else {
-              $task = $tasks[$phid];
+              $task = $objects[$phid];
               $handle->setName($task->getTitle());
               $handle->setURI('/T'.$task->getID());
               $handle->setFullName('T'.$task->getID().': '.$task->getTitle());
@@ -313,20 +372,34 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
-        case PhabricatorPHIDConstants::PHID_TYPE_FILE:
-          $object = new PhabricatorFile();
 
-          $files = $object->loadAllWhere('phid IN (%Ls)', $phids);
-          $files = mpull($files, null, 'getPHID');
-
+        case PhabricatorPHIDConstants::PHID_TYPE_CONF:
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($files[$phid])) {
+            if (empty($objects[$phid])) {
+              $handle->setName('Unknown Config Entry');
+            } else {
+              $entry = $objects[$phid];
+              $handle->setName($entry->getKey());
+              $handle->setURI('/config/edit/'.$entry->getKey());
+              $handle->setFullName($entry->getKey());
+              $handle->setComplete(true);
+            }
+            $handles[$phid] = $handle;
+          }
+          break;
+
+        case PhabricatorPHIDConstants::PHID_TYPE_FILE:
+          foreach ($phids as $phid) {
+            $handle = new PhabricatorObjectHandle();
+            $handle->setPHID($phid);
+            $handle->setType($type);
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown File');
             } else {
-              $file = $files[$phid];
+              $file = $objects[$phid];
               $handle->setName($file->getName());
               $handle->setURI($file->getBestURI());
               $handle->setComplete(true);
@@ -334,28 +407,16 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
+
         case PhabricatorPHIDConstants::PHID_TYPE_PROJ:
-          $object = new PhabricatorProject();
-
-          if ($this->viewer) {
-            $projects = id(new PhabricatorProjectQuery())
-              ->setViewer($this->viewer)
-              ->withPHIDs($phids)
-              ->execute();
-          } else {
-            $projects = $object->loadAllWhere('phid IN (%Ls)', $phids);
-          }
-
-          $projects = mpull($projects, null, 'getPHID');
-
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($projects[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Project');
             } else {
-              $project = $projects[$phid];
+              $project = $objects[$phid];
               $handle->setName($project->getName());
               $handle->setURI('/project/view/'.$project->getID().'/');
               $handle->setComplete(true);
@@ -363,41 +424,35 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
+
         case PhabricatorPHIDConstants::PHID_TYPE_REPO:
-          $object = new PhabricatorRepository();
-
-          $repositories = $object->loadAllWhere('phid in (%Ls)', $phids);
-          $repositories = mpull($repositories, null, 'getPHID');
-
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($repositories[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Repository');
             } else {
-              $repository = $repositories[$phid];
+              $repository = $objects[$phid];
               $handle->setName($repository->getCallsign());
+              $handle->setFullName("r" . $repository->getCallsign() .
+                " (" . $repository->getName() . ")");
               $handle->setURI('/diffusion/'.$repository->getCallsign().'/');
               $handle->setComplete(true);
             }
             $handles[$phid] = $handle;
           }
           break;
+
         case PhabricatorPHIDConstants::PHID_TYPE_OPKG:
-          $object = new PhabricatorOwnersPackage();
-
-          $packages = $object->loadAllWhere('phid in (%Ls)', $phids);
-          $packages = mpull($packages, null, 'getPHID');
-
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($packages[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Package');
             } else {
-              $package = $packages[$phid];
+              $package = $objects[$phid];
               $handle->setName($package->getName());
               $handle->setURI('/owners/package/'.$package->getID().'/');
               $handle->setComplete(true);
@@ -405,27 +460,23 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
-        case PhabricatorPHIDConstants::PHID_TYPE_APRJ:
-          $project_dao = new PhabricatorRepositoryArcanistProject();
 
-          $projects = $project_dao->loadAllWhere(
-            'phid IN (%Ls)',
-            $phids);
-          $projects = mpull($projects, null, 'getPHID');
+        case PhabricatorPHIDConstants::PHID_TYPE_APRJ:
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($projects[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Arcanist Project');
             } else {
-              $project = $projects[$phid];
+              $project = $objects[$phid];
               $handle->setName($project->getName());
               $handle->setComplete(true);
             }
             $handles[$phid] = $handle;
           }
           break;
+
         case PhabricatorPHIDConstants::PHID_TYPE_WIKI:
           $document_dao = new PhrictionDocument();
           $content_dao  = new PhrictionContent();
@@ -452,24 +503,24 @@ final class PhabricatorObjectHandleData {
               $handle->setName($info['title']);
               $handle->setURI(PhrictionDocument::getSlugURI($info['slug']));
               $handle->setComplete(true);
+              if ($info['status'] != PhrictionDocumentStatus::STATUS_EXISTS) {
+                $closed = PhabricatorObjectHandleStatus::STATUS_CLOSED;
+                $handle->setStatus($closed);
+              }
             }
             $handles[$phid] = $handle;
           }
           break;
-        case PhabricatorPHIDConstants::PHID_TYPE_QUES:
-          $questions = id(new PonderQuestionQuery())
-            ->withPHIDs($phids)
-            ->execute();
-          $questions = mpull($questions, null, 'getPHID');
 
+        case PhabricatorPHIDConstants::PHID_TYPE_QUES:
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($questions[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Ponder Question');
             } else {
-              $question = $questions[$phid];
+              $question = $objects[$phid];
               $handle->setName(phutil_utf8_shorten($question->getTitle(), 60));
               $handle->setURI(new PhutilURI('/Q' . $question->getID()));
               $handle->setComplete(true);
@@ -477,21 +528,16 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
-        case PhabricatorPHIDConstants::PHID_TYPE_PSTE:
-          $pastes = id(new PhabricatorPasteQuery())
-            ->withPHIDs($phids)
-            ->setViewer($this->viewer)
-            ->execute();
-          $pastes = mpull($pastes, null, 'getPHID');
 
+        case PhabricatorPHIDConstants::PHID_TYPE_PSTE:
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($pastes[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Paste');
             } else {
-              $paste = $pastes[$phid];
+              $paste = $objects[$phid];
               $handle->setName($paste->getTitle());
               $handle->setFullName($paste->getFullName());
               $handle->setURI('/P'.$paste->getID());
@@ -500,21 +546,16 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
-        case PhabricatorPHIDConstants::PHID_TYPE_BLOG:
-          $blogs = id(new PhameBlogQuery())
-            ->withPHIDs($phids)
-            ->setViewer($this->viewer)
-            ->execute();
-          $blogs = mpull($blogs, null, 'getPHID');
 
+        case PhabricatorPHIDConstants::PHID_TYPE_BLOG:
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($blogs[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Blog');
             } else {
-              $blog = $blogs[$phid];
+              $blog = $objects[$phid];
               $handle->setName($blog->getName());
               $handle->setFullName($blog->getName());
               $handle->setURI('/phame/blog/view/'.$blog->getID().'/');
@@ -523,21 +564,16 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
-        case PhabricatorPHIDConstants::PHID_TYPE_POST:
-          $posts = id(new PhamePostQuery())
-            ->withPHIDs($phids)
-            ->setViewer($this->viewer)
-            ->execute();
-          $posts = mpull($posts, null, 'getPHID');
 
+        case PhabricatorPHIDConstants::PHID_TYPE_POST:
           foreach ($phids as $phid) {
             $handle = new PhabricatorObjectHandle();
             $handle->setPHID($phid);
             $handle->setType($type);
-            if (empty($posts[$phid])) {
+            if (empty($objects[$phid])) {
               $handle->setName('Unknown Post');
             } else {
-              $post = $posts[$phid];
+              $post = $objects[$phid];
               $handle->setName($post->getTitle());
               $handle->setFullName($post->getTitle());
               $handle->setURI('/phame/post/view/'.$post->getID().'/');
@@ -546,6 +582,43 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
+
+        case PhabricatorPHIDConstants::PHID_TYPE_MOCK:
+          foreach ($phids as $phid) {
+            $handle = new PhabricatorObjectHandle();
+            $handle->setPHID($phid);
+            $handle->setType($type);
+            if (empty($objects[$phid])) {
+              $handle->setName('Unknown Mock');
+            } else {
+              $mock = $objects[$phid];
+              $handle->setName($mock->getName());
+              $handle->setFullName('M'.$mock->getID().': '.$mock->getName());
+              $handle->setURI('/M'.$mock->getID());
+              $handle->setComplete(true);
+            }
+            $handles[$phid] = $handle;
+          }
+          break;
+
+        case PhabricatorPHIDConstants::PHID_TYPE_MCRO:
+          foreach ($phids as $phid) {
+            $handle = new PhabricatorObjectHandle();
+            $handle->setPHID($phid);
+            $handle->setType($type);
+            if (empty($objects[$phid])) {
+              $handle->setName('Unknown Macro');
+            } else {
+              $macro = $objects[$phid];
+              $handle->setName($macro->getName());
+              $handle->setFullName('Image Macro "'.$macro->getName().'"');
+              $handle->setURI('/macro/view/'.$macro->getID().'/');
+              $handle->setComplete(true);
+            }
+            $handles[$phid] = $handle;
+          }
+          break;
+
         default:
           $loader = null;
           if (isset($external_loaders[$type])) {
@@ -556,6 +629,7 @@ final class PhabricatorObjectHandleData {
 
           if ($loader) {
             $object = newv($loader, array());
+            assert_instances_of(array($type => $object), 'ObjectHandleLoader');
             $handles += $object->loadHandles($phids);
             break;
           }
@@ -569,6 +643,7 @@ final class PhabricatorObjectHandleData {
             $handles[$phid] = $handle;
           }
           break;
+
       }
     }
 

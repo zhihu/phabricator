@@ -24,8 +24,7 @@ final class DiffusionCommitEditController extends DiffusionController {
     $edge_type          = PhabricatorEdgeConfig::TYPE_COMMIT_HAS_PROJECT;
     $current_proj_phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
       $commit_phid,
-      $edge_type
-    );
+      $edge_type);
     $handles = $this->loadViewerHandles($current_proj_phids);
     $proj_t_values = mpull($handles, 'getFullName', 'getPHID');
 
@@ -44,7 +43,8 @@ final class DiffusionCommitEditController extends DiffusionController {
       }
       $editor->save();
 
-      PhabricatorSearchCommitIndexer::indexCommit($commit);
+      id(new PhabricatorSearchIndexer())
+        ->indexDocumentByPHID($commit->getPHID());
 
       return id(new AphrontRedirectResponse())
       ->setURI('/r'.$callsign.$commit->getCommitIdentifier());
@@ -61,15 +61,15 @@ final class DiffusionCommitEditController extends DiffusionController {
         ->setValue($proj_t_values)
         ->setID($tokenizer_id)
         ->setCaption(
-          javelin_render_tag(
+          javelin_tag(
             'a',
             array(
               'href'        => '/project/create/',
               'mustcapture' => true,
               'sigil'       => 'project-create',
             ),
-            'Create New Project'))
-            ->setDatasource('/typeahead/common/projects/'));;
+            pht('Create New Project')))
+        ->setDatasource('/typeahead/common/projects/'));;
 
     Javelin::initBehavior('project-create', array(
       'tokenizerID' => $tokenizer_id,

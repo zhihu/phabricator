@@ -6,15 +6,10 @@ abstract class PhabricatorDaemonController extends PhabricatorController {
     $nav = new AphrontSideNavFilterView();
     $nav->setBaseURI(new PhutilURI($this->getApplicationURI()));
 
-    $nav->addLabel('Daemons');
-    $nav->addFilter('', 'Console', $this->getApplicationURI());
-    $nav->addFilter('log/running', 'Running Daemons');
-    $nav->addFilter('log', 'All Daemons');
-    $nav->addFilter('log/combined', 'Combined Log');
-
-    $nav->addSpacer();
-    $nav->addLabel('Event Timeline');
-    $nav->addFilter('timeline', 'Timeline');
+    $nav->addLabel(pht('Daemons'));
+    $nav->addFilter('/', pht('Console'));
+    $nav->addFilter('log', pht('All Daemons'));
+    $nav->addFilter('log/combined', pht('Combined Log'));
 
     return $nav;
   }

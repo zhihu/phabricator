@@ -43,25 +43,22 @@ final class PhabricatorNotificationListController
 
     if ($notifications) {
       $builder = new PhabricatorNotificationBuilder($notifications);
-      $view = $builder->buildView();
+      $view = $builder->buildView()->render();
     } else {
-      $view =
-        '<div class="phabricator-notification no-notifications">'.
-          $no_data.
-        '</div>';
+      $view = hsprintf(
+        '<div class="phabricator-notification no-notifications">%s</div>',
+        $no_data);
     }
 
-    $view = array(
-      '<div class="phabricator-notification-list">',
-      $view,
-      '</div>',
-    );
+    $view = hsprintf(
+      '<div class="phabricator-notification-list">%s</div>',
+      $view);
 
     $panel = new AphrontPanelView();
     $panel->setHeader($header);
     $panel->setWidth(AphrontPanelView::WIDTH_FORM);
     $panel->addButton(
-      javelin_render_tag(
+      javelin_tag(
         'a',
         array(
           'href'  => '/notification/clear/',

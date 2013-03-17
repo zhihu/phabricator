@@ -39,8 +39,8 @@ final class PonderCommentEditor extends PhabricatorEditor {
     $target   = $this->targetPHID;
     $comment->save();
 
-    $question->attachRelated();
-    PhabricatorSearchPonderIndexer::indexQuestion($question);
+    id(new PhabricatorSearchIndexer())
+      ->indexDocumentByPHID($question->getPHID());
 
     // subscribe author and @mentions
     $subeditor = id(new PhabricatorSubscriptionsEditor())
@@ -51,8 +51,7 @@ final class PonderCommentEditor extends PhabricatorEditor {
 
     $content = $comment->getContent();
     $at_mention_phids = PhabricatorMarkupEngine::extractPHIDsFromMentions(
-      array($content)
-    );
+      array($content));
     $subeditor->subscribeImplicit($at_mention_phids);
     $subeditor->save();
 
@@ -73,8 +72,7 @@ final class PonderCommentEditor extends PhabricatorEditor {
 
       if ($target === $question->getPHID()) {
         $target = $question;
-      }
-      else {
+      } else {
         $answers_by_phid = mgroup($question->getAnswers(), 'getPHID');
         $target = head($answers_by_phid[$target]);
       }
@@ -87,8 +85,7 @@ final class PonderCommentEditor extends PhabricatorEditor {
       $other_subs =
         array_diff(
           array_intersect($thread, $subscribers),
-          $at_mention_phids
-        );
+          $at_mention_phids);
 
       // 'Comment' emails for subscribers who are in the same comment thread,
       // including the author of the parent question and/or answer, excluding

@@ -2,12 +2,14 @@
  * @provides phabricator-core-css
  */
 
-
 body {
   /* Always show the vertical scrollbar so that going from a page without a
      scrollbar to a page with a scrollbar doesn't make content jump a few
      pixels left when the viewport narrows. */
   overflow-y: scroll;
+  /* reset behavior in ie7, as it will add an extra scrollbar regardless
+     selector * targets ie6 and ie7 only */
+  *overflow-y: auto;
 }
 
 .device-phone {
@@ -25,6 +27,14 @@ p, blockquote, th, td, button {
   margin: 0;
   padding: 0;
   border: 0;
+}
+
+body.make-me-sneeze {
+  background: url('/rsrc/image/texture/dust_background.jpg');
+}
+
+.make-me-sneeze .phabricator-standard-page {
+  background: transparent;
 }
 
 table {
@@ -59,25 +69,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body {
-  font: 13px/1.69 'lucida grande', tahoma, verdana, arial, sans-serif;
+  font: 13px/1.231 'Helvetica Neue', Arial, sans-serif;
   direction: ltr;
   text-align: left;
   unicode-bidi: embed;
-  *font-size: small;
 }
 
 body.phabricator-chromeless-page {
   background: #ffffff;
 }
 
-select, input, button, textarea, button {
-  font: 13px/1.69 'lucida grande', tahoma, verdana, arial, clean, sans-serif;
-}
-
-select {
-  /* NOTE: In Safari, specifying a border color makes the browser respect
-     "font-size" settings. */
-  border: 1px solid #999999;
+textarea {
+  font: inherit;
 }
 
 table {
@@ -96,15 +99,8 @@ h2 {
 a {
   -moz-outline-style: none;
   text-decoration: none;
+  color: #18559D;
   cursor: pointer;
-}
-
-a:visited {
-  color: #259;
-}
-
-a:link {
-  color: #259;
 }
 
 a:hover {
@@ -124,7 +120,6 @@ img {
   width: 64px;
   height: 64px;
   opacity: 0.5;
-  z-index: 40;
 
   border: 1px solid #444444;
   border-radius: 8px;

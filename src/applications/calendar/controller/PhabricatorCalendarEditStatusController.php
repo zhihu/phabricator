@@ -68,10 +68,10 @@ final class PhabricatorCalendarEditStatusController
           ->setDescription($description)
           ->save();
       } catch (PhabricatorUserStatusInvalidEpochException $e) {
-        $errors[] = 'Start must be before end.';
+        $errors[] = pht('Start must be before end.');
       } catch (PhabricatorUserStatusOverlapException $e) {
-        $errors[] = 'There is already a status within the specified '.
-                    'timeframe. Edit or delete this existing status.';
+        $errors[] = pht('There is already a status within the specified '.
+                    'timeframe. Edit or delete this existing status.');
       }
 
       if (!$errors) {
@@ -85,8 +85,7 @@ final class PhabricatorCalendarEditStatusController
                                                        $user,
                                                        'Y'),
             $redirect => true,
-          )
-        );
+          ));
         return id(new AphrontRedirectResponse())
           ->setURI($uri);
       }
@@ -95,13 +94,14 @@ final class PhabricatorCalendarEditStatusController
     $error_view = null;
     if ($errors) {
       $error_view = id(new AphrontErrorView())
-        ->setTitle('Status can not be set!')
+        ->setTitle(pht('Status can not be set!'))
         ->setErrors($errors);
     }
 
     $status_select = id(new AphrontFormSelectControl())
       ->setLabel(pht('Status'))
       ->setName('status')
+      ->setValue($status->getStatus())
       ->setOptions($status->getStatusOptions());
 
     $description = id(new AphrontFormTextAreaControl())
@@ -124,8 +124,7 @@ final class PhabricatorCalendarEditStatusController
     } else {
       $submit->addCancelButton(
         $this->getApplicationURI('status/delete/'.$status->getID().'/'),
-        'Delete Status'
-      );
+        pht('Delete Status'));
     }
     $form->appendChild($submit);
 
@@ -137,16 +136,14 @@ final class PhabricatorCalendarEditStatusController
         id(new PhabricatorHeaderView())->setHeader($page_title),
         $error_view,
         $form,
-      )
-    );
+      ));
 
     return $this->buildApplicationPage(
       $nav,
       array(
         'title' => $page_title,
         'device' => true
-      )
-    );
+      ));
   }
 
 }

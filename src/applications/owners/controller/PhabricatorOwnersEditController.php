@@ -32,7 +32,10 @@ final class PhabricatorOwnersEditController
       $package->setName($request->getStr('name'));
       $package->setDescription($request->getStr('description'));
       $old_auditing_enabled = $package->getAuditingEnabled();
-      $package->setAuditingEnabled($request->getStr('auditing') === 'enabled');
+      $package->setAuditingEnabled(
+        ($request->getStr('auditing') === 'enabled')
+          ? 1
+          : 0);
 
       $primary = $request->getArr('primary');
       $primary = reset($primary);
@@ -47,6 +50,7 @@ final class PhabricatorOwnersEditController
 
       $paths = $request->getArr('path');
       $repos = $request->getArr('repo');
+      $excludes = $request->getArr('exclude');
 
       $path_refs = array();
       for ($ii = 0; $ii < count($paths); $ii++) {
@@ -56,6 +60,7 @@ final class PhabricatorOwnersEditController
         $path_refs[] = array(
           'repositoryPHID'  => $repos[$ii],
           'path'            => $paths[$ii],
+          'excluded'        => $excludes[$ii],
         );
       }
 
@@ -102,6 +107,7 @@ final class PhabricatorOwnersEditController
         $path_refs[] = array(
           'repositoryPHID' => $path->getRepositoryPHID(),
           'path' => $path->getPath(),
+          'excluded' => $path->getExcluded(),
         );
       }
     }
@@ -215,7 +221,7 @@ final class PhabricatorOwnersEditController
         id(new AphrontFormInsetView())
           ->setTitle('Paths')
           ->addDivAttributes(array('id' => 'path-editor'))
-          ->setRightButton(javelin_render_tag(
+          ->setRightButton(javelin_tag(
               'a',
               array(
                 'href' => '#',
@@ -226,7 +232,7 @@ final class PhabricatorOwnersEditController
               'Add New Path'))
           ->setDescription('Specify the files and directories which comprise '.
                            'this package.')
-          ->setContent(javelin_render_tag(
+          ->setContent(javelin_tag(
               'table',
               array(
                 'class' => 'owners-path-editor-table',
@@ -256,15 +262,11 @@ final class PhabricatorOwnersEditController
       ));
   }
 
-  protected function getExtraPackageViews() {
+  protected function getExtraPackageViews(AphrontSideNavFilterView $view) {
     if ($this->id) {
-      $extra = array(array('name' => 'Edit',
-                           'key'  => 'edit/'.$this->id));
+      $view->addFilter('edit/'.$this->id, 'Edit');
     } else {
-      $extra = array(array('name' => 'New',
-                           'key'  => 'new'));
+      $view->addFilter('new', 'New');
     }
-
-    return $extra;
   }
 }

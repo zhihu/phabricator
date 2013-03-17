@@ -20,14 +20,6 @@
   border-width:         0px;
 }
 
-.phabricator-page-foot {
-  text-align: right;
-  border-top: 1px solid #DEE7F1;
-  padding: .8em 1em;
-  font-size: 11px;
-  color: #999;
-}
-
 .keyboard-shortcut-help td,
 .keyboard-shortcut-help th {
   padding: 8px;
@@ -48,21 +40,9 @@
 }
 
 .keyboard-focus-focus-reticle {
-  z-index: 1;
   background: #ffffd3;
   position: absolute;
   border: 1px solid #999900;
-}
-
-.keyboard-shortcuts-available {
-  height: 16px;
-  vertical-align: middle;
-  color: #666666;
-  text-align: right;
-  padding-right: 24px;
-  font-size: 11px;
-  background:
-    url('/rsrc/image/icon/fatcow/key_question.png') right center no-repeat;
 }
 
 .workflow-header {
@@ -77,8 +57,14 @@
   float: right;
 }
 
-.handle-status-closed {
+a.handle-status-closed {
   text-decoration: line-through;
+  color: #676767;
+}
+
+a.handle-status-closed:hover {
+  text-decoration: line-through;
+  color: #19558D;
 }
 
 a.handle-disabled,
@@ -102,10 +88,17 @@ a.handle-disabled {
 }
 
 .aphront-developer-error-callout {
+  position: relative;
   padding: 2em;
   background: #aa0000;
   color: white;
   text-align: center;
   font-size: 11px;
   font-family: "Verdana";
+}
+
+.setup-warning-callout {
+  position: relative;
+  padding: 0.75em 1em;
+  background: #ffffbb;
 }

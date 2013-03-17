@@ -28,10 +28,11 @@ final class PhabricatorLoginController
 
       $dialog = new AphrontDialogView();
       $dialog->setUser($user);
-      $dialog->setTitle('Login Required');
-      $dialog->appendChild('<p>You must login to continue.</p>');
-      $dialog->addSubmitButton('Login');
-      $dialog->addCancelButton('/', 'Cancel');
+      $dialog->setTitle(pht('Login Required'));
+      $dialog->appendChild(phutil_tag('p', array(), pht(
+        'You must login to continue.')));
+      $dialog->addSubmitButton(pht('Login'));
+      $dialog->addCancelButton('/', pht('Cancel'));
 
       return id(new AphrontDialogResponse())->setDialog($dialog);
     }
@@ -62,18 +63,22 @@ final class PhabricatorLoginController
       $request->clearCookie('phsid');
 
       $error_view = new AphrontErrorView();
-      $error_view->setTitle('Invalid Session');
+      $error_view->setTitle(pht('Invalid Session'));
       $error_view->setErrors(array(
-        "Your login session is invalid. Try logging in again. If that ".
-        "doesn't work, clear your browser cookies."
+        pht("Your login session is invalid. Try logging in again. If that ".
+        "doesn't work, clear your browser cookies.")
       ));
     }
 
-    $next_uri_path = $this->getRequest()->getPath();
-    if ($next_uri_path == '/login/') {
-      $next_uri = '/';
-    } else {
-      $next_uri = $this->getRequest()->getRequestURI();
+
+    $next_uri = $request->getStr('next');
+    if (!$next_uri) {
+      $next_uri_path = $this->getRequest()->getPath();
+      if ($next_uri_path == '/login/') {
+        $next_uri = '/';
+      } else {
+        $next_uri = $this->getRequest()->getRequestURI();
+      }
     }
 
     if (!$request->isFormPost()) {
@@ -100,12 +105,12 @@ final class PhabricatorLoginController
             $require_captcha = true;
             if (!AphrontFormRecaptchaControl::processCaptcha($request)) {
               if (AphrontFormRecaptchaControl::hasCaptchaResponse($request)) {
-                $e_captcha = 'Invalid';
-                $errors[] = 'CAPTCHA was not entered correctly.';
+                $e_captcha = pht('Invalid');
+                $errors[] = pht('CAPTCHA was not entered correctly.');
               } else {
-                $e_captcha = 'Required';
-                $errors[] = 'Too many login failures recently. You must '.
-                            'submit a CAPTCHA with your login request.';
+                $e_captcha = pht('Required');
+                $errors[] = pht('Too many login failures recently. You must '.
+                            'submit a CAPTCHA with your login request.');
               }
             }
           }
@@ -128,7 +133,7 @@ final class PhabricatorLoginController
           $envelope = new PhutilOpaqueEnvelope($request->getStr('password'));
 
           if (!$user || !$user->comparePassword($envelope)) {
-            $errors[] = 'Bad username/password.';
+            $errors[] = pht('Bad username/password.');
           }
         }
 
@@ -138,10 +143,9 @@ final class PhabricatorLoginController
           $request->setCookie('phusr', $user->getUsername());
           $request->setCookie('phsid', $session_key);
 
-          $uri = new PhutilURI('/login/validate/');
-          $uri->setQueryParams(
-            array(
-              'phusr' => $user->getUsername(),
+          $uri = id(new PhutilURI('/login/validate/'))
+            ->setQueryParams(
+              array('phusr' => $user->getUsername()
             ));
 
           return id(new AphrontRedirectResponse())
@@ -160,7 +164,7 @@ final class PhabricatorLoginController
 
       if ($errors) {
         $error_view = new AphrontErrorView();
-        $error_view->setTitle('Login Failed');
+        $error_view->setTitle(pht('Login Failed'));
         $error_view->setErrors($errors);
       }
 
@@ -170,16 +174,16 @@ final class PhabricatorLoginController
         ->setAction('/login/')
         ->appendChild(
           id(new AphrontFormTextControl())
-            ->setLabel('Username/Email')
+            ->setLabel(pht('Username/Email'))
             ->setName('username_or_email')
             ->setValue($username_or_email))
         ->appendChild(
           id(new AphrontFormPasswordControl())
-            ->setLabel('Password')
+            ->setLabel(pht('Password'))
             ->setName('password')
-            ->setCaption(
-              '<a href="/login/email/">'.
-                'Forgot your password? / Email Login</a>'));
+            ->setCaption(hsprintf(
+              '<a href="/login/email/">%s</a>',
+              pht('Forgot your password? / Email Login'))));
 
       if ($require_captcha) {
         $form->appendChild(
@@ -190,7 +194,7 @@ final class PhabricatorLoginController
       $form
         ->appendChild(
           id(new AphrontFormSubmitControl())
-            ->setValue('Login'));
+            ->setValue(pht('Login')));
 
 
   //    $panel->setCreateButton('Register New Account', '/login/register/');
@@ -206,18 +210,18 @@ final class PhabricatorLoginController
         ->setAction('/ldap/login/')
         ->appendChild(
           id(new AphrontFormTextControl())
-          ->setLabel('LDAP username')
+          ->setLabel(pht('LDAP username'))
           ->setName('username')
           ->setValue($username_or_email))
         ->appendChild(
           id(new AphrontFormPasswordControl())
-          ->setLabel('Password')
+          ->setLabel(pht('Password'))
           ->setName('password'));
 
       $ldap_form
         ->appendChild(
           id(new AphrontFormSubmitControl())
-          ->setValue('Login'));
+          ->setValue(pht('Login')));
 
       $forms['LDAP Login'] = $ldap_form;
     }
@@ -243,18 +247,21 @@ final class PhabricatorLoginController
       // CSRF for logged-out users is vaugely tricky.
 
       if ($provider->isProviderRegistrationEnabled()) {
-        $title = "Login or Register with {$provider_name}";
-        $body = 'Login or register for Phabricator using your '.
-                phutil_escape_html($provider_name).' account.';
-        $button = "Login or Register with {$provider_name}";
+        $title = pht("Login or Register with %s", $provider_name);
+        $body = pht('Login or register for Phabricator using your %s account.',
+          $provider_name);
+        $button = pht("Login or Register with %s", $provider_name);
       } else {
-        $title = "Login with {$provider_name}";
-        $body = 'Login to your existing Phabricator account using your '.
-                phutil_escape_html($provider_name).' account.<br /><br />'.
-                '<strong>You can not use '.
-                phutil_escape_html($provider_name).' to register a new '.
-                'account.</strong>';
-        $button = "Login with {$provider_name}";
+        $title = pht("Login with %s", $provider_name);
+        $body = hsprintf(
+          '%s<br /><br /><strong>%s</strong>',
+          pht(
+            'Login to your existing Phabricator account using your %s account.',
+            $provider_name),
+          pht(
+            'You can not use %s to register a new account.',
+            $provider_name));
+        $button = pht("Log in with %s", $provider_name);
       }
 
       $auth_form = new AphrontFormView();
@@ -271,8 +278,9 @@ final class PhabricatorLoginController
       $auth_form
         ->setUser($request->getUser())
         ->setMethod('GET')
-        ->appendChild(
-          '<p class="aphront-form-instructions">'.$body.'</p>')
+        ->appendChild(hsprintf(
+          '<p class="aphront-form-instructions">%s</p>',
+          $body))
         ->appendChild(
           id(new AphrontFormSubmitControl())
             ->setValue("{$button} \xC2\xBB"));
@@ -282,22 +290,24 @@ final class PhabricatorLoginController
 
     $panel = new AphrontPanelView();
     $panel->setWidth(AphrontPanelView::WIDTH_FORM);
+    $panel->setNoBackground();
     foreach ($forms as $name => $form) {
-      $panel->appendChild('<h1>'.$name.'</h1>');
+      $panel->appendChild(phutil_tag('h1', array(), $name));
       $panel->appendChild($form);
-      $panel->appendChild('<br />');
+      $panel->appendChild(phutil_tag('br'));
     }
 
     $login_message = PhabricatorEnv::getEnvConfig('auth.login-message');
 
-    return $this->buildStandardPageResponse(
+    return $this->buildApplicationPage(
       array(
         $error_view,
-        $login_message,
+        phutil_safe_html($login_message),
         $panel,
       ),
       array(
-        'title' => 'Login',
+        'title' => pht('Login'),
+        'device' => true
       ));
   }
 

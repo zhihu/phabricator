@@ -45,7 +45,9 @@ DarkConsole (see @{article:Using DarkConsole}) and other places.
 The exception is tables which share the same schema over different databases
 such as `edge`.
 
-We use lower-case table names with words separated by underscores.
+We use lower-case table names with words separated by underscores. The reason is
+that MySQL can be configured (with `lower_case_table_names`) to lower-case the
+table names anyway.
 
 = Column Names =
 
@@ -143,15 +145,20 @@ There are three simple steps to update the schema:
 
 # Create a `.sql` file in `resources/sql/patches/`. This file should:
  - Contain the approprate MySQL commands to update the schema.
+ - Be named as `YYYYMMDD.patchname.ext`. For example, `20130217.example.sql`.
  - Use `${NAMESPACE}` rather than `phabricator` for database names.
  - Use `COLLATE utf8_bin` for any columns that are to be used as identifiers,
 such as PHID columns. Otherwise, use `COLLATE utf8_general_ci`.
  - Name all indexes so it is possible to delete them later.
 # Edit `src/infrastructure/storage/patch/PhabricatorBuiltinPatchList.php` and
 add your patch to @{method@phabricator:PhabricatorBuiltinPatchList::getPatches}.
-# Run `bin/storage/upgrade`.
+# Run `bin/storage upgrade`.
 
-It is also possible to create more complex patch in PHP.
+It is also possible to create more complex patches in PHP for data migration
+(due to schema changes or otherwise.) However, the schema changes themselves
+should be done in separate `.sql` files. Order can be guaranteed by editing
+`src/infrastructure/storage/patch/PhabricatorBuiltinPatchList.php`
+appropriately.
 
 See the
 [[https://secure.phabricator.com/rPb39175342dc5bee0c2246b05fa277e76a7e96ed3

@@ -26,7 +26,7 @@ final class DifferentialCommitsFieldSpecification
       $links[] = $this->getHandle($commit_phid)->renderLink();
     }
 
-    return implode('<br />', $links);
+    return phutil_implode_html(phutil_tag('br'), $links);
   }
 
   private function getCommitPHIDs() {
@@ -47,7 +47,9 @@ final class DifferentialCommitsFieldSpecification
     }
 
     $body = array();
-    $handles = id(new PhabricatorObjectHandleData($phids))->loadHandles();
+    $handles = id(new PhabricatorObjectHandleData($phids))
+      ->setViewer($this->getUser())
+      ->loadHandles();
     $body[] = pht('COMMIT(S)', count($handles));
 
     foreach ($handles as $handle) {

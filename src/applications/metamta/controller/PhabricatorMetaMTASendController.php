@@ -42,23 +42,25 @@ final class PhabricatorMetaMTASendController
     }
 
     $failure_caption =
-      "Enter a number to simulate that many consecutive send failures before ".
-      "really attempting to deliver via the underlying MTA.";
+      pht("Enter a number to simulate that many consecutive send failures ".
+      "brefore really attempting to deliver via the underlying MTA.");
 
     $doclink_href = PhabricatorEnv::getDoclink(
       'article/Configuring_Outbound_Email.html');
 
-    $doclink = phutil_render_tag(
+    $doclink = phutil_tag(
       'a',
       array(
         'href' => $doclink_href,
         'target' => '_blank',
       ),
-    'Configuring Outbound Email');
-    $instructions =
-      '<p class="aphront-form-instructions">This form will send a normal '.
-      'email using the settings you have configured for Phabricator. For more '.
-      'information, see '.$doclink.'.</p>';
+    pht('Configuring Outbound Email'));
+    $instructions = hsprintf(
+      '<p class="aphront-form-instructions">%s</p>',
+      pht(
+        'This form will send a normal email using the settings you have '.
+          'configured for Phabricator. For more information, see %s.',
+        $doclink));
 
     $adapter = PhabricatorEnv::getEnvConfig('metamta.mail-adapter');
     $warning = null;
@@ -66,18 +68,24 @@ final class PhabricatorMetaMTASendController
       $warning = new AphrontErrorView();
       $warning->setTitle('Email is Disabled');
       $warning->setSeverity(AphrontErrorView::SEVERITY_WARNING);
-      $warning->appendChild(
-        '<p>This installation of Phabricator is currently set to use '.
-        '<tt>PhabricatorMailImplementationTestAdapter</tt> to deliver '.
-        'outbound email. This completely disables outbound email! All '.
-        'outbound email will be thrown in a deep, dark hole until you '.
-        'configure a real adapter.</p>');
+      $warning->appendChild(phutil_tag(
+        'p',
+        array(),
+        pht(
+          'This installation of Phabricator is currently set to use %s to '.
+            'deliver outbound email. This completely disables outbound email! '.
+            'All outbound email will be thrown in a deep, dark hole until you '.
+            'configure a real adapter.',
+          phutil_tag(
+            'tt',
+            array(),
+            'PhabricatorMailImplementationTestAdapter'))));
     }
 
     $phdlink_href = PhabricatorEnv::getDoclink(
       'article/Managing_Daemons_with_phd.html');
 
-    $phdlink = phutil_render_tag(
+    $phdlink = phutil_tag(
       'a',
       array(
         'href' => $phdlink_href,
@@ -91,49 +99,53 @@ final class PhabricatorMetaMTASendController
       ->appendChild($instructions)
       ->appendChild(
         id(new AphrontFormStaticControl())
-          ->setLabel('Adapter')
+          ->setLabel(pht('Adapter'))
           ->setValue($adapter))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setLabel('To')
+          ->setLabel(pht('To'))
           ->setName('to')
           ->setDatasource('/typeahead/common/mailable/'))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setLabel('CC')
+          ->setLabel(pht('CC'))
           ->setName('cc')
           ->setDatasource('/typeahead/common/mailable/'))
       ->appendChild(
         id(new AphrontFormTextControl())
-          ->setLabel('Subject')
+          ->setLabel(pht('Subject'))
           ->setName('subject'))
       ->appendChild(
         id(new AphrontFormTextAreaControl())
-          ->setLabel('Body')
+          ->setLabel(pht('Body'))
           ->setName('body'))
       ->appendChild(
         id(new AphrontFormTextControl())
-          ->setLabel('Mail Tags')
+          ->setLabel(pht('Mail Tags'))
           ->setName('mailtags')
-          ->setCaption(
-            'Example: <tt>differential-cc, differential-comment</tt>'))
+          ->setCaption(pht(
+            'Example: %s',
+            phutil_tag(
+              'tt',
+              array(),
+              'differential-cc, differential-comment'))))
       ->appendChild(
         id(new AphrontFormDragAndDropUploadControl())
-          ->setLabel('Attach Files')
+          ->setLabel(pht('Attach Files'))
           ->setName('files')
           ->setActivatedClass('aphront-panel-view-drag-and-drop'))
       ->appendChild(
         id(new AphrontFormTextControl())
-          ->setLabel('Simulate Failures')
+          ->setLabel(pht('Simulate Failures'))
           ->setName('failures')
           ->setCaption($failure_caption))
       ->appendChild(
         id(new AphrontFormCheckboxControl())
-          ->setLabel('HTML')
+          ->setLabel(pht('HTML'))
           ->addCheckbox('html', '1', 'Send as HTML email.'))
       ->appendChild(
         id(new AphrontFormCheckboxControl())
-          ->setLabel('Bulk')
+          ->setLabel(pht('Bulk'))
           ->addCheckbox('bulk', '1', 'Send with bulk email headers.'))
       ->appendChild(
         id(new AphrontFormCheckboxControl())
@@ -141,18 +153,17 @@ final class PhabricatorMetaMTASendController
           ->addCheckbox(
             'immediately',
             '1',
-            'Send immediately. (Do not enqueue for daemons.)',
+            pht('Send immediately. (Do not enqueue for daemons.)'),
             PhabricatorEnv::getEnvConfig('metamta.send-immediately'))
-          ->setCaption('Daemons can be started with '.$phdlink.'.')
-          )
+          ->setCaption(pht('Daemons can be started with %s.', $phdlink)))
       ->appendChild(
         id(new AphrontFormSubmitControl())
-          ->setValue('Send Mail'));
+          ->setValue(pht('Send Mail')));
 
     $panel = new AphrontPanelView();
-    $panel->setHeader('Send Email');
+    $panel->setHeader(pht('Send Email'));
     $panel->appendChild($form);
-    $panel->setWidth(AphrontPanelView::WIDTH_FORM);
+    $panel->setNoBackground();
 
     $nav = $this->buildSideNavView();
     $nav->selectFilter('send');
@@ -165,7 +176,8 @@ final class PhabricatorMetaMTASendController
     return $this->buildApplicationPage(
       $nav,
       array(
-        'title' => 'Send Test',
+        'title' => pht('Send Test'),
+        'device' => true,
       ));
   }
 

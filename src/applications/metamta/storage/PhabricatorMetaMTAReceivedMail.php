@@ -9,6 +9,7 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
   protected $relatedPHID;
   protected $authorPHID;
   protected $message;
+  protected $messageIDHash;
 
   public function getConfiguration() {
     return array(
@@ -49,8 +50,7 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
   private function loadExcludeMailRecipientPHIDs() {
     $addresses = array_merge(
       $this->getToAddresses(),
-      $this->getCCAddresses()
-    );
+      $this->getCCAddresses());
 
     return $this->loadPHIDsFromAddresses($addresses);
   }
@@ -61,7 +61,7 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
 
   private function loadPHIDsFromAddresses(array $addresses) {
     if (empty($addresses)) {
-      return null;
+      return array();
     }
     $users = id(new PhabricatorUserEmail())
       ->loadAllWhere('address IN (%Ls)', $addresses);
@@ -77,7 +77,10 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
   /**
    * Parses "to" addresses, looking for a public create email address
    * first and if not found parsing the "to" address for reply handler
-   * information: receiver name, user id, and hash.
+   * information: receiver name, user id, and hash. If nothing can be
+   * found, it then loads user phids for as many to: email addresses as
+   * it can, theoretically falling back to create a conpherence amongst
+   * those users.
    */
   private function getPhabricatorToInformation() {
     // Only one "public" create address so far
@@ -92,12 +95,14 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
     $prefixPattern = ($single_handle_prefix)
       ? preg_quote($single_handle_prefix, '/') . '\+'
       : '';
-    $pattern = "/^{$prefixPattern}((?:D|T|C)\d+)\+([\w]+)\+([a-f0-9]{16})@/U";
+    $pattern = "/^{$prefixPattern}((?:D|T|C|E)\d+)\+([\w]+)\+([a-f0-9]{16})@/U";
 
     $phabricator_address = null;
     $receiver_name       = null;
     $user_id             = null;
     $hash                = null;
+    $user_phids          = array();
+    $user_names          = array();
     foreach ($this->getToAddresses() as $address) {
       if ($address == $create_task) {
         $phabricator_address = $address;
@@ -120,13 +125,31 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
         $hash                = $matches[3];
         break;
       }
+
+      $parts = explode('@', $address);
+      $maybe_name = trim($parts[0]);
+      $maybe_domain = trim($parts[1]);
+      $mail_domain = PhabricatorEnv::getEnvConfig('metamta.domain');
+      if ($mail_domain == $maybe_domain &&
+          PhabricatorUser::validateUsername($maybe_name)) {
+        $user_names[] = $maybe_name;
+      }
+    }
+
+    // since we haven't found a phabricator address, maybe this is
+    // someone trying to create a conpherence?
+    if (!$phabricator_address && $user_names) {
+      $users = id(new PhabricatorUser())
+        ->loadAllWhere('userName IN (%Ls)', $user_names);
+      $user_phids = mpull($users, 'getPHID');
     }
 
     return array(
       $phabricator_address,
       $receiver_name,
       $user_id,
-      $hash
+      $hash,
+      $user_phids
     );
   }
 
@@ -145,11 +168,31 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
       return $this->setMessage($message)->save();
     }
 
+    $message_id_hash = $this->getMessageIDHash();
+    if ($message_id_hash) {
+      $messages = $this->loadAllWhere(
+        'messageIDHash = %s',
+        $message_id_hash);
+      $messages_count = count($messages);
+      if ($messages_count > 1) {
+        $first_message = reset($messages);
+        if ($first_message->getID() != $this->getID()) {
+          $message = sprintf(
+            'Ignoring email with message id hash "%s" that has been seen %d '.
+            'times, including this message.',
+            $message_id_hash,
+            $messages_count);
+          return $this->setMessage($message)->save();
+        }
+      }
+    }
+
     list($to,
          $receiver_name,
          $user_id,
-         $hash) = $this->getPhabricatorToInformation();
-    if (!$to) {
+         $hash,
+         $user_phids) = $this->getPhabricatorToInformation();
+    if (!$to && !$user_phids) {
       $raw_to = idx($this->headers, 'to');
       return $this->setMessage("Unrecognized 'to' format: {$raw_to}")->save();
     }
@@ -164,7 +207,7 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
     if ($create_task && $to == $create_task) {
       $receiver = new ManiphestTask();
 
-      $user = $this->lookupPublicUser();
+      $user = $this->lookupSender();
       if ($user) {
         $this->setAuthorPHID($user->getPHID());
       } else {
@@ -208,12 +251,32 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
       return $this->save();
     }
 
+    // means we're creating a conpherence...!
+    if ($user_phids) {
+      // we must have a valid user who created this conpherence
+      $user = $this->lookupSender();
+      if (!$user) {
+        return $this->setMessage("Invalid public user '{$from}'.")->save();
+      }
+
+      $conpherence = id(new ConpherenceReplyHandler())
+        ->setMailReceiver(new ConpherenceThread())
+        ->setMailAddedParticipantPHIDs($user_phids)
+        ->setActor($user)
+        ->setExcludeMailRecipientPHIDs($this->loadExcludeMailRecipientPHIDs())
+        ->processEmail($this);
+
+      $this->setRelatedPHID($conpherence->getPHID());
+      $this->setMessage('OK');
+      return $this->save();
+    }
+
     if ($user_id == 'public') {
       if (!PhabricatorEnv::getEnvConfig('metamta.public-replies')) {
         return $this->setMessage("Public replies not enabled.")->save();
       }
 
-      $user = $this->lookupPublicUser();
+      $user = $this->lookupSender();
 
       if (!$user) {
         return $this->setMessage("Invalid public user '{$from}'.")->save();
@@ -254,10 +317,7 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
 
     $expect_hash = self::computeMailHash($receiver->getMailKey(), $check_phid);
 
-    // See note at computeOldMailHash().
-    $old_hash = self::computeOldMailHash($receiver->getMailKey(), $check_phid);
-
-    if ($expect_hash != $hash && $old_hash != $hash) {
+    if ($expect_hash != $hash) {
       return $this->setMessage("Invalid mail hash!")->save();
     }
 
@@ -270,6 +330,9 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
     } else if ($receiver instanceof PhabricatorRepositoryCommit) {
       $handler = PhabricatorAuditCommentEditor::newReplyHandlerForCommit(
         $receiver);
+    } else if ($receiver instanceof ConpherenceThread) {
+      $handler = id(new ConpherenceReplyHandler())
+        ->setMailReceiver($receiver);
     }
 
     $handler->setActor($user);
@@ -312,6 +375,9 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
       case 'C':
         $class_obj = new PhabricatorRepositoryCommit();
         break;
+      case 'E':
+        $class_obj = new ConpherenceThread();
+        break;
       default:
         return null;
     }
@@ -323,20 +389,6 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
     $global_mail_key = PhabricatorEnv::getEnvConfig('phabricator.mail-key');
 
     $hash = PhabricatorHash::digest($mail_key.$global_mail_key.$phid);
-    return substr($hash, 0, 16);
-  }
-
-  public static function computeOldMailHash($mail_key, $phid) {
-
-    // TODO: Remove this method entirely in a couple of months. We've moved from
-    // plain sha1 to sha1+hmac to make the codebase more auditable for good uses
-    // of hash functions, but still accept the old hashes on email replies to
-    // avoid breaking things. Once we've been sending only hmac hashes for a
-    // while, remove this and start rejecting old hashes. See T547.
-
-    $global_mail_key = PhabricatorEnv::getEnvConfig('phabricator.mail-key');
-
-    $hash = sha1($mail_key.$global_mail_key.$phid);
     return substr($hash, 0, 16);
   }
 
@@ -362,7 +414,7 @@ final class PhabricatorMetaMTAReceivedMail extends PhabricatorMetaMTADAO {
     return array_filter($raw_addresses);
   }
 
-  private function lookupPublicUser() {
+  private function lookupSender() {
     $from = idx($this->headers, 'from');
     $from = $this->getRawEmailAddress($from);
 

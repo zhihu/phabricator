@@ -3,19 +3,25 @@
 final class PhabricatorApplicationAudit extends PhabricatorApplication {
 
   public function getShortDescription() {
-    return 'Audit Code';
+    return pht('Audit Code');
   }
 
   public function getBaseURI() {
     return '/audit/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'audit';
   }
 
   public function getHelpURI() {
     return PhabricatorEnv::getDoclink('article/Audit_User_Guide.html');
+  }
+
+  public function getEventListeners() {
+    return array(
+      new AuditPeopleMenuEventListener()
+    );
   }
 
   public function getRoutes() {
@@ -43,6 +49,18 @@ final class PhabricatorApplicationAudit extends PhabricatorApplication {
 
     $phids = PhabricatorAuditCommentEditor::loadAuditPHIDsForUser($user);
 
+    $commits = id(new PhabricatorAuditCommitQuery())
+      ->withAuthorPHIDs($phids)
+      ->withStatus(PhabricatorAuditCommitQuery::STATUS_CONCERN)
+      ->execute();
+
+    $count = count($commits);
+    $type = PhabricatorApplicationStatusView::TYPE_NEEDS_ATTENTION;
+    $status[] = id(new PhabricatorApplicationStatusView())
+      ->setType($type)
+      ->setText(pht('%d Problem Commit(s)', $count))
+      ->setCount($count);
+
     $audits = id(new PhabricatorAuditQuery())
       ->withAuditorPHIDs($phids)
       ->withStatus(PhabricatorAuditQuery::STATUS_OPEN)
@@ -50,27 +68,10 @@ final class PhabricatorApplicationAudit extends PhabricatorApplication {
       ->execute();
 
     $count = count($audits);
-    $type = $count
-      ? PhabricatorApplicationStatusView::TYPE_INFO
-      : PhabricatorApplicationStatusView::TYPE_EMPTY;
+    $type = PhabricatorApplicationStatusView::TYPE_WARNING;
     $status[] = id(new PhabricatorApplicationStatusView())
       ->setType($type)
       ->setText(pht('%d Commit(s) Awaiting Audit', $count))
-      ->setCount($count);
-
-
-    $commits = id(new PhabricatorAuditCommitQuery())
-      ->withAuthorPHIDs($phids)
-      ->withStatus(PhabricatorAuditQuery::STATUS_OPEN)
-      ->execute();
-
-    $count = count($commits);
-    $type = $count
-      ? PhabricatorApplicationStatusView::TYPE_NEEDS_ATTENTION
-      : PhabricatorApplicationStatusView::TYPE_EMPTY;
-    $status[] = id(new PhabricatorApplicationStatusView())
-      ->setType($type)
-      ->setText(pht('%d Problem Commit(s)', $count))
       ->setCount($count);
 
     return $status;

@@ -3,73 +3,88 @@
  */
 
 .phabricator-object-item-list-view {
-  padding: 0 2%;
-  margin: 1em 0;
+  padding: 8px 6px;
 }
 
-.phabricator-object-item-list-header {
-  color: #333333;
-  font-size: 15px;
-  margin-bottom: 12px;
-}
 
+.device-desktop .phabricator-object-item-list-view {
+  padding: 20px;
+}
 
 .phabricator-object-item {
-  background: #f9f9f9;
-  border: 1px solid #dbdbdb;
-  border-radius: 2px;
-  margin: 6px 0;
+  background: #ffffff;
+  border-style: solid;
+  border-color: #c0c5d1;
+  border-width: 1px 1px 1px 3px;
+  margin: 5px 0;
 
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.10);
+}
+
+.device-desktop .phabricator-object-item {
+  margin: 0 0 5px 0;
 }
 
 .phabricator-object-item-name {
   display: block;
-  background: #e9e9e9;
-  padding: 2px 1em;
+  padding: 8px 10px 8px;
   font-weight: bold;
+  font-size: 14px;
 }
 
-.device-desktop .phabricator-object-item-name {
-
-  border: solid #dbdbdb;
-  border-width: 0 0 1px 0;
+.phabricator-object-item-with-attrs .phabricator-object-item-name {
+  padding-bottom: 2px;
 }
 
-/* - Detail List ------------------------------------------------------------
-
-  Object details, used to render things like authors, reviewers, etc.
-
-*/
-
-
-.phabricator-object-detail-list {
-  font-size: 11px;
-  width: 55%;
-  padding: 2px 1%;
-}
-
-.device-desktop .phabricator-object-detail-list,
-.device-tablet .phabricator-object-detail-list {
-  float: left;
-}
-
-.phabricator-object-detail-key {
-  color: #555555;
-  float: left;
-  clear: left;
-  width: 20%;
-  text-align: right;
-  padding: 2px 6px;
+.phabricator-object-item-content {
   overflow: hidden;
 }
 
-.phabricator-object-detail-value {
-  color: #444444;
-  float: left;
 
-  padding: 2px 6px;
+/* - Stackable List ------------------------------------------------------------
+
+  Tighter, stacking list.
+
+*/
+
+.phabricator-object-item-list-view.phabricator-object-list-stackable
+  .phabricator-object-item {
+  margin: -1px 0 0 0;
+}
+
+.phabricator-object-list-stackable .phabricator-object-item {
+  border-width: 1px;
+}
+
+.device-desktop .phabricator-object-list-stackable
+  .phabricator-object-item:hover {
+  border-width: 1px;
+  background: #e9ecf5;
+}
+
+
+/* - Card List -----------------------------------------------------------------
+
+  Rounded card list.
+
+*/
+
+/* Hard to sprite since we can't have other sprites appearing in tall cells */
+.phabricator-object-list-cards .phabricator-object-item {
+  border-radius: 3px;
+  border-left-width: 4px;
+  background: #e8e8e8 url('/rsrc/image/texture/card-gradient.png') repeat-x;
+}
+
+
+.phabricator-object-list-cards .phabricator-object-item-name {
+  display: block;
+  padding: 6px 10px 6px;
+  font-weight: normal;
+  font-size: 13px;
+  color: #555555;
+  max-height: 2em;
 }
 
 
@@ -80,23 +95,212 @@
 */
 
 .phabricator-object-item-attributes {
-  color: #555555;
-  text-align: right;
-  font-size: 11px;
-
-  padding: 2px 1%;
+  padding: 0px 10px 8px;
 }
 
-.device-desktop .phabricator-object-item-attributes,
-.device-tablet .phabricator-object-item-attributes {
-  width: 40%;
+.phabricator-object-item-attribute {
+  display: inline;
+  color: #777;
+  font-size: 13px;
+}
+
+.phabricator-object-item-attribute-spacer {
+  padding: 0 4px;
+}
+
+
+/* - Icons ---------------------------------------------------------------------
+
+  Icons, which show object state. On mobile, they are rendered without labels
+  to save space.
+
+*/
+
+.phabricator-object-item-icons {
   float: right;
+  padding: 10px 10px 0;
 }
 
-.device-phone .phabricator-object-item-attributes {
+/* NOTE: The main content is an "overflow: hidden" div which we give a right
+   margin so it doesn't overlap the icons. The margin is slightly larger than
+   the width + padding of the icon div, so the icons have some space even if
+   the content is wider than available space. */
+
+.device-desktop .phabricator-object-item-icons {
+  width: 120px;
+}
+
+.device-desktop .phabricator-object-item-with-icons
+  .phabricator-object-item-content {
+  margin-right: 132px;
+}
+
+.device .phabricator-object-item-icons {
+  width: 18px;
+}
+
+.device .phabricator-object-item-with-icons .phabricator-object-item-content {
+  margin-right: 30px;
+}
+
+.device .phabricator-object-item-icon-label {
+  display: none;
+  vertical-align: middle;
+}
+
+.phabricator-object-item-icon {
+  position: relative;
+  font-size: 11px;
+  color: #666666;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+
+  min-height: 18px;
+  line-height: 18px;
+}
+
+.device-desktop .phabricator-object-item-icon {
+  padding-right: 22px;
+}
+
+.phabricator-object-item-icon-image {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  width: 14px;
+  height: 14px;
+}
+
+
+/* - Bar Colors ----------------------------------------------------------------
+
+  Colors for the left-hand border bars, used to indicate object status or other
+  attributes.
+
+*/
+
+.phabricator-object-item-bar-color-red {
+  border-left-color: #cc0000;
+}
+
+.phabricator-object-item-bar-color-orange {
+  border-left-color: #cc7300;
+}
+
+.phabricator-object-item-bar-color-yellow {
+  border-left-color: #ccc000;
+}
+
+.phabricator-object-item-bar-color-green {
+  border-left-color: #009b2d;
+}
+
+.phabricator-object-item-bar-color-sky {
+  border-left-color: #6498cf;
+}
+
+.phabricator-object-item-bar-color-blue {
+  border-left-color: #00659a;
+}
+
+.phabricator-object-item-bar-color-indigo {
+  border-left-color: #3a00cc;
+}
+
+.phabricator-object-item-bar-color-violet {
+  border-left-color: #67009b;
+}
+
+.phabricator-object-item-bar-color-grey {
+  border-left-color: #999999;
+}
+
+.phabricator-object-item-bar-color-black {
+  border-left-color: #333333;
+}
+
+
+/* - Effects -------------------------------------------------------------------
+
+  Effects like highlighted items.
+
+*/
+
+.phabricator-object-item-highlighted {
+  background: #ffffb2;
+}
+
+.phabricator-object-item-selected {
+  background: #bfdcff;
+}
+
+
+/* - Foot ----------------------------------------------------------------------
+
+  This goes at the bottom.
+
+*/
+
+.phabricator-object-item-foot {
   clear: both;
+  padding: 0;
 }
 
-.phabricator-object-item-attributes li {
-  padding: 2px 1%;
+
+/* - Foot Icons ----------------------------------------------------------------
+
+  Object counts shown in the footer.
+
+*/
+
+.phabricator-object-item-foot-icons {
+  margin-left: 10px;
+}
+
+.phabricator-object-item-foot-icon {
+  display: inline-block;
+  background: #909090;
+  color: #ffffff;
+  font-weight: bold;
+  margin-right: 3px;
+  padding: 1px 4px 0 22px;
+  height: 19px;
+  vertical-align: middle;
+  position: relative;
+}
+
+.phabricator-object-item-with-handle-icons .phabricator-object-item-foot-icon {
+  margin-top: 8px;
+}
+
+.phabricator-object-item-foot-icon .sprite-icon {
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  left: 4px;
+  top: 3px;
+}
+
+
+/* - Handle Icons --------------------------------------------------------------
+
+  Shows owners, reviewers, etc.
+
+*/
+
+.phabricator-object-item-handle-icons {
+  float: right;
+  height: 28px;
+  margin-right: 10px;
+}
+
+.phabricator-object-item-handle-icon {
+  margin-left: 3px;
+  width: 28px;
+  height: 28px;
+  display: inline-block;
+  background: #f3f3f3;
+  background-size: 28px 28px;
+  background-repeat: no-repeat;
 }

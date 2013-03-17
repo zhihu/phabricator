@@ -27,7 +27,7 @@ final class DifferentialArcanistProjectFieldSpecification
     }
 
     $handle = $this->getHandle($arcanist_phid);
-    return phutil_escape_html($handle->getName());
+    return $handle->getName();
   }
 
   private function getArcanistProjectPHID() {
@@ -47,7 +47,9 @@ final class DifferentialArcanistProjectFieldSpecification
     if ($diff) {
       $phid = $diff->getArcanistProjectPHID();
       if ($phid) {
-        $handle = PhabricatorObjectHandleData::loadOneHandle($phid);
+        $handle = PhabricatorObjectHandleData::loadOneHandle(
+          $phid,
+          $this->getUser());
         return "ARCANIST PROJECT\n  ".$handle->getName();
       }
     }

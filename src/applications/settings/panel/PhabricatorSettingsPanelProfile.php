@@ -46,42 +46,57 @@ final class PhabricatorSettingsPanelProfile
       $user->setTranslation($request->getStr('translation'));
 
       $default_image = $request->getExists('default_image');
+      $gravatar_email = $request->getStr('gravatar');
       if ($default_image) {
         $profile->setProfileImagePHID(null);
         $user->setProfileImagePHID(null);
-      } else if (!empty($_FILES['image'])) {
-        $err = idx($_FILES['image'], 'error');
-        if ($err != UPLOAD_ERR_NO_FILE) {
+      } else if (!empty($gravatar_email) || $request->getFileExists('image')) {
+        $file = null;
+        if (!empty($gravatar_email)) {
+          // These steps recommended by:
+          // https://en.gravatar.com/site/implement/hash/
+          $trimmed = trim($gravatar_email);
+          $lower_cased = strtolower($trimmed);
+          $hash = md5($lower_cased);
+          $url = 'http://www.gravatar.com/avatar/'.($hash).'?s=200';
+          $file = PhabricatorFile::newFromFileDownload(
+            $url,
+            array(
+              'name' => 'gravatar',
+              'authorPHID' => $user->getPHID(),
+            ));
+        } else if ($request->getFileExists('image')) {
           $file = PhabricatorFile::newFromPHPUpload(
             $_FILES['image'],
             array(
               'authorPHID' => $user->getPHID(),
             ));
-          $okay = $file->isTransformableImage();
-          if ($okay) {
-            $xformer = new PhabricatorImageTransformer();
+        }
 
-            // Generate the large picture for the profile page.
-            $large_xformed = $xformer->executeProfileTransform(
-              $file,
-              $width = 280,
-              $min_height = 140,
-              $max_height = 420);
-            $profile->setProfileImagePHID($large_xformed->getPHID());
+        $okay = $file->isTransformableImage();
+        if ($okay) {
+          $xformer = new PhabricatorImageTransformer();
 
-            // Generate the small picture for comments, etc.
-            $small_xformed = $xformer->executeProfileTransform(
-              $file,
-              $width = 50,
-              $min_height = 50,
-              $max_height = 50);
-            $user->setProfileImagePHID($small_xformed->getPHID());
-          } else {
-            $e_image = 'Not Supported';
-            $errors[] =
-              'This server only supports these image formats: '.
-              implode(', ', $supported_formats).'.';
-          }
+          // Generate the large picture for the profile page.
+          $large_xformed = $xformer->executeProfileTransform(
+            $file,
+            $width = 280,
+            $min_height = 140,
+            $max_height = 420);
+          $profile->setProfileImagePHID($large_xformed->getPHID());
+
+          // Generate the small picture for comments, etc.
+          $small_xformed = $xformer->executeProfileTransform(
+            $file,
+            $width = 50,
+            $min_height = 50,
+            $max_height = 50);
+          $user->setProfileImagePHID($small_xformed->getPHID());
+        } else {
+          $e_image = pht('Not Supported');
+          $errors[] =
+            pht('This server only supports these image formats:').
+              ' ' .implode(', ', $supported_formats);
         }
       }
 
@@ -97,14 +112,15 @@ final class PhabricatorSettingsPanelProfile
     $error_view = null;
     if ($errors) {
       $error_view = new AphrontErrorView();
-      $error_view->setTitle('Form Errors');
+      $error_view->setTitle(pht('Form Errors'));
       $error_view->setErrors($errors);
     } else {
       if ($request->getStr('saved')) {
         $error_view = new AphrontErrorView();
         $error_view->setSeverity(AphrontErrorView::SEVERITY_NOTICE);
-        $error_view->setTitle('Changes Saved');
-        $error_view->appendChild('<p>Your changes have been saved.</p>');
+        $error_view->setTitle(pht('Changes Saved'));
+        $error_view->appendChild(
+          phutil_tag('p', array(), pht('Your changes have been saved.')));
         $error_view = $error_view->render();
       }
     }
@@ -113,9 +129,9 @@ final class PhabricatorSettingsPanelProfile
     $profile_uri = PhabricatorEnv::getURI('/p/'.$user->getUsername().'/');
 
     $sexes = array(
-      PhutilPerson::SEX_UNKNOWN => 'Unknown',
-      PhutilPerson::SEX_MALE => 'Male',
-      PhutilPerson::SEX_FEMALE => 'Female',
+      PhutilPerson::SEX_UNKNOWN => pht('Unknown'),
+      PhutilPerson::SEX_MALE => pht('Male'),
+      PhutilPerson::SEX_FEMALE => pht('Female'),
     );
 
     $translations = array();
@@ -131,7 +147,7 @@ final class PhabricatorSettingsPanelProfile
     asort($translations);
     $default = PhabricatorEnv::newObjectFromConfig('translation.provider');
     $translations = array(
-      '' => 'Server Default ('.$default->getName().')',
+      '' => pht('Server Default (%s)', $default->getName()),
     ) + $translations;
 
     $form = new AphrontFormView();
@@ -140,65 +156,77 @@ final class PhabricatorSettingsPanelProfile
       ->setEncType('multipart/form-data')
       ->appendChild(
         id(new AphrontFormTextControl())
-          ->setLabel('Title')
+          ->setLabel(pht('Title'))
           ->setName('title')
           ->setValue($profile->getTitle())
-          ->setCaption('Serious business title.'))
+          ->setCaption(pht('Serious business title.')))
       ->appendChild(
         id(new AphrontFormSelectControl())
           ->setOptions($sexes)
-          ->setLabel('Sex')
+          ->setLabel(pht('Sex'))
           ->setName('sex')
           ->setValue($user->getSex()))
       ->appendChild(
         id(new AphrontFormSelectControl())
           ->setOptions($translations)
-          ->setLabel('Translation')
+          ->setLabel(pht('Translation'))
           ->setName('translation')
           ->setValue($user->getTranslation()))
       ->appendChild(
         id(new AphrontFormMarkupControl())
-          ->setLabel('Profile URI')
+          ->setLabel(pht('Profile URI'))
           ->setValue(
-            phutil_render_tag(
+            phutil_tag(
               'a',
               array(
                 'href' => $profile_uri,
               ),
-              phutil_escape_html($profile_uri))))
-      ->appendChild(
-        '<p class="aphront-form-instructions">Write something about yourself! '.
-        'Make sure to include <strong>important information</strong> like '.
-        'your favorite Pokemon and which Starcraft race you play.</p>')
+              $profile_uri)))
+      ->appendChild(hsprintf(
+        '<p class="aphront-form-instructions">%s</p>',
+        pht('Write something about yourself! Make sure to include important ' .
+          'information like your favorite Pokemon and which Starcraft race ' .
+          'you play.')))
       ->appendChild(
         id(new AphrontFormTextAreaControl())
-          ->setLabel('Blurb')
+          ->setLabel(pht('Blurb'))
           ->setName('blurb')
           ->setValue($profile->getBlurb()))
       ->appendChild(
         id(new AphrontFormMarkupControl())
-          ->setLabel('Profile Image')
+          ->setLabel(pht('Profile Image'))
           ->setValue(
-            phutil_render_tag(
+            phutil_tag(
               'img',
               array(
                 'src' => $img_src,
               ))))
       ->appendChild(
         id(new AphrontFormImageControl())
-          ->setLabel('Change Image')
+          ->setLabel(pht('Change Image'))
           ->setName('image')
           ->setError($e_image)
-          ->setCaption('Supported formats: '.implode(', ', $supported_formats)))
-      ->appendChild(
-        id(new AphrontFormSubmitControl())
-          ->setValue('Save')
-          ->addCancelButton('/p/'.$user->getUsername().'/'));
+          ->setCaption(
+            pht('Supported formats: %s', implode(', ', $supported_formats))));
+
+    if (PhabricatorEnv::getEnvConfig('security.allow-outbound-http')) {
+      $form->appendChild(
+        id(new AphrontFormTextControl())
+          ->setLabel(pht('Import Gravatar'))
+          ->setName('gravatar')
+          ->setError($e_image)
+          ->setCaption(pht('Enter gravatar email address')));
+    }
+
+    $form->appendChild(
+      id(new AphrontFormSubmitControl())
+        ->setValue(pht('Save'))
+        ->addCancelButton('/p/'.$user->getUsername().'/'));
 
     $panel = new AphrontPanelView();
-    $panel->setHeader('Edit Profile Details');
+    $panel->setHeader(pht('Edit Profile Details'));
     $panel->appendChild($form);
-    $panel->setWidth(AphrontPanelView::WIDTH_FORM);
+    $panel->setNoBackground();
 
     return array(
       $error_view,

@@ -7,28 +7,35 @@
 }
 
 .device-desktop .phabricator-action-list-view {
-  border: 1px solid #dcdcdc;
+  border: 1px solid #c0c5d1;
   padding: .5em 0;
 
   float: right;
   margin-top: 0px;
   margin-right: 1%;
   width: 20%;
-  border-radius: 2px;
+  border-radius: 3px;
   font-size: 12px;
 
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 0 1px 1px rgba(192, 197, 209, 0.5);
 }
 
-.device-tablet .phabricator-action-list-view,
-.device-phone .phabricator-action-list-view {
+.device-desktop .phabricator-header-shell + .phabricator-action-list-view {
+  margin-top: -28px;
+}
+
+.device .phabricator-header-shell + .phabricator-action-list-view {
+  margin-top: -1px;
+}
+
+.device .phabricator-action-list-view {
   background: #f3f3f3;
   border-top: 1px solid #dcdcdc;
   padding: .5em 0;
 }
 
 .phabricator-action-view {
-  padding: 2px 0;
+  padding: 1px 0;
   position: relative;
 }
 
@@ -37,7 +44,6 @@
   background: transparent;
   box-shadow: none;
   outline: 0;
-  box-shadow: 0;
   padding: 0;
   margin: 0;
   font-weight: normal;
@@ -45,28 +51,35 @@
   width: 100%;
   text-align: left;
   text-shadow: none;
+
+  border-radius: 0;
+  color: #18559D;
+  font: inherit;
+  display: inline;
+  min-width: 0;
 }
 
 .phabricator-action-view button.phabricator-action-view-item,
 .phabricator-action-view-item {
+  padding: 1px 0 1px 34px;
   line-height: 20px;
-  padding-left: 34px;
   display: block;
   font-size: 12px;
+  text-decoration: none;
 }
 
 .phabricator-action-view-icon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   position: absolute;
-  top: 4px;
-  left: 12px;
+  top: 5px;
+  left: 13px;
 }
 
-.device-desktop .phabricator-action-view-item:hover {
+.device-desktop .phabricator-action-view:hover .phabricator-action-view-item {
+  text-decoration: none;
   background-color: #3875d7;
   color: #ffffff;
-  text-decoration: none;
 }
 
 .phabricator-action-view-disabled .phabricator-action-view-item,
@@ -74,8 +87,10 @@
   color: #888888;
 }
 
-.phabricator-action-view-disabled .phabricator-action-view-item:hover,
-.phabricator-action-view-disabled button.phabricator-action-view-item:hover {
+.device-desktop .phabricator-action-view-disabled:hover
+  .phabricator-action-view-item,
+.device-desktop .phabricator-action-view-disabled:hover
+  button.phabricator-action-view-item {
   background-color: #dfdfdf;
   color: #888888;
 }

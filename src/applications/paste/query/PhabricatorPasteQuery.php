@@ -9,6 +9,7 @@ final class PhabricatorPasteQuery
   private $parentPHIDs;
 
   private $needContent;
+  private $needRawContent;
 
   public function withIDs(array $ids) {
     $this->ids = $ids;
@@ -35,7 +36,12 @@ final class PhabricatorPasteQuery
     return $this;
   }
 
-  public function loadPage() {
+  public function needRawContent($need_raw_content) {
+    $this->needRawContent = $need_raw_content;
+    return $this;
+  }
+
+  protected function loadPage() {
     $table = new PhabricatorPaste();
     $conn_r = $table->establishConnection('r');
 
@@ -49,20 +55,12 @@ final class PhabricatorPasteQuery
 
     $pastes = $table->loadAllFromArray($data);
 
+    if ($pastes && $this->needRawContent) {
+      $this->loadRawContent($pastes);
+    }
+
     if ($pastes && $this->needContent) {
-      $file_phids = mpull($pastes, 'getFilePHID');
-      $files = id(new PhabricatorFile())->loadAllWhere(
-        'phid IN (%Ls)',
-        $file_phids);
-      $files = mpull($files, null, 'getPHID');
-      foreach ($pastes as $paste) {
-        $file = idx($files, $paste->getFilePHID());
-        if ($file) {
-          $paste->attachContent($file->loadFileData());
-        } else {
-          $paste->attachContent('');
-        }
-      }
+      $this->loadContent($pastes);
     }
 
     return $pastes;
@@ -102,6 +100,84 @@ final class PhabricatorPasteQuery
     }
 
     return $this->formatWhereClause($where);
+  }
+
+  private function getContentCacheKey(PhabricatorPaste $paste) {
+    return 'P'.$paste->getID().':content/'.$paste->getLanguage();
+  }
+
+  private function loadRawContent(array $pastes) {
+    $file_phids = mpull($pastes, 'getFilePHID');
+    $files = id(new PhabricatorFile())->loadAllWhere(
+      'phid IN (%Ls)',
+      $file_phids);
+    $files = mpull($files, null, 'getPHID');
+
+    foreach ($pastes as $paste) {
+      $file = idx($files, $paste->getFilePHID());
+      if ($file) {
+        $paste->attachRawContent($file->loadFileData());
+      } else {
+        $paste->attachRawContent('');
+      }
+    }
+  }
+
+  private function loadContent(array $pastes) {
+    $cache = new PhabricatorKeyValueDatabaseCache();
+
+    $cache = new PhutilKeyValueCacheProfiler($cache);
+    $cache->setProfiler(PhutilServiceProfiler::getInstance());
+
+    $keys = array();
+    foreach ($pastes as $paste) {
+      $keys[] = $this->getContentCacheKey($paste);
+    }
+
+
+    $caches = $cache->getKeys($keys);
+
+    $need_raw = array();
+    foreach ($pastes as $paste) {
+      $key = $this->getContentCacheKey($paste);
+      if (isset($caches[$key])) {
+        $paste->attachContent(phutil_safe_html($caches[$key]));
+      } else {
+        $need_raw[] = $paste;
+      }
+    }
+
+    if (!$need_raw) {
+      return;
+    }
+
+    $write_data = array();
+
+    $this->loadRawContent($need_raw);
+    foreach ($need_raw as $paste) {
+      $content = $this->buildContent($paste);
+      $paste->attachContent($content);
+
+      $write_data[$this->getContentCacheKey($paste)] = (string)$content;
+    }
+
+    $cache->setKeys($write_data);
+  }
+
+
+  private function buildContent(PhabricatorPaste $paste) {
+    $language = $paste->getLanguage();
+    $source = $paste->getRawContent();
+
+    if (empty($language)) {
+      return PhabricatorSyntaxHighlighter::highlightWithFilename(
+        $paste->getTitle(),
+        $source);
+    } else {
+      return PhabricatorSyntaxHighlighter::highlightWithLanguage(
+        $language,
+        $source);
+    }
   }
 
 }

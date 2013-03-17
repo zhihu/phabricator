@@ -6,7 +6,6 @@
 final class ManiphestTransactionEditor extends PhabricatorEditor {
 
   private $parentMessageID;
-  private $excludePHIDs = array();
   private $auxiliaryFields = array();
 
   public function setAuxiliaryFields(array $fields) {
@@ -18,15 +17,6 @@ final class ManiphestTransactionEditor extends PhabricatorEditor {
   public function setParentMessageID($parent_message_id) {
     $this->parentMessageID = $parent_message_id;
     return $this;
-  }
-
-  public function setExcludePHIDs(array $exclude) {
-    $this->excludePHIDs = $exclude;
-    return $this;
-  }
-
-  public function getExcludePHIDs() {
-    return $this->excludePHIDs;
   }
 
   public function applyTransactions(ManiphestTask $task, array $transactions) {
@@ -140,6 +130,7 @@ final class ManiphestTransactionEditor extends PhabricatorEditor {
           case ManiphestTransactionType::TYPE_OWNER:
             if ($new) {
               $handles = id(new PhabricatorObjectHandleData(array($new)))
+                ->setViewer($this->getActor())
                 ->loadHandles();
               $task->setOwnerOrdering($handles[$new]->getName());
             } else {
@@ -209,9 +200,8 @@ final class ManiphestTransactionEditor extends PhabricatorEditor {
       $transactions,
       $mail->buildRecipientList());
 
-    // TODO: Do this offline via workers
-    PhabricatorSearchManiphestIndexer::indexTask($task);
-
+    id(new PhabricatorSearchIndexer())
+      ->indexDocumentByPHID($task->getPHID());
   }
 
   protected function getSubjectPrefix() {
@@ -219,7 +209,6 @@ final class ManiphestTransactionEditor extends PhabricatorEditor {
   }
 
   private function sendEmail($task, $transactions, $email_to, $email_cc) {
-    $exclude  = $this->getExcludePHIDs();
     $email_to = array_filter(array_unique($email_to));
     $email_cc = array_filter(array_unique($email_cc));
 
@@ -238,6 +227,7 @@ final class ManiphestTransactionEditor extends PhabricatorEditor {
     $phids = array_keys($phids);
 
     $handles = id(new PhabricatorObjectHandleData($phids))
+      ->setViewer($this->getActor())
       ->loadHandles();
 
     $view = new ManiphestTransactionDetailView();

@@ -26,10 +26,6 @@ final class DiffusionCommitController extends DiffusionController {
     $callsign = $drequest->getRepository()->getCallsign();
 
     $content = array();
-    $content[] = $this->buildCrumbs(array(
-      'commit' => true,
-    ));
-
     $repository = $drequest->getRepository();
     $commit = $drequest->loadCommit();
 
@@ -44,14 +40,18 @@ final class DiffusionCommitController extends DiffusionController {
         ->setTitle('Error displaying commit.')
         ->appendChild('Failed to load the commit because the commit has not '.
                       'been parsed yet.'),
-          array('title' => 'Commit Still Parsing')
-        );
+          array('title' => 'Commit Still Parsing'));
     }
 
     $commit_data = $drequest->loadCommitData();
     $commit->attachCommitData($commit_data);
 
+    $top_anchor = id(new PhabricatorAnchorView())
+      ->setAnchorName('top')
+      ->setNavigationMarker(true);
+
     $is_foreign = $commit_data->getCommitDetail('foreign-svn-stub');
+    $changesets = null;
     if ($is_foreign) {
       $subpath = $commit_data->getCommitDetail('svn-subpath');
 
@@ -61,11 +61,13 @@ final class DiffusionCommitController extends DiffusionController {
       $error_panel->appendChild(
         "This Diffusion repository is configured to track only one ".
         "subdirectory of the entire Subversion repository, and this commit ".
-        "didn't affect the tracked subdirectory ('".
-        phutil_escape_html($subpath)."'), so no information is available.");
+        "didn't affect the tracked subdirectory ('".$subpath."'), so no ".
+        "information is available.");
       $content[] = $error_panel;
+      $content[] = $top_anchor;
     } else {
       $engine = PhabricatorMarkupEngine::newDifferentialMarkupEngine();
+      $engine->setConfig('viewer', $user);
 
       require_celerity_resource('diffusion-commit-view-css');
       require_celerity_resource('phabricator-remarkup-css');
@@ -73,22 +75,33 @@ final class DiffusionCommitController extends DiffusionController {
       $parent_query = DiffusionCommitParentsQuery::newFromDiffusionRequest(
         $drequest);
 
-      $headsup_panel = new AphrontHeadsupView();
-      $headsup_panel->setHeader('Commit Detail');
-      $headsup_panel->setActionList(
-        $this->renderHeadsupActionList($commit, $repository));
-      $headsup_panel->setProperties(
-        $this->getCommitProperties(
-          $commit,
-          $commit_data,
-          $parent_query->loadParents()));
+      $headsup_view = id(new PhabricatorHeaderView())
+        ->setHeader(nonempty($commit->getSummary(), pht('Commit Detail')));
 
-      $headsup_panel->appendChild(
-        '<div class="diffusion-commit-message phabricator-remarkup">'.
-          $engine->markupText($commit_data->getCommitMessage()).
-        '</div>');
+      $headsup_actions = $this->renderHeadsupActionList($commit, $repository);
 
-      $content[] = $headsup_panel;
+      $commit_properties = $this->loadCommitProperties(
+        $commit,
+        $commit_data,
+        $parent_query->loadParents());
+      $property_list = id(new PhabricatorPropertyListView())
+        ->setHasKeyboardShortcuts(true);
+      foreach ($commit_properties as $key => $value) {
+        $property_list->addProperty($key, $value);
+      }
+
+      $property_list->addTextContent(
+        phutil_tag(
+          'div',
+          array(
+            'class' => 'diffusion-commit-message phabricator-remarkup',
+          ),
+          $engine->markupText($commit_data->getCommitMessage())));
+
+      $content[] = $top_anchor;
+      $content[] = $headsup_view;
+      $content[] = $headsup_actions;
+      $content[] = $property_list;
     }
 
     $query = new PhabricatorAuditQuery();
@@ -101,9 +114,17 @@ final class DiffusionCommitController extends DiffusionController {
     $content[] = $this->buildAuditTable($commit, $audit_requests);
     $content[] = $this->buildComments($commit);
 
+    $hard_limit = 1000;
+
     $change_query = DiffusionPathChangeQuery::newFromDiffusionRequest(
       $drequest);
+    $change_query->setLimit($hard_limit + 1);
     $changes = $change_query->loadChanges();
+
+    $was_limited = (count($changes) > $hard_limit);
+    if ($was_limited) {
+      $changes = array_slice($changes, 0, $hard_limit);
+    }
 
     $content[] = $this->buildMergesTable($commit);
 
@@ -136,12 +157,10 @@ final class DiffusionCommitController extends DiffusionController {
         'r'.$callsign.$commit->getCommitIdentifier());
     }
 
-    $pane_id = null;
     if ($bad_commit) {
       $error_panel = new AphrontErrorView();
       $error_panel->setTitle('Bad Commit');
-      $error_panel->appendChild(
-        phutil_escape_html($bad_commit['description']));
+      $error_panel->appendChild($bad_commit['description']);
 
       $content[] = $error_panel;
     } else if ($is_foreign) {
@@ -160,30 +179,42 @@ final class DiffusionCommitController extends DiffusionController {
         "This commit hasn't been fully parsed yet (or doesn't affect any ".
         "paths).");
       $content[] = $no_changes;
+    } else if ($was_limited) {
+      $huge_commit = new AphrontErrorView();
+      $huge_commit->setSeverity(AphrontErrorView::SEVERITY_WARNING);
+      $huge_commit->setTitle(pht('Enormous Commit'));
+      $huge_commit->appendChild(
+        pht(
+          'This commit is enormous, and affects more than %d files. '.
+          'Changes are not shown.',
+          $hard_limit));
+      $content[] = $huge_commit;
     } else {
       $change_panel = new AphrontPanelView();
       $change_panel->setHeader("Changes (".number_format($count).")");
       $change_panel->setID('toc');
-
       if ($count > self::CHANGES_LIMIT) {
-        $show_all_button = phutil_render_tag(
+        $show_all_button = phutil_tag(
           'a',
           array(
             'class'   => 'button green',
             'href'    => '?show_all=true',
           ),
-          phutil_escape_html('Show All Changes'));
+          'Show All Changes');
         $warning_view = id(new AphrontErrorView())
           ->setSeverity(AphrontErrorView::SEVERITY_WARNING)
           ->setTitle('Very Large Commit')
-          ->appendChild(
-            "<p>This commit is very large. Load each file individually.</p>");
+          ->appendChild(phutil_tag(
+            'p',
+            array(),
+            "This commit is very large. Load each file individually."));
 
         $change_panel->appendChild($warning_view);
         $change_panel->addButton($show_all_button);
       }
 
       $change_panel->appendChild($change_table);
+      $change_panel->setNoBackground();
 
       $content[] = $change_panel;
 
@@ -246,7 +277,11 @@ final class DiffusionCommitController extends DiffusionController {
         }
       }
 
+      $change_list_title = DiffusionView::nameCommit(
+        $repository,
+        $commit->getCommitIdentifier());
       $change_list = new DifferentialChangesetListView();
+      $change_list->setTitle($change_list_title);
       $change_list->setChangesets($changesets);
       $change_list->setVisibleChangesets($visible_changesets);
       $change_list->setRenderingReferences($references);
@@ -254,7 +289,7 @@ final class DiffusionCommitController extends DiffusionController {
       $change_list->setRepository($repository);
       $change_list->setUser($user);
       // pick the first branch for "Browse in Diffusion" View Option
-      $branches     = $commit_data->getCommitDetail('seenOnBranches');
+      $branches     = $commit_data->getCommitDetail('seenOnBranches', array());
       $first_branch = reset($branches);
       $change_list->setBranch($first_branch);
 
@@ -275,33 +310,48 @@ final class DiffusionCommitController extends DiffusionController {
       }
       $change_table->setRenderingReferences($change_references);
 
-      // TODO: This is pretty awkward, unify the CSS between Diffusion and
-      // Differential better.
-      require_celerity_resource('differential-core-view-css');
-      $pane_id = celerity_generate_unique_node_id();
-      $add_comment_view = $this->renderAddCommentPanel($commit,
-                                                       $audit_requests,
-                                                       $pane_id);
-      $main_pane = phutil_render_tag(
-        'div',
-        array(
-          'class' => 'differential-primary-pane',
-          'id'    => $pane_id
-        ),
-        $change_list->render().
-        $add_comment_view);
-
-      $content[] = $main_pane;
+      $content[] = $change_list->render();
     }
 
-    return $this->buildStandardPageResponse(
+    $content[] = $this->renderAddCommentPanel($commit, $audit_requests);
+
+    $commit_id = 'r'.$callsign.$commit->getCommitIdentifier();
+    $short_name = DiffusionView::nameCommit(
+      $repository,
+      $commit->getCommitIdentifier());
+
+    $crumbs = $this->buildCrumbs(array(
+      'commit' => true,
+    ));
+
+    $prefs = $user->loadPreferences();
+    $pref_filetree = PhabricatorUserPreferences::PREFERENCE_DIFF_FILETREE;
+    $pref_collapse = PhabricatorUserPreferences::PREFERENCE_NAV_COLLAPSED;
+    $show_filetree = $prefs->getPreference($pref_filetree);
+    $collapsed = $prefs->getPreference($pref_collapse);
+
+    if ($changesets && $show_filetree) {
+      $nav = id(new DifferentialChangesetFileTreeSideNavBuilder())
+        ->setAnchorName('top')
+        ->setTitle($short_name)
+        ->setBaseURI(new PhutilURI('/'.$commit_id))
+        ->build($changesets)
+        ->setCrumbs($crumbs)
+        ->setCollapsed((bool)$collapsed)
+        ->appendChild($content);
+      $content = $nav;
+    } else {
+      $content = array($crumbs, $content);
+    }
+
+    return $this->buildApplicationPage(
       $content,
       array(
-        'title' => 'r'.$callsign.$commit->getCommitIdentifier(),
+        'title' => $commit_id
       ));
   }
 
-  private function getCommitProperties(
+  private function loadCommitProperties(
     PhabricatorRepositoryCommit $commit,
     PhabricatorRepositoryCommitData $data,
     array $parents) {
@@ -319,11 +369,9 @@ final class DiffusionCommitController extends DiffusionController {
       ->execute();
 
     $task_phids = array_keys(
-      $edges[$commit_phid][PhabricatorEdgeConfig::TYPE_COMMIT_HAS_TASK]
-    );
+      $edges[$commit_phid][PhabricatorEdgeConfig::TYPE_COMMIT_HAS_TASK]);
     $proj_phids = array_keys(
-      $edges[$commit_phid][PhabricatorEdgeConfig::TYPE_COMMIT_HAS_PROJECT]
-    );
+      $edges[$commit_phid][PhabricatorEdgeConfig::TYPE_COMMIT_HAS_PROJECT]);
 
     $phids = array_merge($task_phids, $proj_phids);
     if ($data->getCommitDetail('authorPHID')) {
@@ -354,10 +402,10 @@ final class DiffusionCommitController extends DiffusionController {
     if ($commit->getAuditStatus()) {
       $status = PhabricatorAuditCommitStatusConstants::getStatusName(
         $commit->getAuditStatus());
-      $props['Status'] = phutil_render_tag(
+      $props['Status'] = phutil_tag(
         'strong',
         array(),
-        phutil_escape_html($status));
+        $status);
     }
 
     $props['Committed'] = phabricator_datetime($commit->getEpoch(), $user);
@@ -366,15 +414,12 @@ final class DiffusionCommitController extends DiffusionController {
     if ($data->getCommitDetail('authorPHID')) {
       $props['Author'] = $handles[$author_phid]->renderLink();
     } else {
-      $props['Author'] = phutil_escape_html($data->getAuthorName());
+      $props['Author'] = $data->getAuthorName();
     }
 
     $reviewer_phid = $data->getCommitDetail('reviewerPHID');
-    $reviewer_name = $data->getCommitDetail('reviewerName');
     if ($reviewer_phid) {
       $props['Reviewer'] = $handles[$reviewer_phid]->renderLink();
-    } else if ($reviewer_name) {
-      $props['Reviewer'] = phutil_escape_html($reviewer_name);
     }
 
     $committer = $data->getCommitDetail('committer');
@@ -383,7 +428,7 @@ final class DiffusionCommitController extends DiffusionController {
       if ($data->getCommitDetail('committerPHID')) {
         $props['Committer'] = $handles[$committer_phid]->renderLink();
       } else {
-        $props['Committer'] = phutil_escape_html($committer);
+        $props['Committer'] = $committer;
       }
     }
 
@@ -397,13 +442,23 @@ final class DiffusionCommitController extends DiffusionController {
       foreach ($parents as $parent) {
         $parent_links[] = $handles[$parent->getPHID()]->renderLink();
       }
-      $props['Parents'] = implode(' &middot; ', $parent_links);
+      $props['Parents'] = phutil_implode_html(" \xC2\xB7 ", $parent_links);
     }
 
     $request = $this->getDiffusionRequest();
 
-    $props['Branches'] = '<span id="commit-branches">Unknown</span>';
-    $props['Tags'] = '<span id="commit-tags">Unknown</span>';
+    $props['Branches'] = phutil_tag(
+      'span',
+      array(
+        'id' => 'commit-branches',
+      ),
+      'Unknown');
+    $props['Tags'] = phutil_tag(
+      'span',
+      array(
+        'id' => 'commit-tags',
+      ),
+      'Unknown');
 
     $callsign = $request->getRepository()->getCallsign();
     $root = '/diffusion/'.$callsign.'/commit/'.$commit->getCommitIdentifier();
@@ -424,7 +479,7 @@ final class DiffusionCommitController extends DiffusionController {
       foreach ($task_phids as $phid) {
         $task_list[] = $handles[$phid]->renderLink();
       }
-      $task_list = implode('<br />', $task_list);
+      $task_list = phutil_implode_html(phutil_tag('br'), $task_list);
       $props['Tasks'] = $task_list;
     }
 
@@ -433,7 +488,7 @@ final class DiffusionCommitController extends DiffusionController {
       foreach ($proj_phids as $phid) {
         $proj_list[] = $handles[$phid]->renderLink();
       }
-      $proj_list = implode('<br />', $proj_list);
+      $proj_list = phutil_implode_html(phutil_tag('br'), $proj_list);
       $props['Projects'] = $proj_list;
     }
 
@@ -450,7 +505,7 @@ final class DiffusionCommitController extends DiffusionController {
     $view->setAudits($audits);
     $view->setCommits(array($commit));
     $view->setUser($user);
-    $view->setShowDescriptions(false);
+    $view->setShowCommits(false);
 
     $phids = $view->getRequiredHandlePHIDs();
     $handles = $this->loadViewerHandles($phids);
@@ -462,6 +517,7 @@ final class DiffusionCommitController extends DiffusionController {
     $panel->setHeader('Audits');
     $panel->setCaption('Audits you are responsible for are highlighted.');
     $panel->appendChild($view);
+    $panel->setNoBackground();
 
     return $panel;
   }
@@ -519,13 +575,13 @@ final class DiffusionCommitController extends DiffusionController {
 
   private function renderAddCommentPanel(
     PhabricatorRepositoryCommit $commit,
-    array $audit_requests,
-    $pane_id = null) {
+    array $audit_requests) {
     assert_instances_of($audit_requests, 'PhabricatorRepositoryAuditRequest');
     $user = $this->getRequest()->getUser();
 
     $is_serious = PhabricatorEnv::getEnvConfig('phabricator.serious-business');
 
+    $pane_id = celerity_generate_unique_node_id();
     Javelin::initBehavior(
       'differential-keyboard-navigation',
       array(
@@ -575,7 +631,8 @@ final class DiffusionCommitController extends DiffusionController {
           ->setLabel('Comments')
           ->setName('content')
           ->setValue($draft)
-          ->setID('audit-content'))
+          ->setID('audit-content')
+          ->setUser($user))
       ->appendChild(
         id(new AphrontFormSubmitControl())
           ->setValue($is_serious ? 'Submit' : 'Cook the Books'));
@@ -623,7 +680,7 @@ final class DiffusionCommitController extends DiffusionController {
       'inlineuri'  => '/diffusion/inline/preview/'.$commit->getPHID().'/',
     ));
 
-    $preview_panel =
+    $preview_panel = hsprintf(
       '<div class="aphront-panel-preview aphront-panel-flush">
         <div id="audit-preview">
           <div class="aphront-panel-preview-loading-text">
@@ -632,16 +689,25 @@ final class DiffusionCommitController extends DiffusionController {
         </div>
         <div id="inline-comment-preview">
         </div>
-      </div>';
+      </div>');
 
-    return
-      phutil_render_tag(
-        'div',
-        array(
-          'class' => 'differential-add-comment-panel',
-        ),
-        $panel->render().
-        $preview_panel);
+    // TODO: This is pretty awkward, unify the CSS between Diffusion and
+    // Differential better.
+    require_celerity_resource('differential-core-view-css');
+
+    return phutil_tag(
+      'div',
+      array(
+        'id' => $pane_id,
+      ),
+      hsprintf(
+        '<div class="differential-add-comment-panel">%s%s%s</div>',
+        id(new PhabricatorAnchorView())
+          ->setAnchorName('comment')
+          ->setNavigationMarker(true)
+          ->render(),
+        $panel->render(),
+        $preview_panel));
   }
 
   /**
@@ -709,8 +775,9 @@ final class DiffusionCommitController extends DiffusionController {
 
     $status_concern = PhabricatorAuditCommitStatusConstants::CONCERN_RAISED;
     $concern_raised = ($commit->getAuditStatus() == $status_concern);
-
-    if ($user_is_author && $concern_raised) {
+    $can_close_option = PhabricatorEnv::getEnvConfig(
+      'audit.can-author-close-audit');
+    if ($can_close_option && $user_is_author && $concern_raised) {
       $actions[PhabricatorAuditActionConstants::CLOSE] = true;
     }
 
@@ -745,6 +812,7 @@ final class DiffusionCommitController extends DiffusionController {
     }
 
     $history_table = new DiffusionHistoryTableView();
+    $history_table->setUser($this->getRequest()->getUser());
     $history_table->setDiffusionRequest($drequest);
     $history_table->setHistory($merges);
     $history_table->loadRevisions();
@@ -757,6 +825,7 @@ final class DiffusionCommitController extends DiffusionController {
     $panel->setHeader('Merged Changes');
     $panel->setCaption($caption);
     $panel->appendChild($history_table);
+    $panel->setNoBackground();
 
     return $panel;
   }
@@ -768,75 +837,54 @@ final class DiffusionCommitController extends DiffusionController {
     $request = $this->getRequest();
     $user = $request->getUser();
 
-    $actions = array();
+    $actions = id(new PhabricatorActionListView())
+      ->setUser($user)
+      ->setObject($commit);
 
     // TODO -- integrate permissions into whether or not this action is shown
     $uri = '/diffusion/'.$repository->getCallSign().'/commit/'.
            $commit->getCommitIdentifier().'/edit/';
-    $action = new AphrontHeadsupActionView();
-    $action->setClass('action-edit');
-    $action->setURI($uri);
-    $action->setName('Edit Commit');
-    $action->setWorkflow(false);
-    $actions[] = $action;
 
-    require_celerity_resource('phabricator-flag-css');
-    $flag = PhabricatorFlagQuery::loadUserFlag($user, $commit->getPHID());
-    if ($flag) {
-      $class = PhabricatorFlagColor::getCSSClass($flag->getColor());
-      $color = PhabricatorFlagColor::getColorName($flag->getColor());
-
-      $action = new AphrontHeadsupActionView();
-      $action->setClass('flag-clear '.$class);
-      $action->setURI('/flag/delete/'.$flag->getID().'/');
-      $action->setName('Remove '.$color.' Flag');
-      $action->setWorkflow(true);
-      $actions[] = $action;
-    } else {
-      $action = new AphrontHeadsupActionView();
-      $action->setClass('phabricator-flag-ghost');
-      $action->setURI('/flag/edit/'.$commit->getPHID().'/');
-      $action->setName('Flag Commit');
-      $action->setWorkflow(true);
-      $actions[] = $action;
-    }
+    $action = id(new PhabricatorActionView())
+      ->setName('Edit Commit')
+      ->setHref($uri)
+      ->setIcon('edit');
+    $actions->addAction($action);
 
     require_celerity_resource('phabricator-object-selector-css');
     require_celerity_resource('javelin-behavior-phabricator-object-selector');
 
     if (PhabricatorEnv::getEnvConfig('maniphest.enabled')) {
-      $action = new AphrontHeadsupActionView();
-      $action->setName('Edit Maniphest Tasks');
-      $action->setURI('/search/attach/'.$commit->getPHID().'/TASK/edge/');
-      $action->setWorkflow(true);
-      $action->setClass('attach-maniphest');
-      $actions[] = $action;
+      $action = id(new PhabricatorActionView())
+        ->setName('Edit Maniphest Tasks')
+        ->setIcon('attach')
+        ->setHref('/search/attach/'.$commit->getPHID().'/TASK/edge/')
+        ->setWorkflow(true);
+      $actions->addAction($action);
     }
 
     if ($user->getIsAdmin()) {
-      $action = new AphrontHeadsupActionView();
-      $action->setName('MetaMTA Transcripts');
-      $action->setURI('/mail/?phid='.$commit->getPHID());
-      $action->setClass('transcripts-metamta');
-      $actions[] = $action;
+      $action = id(new PhabricatorActionView())
+        ->setName('MetaMTA Transcripts')
+        ->setIcon('file')
+        ->setHref('/mail/?phid='.$commit->getPHID());
+      $actions->addAction($action);
     }
 
-    $action = new AphrontHeadsupActionView();
-    $action->setName('Herald Transcripts');
-    $action->setURI('/herald/transcript/?phid='.$commit->getPHID());
-    $action->setClass('transcripts-herald');
-    $actions[] = $action;
+    $action = id(new PhabricatorActionView())
+      ->setName('Herald Transcripts')
+      ->setIcon('file')
+      ->setHref('/herald/transcript/?phid='.$commit->getPHID())
+      ->setWorkflow(true);
+    $actions->addAction($action);
 
-    $action = new AphrontHeadsupActionView();
-    $action->setName('Download Raw Diff');
-    $action->setURI($request->getRequestURI()->alter('diff', true));
-    $action->setClass('action-download');
-    $actions[] = $action;
+    $action = id(new PhabricatorActionView())
+      ->setName('Download Raw Diff')
+      ->setHref($request->getRequestURI()->alter('diff', true))
+      ->setIcon('download');
+    $actions->addAction($action);
 
-    $action_list = new AphrontHeadsupActionListView();
-    $action_list->setActions($actions);
-
-    return $action_list;
+    return $actions;
   }
 
   private function buildRefs(DiffusionRequest $request) {
@@ -866,7 +914,7 @@ final class DiffusionCommitController extends DiffusionController {
 
     $ref_links = array();
     foreach ($refs as $ref) {
-      $ref_links[] = phutil_render_tag(
+      $ref_links[] = phutil_tag(
         'a',
         array(
           'href' => $request->generateURI(
@@ -875,10 +923,10 @@ final class DiffusionCommitController extends DiffusionController {
               'branch'  => $ref,
             )),
         ),
-        phutil_escape_html($ref));
+        $ref);
     }
-    $ref_links = implode(', ', $ref_links);
-    return $ref_links;
+
+    return phutil_implode_html(', ', $ref_links);
   }
 
   private function buildRawDiffResponse(DiffusionRequest $drequest) {

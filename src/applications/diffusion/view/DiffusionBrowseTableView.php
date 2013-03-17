@@ -4,7 +4,6 @@ final class DiffusionBrowseTableView extends DiffusionView {
 
   private $paths;
   private $handles = array();
-  private $user;
 
   public function setPaths(array $paths) {
     assert_instances_of($paths, 'DiffusionRepositoryPath');
@@ -18,12 +17,7 @@ final class DiffusionBrowseTableView extends DiffusionView {
     return $this;
   }
 
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
-
-  public static function renderLastModifiedColumns(
+  public function renderLastModifiedColumns(
     DiffusionRequest $drequest,
     array $handles,
     PhabricatorRepositoryCommit $commit = null,
@@ -35,8 +29,8 @@ final class DiffusionBrowseTableView extends DiffusionView {
       $modified = DiffusionView::linkCommit(
         $drequest->getRepository(),
         $commit->getCommitIdentifier());
-      $date = date('M j, Y', $epoch);
-      $time = date('g:i A', $epoch);
+      $date = phabricator_date($epoch, $this->user);
+      $time = phabricator_time($epoch, $this->user);
     } else {
       $modified = '';
       $date = '';
@@ -60,12 +54,11 @@ final class DiffusionBrowseTableView extends DiffusionView {
           $committer = self::renderName($committer);
         }
         if ($author != $committer) {
-          $author .= '/'.$committer;
+          $author = hsprintf('%s/%s', $author, $committer);
         }
       }
 
-      $details = AphrontTableView::renderSingleDisplayLine(
-        phutil_escape_html($data->getSummary()));
+      $details = AphrontTableView::renderSingleDisplayLine($data->getSummary());
     } else {
       $author = '';
       $details = '';
@@ -85,7 +78,7 @@ final class DiffusionBrowseTableView extends DiffusionView {
         '<a href="%s">%s</a>',
         $drequest->generateURI(array(
           'action' => 'lint',
-          'lint' => '',
+          'lint' => null,
         )),
         number_format($lint));
     }
@@ -101,22 +94,21 @@ final class DiffusionBrowseTableView extends DiffusionView {
 
     $conn = $drequest->getRepository()->establishConnection('r');
 
-    $where = '';
+    $path = '/'.$drequest->getPath();
+    $where = (substr($path, -1) == '/'
+      ? qsprintf($conn, 'AND path LIKE %>', $path)
+      : qsprintf($conn, 'AND path = %s', $path));
+
     if ($drequest->getLint()) {
-      $where = qsprintf(
-        $conn,
-        'AND code = %s',
-        $drequest->getLint());
+      $where .= qsprintf($conn, ' AND code = %s', $drequest->getLint());
     }
 
-    $like = (substr($drequest->getPath(), -1) == '/' ? 'LIKE %>' : '= %s');
     return head(queryfx_one(
       $conn,
-      'SELECT COUNT(*) FROM %T WHERE branchID = %d %Q AND path '.$like,
+      'SELECT COUNT(*) FROM %T WHERE branchID = %d %Q',
       PhabricatorRepository::TABLE_LINTMESSAGE,
       $branch->getID(),
-      $where,
-      '/'.$drequest->getPath()));
+      $where));
   }
 
   public function render() {
@@ -139,24 +131,17 @@ final class DiffusionBrowseTableView extends DiffusionView {
         $browse_text = $path->getPath().'/';
         $dir_slash = '/';
 
-        $browse_link = '<strong>'.$this->linkBrowse(
+        $browse_link = phutil_tag('strong', array(), $this->linkBrowse(
           $base_path.$path->getPath().$dir_slash,
           array(
-            'html' => $this->renderPathIcon(
-              'dir',
-              $browse_text),
-          )).'</strong>';
+            'text' => $this->renderPathIcon('dir', $browse_text),
+          )));
       } else if ($file_type == DifferentialChangeType::FILE_SUBMODULE) {
         $browse_text = $path->getPath().'/';
-        $browse_link =
-          '<strong>'.
-            $this->linkExternal(
-              $path->getHash(),
-              $path->getExternalURI(),
-              $this->renderPathIcon(
-                'ext',
-                $browse_text)).
-          '</strong>';
+        $browse_link = phutil_tag('strong', array(), $this->linkExternal(
+          $path->getHash(),
+          $path->getExternalURI(),
+          $this->renderPathIcon('ext', $browse_text)));
       } else {
         if ($file_type == DifferentialChangeType::FILE_SYMLINK) {
           $type = 'link';
@@ -167,15 +152,15 @@ final class DiffusionBrowseTableView extends DiffusionView {
         $browse_link = $this->linkBrowse(
           $base_path.$path->getPath(),
           array(
-            'html' => $this->renderPathIcon($type, $browse_text),
+            'text' => $this->renderPathIcon($type, $browse_text),
           ));
       }
 
       $commit = $path->getLastModifiedCommit();
       if ($commit) {
         $drequest = clone $request;
-        $drequest->setPath($path->getPath().$dir_slash);
-        $dict = self::renderLastModifiedColumns(
+        $drequest->setPath($request->getPath().$path->getPath().$dir_slash);
+        $dict = $this->renderLastModifiedColumns(
           $drequest,
           $this->handles,
           $commit,
@@ -198,7 +183,7 @@ final class DiffusionBrowseTableView extends DiffusionView {
 
         $need_pull[$uri] = $dict;
         foreach ($dict as $k => $uniq) {
-          $dict[$k] = '<span id="'.$uniq.'"></span>';
+          $dict[$k] = phutil_tag('span', array('id' => $uniq), '');
         }
       }
 
@@ -210,7 +195,7 @@ final class DiffusionBrowseTableView extends DiffusionView {
           $request->getRepository()->getCallsign());
         if ($editor_link) {
           $show_edit = true;
-          $editor_button = phutil_render_tag(
+          $editor_button = phutil_tag(
             'a',
             array(
               'href' => $editor_link,
@@ -223,7 +208,7 @@ final class DiffusionBrowseTableView extends DiffusionView {
         $this->linkHistory($base_path.$path->getPath().$dir_slash),
         $editor_button,
         $browse_link,
-        $dict['lint'],
+        idx($dict, 'lint'),
         $dict['commit'],
         $dict['date'],
         $dict['time'],
@@ -246,7 +231,7 @@ final class DiffusionBrowseTableView extends DiffusionView {
         'History',
         'Edit',
         'Path',
-        ($lint ? phutil_escape_html($lint) : 'Lint'),
+        ($lint ? $lint : 'Lint'),
         'Modified',
         'Date',
         'Time',
@@ -284,12 +269,12 @@ final class DiffusionBrowseTableView extends DiffusionView {
 
     require_celerity_resource('diffusion-icons-css');
 
-    return phutil_render_tag(
+    return phutil_tag(
       'span',
       array(
         'class' => 'diffusion-path-icon diffusion-path-icon-'.$type,
       ),
-      phutil_escape_html($text));
+      $text);
   }
 
 }

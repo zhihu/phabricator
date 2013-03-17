@@ -34,12 +34,11 @@ final class ManiphestReportController extends ManiphestController {
 
     $nav = new AphrontSideNavFilterView();
     $nav->setBaseURI(new PhutilURI('/maniphest/report/'));
-    $nav->addLabel('Open Tasks');
-    $nav->addFilter('user',           'By User');
-    $nav->addFilter('project',        'By Project');
-    $nav->addSpacer();
-    $nav->addLabel('Burnup');
-    $nav->addFilter('burn',           'Burnup Rate');
+    $nav->addLabel(pht('Open Tasks'));
+    $nav->addFilter('user', pht('By User'));
+    $nav->addFilter('project', pht('By Project'));
+    $nav->addLabel(pht('Burnup'));
+    $nav->addFilter('burn', pht('Burnup Rate'));
 
     $this->view = $nav->selectFilter($this->view, 'user');
 
@@ -58,12 +57,16 @@ final class ManiphestReportController extends ManiphestController {
     }
 
     $nav->appendChild($core);
-    $base_nav->appendChild($nav);
+    $nav->setCrumbs(
+      $this->buildApplicationCrumbs()
+        ->addCrumb(
+          id(new PhabricatorCrumbView())
+            ->setName(pht('Reports'))));
 
     return $this->buildStandardPageResponse(
-      $base_nav,
+      $nav,
       array(
-        'title' => 'Maniphest Reports',
+        'title' => pht('Maniphest Reports'),
       ));
   }
 
@@ -207,20 +210,20 @@ final class ManiphestReportController extends ManiphestController {
 
     if ($week) {
       $rows[] = $this->formatBurnRow(
-        'Week To Date',
+        pht('Week To Date'),
         $week);
       $rowc[] = 'week';
     }
 
     if ($month) {
       $rows[] = $this->formatBurnRow(
-        'Month To Date',
+        pht('Month To Date'),
         $month);
       $rowc[] = 'month';
     }
 
     $rows[] = $this->formatBurnRow(
-      'All Time',
+      pht('All Time'),
       $period);
     $rowc[] = 'aggregate';
 
@@ -231,10 +234,10 @@ final class ManiphestReportController extends ManiphestController {
     $table->setRowClasses($rowc);
     $table->setHeaders(
       array(
-        'Period',
-        'Opened',
-        'Closed',
-        'Change',
+        pht('Period'),
+        pht('Opened'),
+        pht('Closed'),
+        pht('Change'),
       ));
     $table->setColumnClasses(
       array(
@@ -245,15 +248,17 @@ final class ManiphestReportController extends ManiphestController {
       ));
 
     if ($handle) {
-      $header = "Task Burn Rate for Project ".$handle->renderLink();
-      $caption = "<p>NOTE: This table reflects tasks <em>currently</em> in ".
-                 "the project. If a task was opened in the past but added to ".
-                 "the project recently, it is counted on the day it was ".
-                 "opened, not the day it was categorized. If a task was part ".
-                 "of this project in the past but no longer is, it is not ".
-                 "counted at all.</p>";
+      $inst = pht(
+        "NOTE: This table reflects tasks <em>currently</em> in ".
+        "the project. If a task was opened in the past but added to ".
+        "the project recently, it is counted on the day it was ".
+        "opened, not the day it was categorized. If a task was part ".
+        "of this project in the past but no longer is, it is not ".
+        "counted at all.");
+      $header = pht("Task Burn Rate for Project %s", $handle->renderLink());
+      $caption = hsprintf("<p>%s</p>", $inst);
     } else {
-      $header = "Task Burn Rate for All Tasks";
+      $header = pht("Task Burn Rate for All Tasks");
       $caption = null;
     }
 
@@ -272,7 +277,7 @@ final class ManiphestReportController extends ManiphestController {
     $filter = $this->renderReportFilters($tokens, $has_window = false);
 
     $id = celerity_generate_unique_node_id();
-    $chart = phutil_render_tag(
+    $chart = phutil_tag(
       'div',
       array(
         'id' => $id,
@@ -311,7 +316,7 @@ final class ManiphestReportController extends ManiphestController {
       ->appendChild(
         id(new AphrontFormTokenizerControl())
           ->setDatasource('/typeahead/common/searchproject/')
-          ->setLabel('Project')
+          ->setLabel(pht('Project'))
           ->setLimit(1)
           ->setName('set_project')
           ->setValue($tokens));
@@ -321,10 +326,10 @@ final class ManiphestReportController extends ManiphestController {
       $form
         ->appendChild(
           id(new AphrontFormTextControl())
-            ->setLabel('"Recently" Means')
+            ->setLabel(pht('Recently Means'))
             ->setName('set_window')
             ->setCaption(
-              'Configure the cutoff for the "Recently Closed" column.')
+              pht('Configure the cutoff for the "Recently Closed" column.'))
             ->setValue($window_str)
             ->setError($window_error));
     }
@@ -332,7 +337,7 @@ final class ManiphestReportController extends ManiphestController {
     $form
       ->appendChild(
         id(new AphrontFormSubmitControl())
-          ->setValue('Filter By Project'));
+          ->setValue(pht('Filter By Project')));
 
     $filter = new AphrontListFilterView();
     $filter->appendChild($form);
@@ -363,9 +368,9 @@ final class ManiphestReportController extends ManiphestController {
     $fmt = number_format($delta);
     if ($delta > 0) {
       $fmt = '+'.$fmt;
-      $fmt = '<span class="red">'.$fmt.'</span>';
+      $fmt = hsprintf('<span class="red">%s</span>', $fmt);
     } else {
-      $fmt = '<span class="green">'.$fmt.'</span>';
+      $fmt = hsprintf('<span class="green">%s</span>', $fmt);
     }
 
     return array(
@@ -410,14 +415,14 @@ final class ManiphestReportController extends ManiphestController {
         unset($result_closed['']);
 
         $base_link = '/maniphest/?users=';
-        $leftover_name = phutil_render_tag(
+        $leftover_name = phutil_tag(
           'a',
           array(
             'href' => $base_link.ManiphestTaskOwner::OWNER_UP_FOR_GRABS,
           ),
-          '<em>(Up For Grabs)</em>');
-        $col_header = 'User';
-        $header = 'Open Tasks by User and Priority ('.$date.')';
+          phutil_tag('em', array(), pht('(Up For Grabs)')));
+        $col_header = pht('User');
+        $header = pht('Open Tasks by User and Priority (%s)', $date);
         break;
       case 'project':
         $result = array();
@@ -447,14 +452,14 @@ final class ManiphestReportController extends ManiphestController {
         }
 
         $base_link = '/maniphest/view/all/?projects=';
-        $leftover_name = phutil_render_tag(
+        $leftover_name = phutil_tag(
           'a',
           array(
             'href' => $base_link.ManiphestTaskOwner::PROJECT_NO_PROJECT,
           ),
-          '<em>(No Project)</em>');
-        $col_header = 'Project';
-        $header = 'Open Tasks by Project and Priority ('.$date.')';
+          phutil_tag('em', array(), pht('(No Project)')));
+        $col_header = pht('Project');
+        $header = pht('Open Tasks by Project and Priority (%s)', $date);
         break;
     }
 
@@ -479,12 +484,12 @@ final class ManiphestReportController extends ManiphestController {
         }
 
         $tasks = idx($result, $handle->getPHID(), array());
-        $name = phutil_render_tag(
+        $name = phutil_tag(
           'a',
           array(
             'href' => $base_link.$handle->getPHID(),
           ),
-          phutil_escape_html($handle->getName()));
+          $handle->getName());
         $closed = idx($result_closed, $handle->getPHID(), array());
       } else {
         $tasks = $leftover;
@@ -525,13 +530,13 @@ final class ManiphestReportController extends ManiphestController {
 
       if ($closed) {
         $task_ids = implode(',', mpull($closed, 'getID'));
-        $row[] = phutil_render_tag(
+        $row[] = phutil_tag(
           'a',
           array(
             'href' => '/maniphest/view/custom/?s=oc&tasks='.$task_ids,
             'target' => '_blank',
           ),
-          phutil_escape_html(number_format(count($closed))));
+          number_format(count($closed)));
       } else {
         $row[] = '-';
       }
@@ -575,41 +580,42 @@ final class ManiphestReportController extends ManiphestController {
     }
     $cname[] = 'Total';
     $cclass[] = 'n';
-    $cname[] = javelin_render_tag(
+    $cname[] = javelin_tag(
       'span',
       array(
         'sigil' => 'has-tooltip',
         'meta'  => array(
-          'tip' => 'Oldest open task.',
+          'tip' => pht('Oldest open task.'),
           'size' => 200,
         ),
       ),
-      'Oldest (All)');
+      pht('Oldest (All)'));
     $cclass[] = 'n';
-    $cname[] = javelin_render_tag(
+    $cname[] = javelin_tag(
       'span',
       array(
         'sigil' => 'has-tooltip',
         'meta'  => array(
-          'tip' => 'Oldest open task, excluding those with Low or Wishlist '.
-                   'priority.',
+          'tip' => pht('Oldest open task, excluding those with Low or '.
+                   'Wishlist priority.'),
           'size' => 200,
         ),
       ),
-      'Oldest (Pri)');
+      pht('Oldest (Pri)'));
     $cclass[] = 'n';
 
     list($ignored, $window_epoch) = $this->getWindow();
-    $cname[] = javelin_render_tag(
+    $edate = phabricator_datetime($window_epoch, $user);
+    $cname[] = javelin_tag(
       'span',
       array(
         'sigil' => 'has-tooltip',
         'meta'  => array(
-          'tip'  => 'Closed after '.phabricator_datetime($window_epoch, $user),
+          'tip'  => pht('Closed after %s', $edate),
           'size' => 260
         ),
       ),
-      'Recently Closed');
+      pht('Recently Closed'));
     $cclass[] = 'n';
 
     $table = new AphrontTableView($rows);
@@ -746,7 +752,7 @@ final class ManiphestReportController extends ManiphestController {
     $raw_age = (time() - $oldest->getDateCreated());
     $age = number_format($raw_age / (24 * 60 * 60)).' d';
 
-    $link = javelin_render_tag(
+    $link = javelin_tag(
       'a',
       array(
         'href'  => '/T'.$oldest->getID(),
@@ -756,7 +762,7 @@ final class ManiphestReportController extends ManiphestController {
         ),
         'target' => '_blank',
       ),
-      phutil_escape_html($age));
+      $age);
 
     return array($link, $raw_age);
   }

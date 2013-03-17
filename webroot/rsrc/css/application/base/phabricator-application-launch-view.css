@@ -9,16 +9,9 @@
 
 */
 
-/* On desktops, put some space around the whole grid. */
-.device-desktop .phabricator-application-list {
-  padding: .5em;
-}
 
-/* On tablets, show two columns in the center. */
-.device-tablet .phabricator-application-list {
-  width: 660px;
-  margin: auto;
-  padding: .5em 0;
+.application-tile-group {
+  overflow: hidden;
 }
 
 
@@ -28,22 +21,47 @@
 
 */
 
-a.phabricator-application-launch-container {
-  display: inline-block;
-  width: 200px;
-  min-height: 90px;
-  padding: 5px 15px 5px 90px;
-  margin: 3px 6px;
+a.phabricator-application-launch-container,
+div.phabricator-application-launch-container {
+  display: block;
+  float: left;
+  width: 78px;
+  height: 66px;
   overflow: hidden;
   position: relative;
 
   text-decoration: none;
-  border: 1px solid #737373;
-  background-color: #f3f3f3;
 
-  border-radius: 4px;
-  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.10),
-              inset -1px -1px 2px rgba(0, 0, 0, 0.15);
+  border: 1px solid #080909;
+
+}
+
+a.application-tile-full {
+  width: 240px;
+  height: 52px;
+}
+
+a.application-tile-full.application-tile-create {
+  width: 210px;
+  height: 52px;
+  border-right: none;
+}
+
+.application-tile-full + .phabricator-application-launch-create {
+  display: block;
+  float: right;
+  width: 28px;
+  border-top: 1px solid #080909;
+  border-bottom: 1px solid #080909;
+  border-left: 1px solid #080909;
+  height: 52px;
+  position: relative;
+}
+
+a.phabricator-application-launch-create:hover {
+  background-image: url('/rsrc/image/texture/dark-menu-hover.png');
+  color: #fff;
+  text-decoration: none;
 }
 
 a.phabricator-application-launch-container:hover {
@@ -52,94 +70,128 @@ a.phabricator-application-launch-container:hover {
 
 /* The hover effect looks awful on phones/tablets when scrolling. */
 .device-desktop a.phabricator-application-launch-container:hover {
-  background-color: #3875d7;
-  border-color: #223366;
-  color: #eeeeee;
-}
-
-.phabricator-application-launch-name,
-.phabricator-application-launch-description,
-.phabricator-application-launch-status {
-  display: block;
+  background-image: url('/rsrc/image/texture/dark-menu-hover.png');
+  color: #fff;
 }
 
 .phabricator-application-launch-icon {
   display: block;
   position: absolute;
-  left: 15px;
+  left: 25px;
   top: 10px;
-  width: 60px;
-  height: 60px;
-  background-repeat: no-repeat;
+  width: 28px;
+  height: 28px;
+}
+
+.phabricator-application-create-icon {
+  display: block;
+  position: absolute;
+  right: 7px;
+  top: 20px;
+  width: 14px;
+  height: 14px;
+}
+
+.application-tile-full .phabricator-application-launch-icon {
+  top: 12px;
+  left: 10px;
 }
 
 .phabricator-application-launch-name {
+  display: block;
+  margin-top: 42px;
   font-weight: bold;
+  font-size: 11px;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 0px 1px 1px #000000;
 }
 
-.phabricator-application-launch-description {
-  color: #666666;
+.application-tile-full .phabricator-application-launch-name {
+  font-size: 13px;
+  margin-top: 11px;
+  text-align: left;
+  margin-left: 48px;
+
 }
 
-.device-desktop a.phabricator-application-launch-container:hover
-  .phabricator-application-launch-description {
-  color: #dddddd;
+.application-tile-full .phabricator-application-launch-description {
+  color: #bfbfbf;
+  font-size: 11px;
+  margin-top: 24px;
+  margin-left: 48px;
+}
+
+.phabricator-application-beta {
+  position: absolute;
+  top: 4px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  padding: 1px 6px 2px;
+  border: 2px solid #333;
+  font-size: 11px;
+  box-shadow: 0 0px 2px #000;
 }
 
 .phabricator-application-launch-attention {
   position: absolute;
-  left: 45px;
-  top: 10px;
-  background: #ff0000;
+  top: 4px;
   border-radius: 10px;
   color: white;
-  font-weight: normal;
-  padding: 2px 6px;
-  border: 1px solid #aa0000;
-  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5),
-              inset 0 0 3px #aa0000;
-}
-
-.phabricator-application-status-block {
-  margin-top: 0.5em;
-  padding-top: 0.5em;
-  border-top: 1px solid #dfdfdf;
-  display: block;
-}
-
-.phabricator-application-flavor-text,
-.phabricator-application-status {
-  float: left;
-  display: block;
-  position: relative;
+  font-weight: bold;
+  padding: 1px 0 2px;
+  border: 2px solid #333;
   font-size: 11px;
-  color: #666666;
+  box-shadow: 0 0px 2px #000;
 }
 
-.phabricator-application-status {
-  height: 20px;
-  padding-left: 22px;
-
-  background-repeat: no-repeat;
-  background-size: 16px auto;
-  padding-top: 1px;
+.phabricator-application-attention-count {
+  background-color: rgb(0, 122, 255);
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  padding: 1px 6px 2px;
+  border: 1px solid #333;
+  font-size: 11px;
 }
 
-.device-desktop a.phabricator-application-launch-container:hover
-  .phabricator-application-status,
-.device-desktop a.phabricator-application-launch-container:hover
-  .phabricator-application-flavor-text {
-    color: #eeeeee;
+.phabricator-application-warning-count {
+  padding: 6px;
 }
 
-.phabricator-application-status-type-needs {
-  background-image: url(/rsrc/image/appstatus_needs.png);
+.phabricator-application-attention-count + .phabricator-application-warning-count {
+  margin-left: -2px;
 }
 
-.phabricator-application-status-type-empty {
-  background-image: url(/rsrc/image/appstatus_empty.png);
+.phabricator-application-launch-attention {
+  right: 4px;
+  background-color: rgb(119, 119, 119);
 }
 
-.phabricator-application-status-type-info {
-  background-image: url(/rsrc/image/appstatus_info.png);
+.phabricator-application-beta {
+  left: 4px;
+  background-color: rgb(109, 92, 41);
+}
+
+.application-tile-full .phabricator-application-launch-attention {
+  top: 16px;
+  right: 8px;
+}
+
+.application-tile-full .phabricator-application-launch-create {
+  display: inline-block;
+  float: right;
+  background: rgb(0, 122, 255);
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  padding: 1px 6px 2px;
+  border: 2px solid #333;
+  font-size: 11px;
+  box-shadow: 0 0px 2px #000;
+}
+
+.phabricator-application-launch-create {
+  display: none;
 }

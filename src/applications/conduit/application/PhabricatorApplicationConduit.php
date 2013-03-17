@@ -6,8 +6,12 @@ final class PhabricatorApplicationConduit extends PhabricatorApplication {
     return '/conduit/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'conduit';
+  }
+
+  public function canUninstall() {
+    return false;
   }
 
   public function getHelpURI() {

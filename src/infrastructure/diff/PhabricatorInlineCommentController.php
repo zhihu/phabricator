@@ -71,7 +71,7 @@ abstract class PhabricatorInlineCommentController
         $dialog->setTitle('Really delete this comment?');
         $dialog->addHiddenInput('id', $this->getCommentID());
         $dialog->addHiddenInput('op', 'delete');
-        $dialog->appendChild('<p>Delete this inline comment?</p>');
+        $dialog->appendChild(hsprintf('<p>Delete this inline comment?</p>'));
 
         $dialog->addCancelButton('#');
         $dialog->addSubmitButton('Delete');
@@ -234,14 +234,14 @@ abstract class PhabricatorInlineCommentController
   }
 
   private function renderTextArea($text) {
-    return javelin_render_tag(
+    return javelin_tag(
       'textarea',
       array(
         'class' => 'differential-inline-comment-edit-textarea',
         'sigil' => 'differential-inline-comment-edit-textarea',
         'name' => 'text',
       ),
-      phutil_escape_html($text));
+      $text);
   }
 
 }

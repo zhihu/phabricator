@@ -2,7 +2,6 @@
 
 final class AphrontFormDateControl extends AphrontFormControl {
 
-  private $user;
   private $initialTime;
 
   private $valueDay;
@@ -15,11 +14,6 @@ final class AphrontFormDateControl extends AphrontFormControl {
   const TIME_START_OF_BUSINESS    = 'start-of-business';
   const TIME_END_OF_BUSINESS      = 'end-of-business';
 
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
-
   public function setInitialTime($time) {
     $this->initialTime = $time;
     return $this;
@@ -29,7 +23,7 @@ final class AphrontFormDateControl extends AphrontFormControl {
     $user = $this->user;
     if (!$this->user) {
       throw new Exception(
-        "Call setUser() before readValueFromRequest()!");
+        pht("Call setUser() before readValueFromRequest()!"));
     }
 
     $user_zone = $user->getTimezoneIdentifier();
@@ -187,25 +181,25 @@ final class AphrontFormDateControl extends AphrontFormControl {
     $max_year = $this->getMaxYear();
 
     $days = range(1, 31);
-    $days = array_combine($days, $days);
+    $days = array_fuse($days);
 
     $months = array(
-      1 => 'Jan',
-      2 => 'Feb',
-      3 => 'Mar',
-      4 => 'Apr',
-      5 => 'May',
-      6 => 'Jun',
-      7 => 'Jul',
-      8 => 'Aug',
-      9 => 'Sep',
-      10 => 'Oct',
-      11 => 'Nov',
-      12 => 'Dec',
+      1 => pht('Jan'),
+      2 => pht('Feb'),
+      3 => pht('Mar'),
+      4 => pht('Apr'),
+      5 => pht('May'),
+      6 => pht('Jun'),
+      7 => pht('Jul'),
+      8 => pht('Aug'),
+      9 => pht('Sep'),
+      10 => pht('Oct'),
+      11 => pht('Nov'),
+      12 => pht('Dec'),
     );
 
     $years = range($this->getMinYear(), $this->getMaxYear());
-    $years = array_combine($years, $years);
+    $years = array_fuse($years);
 
     $days_sel = AphrontFormSelectControl::renderSelectTag(
       $this->getDayInputValue(),
@@ -231,7 +225,7 @@ final class AphrontFormDateControl extends AphrontFormControl {
         'sigil' => 'year-input',
       ));
 
-    $cal_icon = javelin_render_tag(
+    $cal_icon = javelin_tag(
       'a',
       array(
         'href'  => '#',
@@ -240,7 +234,7 @@ final class AphrontFormDateControl extends AphrontFormControl {
       ),
       '');
 
-    $time_sel = phutil_render_tag(
+    $time_sel = phutil_tag(
       'input',
       array(
         'name'  => $this->getTimeInputName(),
@@ -253,20 +247,19 @@ final class AphrontFormDateControl extends AphrontFormControl {
 
     Javelin::initBehavior('fancy-datepicker', array());
 
-    return javelin_render_tag(
+    return javelin_tag(
       'div',
       array(
         'class' => 'aphront-form-date-container',
         'sigil' => 'phabricator-date-control',
       ),
-      self::renderSingleView(
-        array(
-          $days_sel,
-          $months_sel,
-          $years_sel,
-          $cal_icon,
-          $time_sel,
-        )));
+      array(
+        $days_sel,
+        $months_sel,
+        $years_sel,
+        $cal_icon,
+        $time_sel,
+      ));
   }
 
 }

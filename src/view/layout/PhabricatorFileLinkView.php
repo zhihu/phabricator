@@ -7,6 +7,15 @@ final class PhabricatorFileLinkView extends AphrontView {
   private $fileViewURI;
   private $fileViewable;
   private $filePHID;
+  private $customClass;
+
+  public function setCustomClass($custom_class) {
+    $this->customClass = $custom_class;
+    return $this;
+  }
+  public function getCustomClass() {
+    return $this->customClass;
+  }
 
   public function setFilePHID($file_phid) {
     $this->filePHID = $file_phid;
@@ -48,6 +57,16 @@ final class PhabricatorFileLinkView extends AphrontView {
     return $this->fileName;
   }
 
+  public function getMetadata() {
+    return array(
+      'phid'     => $this->getFilePHID(),
+      'viewable' => $this->getFileViewable(),
+      'uri'      => $this->getFileViewURI(),
+      'dUri'     => $this->getFileDownloadURI(),
+      'name'     => $this->getFileName(),
+    );
+  }
+
   public function render() {
     require_celerity_resource('phabricator-remarkup-css');
     require_celerity_resource('lightbox-attachment-css');
@@ -57,26 +76,24 @@ final class PhabricatorFileLinkView extends AphrontView {
     $mustcapture = false;
     if ($this->getFileViewable()) {
       $mustcapture = true;
-      $sigil       = 'lightboxable';
-      $meta        = array(
-        'phid'     => $this->getFilePHID(),
-        'viewable' => $this->getFileViewable(),
-        'uri'      => $this->getFileViewURI(),
-        'dUri'     => $this->getFileDownloadURI(),
-        'name'     => $this->getFileName(),
-      );
+      $sigil = 'lightboxable';
+      $meta = $this->getMetadata();
     }
 
-    return javelin_render_tag(
+    $class = 'phabricator-remarkup-embed-layout-link';
+    if ($this->getCustomClass()) {
+      $class = $this->getCustomClass();
+    }
+
+    return javelin_tag(
       'a',
       array(
         'href'        => $this->getFileViewURI(),
-        'class'       => 'phabricator-remarkup-embed-layout-link',
+        'class'       => $class,
         'sigil'       => $sigil,
         'meta'        => $meta,
         'mustcapture' => $mustcapture,
       ),
-      phutil_escape_html($this->getFileName())
-    );
+      $this->getFileName());
   }
 }

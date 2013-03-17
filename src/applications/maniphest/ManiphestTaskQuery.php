@@ -58,7 +58,16 @@ final class ManiphestTaskQuery extends PhabricatorQuery {
   private $rowCount         = null;
 
   private $groupByProjectResults = null; // See comment at bottom for details
+  private $viewer;
 
+  public function setViewer(PhabricatorUser $viewer) {
+    $this->viewer = $viewer;
+    return $this;
+  }
+
+  public function getViewer() {
+    return $this->viewer;
+  }
 
   public function withAuthors(array $authors) {
     $this->authorPHIDs = $authors;
@@ -602,7 +611,11 @@ final class ManiphestTaskQuery extends PhabricatorQuery {
       }
     }
 
+    // TODO: This should use the query's viewer once this class extends
+    // PhabricatorPolicyQuery (T603).
+
     $handles = id(new PhabricatorObjectHandleData(array_keys($project_phids)))
+      ->setViewer(PhabricatorUser::getOmnipotentUser())
       ->loadHandles();
 
     $max = 1;

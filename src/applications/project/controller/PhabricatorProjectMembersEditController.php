@@ -83,8 +83,8 @@ final class PhabricatorProjectMembersEditController
       );
     }
 
-    $header_name = 'Edit Members';
-    $title = 'Edit Members';
+    $header_name = pht('Edit Members');
+    $title = pht('Edit Members');
 
     $list = $this->renderMemberList($handles);
 
@@ -94,35 +94,48 @@ final class PhabricatorProjectMembersEditController
       ->appendChild(
         id(new AphrontFormTokenizerControl())
           ->setName('phids')
-          ->setLabel('Add Members')
+          ->setLabel(pht('Add Members'))
           ->setDatasource('/typeahead/common/users/'))
       ->appendChild(
         id(new AphrontFormSubmitControl())
           ->addCancelButton('/project/view/'.$project->getID().'/')
-          ->setValue('Add Members'));
+          ->setValue(pht('Add Members')));
     $faux_form = id(new AphrontFormLayoutView())
       ->setBackgroundShading(true)
       ->setPadded(true)
       ->appendChild(
         id(new AphrontFormInsetView())
-          ->setTitle('Current Members ('.count($handles).')')
+          ->setTitle(pht('Current Members (%d)', count($handles)))
           ->appendChild($list));
 
     $panel = new AphrontPanelView();
     $panel->setHeader($header_name);
     $panel->setWidth(AphrontPanelView::WIDTH_FORM);
+    $panel->setNoBackground();
     $panel->appendChild($form);
-    $panel->appendChild('<br />');
+    $panel->appendChild(phutil_tag('br'));
     $panel->appendChild($faux_form);
 
     $nav = $this->buildLocalNavigation($project);
     $nav->selectFilter('members');
     $nav->appendChild($panel);
 
-    return $this->buildStandardPageResponse(
+    $crumbs = $this->buildApplicationCrumbs($this->buildSideNavView());
+    $crumbs->addCrumb(
+      id(new PhabricatorCrumbView())
+        ->setName($project->getName())
+        ->setHref('/project/view/'.$project->getID().'/'));
+    $crumbs->addCrumb(
+      id(new PhabricatorCrumbView())
+        ->setName(pht('Edit Members'))
+        ->setHref($this->getApplicationURI()));
+    $nav->setCrumbs($crumbs);
+
+    return $this->buildApplicationPage(
       $nav,
       array(
         'title' => $title,
+        'device' => true,
       ));
   }
 
@@ -133,7 +146,7 @@ final class PhabricatorProjectMembersEditController
       ->setHandles($handles);
 
     foreach ($handles as $handle) {
-      $hidden_input = phutil_render_tag(
+      $hidden_input = phutil_tag(
         'input',
         array(
           'type' => 'hidden',
@@ -142,7 +155,7 @@ final class PhabricatorProjectMembersEditController
         ),
         '');
 
-      $button = javelin_render_tag(
+      $button = javelin_tag(
         'button',
         array(
           'class' => 'grey',
@@ -151,13 +164,13 @@ final class PhabricatorProjectMembersEditController
 
       $list->addButton(
         $handle,
-        phabricator_render_form(
+        phabricator_form(
           $user,
           array(
             'method' => 'POST',
             'action' => $request->getRequestURI(),
           ),
-          $hidden_input.$button));
+          array($hidden_input, $button)));
     }
 
     return $list;

@@ -25,16 +25,16 @@ final class DifferentialSubscribeController extends DifferentialController {
 
       switch ($this->action) {
         case 'add':
-          $button = 'Subscribe';
-          $title = 'Subscribe to Revision';
-          $prompt = 'Really subscribe to this revision?';
+          $button = pht('Subscribe');
+          $title = pht('Subscribe to Revision');
+          $prompt = pht('Really subscribe to this revision?');
           break;
         case 'rem':
-          $button = 'Unsubscribe';
-          $title = 'Unsubscribe from Revision';
-          $prompt = 'Really unsubscribe from this revision? Herald will '.
+          $button = pht('Unsubscribe');
+          $title = pht('Unsubscribe from Revision');
+          $prompt = pht('Really unsubscribe from this revision? Herald will '.
                     'not resubscribe you to a revision you unsubscribe '.
-                    'from.';
+                    'from.');
           break;
         default:
           return new Aphront400Response();
@@ -43,7 +43,7 @@ final class DifferentialSubscribeController extends DifferentialController {
       $dialog
         ->setUser($user)
         ->setTitle($title)
-        ->appendChild('<p>'.$prompt.'</p>')
+        ->appendChild(phutil_tag('p', array(), $prompt))
         ->setSubmitURI($request->getRequestURI())
         ->addSubmitButton($button)
         ->addCancelButton('/D'.$revision->getID());
@@ -59,13 +59,13 @@ final class DifferentialSubscribeController extends DifferentialController {
         DifferentialRevisionEditor::addCCAndUpdateRevision(
           $revision,
           $phid,
-          $phid);
+          $user);
         break;
       case 'rem':
         DifferentialRevisionEditor::removeCCAndUpdateRevision(
           $revision,
           $phid,
-          $phid);
+          $user);
         break;
       default:
         return new Aphront400Response();

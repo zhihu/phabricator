@@ -3,16 +3,10 @@
 final class PhabricatorFlagListView extends AphrontView {
 
   private $flags;
-  private $user;
 
   public function setFlags(array $flags) {
     assert_instances_of($flags, 'PhabricatorFlag');
     $this->flags = $flags;
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -26,41 +20,41 @@ final class PhabricatorFlagListView extends AphrontView {
       $class = PhabricatorFlagColor::getCSSClass($flag->getColor());
 
       $rows[] = array(
-        phutil_render_tag(
+        phutil_tag(
           'div',
           array(
             'class' => 'phabricator-flag-icon '.$class,
           ),
           ''),
         $flag->getHandle()->renderLink(),
-        phutil_escape_html($flag->getNote()),
+        $flag->getNote(),
         phabricator_datetime($flag->getDateCreated(), $user),
-        phabricator_render_form(
+        phabricator_form(
           $user,
           array(
             'method' => 'POST',
             'action' => '/flag/edit/'.$flag->getObjectPHID().'/',
             'sigil'  => 'workflow',
           ),
-          phutil_render_tag(
+          phutil_tag(
             'button',
             array(
               'class' => 'small grey',
             ),
-            'Edit Flag')),
-        phabricator_render_form(
+            pht('Edit Flag'))),
+        phabricator_form(
           $user,
           array(
             'method' => 'POST',
             'action' => '/flag/delete/'.$flag->getID().'/',
             'sigil'  => 'workflow',
           ),
-          phutil_render_tag(
+          phutil_tag(
             'button',
             array(
               'class' => 'small grey',
             ),
-            'Remove Flag')),
+            pht('Remove Flag'))),
       );
     }
 
@@ -68,9 +62,9 @@ final class PhabricatorFlagListView extends AphrontView {
     $table->setHeaders(
       array(
         '',
-        'Flagged Object',
-        'Note',
-        'Flagged On',
+        pht('Flagged Object'),
+        pht('Note'),
+        pht('Flagged On'),
         '',
         '',
       ));
@@ -83,7 +77,7 @@ final class PhabricatorFlagListView extends AphrontView {
         'narrow action',
         'narrow action',
       ));
-    $table->setNoDataString('No flags.');
+    $table->setNoDataString(pht('No flags.'));
 
     return $table->render();
   }

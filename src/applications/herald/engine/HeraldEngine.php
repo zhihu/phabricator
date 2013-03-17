@@ -52,8 +52,7 @@ final class HeraldEngine {
             ->setRuleOwner($rule->getAuthorPHID())
             ->setReason(
               "This rule is only supposed to be repeated a single time, ".
-              "and it has already been applied."
-            );
+              "and it has already been applied.");
           $this->transcript->addRuleTranscript($xscript);
           $rule_matches = false;
         } else {
@@ -110,7 +109,7 @@ final class HeraldEngine {
     assert_instances_of($effects, 'HeraldEffect');
     assert_instances_of($rules, 'HeraldRule');
 
-    $this->transcript->setDryRun($object instanceof HeraldDryRunAdapter);
+    $this->transcript->setDryRun((int)($object instanceof HeraldDryRunAdapter));
 
     $xscripts = $object->applyHeraldEffects($effects);
     foreach ($xscripts as $apply_xscript) {

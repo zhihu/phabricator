@@ -33,7 +33,7 @@ final class AphrontFormLayoutView extends AphrontView {
 
     $classes = implode(' ', $classes);
 
-    return phutil_render_tag(
+    return phutil_tag(
       'div',
       array(
         'class' => $classes,

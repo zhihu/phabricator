@@ -3,11 +3,11 @@
 final class PhabricatorChatLogQuery
   extends PhabricatorCursorPagedPolicyAwareQuery {
 
-  private $channels;
+  private $channelIDs;
   private $maximumEpoch;
 
-  public function withChannels(array $channels) {
-    $this->channels = $channels;
+  public function withChannelIDs(array $channel_ids) {
+    $this->channelIDs = $channel_ids;
     return $this;
   }
 
@@ -16,7 +16,7 @@ final class PhabricatorChatLogQuery
     return $this;
   }
 
-  public function loadPage() {
+  protected function loadPage() {
     $table  = new PhabricatorChatLogEvent();
     $conn_r = $table->establishConnection('r');
 
@@ -45,11 +45,11 @@ final class PhabricatorChatLogQuery
         $this->maximumEpoch);
     }
 
-    if ($this->channels) {
+    if ($this->channelIDs) {
       $where[] = qsprintf(
         $conn_r,
-        'channel IN (%Ls)',
-        $this->channels);
+        'channelID IN (%Ld)',
+        $this->channelIDs);
     }
 
     return $this->formatWhereClause($where);

@@ -8,6 +8,7 @@ Instructions for configuring Phabricator to send mail.
 Phabricator can send outbound email via several different adapters:
 
   - by running ##sendmail## on the local host with SMTP; or
+  - by running postfix on the local host with SMTP; or
   - by using Amazon SES (Simple Email Service); or
   - by using SendGrid's REST API; or
   - via a custom adapter you write; or
@@ -47,6 +48,8 @@ your configuration. Possible values are:
 
   - ##PhabricatorMailImplementationPHPMailerLiteAdapter##: default, uses
     "sendmail", see "Adapter: Sendmail".
+  - ##PhabricatorMailImplementationPHPMailerAdapter##: uses SMTP, see
+    "Adapter: SMTP".
   - ##PhabricatorMailImplementationAmazonSESAdapter##: use Amazon SES, see
     "Adapter: Amazon SES".
   - ##PhabricatorMailImplementationSendGridAdapter##: use SendGrid, see
@@ -72,6 +75,24 @@ rules, blackholes, and MTA configuration which are beyond the scope of this
 document. If you can already send outbound email from the command line or know
 how to configure it, this option is straightforward. If you have no idea how to
 do any of this, consider using Amazon SES.
+
+= Adapter: SMTP =
+
+For most situations of using SMTP to send email, you could actually use
+'sendmail' or 'postfix' to do it. But some SMTP server requires authentication 
+and the 'sendmail' mailer doesn't work. If you want to try with postfix, for install
+instructions, consult the documentation for postfix as MTA and you could configure 
+to use SMTP then.
+
+To configure Phabricator to use SMTP, set these configuration keys:
+
+  - **metamta.mail-adapter**: set to
+    "PhabricatorMailImplementationPHPMailerAdapter".
+  - **phpmailer.mailer**: set to "smtp".
+  - **phpmailer.smtp-host**: set to hostname of your smtp server.
+  - **phpmailer.smtp-port**: set to port of your smtp server.
+  - **phpmailer.smtp-user**: set to your username used for authentication.
+  - **phpmailer.smtp-password**: set to your password used for authentication.
 
 = Adapter: Amazon SES =
 

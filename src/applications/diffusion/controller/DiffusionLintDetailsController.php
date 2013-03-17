@@ -1,5 +1,4 @@
 <?php
-// Copyright 2004-present Facebook. All Rights Reserved.
 
 final class DiffusionLintDetailsController extends DiffusionController {
 
@@ -8,8 +7,11 @@ final class DiffusionLintDetailsController extends DiffusionController {
     $offset = $this->getRequest()->getInt('offset', 0);
 
     $drequest = $this->getDiffusionRequest();
-    $messages = $this->loadLintMessages($limit, $offset);
+    $branch = $drequest->loadBranch();
+    $messages = $this->loadLintMessages($branch, $limit, $offset);
     $is_dir = (substr('/'.$drequest->getPath(), -1) == '/');
+
+    $authors = $this->loadViewerHandles(ipull($messages, 'authorPHID'));
 
     $rows = array();
     foreach ($messages as $message) {
@@ -27,17 +29,22 @@ final class DiffusionLintDetailsController extends DiffusionController {
           'action' => 'browse',
           'path' => $message['path'],
           'line' => $message['line'],
+          'commit' => $branch->getLintCommit(),
         )),
         $message['line']);
+
+      $author = $message['authorPHID'];
+      if ($author && $authors[$author]) {
+        $author = $authors[$author]->renderLink();
+      }
 
       $rows[] = array(
         $path,
         $line,
-        phutil_escape_html(ArcanistLintSeverity::getStringForSeverity(
-          $message['severity'])),
-        phutil_escape_html($message['code']),
-        phutil_escape_html($message['name']),
-        phutil_escape_html($message['description']),
+        $author,
+        ArcanistLintSeverity::getStringForSeverity($message['severity']),
+        $message['name'],
+        $message['description'],
       );
     }
 
@@ -45,31 +52,15 @@ final class DiffusionLintDetailsController extends DiffusionController {
       ->setHeaders(array(
         'Path',
         'Line',
+        'Author',
         'Severity',
-        'Code',
         'Name',
-        'Example',
+        'Description',
       ))
-      ->setColumnClasses(array(
-        '',
-        'n',
-        '',
-        'pri',
-        '',
-        '',
-      ))
-    ->setColumnVisibility(array(
-      $is_dir,
-    ));
+      ->setColumnClasses(array('', 'n'))
+      ->setColumnVisibility(array($is_dir));
 
     $content = array();
-
-    $content[] = $this->buildCrumbs(
-      array(
-        'branch' => true,
-        'path'   => true,
-        'view'   => 'lint',
-      ));
 
     $pager = id(new AphrontPagerView())
       ->setPageSize($limit)
@@ -77,15 +68,34 @@ final class DiffusionLintDetailsController extends DiffusionController {
       ->setHasMorePages(count($messages) >= $limit)
       ->setURI($this->getRequest()->getRequestURI(), 'offset');
 
+    $lint = $drequest->getLint();
+    $link = hsprintf(
+      '<a href="%s">%s</a>',
+      $drequest->generateURI(array(
+        'action' => 'lint',
+        'lint' => null,
+      )),
+      pht('Switch to Grouped View'));
+
     $content[] = id(new AphrontPanelView())
-      ->setHeader(pht('%d Lint Message(s)', count($messages)))
+      ->setHeader(
+        ($lint != '' ? $lint." \xC2\xB7 " : '').
+        pht('%d Lint Message(s)', count($messages)))
+      ->setCaption($link)
       ->appendChild($table)
       ->appendChild($pager);
 
     $nav = $this->buildSideNav('lint', false);
     $nav->appendChild($content);
+    $crumbs = $this->buildCrumbs(
+      array(
+        'branch' => true,
+        'path'   => true,
+        'view'   => 'lint',
+      ));
+    $nav->setCrumbs($crumbs);
 
-    return $this->buildStandardPageResponse(
+    return $this->buildApplicationPage(
       $nav,
       array('title' => array(
         'Lint',
@@ -93,37 +103,45 @@ final class DiffusionLintDetailsController extends DiffusionController {
       )));
   }
 
-  private function loadLintMessages($limit, $offset) {
+  private function loadLintMessages(
+    PhabricatorRepositoryBranch $branch,
+    $limit,
+    $offset) {
+
     $drequest = $this->getDiffusionRequest();
-    $branch = $drequest->loadBranch();
     if (!$branch) {
       return array();
     }
 
     $conn = $branch->establishConnection('r');
 
-    $where = '';
+    $where = array(
+      qsprintf($conn, 'branchID = %d', $branch->getID()),
+    );
+
     if ($drequest->getPath() != '') {
-      $is_dir = (substr($drequest->getPath(), -1) == '/');
-      $where = qsprintf(
+      $path = '/'.$drequest->getPath();
+      $is_dir = (substr($path, -1) == '/');
+      $where[] = ($is_dir
+        ? qsprintf($conn, 'path LIKE %>', $path)
+        : qsprintf($conn, 'path = %s', $path));
+    }
+
+    if ($drequest->getLint() != '') {
+      $where[] = qsprintf(
         $conn,
-        'AND path '.($is_dir ? 'LIKE %>' : '= %s'),
-        '/'.$drequest->getPath());
+        'code = %s',
+        $drequest->getLint());
     }
 
     return queryfx_all(
       $conn,
       'SELECT *
         FROM %T
-        WHERE branchID = %d
-        AND code = %s
-        %Q
-        ORDER BY path, code, line
-        LIMIT %d OFFSET %d',
+        WHERE %Q
+        ORDER BY path, code, line LIMIT %d OFFSET %d',
       PhabricatorRepository::TABLE_LINTMESSAGE,
-      $branch->getID(),
-      $drequest->getLint(),
-      $where,
+      implode(' AND ', $where),
       $limit,
       $offset);
   }

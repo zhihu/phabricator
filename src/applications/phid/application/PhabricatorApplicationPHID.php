@@ -3,14 +3,14 @@
 final class PhabricatorApplicationPHID extends PhabricatorApplication {
 
   public function getName() {
-    return 'PHID Manager';
+    return 'PHIDs';
   }
 
   public function getBaseURI() {
     return '/phid/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'phid';
   }
 

@@ -7,11 +7,11 @@ final class PhabricatorApplicationMetaMTA extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return 'View Mail Logs';
+    return pht('View Mail Logs');
   }
 
-  public function getAutospriteName() {
-    return 'mail';
+  public function getIconName() {
+    return 'metamta';
   }
 
   public function getFlavorText() {
@@ -20,6 +20,10 @@ final class PhabricatorApplicationMetaMTA extends PhabricatorApplication {
 
   public function getApplicationGroup() {
     return self::GROUP_ADMIN;
+  }
+
+  public function canUninstall() {
+    return false;
   }
 
   public function getRoutes() {

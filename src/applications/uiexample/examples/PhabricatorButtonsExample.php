@@ -7,7 +7,7 @@ final class PhabricatorButtonsExample extends PhabricatorUIExample {
   }
 
   public function getDescription() {
-    return 'Use <tt>&lt;button&gt;</tt> to render buttons.';
+    return hsprintf('Use <tt>&lt;button&gt;</tt> to render buttons.');
   }
 
   public function renderExample() {
@@ -28,18 +28,18 @@ final class PhabricatorButtonsExample extends PhabricatorUIExample {
             $class .= ' button';
           }
 
-          $view[] = phutil_render_tag(
+          $view[] = phutil_tag(
             $tag,
             array(
               'class' => $class,
             ),
-            phutil_escape_html(ucwords($size.' '.$color.' '.$tag)));
+            ucwords($size.' '.$color.' '.$tag));
 
-          $view[] = '<br /><br />';
+          $view[] = hsprintf('<br /><br />');
         }
       }
     }
 
-    return '<div style="margin: 1em 2em;">'.implode('', $view).'</div>';
+    return phutil_tag('div', array('style' => 'margin: 1em 2em;'), $view);
   }
 }

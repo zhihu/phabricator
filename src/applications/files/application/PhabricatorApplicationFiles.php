@@ -10,7 +10,7 @@ final class PhabricatorApplicationFiles extends PhabricatorApplication {
     return 'Store and Share Files';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'files';
   }
 
@@ -24,6 +24,14 @@ final class PhabricatorApplicationFiles extends PhabricatorApplication {
 
   public function getApplicationGroup() {
     return self::GROUP_UTILITIES;
+  }
+
+  public function getQuickCreateURI() {
+    return $this->getBaseURI().'upload/';
+  }
+
+  public function canUninstall() {
+    return false;
   }
 
   public function getRoutes() {

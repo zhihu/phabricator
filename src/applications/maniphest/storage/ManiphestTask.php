@@ -4,7 +4,10 @@
  * @group maniphest
  */
 final class ManiphestTask extends ManiphestDAO
-  implements PhabricatorMarkupInterface {
+  implements
+    PhabricatorMarkupInterface,
+    PhabricatorPolicyInterface,
+    PhabricatorTokenReceiverInterface {
 
   const MARKUP_FIELD_DESCRIPTION = 'markup:desc';
 
@@ -199,15 +202,18 @@ final class ManiphestTask extends ManiphestDAO
       foreach ($update as $key => $val) {
         $sql[] = qsprintf(
           $conn_w,
-          '(%s, %s, %s)',
+          '(%s, %s, %s, %d, %d)',
           $this->getPHID(),
           $key,
-          $val);
+          $val,
+          time(),
+          time());
       }
       queryfx(
         $conn_w,
-        'INSERT INTO %T (taskPHID, name, value) VALUES %Q
-          ON DUPLICATE KEY UPDATE value = VALUES(value)',
+        'INSERT INTO %T (taskPHID, name, value, dateCreated, dateModified)
+          VALUES %Q ON DUPLICATE KEY
+          UPDATE value = VALUES(value), dateModified = VALUES(dateModified)',
         $table->getTableName(),
         implode(', ', $sql));
     }
@@ -259,6 +265,38 @@ final class ManiphestTask extends ManiphestDAO
    */
   public function shouldUseMarkupCache($field) {
     return (bool)$this->getID();
+  }
+
+
+/* -(  Policy Interface  )--------------------------------------------------- */
+
+
+  public function getCapabilities() {
+    return array(
+      PhabricatorPolicyCapability::CAN_VIEW,
+      PhabricatorPolicyCapability::CAN_EDIT,
+    );
+  }
+
+  public function getPolicy($capability) {
+    return PhabricatorPolicies::POLICY_USER;
+  }
+
+  public function hasAutomaticCapability($capability, PhabricatorUser $user) {
+    return false;
+  }
+
+
+/* -(  PhabricatorTokenReceiverInterface  )---------------------------------- */
+
+  public function getUsersToNotifyOfTokenGiven() {
+    // Sort of ambiguous who this was intended for; just let them both know.
+    return array_filter(
+      array_unique(
+        array(
+          $this->getAuthorPHID(),
+          $this->getOwnerPHID(),
+        )));
   }
 
 }

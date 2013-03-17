@@ -8,6 +8,16 @@ abstract class DiffusionBrowseQuery {
   protected $existedAtCommit;
   protected $deletedAtCommit;
   protected $validityOnly;
+  private $viewer;
+
+  public function setViewer(PhabricatorUser $viewer) {
+    $this->viewer = $viewer;
+    return $this;
+  }
+
+  public function getViewer() {
+    return $this->viewer;
+  }
 
   const REASON_IS_FILE              = 'is-file';
   const REASON_IS_DELETED           = 'is-deleted';
@@ -107,12 +117,12 @@ abstract class DiffusionBrowseQuery {
 
     $content_query = DiffusionFileContentQuery::newFromDiffusionRequest(
       $readme_request);
+    $content_query->setViewer($this->getViewer());
     $content_query->loadFileContent();
     $readme_content = $content_query->getRawData();
 
     if (preg_match('/\\.txt$/', $readme->getPath())) {
-      $readme_content = phutil_escape_html($readme_content);
-      $readme_content = nl2br($readme_content);
+      $readme_content = phutil_escape_html_newlines($readme_content);
 
       $class = null;
     } else if (preg_match('/\\.rainbow$/', $readme->getPath())) {
@@ -120,19 +130,20 @@ abstract class DiffusionBrowseQuery {
       $readme_content = $highlighter
         ->getHighlightFuture($readme_content)
         ->resolve();
-      $readme_content = nl2br($readme_content);
+      $readme_content = phutil_escape_html_newlines($readme_content);
 
       require_celerity_resource('syntax-highlighting-css');
       $class = 'remarkup-code';
     } else {
       // Markup extensionless files as remarkup so we get links and such.
       $engine = PhabricatorMarkupEngine::newDiffusionMarkupEngine();
+      $engine->setConfig('viewer', $this->getViewer());
       $readme_content = $engine->markupText($readme_content);
 
       $class = 'phabricator-remarkup';
     }
 
-    $readme_content = phutil_render_tag(
+    $readme_content = phutil_tag(
       'div',
       array(
         'class' => $class,

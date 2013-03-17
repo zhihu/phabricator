@@ -5,7 +5,6 @@ final class AphrontFormTokenizerControl extends AphrontFormControl {
   private $datasource;
   private $disableBehavior;
   private $limit;
-  private $user;
   private $placeholder;
 
   public function setDatasource($datasource) {
@@ -27,11 +26,6 @@ final class AphrontFormTokenizerControl extends AphrontFormControl {
     return $this;
   }
 
-  public function setUser($user) {
-    $this->user = $user;
-    return $this;
-  }
-
   public function setPlaceholder($placeholder) {
     $this->placeholder = $placeholder;
     return $this;
@@ -47,9 +41,8 @@ final class AphrontFormTokenizerControl extends AphrontFormControl {
       $id = celerity_generate_unique_node_id();
     }
 
-    $placeholder = null;
     if (!$this->placeholder) {
-      $placeholder = $this->getDefaultPlaceholder();
+      $this->placeholder = $this->getDefaultPlaceholder();
     }
 
     $template = new AphrontTokenizerTemplateView();
@@ -70,7 +63,7 @@ final class AphrontFormTokenizerControl extends AphrontFormControl {
         'limit'       => $this->limit,
         'ondemand'    => PhabricatorEnv::getEnvConfig('tokenizer.ondemand'),
         'username'    => $username,
-        'placeholder' => $placeholder,
+        'placeholder' => $this->placeholder,
       ));
     }
 
@@ -88,17 +81,17 @@ final class AphrontFormTokenizerControl extends AphrontFormControl {
     $request = $matches[1];
 
     $map = array(
-      'users'           => 'Type a user name...',
-      'usersorprojects' => 'Type a user or project name...',
-      'searchowner'     => 'Type a user name...',
-      'accounts'        => 'Type a user name...',
-      'mailable'        => 'Type a user or mailing list...',
-      'allmailable'     => 'Type a user or mailing list...',
-      'searchproject'   => 'Type a project name...',
-      'projects'        => 'Type a project name...',
-      'repositories'    => 'Type a repository name...',
-      'packages'        => 'Type a package name...',
-      'arcanistproject' => 'Type an arc project name...',
+      'users'           => pht('Type a user name...'),
+      'usersorprojects' => pht('Type a user or project name...'),
+      'searchowner'     => pht('Type a user name...'),
+      'accounts'        => pht('Type a user name...'),
+      'mailable'        => pht('Type a user or mailing list...'),
+      'allmailable'     => pht('Type a user or mailing list...'),
+      'searchproject'   => pht('Type a project name...'),
+      'projects'        => pht('Type a project name...'),
+      'repositories'    => pht('Type a repository name...'),
+      'packages'        => pht('Type a package name...'),
+      'arcanistproject' => pht('Type an arc project name...'),
     );
 
     return idx($map, $request);

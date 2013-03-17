@@ -3,6 +3,11 @@
 final class PhabricatorRepositoryCommitHeraldWorker
   extends PhabricatorRepositoryCommitParserWorker {
 
+  public function getRequiredLeaseTime() {
+    // Herald rules may take a long time to process.
+    return 4 * 60 * 60;
+  }
+
   public function parseCommit(
     PhabricatorRepository $repository,
     PhabricatorRepositoryCommit $commit) {
@@ -72,7 +77,9 @@ final class PhabricatorRepositoryCommitHeraldWorker
         $commit->getPHID(),
       ));
 
-    $handles = id(new PhabricatorObjectHandleData($phids))->loadHandles();
+    $handles = id(new PhabricatorObjectHandleData($phids))
+      ->setViewer(PhabricatorUser::getOmnipotentUser())
+      ->loadHandles();
 
     $commit_handle = $handles[$commit->getPHID()];
     $commit_name = $commit_handle->getName();
@@ -145,9 +152,14 @@ final class PhabricatorRepositoryCommitHeraldWorker
       $template->setFrom($author_phid);
     }
 
+    // TODO: We should verify that each recipient can actually see the
+    // commit before sending them email (T603).
+
     $mails = $reply_handler->multiplexMail(
       $template,
-      id(new PhabricatorObjectHandleData($email_phids))->loadHandles(),
+      id(new PhabricatorObjectHandleData($email_phids))
+        ->setViewer(PhabricatorUser::getOmnipotentUser())
+        ->loadHandles(),
       array());
 
     foreach ($mails as $mail) {

@@ -1,6 +1,6 @@
 <?php
 
-abstract class PackageMail {
+abstract class PackageMail extends PhabricatorMail {
 
   protected $package;
   protected $handles;
@@ -46,8 +46,8 @@ abstract class PackageMail {
     $section[] = '  In repository '.$handles[$repository_phid]->getName().
       ' - '. PhabricatorEnv::getProductionURI($handles[$repository_phid]
       ->getURI());
-    foreach ($paths as $path => $ignored) {
-      $section[] = '    '.$path;
+    foreach ($paths as $path => $excluded) {
+      $section[] = '    '.($excluded ? 'Excluded' : 'Included').' '.$path;
     }
 
     return implode("\n", $section);
@@ -70,14 +70,19 @@ abstract class PackageMail {
     }
     $this->mailTo = $mail_to;
 
-    $paths = $package->loadPaths();
-    $this->paths = mgroup($paths, 'getRepositoryPHID', 'getPath');
+    $this->paths = array();
+    $repository_paths = mgroup($package->loadPaths(), 'getRepositoryPHID');
+    foreach ($repository_paths as $repository_phid => $paths) {
+      $this->paths[$repository_phid] = mpull($paths, 'getExcluded', 'getPath');
+    }
 
     $phids = array_merge(
       $this->mailTo,
       array($package->getActorPHID()),
       array_keys($this->paths));
-    $this->handles = id(new PhabricatorObjectHandleData($phids))->loadHandles();
+    $this->handles = id(new PhabricatorObjectHandleData($phids))
+      ->setViewer($this->getActor())
+      ->loadHandles();
   }
 
   final protected function renderSummarySection() {

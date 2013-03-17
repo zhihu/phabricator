@@ -18,11 +18,6 @@ class AphrontDefaultApplicationConfiguration
     return $this->getResourceURIMapRules() + array(
       '/(?:(?P<filter>(?:jump))/)?' =>
         'PhabricatorDirectoryMainController',
-      '/(?:(?P<filter>feed)/)' => array(
-        'public/' => 'PhabricatorFeedPublicStreamController',
-        '(?:(?P<subfilter>[^/]+)/)?' =>
-          'PhabricatorDirectoryMainController',
-      ),
 
       '/typeahead/' => array(
         'common/(?P<type>\w+)/'
@@ -78,7 +73,10 @@ class AphrontDefaultApplicationConfiguration
         'profile/(?P<phid>[^/]+)/' => 'PhabricatorXHProfProfileController',
       ),
 
-      '/~/' => 'DarkConsoleController',
+      '/~/' => array(
+        '' => 'DarkConsoleController',
+        'data/(?P<key>[^/]+)/' => 'DarkConsoleDataController',
+      ),
 
       '/search/' => array(
         '' => 'PhabricatorSearchController',
@@ -97,13 +95,6 @@ class AphrontDefaultApplicationConfiguration
         'keyboardshortcut/' => 'PhabricatorHelpKeyboardShortcutController',
       ),
 
-      '/chatlog/' => array(
-        '' =>
-          'PhabricatorChatLogChannelListController',
-        'channel/(?P<channel>[^/]+)/' =>
-          'PhabricatorChatLogChannelLogController',
-      ),
-
       '/notification/' => array(
         '(?:(?P<filter>all|unread)/)?'
           => 'PhabricatorNotificationListController',
@@ -118,12 +109,15 @@ class AphrontDefaultApplicationConfiguration
           'testpaymentform/' => 'PhortuneStripeTestPaymentFormController',
         ),
       ),
+
+      '/debug/' => 'PhabricatorDebugController',
     );
   }
 
   protected function getResourceURIMapRules() {
     return array(
       '/res/' => array(
+        '(?:(?P<mtime>[0-9]+)T/)?'.
         '(?P<package>pkg/)?'.
         '(?P<hash>[a-f0-9]{8})/'.
         '(?P<path>.+\.(?:css|js|jpg|png|swf|gif))'
@@ -184,10 +178,9 @@ class AphrontDefaultApplicationConfiguration
         return $login_controller->processRequest();
       }
 
-      $content =
-        '<div class="aphront-policy-exception">'.
-          phutil_escape_html($ex->getMessage()).
-        '</div>';
+      $content = hsprintf(
+        '<div class="aphront-policy-exception">%s</div>',
+        $ex->getMessage());
 
       $dialog = new AphrontDialogView();
       $dialog
@@ -212,8 +205,8 @@ class AphrontDefaultApplicationConfiguration
 
     if ($ex instanceof AphrontUsageException) {
       $error = new AphrontErrorView();
-      $error->setTitle(phutil_escape_html($ex->getTitle()));
-      $error->appendChild(phutil_escape_html($ex->getMessage()));
+      $error->setTitle($ex->getTitle());
+      $error->appendChild($ex->getMessage());
 
       $view = new PhabricatorStandardPageView();
       $view->setRequest($this->getRequest());
@@ -229,8 +222,8 @@ class AphrontDefaultApplicationConfiguration
     // Always log the unhandled exception.
     phlog($ex);
 
-    $class    = phutil_escape_html(get_class($ex));
-    $message  = phutil_escape_html($ex->getMessage());
+    $class    = get_class($ex);
+    $message  = $ex->getMessage();
 
     if ($ex instanceof AphrontQuerySchemaException) {
       $message .=
@@ -240,17 +233,19 @@ class AphrontDefaultApplicationConfiguration
         "schema is up to date.";
     }
 
-    if (PhabricatorEnv::getEnvConfig('phabricator.show-stack-traces')) {
+    if (PhabricatorEnv::getEnvConfig('phabricator.developer-mode')) {
       $trace = $this->renderStackTrace($ex->getTrace(), $user);
     } else {
       $trace = null;
     }
 
-    $content =
+    $content = hsprintf(
       '<div class="aphront-unhandled-exception">'.
-        '<div class="exception-message">'.$message.'</div>'.
-        $trace.
-      '</div>';
+        '<div class="exception-message">%s</div>'.
+        '%s'.
+      '</div>',
+      $message,
+      $trace);
 
     $dialog = new AphrontDialogView();
     $dialog
@@ -288,11 +283,6 @@ class AphrontDefaultApplicationConfiguration
   private function renderStackTrace($trace, PhabricatorUser $user) {
 
     $libraries = PhutilBootloader::getInstance()->getAllLibraries();
-
-    $version = PhabricatorEnv::getEnvConfig('phabricator.version');
-    if (preg_match('/[^a-f0-9]/i', $version)) {
-      $version = '';
-    }
 
     // TODO: Make this configurable?
     $path = 'https://secure.phabricator.com/diffusion/%s/browse/master/src/';
@@ -340,33 +330,32 @@ class AphrontDefaultApplicationConfiguration
           if (empty($attrs['href'])) {
             $attrs['href'] = sprintf($path, $callsigns[$lib]).
               str_replace(DIRECTORY_SEPARATOR, '/', $relative).
-              ($version && $lib == 'phabricator' ? ';'.$version : '').
               '$'.$part['line'];
             $attrs['target'] = '_blank';
           }
-          $file_name = phutil_render_tag(
+          $file_name = phutil_tag(
             'a',
             $attrs,
-            phutil_escape_html($relative));
+            $relative);
         } else {
-          $file_name = phutil_render_tag(
+          $file_name = phutil_tag(
             'span',
             array(
               'title' => $file,
             ),
-            phutil_escape_html($relative));
+            $relative);
         }
-        $file_name = $file_name.' : '.(int)$part['line'];
+        $file_name = hsprintf('%s : %d', $file_name, $part['line']);
       } else {
-        $file_name = '<em>(Internal)</em>';
+        $file_name = phutil_tag('em', array(), '(Internal)');
       }
 
 
       $rows[] = array(
         $depth--,
-        phutil_escape_html($lib),
+        $lib,
         $file_name,
-        phutil_escape_html($where),
+        $where,
       );
     }
     $table = new AphrontTableView($rows);
@@ -385,11 +374,12 @@ class AphrontDefaultApplicationConfiguration
         'wide',
       ));
 
-    return
+    return hsprintf(
       '<div class="exception-trace">'.
         '<div class="exception-trace-header">Stack Trace</div>'.
-        $table->render().
-      '</div>';
+        '%s'.
+      '</div>',
+      $table->render());
   }
 
 }

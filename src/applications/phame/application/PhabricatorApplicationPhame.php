@@ -6,7 +6,7 @@ final class PhabricatorApplicationPhame extends PhabricatorApplication {
     return '/phame/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'phame';
   }
 
@@ -24,6 +24,10 @@ final class PhabricatorApplicationPhame extends PhabricatorApplication {
 
   public function getApplicationGroup() {
     return self::GROUP_COMMUNICATION;
+  }
+
+  public function isBeta() {
+    return true;
   }
 
   public function getRoutes() {
@@ -53,11 +57,8 @@ final class PhabricatorApplicationPhame extends PhabricatorApplication {
           'delete/(?P<id>[^/]+)/'           => 'PhameBlogDeleteController',
           'edit/(?P<id>[^/]+)/'             => 'PhameBlogEditController',
           'view/(?P<id>[^/]+)/'             => 'PhameBlogViewController',
+          'feed/(?P<id>[^/]+)/'             => 'PhameBlogFeedController',
           'new/'                            => 'PhameBlogEditController',
-        ),
-        'posts/' => array(
-          '(?P<bloggername>\w+)/(?P<phametitle>.+/)'
-                                    => 'PhamePostViewController',
         ),
       ),
     );

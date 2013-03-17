@@ -16,6 +16,21 @@ final class PhabricatorPeopleProfileController
     return $this->profileUser;
   }
 
+  private function getMainFilters($username) {
+    return array(
+      array(
+        'key' => 'feed',
+        'name' => pht('Feed'),
+        'href' => '/p/'.$username.'/feed/'
+      ),
+      array(
+        'key' => 'about',
+        'name' => pht('About'),
+        'href' => '/p/'.$username.'/about/'
+      )
+    );
+  }
+
   public function processRequest() {
 
     $viewer = $this->getRequest()->getUser();
@@ -39,29 +54,14 @@ final class PhabricatorPeopleProfileController
     }
     $username = phutil_escape_uri($user->getUserName());
 
-    $nav = new AphrontSideNavFilterView();
-    $nav->setBaseURI(new PhutilURI('/p/'.$username.'/'));
-    $nav->addFilter('feed', 'Feed');
-    $nav->addFilter('about', 'About');
+    $menu = new PhabricatorMenuView();
+    foreach ($this->getMainFilters($username) as $filter) {
+      $menu->newLink($filter['name'], $filter['href'], $filter['key']);
+    }
 
-    $nav->addSpacer();
-    $nav->addLabel('Activity');
-
-    $external_arrow = "\xE2\x86\x97";
-    $nav->addFilter(
-      null,
-      "Revisions {$external_arrow}",
-      '/differential/filter/revisions/'.$username.'/');
-
-    $nav->addFilter(
-      null,
-      "Tasks {$external_arrow}",
-      '/maniphest/view/action/?users='.$user->getPHID());
-
-    $nav->addFilter(
-      null,
-      "Commits {$external_arrow}",
-      '/audit/view/author/'.$username.'/');
+    $menu->newLabel(pht('Activity'), 'activity');
+    // NOTE: applications install the various links through PhabricatorEvent
+    // listeners
 
     $oauths = id(new PhabricatorUserOAuthInfo())->loadAllWhere(
       'userID = %d',
@@ -69,7 +69,7 @@ final class PhabricatorPeopleProfileController
     $oauths = mpull($oauths, null, 'getOAuthProvider');
 
     $providers = PhabricatorOAuthProvider::getAllProviders();
-    $added_spacer = false;
+    $added_label = false;
     foreach ($providers as $provider) {
       if (!$provider->isProviderEnabled()) {
         continue;
@@ -81,18 +81,32 @@ final class PhabricatorPeopleProfileController
         continue;
       }
 
-      $name = $provider->getProviderName().' Profile';
+      $name = pht('%s Profile', $provider->getProviderName());
       $href = $oauths[$provider_key]->getAccountURI();
 
       if ($href) {
-        if (!$added_spacer) {
-          $nav->addSpacer();
-          $nav->addLabel('Linked Accounts');
-          $added_spacer = true;
+        if (!$added_label) {
+          $menu->newLabel(pht('Linked Accounts'), 'linked_accounts');
+          $added_label = true;
         }
-        $nav->addFilter(null, $name.' '.$external_arrow, $href);
+        $menu->addMenuItem(
+          id(new PhabricatorMenuItemView())
+          ->setIsExternal(true)
+          ->setName($name)
+          ->setHref($href)
+          ->setType(PhabricatorMenuItemView::TYPE_LINK));
       }
     }
+
+    $event = new PhabricatorEvent(
+      PhabricatorEventType::TYPE_PEOPLE_DIDRENDERMENU,
+      array(
+        'menu' => $menu,
+        'person' => $user,
+      ));
+    $event->setUser($viewer);
+    PhutilEventEngine::dispatchEvent($event);
+    $nav = AphrontSideNavFilterView::newFromMenu($event->getValue('menu'));
 
     $this->page = $nav->selectFilter($this->page, 'feed');
 
@@ -125,25 +139,27 @@ final class PhabricatorPeopleProfileController
       }
     }
 
-    $header->appendChild($nav);
-    $nav->appendChild(
-      '<div style="padding: 1em;">'.$content.'</div>');
+    $nav->appendChild($header);
+
+    $content = hsprintf('<div style="padding: 1em;">%s</div>', $content);
+    $header->appendChild($content);
 
     if ($user->getPHID() == $viewer->getPHID()) {
-      $nav->addSpacer();
-      $nav->addFilter(null, 'Edit Profile...', '/settings/panel/profile/');
+      $nav->addFilter(
+        null,
+        pht('Edit Profile...'),
+        '/settings/panel/profile/');
     }
 
     if ($viewer->getIsAdmin()) {
-      $nav->addSpacer();
       $nav->addFilter(
         null,
-        'Administrate User...',
+        pht('Administrate User...'),
         '/people/edit/'.$user->getID().'/');
     }
 
     return $this->buildApplicationPage(
-      $header,
+      $nav,
       array(
         'title' => $user->getFullName(),
       ));
@@ -153,43 +169,44 @@ final class PhabricatorPeopleProfileController
 
     $blurb = nonempty(
       $profile->getBlurb(),
-      '//Nothing is known about this rare specimen.//');
-
-    $engine = PhabricatorMarkupEngine::newProfileMarkupEngine();
-    $blurb = $engine->markupText($blurb);
+      '//'.pht('Nothing is known about this rare specimen.').'//');
 
     $viewer = $this->getRequest()->getUser();
 
-    $content =
+    $engine = PhabricatorMarkupEngine::newProfileMarkupEngine();
+    $engine->setConfig('viewer', $viewer);
+    $blurb = $engine->markupText($blurb);
+
+    $content = hsprintf(
       '<div class="phabricator-profile-info-group">
         <h1 class="phabricator-profile-info-header">Basic Information</h1>
         <div class="phabricator-profile-info-pane">
           <table class="phabricator-profile-info-table">
             <tr>
               <th>PHID</th>
-              <td>'.phutil_escape_html($user->getPHID()).'</td>
+              <td>%s</td>
             </tr>
             <tr>
               <th>User Since</th>
-              <td>'.phabricator_datetime($user->getDateCreated(),
-                                         $viewer).
-             '</td>
+              <td>%s</td>
             </tr>
           </table>
         </div>
-      </div>';
-    $content .=
+      </div>'.
       '<div class="phabricator-profile-info-group">
         <h1 class="phabricator-profile-info-header">Flavor Text</h1>
         <div class="phabricator-profile-info-pane">
           <table class="phabricator-profile-info-table">
             <tr>
               <th>Blurb</th>
-              <td>'.$blurb.'</td>
+              <td>%s</td>
             </tr>
           </table>
         </div>
-      </div>';
+      </div>',
+      $user->getPHID(),
+      phabricator_datetime($user->getDateCreated(), $viewer),
+      $blurb);
 
     return $content;
   }
@@ -210,12 +227,11 @@ final class PhabricatorPeopleProfileController
     $builder->setUser($viewer);
     $view = $builder->buildView();
 
-    return
+    return hsprintf(
       '<div class="phabricator-profile-info-group">
         <h1 class="phabricator-profile-info-header">Activity Feed</h1>
-        <div class="phabricator-profile-info-pane">
-          '.$view->render().'
-        </div>
-      </div>';
+        <div class="phabricator-profile-info-pane">%s</div>
+      </div>',
+      $view->render());
   }
 }

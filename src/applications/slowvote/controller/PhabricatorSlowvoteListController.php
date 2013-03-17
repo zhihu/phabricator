@@ -8,12 +8,8 @@ final class PhabricatorSlowvoteListController
 
   private $view;
 
-  const VIEW_ALL      = 'all';
-  const VIEW_CREATED  = 'created';
-  const VIEW_VOTED    = 'voted';
-
   public function willProcessRequest(array $data) {
-    $this->view = idx($data, 'view');
+    $this->view = idx($data, 'view', parent::VIEW_ALL);
   }
 
   public function processRequest() {
@@ -21,17 +17,10 @@ final class PhabricatorSlowvoteListController
     $request = $this->getRequest();
     $user = $request->getUser();
 
-    $views = array(
-      self::VIEW_ALL      => 'All Slowvotes',
-      self::VIEW_CREATED  => 'Created',
-      self::VIEW_VOTED    => 'Voted In',
-    );
+    $view = $this->view;
+    $views = $this->getViews();
 
-    $view = isset($views[$this->view])
-      ? $this->view
-      : self::VIEW_ALL;
-
-    $side_nav = $this->renderSideNav($views, $view);
+    $side_nav = $this->buildSideNavView($view);
 
     $pager = new AphrontPagerView();
     $pager->setOffset($request->getInt('page'));
@@ -46,12 +35,12 @@ final class PhabricatorSlowvoteListController
     foreach ($polls as $poll) {
       $rows[] = array(
         'V'.$poll->getID(),
-        phutil_render_tag(
+        phutil_tag(
           'a',
           array(
             'href' => '/V'.$poll->getID(),
           ),
-          phutil_escape_html($poll->getQuestion())),
+          $poll->getQuestion()),
         $handles[$poll->getAuthorPHID()]->renderLink(),
         phabricator_date($poll->getDateCreated(), $user),
         phabricator_time($poll->getDateCreated(), $user),
@@ -69,25 +58,48 @@ final class PhabricatorSlowvoteListController
       ));
     $table->setHeaders(
       array(
-        'ID',
-        'Poll',
-        'Author',
-        'Date',
-        'Time',
+        pht('ID'),
+        pht('Poll'),
+        pht('Author'),
+        pht('Date'),
+        pht('Time'),
       ));
 
+    switch ($view) {
+      case self::VIEW_ALL:
+        $table_header =
+          pht('Slowvotes Not Yet Consumed by the Ravages of Time');
+      break;
+      case self::VIEW_CREATED:
+        $table_header =
+          pht('Slowvotes Birthed from Your Noblest of Great Minds');
+      break;
+      case self::VIEW_VOTED:
+        $table_header =
+          pht('Slowvotes Within Which You Express Your Mighty Opinion');
+      break;
+    }
+
     $panel = new AphrontPanelView();
-    $panel->setHeader($this->getTableHeader($view));
-    $panel->setCreateButton('Create Slowvote', '/vote/create/');
+    $panel->setHeader($table_header);
+    $panel->setNoBackground();
     $panel->appendChild($table);
     $panel->appendChild($pager);
 
     $side_nav->appendChild($panel);
 
-    return $this->buildStandardPageResponse(
+    $crumbs = $this->buildApplicationCrumbs($this->buildSideNavView());
+    $crumbs->addCrumb(
+      id(new PhabricatorCrumbView())
+        ->setName($views[$view])
+        ->setHref($this->getApplicationURI()));
+    $side_nav->setCrumbs($crumbs);
+
+    return $this->buildApplicationPage(
       $side_nav,
       array(
-        'title' => 'Slowvotes',
+        'title' => pht('Slowvotes'),
+        'device' => true,
       ));
   }
 
@@ -140,35 +152,6 @@ final class PhabricatorSlowvoteListController
 
     $data = $pager->sliceResults($data);
     return $poll->loadAllFromArray($data);
-  }
-
-  private function renderSideNav(array $views, $view) {
-    $side_nav = new AphrontSideNavView();
-    foreach ($views as $key => $name) {
-      $side_nav->addNavItem(
-        phutil_render_tag(
-          'a',
-          array(
-            'href' => '/vote/view/'.$key.'/',
-            'class' => ($view == $key)
-              ? 'aphront-side-nav-selected'
-              : null,
-          ),
-          phutil_escape_html($name)));
-    }
-    return $side_nav;
-  }
-
-  private function getTableHeader($view) {
-    static $headers = array(
-      self::VIEW_ALL
-        => 'Slowvotes Not Yet Consumed by the Ravages of Time',
-      self::VIEW_CREATED
-        => 'Slowvotes Birthed from Your Noblest of Great Minds',
-      self::VIEW_VOTED
-        => 'Slowvotes Within Which You Express Your Mighty Opinion',
-    );
-    return idx($headers, $view);
   }
 
 }

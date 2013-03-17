@@ -2,7 +2,6 @@
 
 final class DifferentialInlineCommentEditView extends AphrontView {
 
-  private $user;
   private $inputs = array();
   private $uri;
   private $title;
@@ -12,11 +11,6 @@ final class DifferentialInlineCommentEditView extends AphrontView {
 
   public function addHiddenInput($key, $value) {
     $this->inputs[] = array($key, $value);
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -54,56 +48,59 @@ final class DifferentialInlineCommentEditView extends AphrontView {
       throw new Exception("Call setUser() before render()!");
     }
 
-    $content = phabricator_render_form(
+    $content = phabricator_form(
       $this->user,
       array(
         'action'    => $this->uri,
         'method'    => 'POST',
         'sigil'     => 'inline-edit-form',
       ),
-      $this->renderInputs().
-      $this->renderBody());
+      array(
+        $this->renderInputs(),
+        $this->renderBody(),
+      ));
 
-    if ($this->onRight) {
-      $core = '<th></th><td></td><th></th><td colspan="2">'.$content.'</td>';
-    } else {
-      $core = '<th></th><td>'.$content.'</td><th></th><td colspan="2"></td>';
-    }
-
-    return '<table><tr class="inline-comment-splint">'.$core.'</tr></table>';
+    return hsprintf(
+      '<table>'.
+        '<tr class="inline-comment-splint">'.
+          '<th></th>'.
+          '<td class="left">%s</td>'.
+          '<th></th>'.
+          '<td colspan="3" class="right3">%s</td>'.
+        '</tr>'.
+      '</table>',
+      $this->onRight ? null : $content,
+      $this->onRight ? $content : null);
   }
 
   private function renderInputs() {
     $out = array();
     foreach ($this->inputs as $input) {
       list($name, $value) = $input;
-      $out[] = phutil_render_tag(
+      $out[] = phutil_tag(
         'input',
         array(
           'type'  => 'hidden',
           'name'  => $name,
           'value' => $value,
-        ),
-        null);
+        ));
     }
-    return implode('', $out);
+    return $out;
   }
 
   private function renderBody() {
     $buttons = array();
 
-    $buttons[] = '<button>Ready</button>';
-    $buttons[] = javelin_render_tag(
+    $buttons[] = phutil_tag('button', array(), 'Ready');
+    $buttons[] = javelin_tag(
       'button',
       array(
         'sigil' => 'inline-edit-cancel',
         'class' => 'grey',
       ),
-      'Cancel');
+      pht('Cancel'));
 
-    $buttons = implode('', $buttons);
-
-    $formatting = phutil_render_tag(
+    $formatting = phutil_tag(
       'a',
       array(
         //'href' => PhabricatorEnv::getDoclink('article/Remarkup_Reference.html'),
@@ -111,9 +108,34 @@ final class DifferentialInlineCommentEditView extends AphrontView {
         'tabindex' => '-1',
         'target' => '_blank',
       ),
-      'Formatting Reference');
+      pht('Formatting Reference'));
 
-    return javelin_render_tag(
+    $title = phutil_tag(
+      'div',
+      array(
+        'class' => 'differential-inline-comment-edit-title',
+      ),
+      $this->title);
+
+    $body = phutil_tag(
+      'div',
+      array(
+        'class' => 'differential-inline-comment-edit-body',
+      ),
+      $this->renderChildren());
+
+    $edit = phutil_tag(
+      'edit',
+      array(
+        'class' => 'differential-inline-comment-edit-buttons',
+      ),
+      array(
+        $formatting,
+        $buttons,
+        phutil_tag('div', array('style' => 'clear: both'), ''),
+      ));
+
+    return javelin_tag(
       'div',
       array(
         'class' => 'differential-inline-comment-edit',
@@ -124,17 +146,11 @@ final class DifferentialInlineCommentEditView extends AphrontView {
           'length' => $this->length,
         ),
       ),
-      '<div class="differential-inline-comment-edit-title">'.
-        phutil_escape_html($this->title).
-      '</div>'.
-      '<div class="differential-inline-comment-edit-body">'.
-        $this->renderChildren().
-      '</div>'.
-      '<div class="differential-inline-comment-edit-buttons">'.
-        $formatting.
-        $buttons.
-        '<div style="clear: both;"></div>'.
-      '</div>');
+      array(
+        $title,
+        $body,
+        $edit,
+      ));
   }
 
 }

@@ -12,9 +12,30 @@ final class DiffusionMercurialRequest extends DiffusionRequest {
   protected function didInitialize() {
     $repository = $this->getRepository();
 
-    if (!Filesystem::pathExists($repository->getLocalPath())) {
-      $this->raiseCloneException();
+    $this->validateWorkingCopy($repository->getLocalPath());
+
+    // Expand abbreviated hashes to full hashes so "/rXnnnn" (i.e., fewer than
+    // 40 characters) works correctly.
+    if (!$this->commit) {
+      return;
     }
+
+    if (strlen($this->commit) == 40) {
+      return;
+    }
+
+    list($full_hash) = $this->repository->execxLocalCommand(
+      'log --template=%s --rev %s',
+      '{node}',
+      $this->commit);
+
+    $full_hash = explode("\n", trim($full_hash));
+
+    // TODO: Show "multiple matching commits" if count is larger than 1. For
+    // now, pick the first one.
+
+    $this->commit = head($full_hash);
+
 
     return;
   }

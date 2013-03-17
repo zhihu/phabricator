@@ -6,66 +6,38 @@ final class DrydockResourceListController extends DrydockController {
     $request = $this->getRequest();
     $user = $request->getUser();
 
-    $nav = $this->buildSideNav('resource');
+    $title = pht('Resources');
+
+    $resource_header = id(new PhabricatorHeaderView())
+      ->setHeader($title);
 
     $pager = new AphrontPagerView();
-    $pager->setURI(new PhutilURI('/drydock/resource/'), 'page');
+    $pager->setURI(new PhutilURI('/drydock/resource/'), 'offset');
+    $resources = id(new DrydockResourceQuery())
+      ->executeWithOffsetPager($pager);
 
-    $data = id(new DrydockResource())->loadAllWhere(
-      '1 = 1 ORDER BY id DESC LIMIT %d, %d',
-      $pager->getOffset(),
-      $pager->getPageSize() + 1);
-    $data = $pager->sliceResults($data);
+    $resource_list = $this->buildResourceListView($resources);
 
-    $phids = mpull($data, 'getOwnerPHID');
-    $handles = $this->loadViewerHandles($phids);
+    $crumbs = $this->buildApplicationCrumbs();
+    $crumbs->addCrumb(
+      id(new PhabricatorCrumbView())
+        ->setName($title)
+        ->setHref($request->getRequestURI()));
 
-    $rows = array();
-    foreach ($data as $resource) {
-      $rows[] = array(
-        $resource->getID(),
-        ($resource->getOwnerPHID()
-          ? $handles[$resource->getOwnerPHID()]->renderLink()
-          : null),
-        phutil_escape_html($resource->getType()),
-        DrydockResourceStatus::getNameForStatus($resource->getStatus()),
-        phutil_escape_html(nonempty($resource->getName(), 'Unnamed')),
-        phabricator_datetime($resource->getDateCreated(), $user),
-      );
-    }
-
-    $table = new AphrontTableView($rows);
-    $table->setHeaders(
+    $nav = $this->buildSideNav('resource');
+    $nav->setCrumbs($crumbs);
+    $nav->appendChild(
       array(
-        'ID',
-        'Owner',
-        'Type',
-        'Status',
-        'Resource',
-        'Created',
-      ));
-    $table->setColumnClasses(
-      array(
-        '',
-        '',
-        '',
-        '',
-        'pri wide',
-        'right',
+        $resource_header,
+        $resource_list,
+        $pager,
       ));
 
-    $panel = new AphrontPanelView();
-    $panel->setHeader('Drydock Resources');
-
-    $panel->appendChild($table);
-    $panel->appendChild($pager);
-
-    $nav->appendChild($panel);
-
-    return $this->buildStandardPageResponse(
+    return $this->buildApplicationPage(
       $nav,
       array(
-        'title' => 'Resources',
+        'title' => $title,
+        'device' => true,
       ));
 
   }

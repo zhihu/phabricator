@@ -2,17 +2,11 @@
 
 final class DiffusionCommentListView extends AphrontView {
 
-  private $user;
   private $comments;
   private $inlineComments = array();
   private $pathMap = array();
   private $handles = array();
   private $markupEngine;
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
 
   public function setComments(array $comments) {
     assert_instances_of($comments, 'PhabricatorAuditComment');
@@ -93,10 +87,10 @@ final class DiffusionCommentListView extends AphrontView {
       ++$num;
     }
 
-    return
-      '<div class="diffusion-comment-list">'.
-        $this->renderSingleView($comments).
-      '</div>';
+    return phutil_tag(
+      'div',
+      array('class' => 'diffusion-comment-list'),
+      $comments);
   }
 
 }

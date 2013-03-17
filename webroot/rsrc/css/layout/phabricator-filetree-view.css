@@ -3,10 +3,6 @@
  */
 
 .phabricator-filetree {
-  background: #fcfcfc;
-  border-style: solid;
-  border-width: 1px 0;
-  border-color: #a0a0a0;
   padding: 4px 0;
 }
 
@@ -17,6 +13,7 @@
 .phabricator-filetree .phabricator-filetree-item {
   margin: 0;
   padding: 0;
+  display: block;
 }
 
 .phabricator-filetree span.phabricator-filetree-icon {
@@ -30,7 +27,7 @@
 
 .phabricator-filetree span.phabricator-filetree-name {
   padding: 0;
-  margin-left: 20px;
+  margin-left: 4px;
   font-size: 11px;
   font-weight: normal;
   line-height: 20px;
@@ -39,12 +36,16 @@
 
 .phabricator-filetree span.phabricator-filetree-item
   .phabricator-filetree-name {
-  color: #666666;
+  color: #a0a0a0;
 }
 
 .phabricator-filetree a.phabricator-filetree-item
   .phabricator-filetree-name {
-  color: #3b5998;
+  color: #fff;
+}
+
+.phabricator-filetree a.phabricator-filetree-item:hover {
+  text-decoration: none;
 }
 
 .phabricator-filetree-icon-file {
@@ -53,9 +54,4 @@
 
 .phabricator-filetree-icon-dir {
   background-image: url(/rsrc/image/icon/fatcow/folder.png);
-}
-
-.phabricator-nav-local
-  a.phabricator-active-nav-focus {
-  background: #9caccf;
 }

@@ -2,22 +2,28 @@
 
 final class PhabricatorUserPreferences extends PhabricatorUserDAO {
 
-  const PREFERENCE_MONOSPACED        = 'monospaced';
-  const PREFERENCE_EDITOR            = 'editor';
-  const PREFERENCE_TITLES            = 'titles';
+  const PREFERENCE_MONOSPACED           = 'monospaced';
+  const PREFERENCE_DARK_CONSOLE         = 'dark_console';
+  const PREFERENCE_EDITOR               = 'editor';
+  const PREFERENCE_MULTIEDIT            = 'multiedit';
+  const PREFERENCE_TITLES               = 'titles';
+  const PREFERENCE_MONOSPACED_TEXTAREAS = 'monospaced-textareas';
 
-  const PREFERENCE_RE_PREFIX         = 're-prefix';
-  const PREFERENCE_NO_SELF_MAIL      = 'self-mail';
-  const PREFERENCE_MAILTAGS          = 'mailtags';
-  const PREFERENCE_VARY_SUBJECT      = 'vary-subject';
+  const PREFERENCE_RE_PREFIX            = 're-prefix';
+  const PREFERENCE_NO_SELF_MAIL         = 'self-mail';
+  const PREFERENCE_MAILTAGS             = 'mailtags';
+  const PREFERENCE_VARY_SUBJECT         = 'vary-subject';
 
-  const PREFERENCE_SEARCHBAR_JUMP    = 'searchbar-jump';
-  const PREFERENCE_SEARCH_SHORTCUT   = 'search-shortcut';
+  const PREFERENCE_SEARCHBAR_JUMP       = 'searchbar-jump';
+  const PREFERENCE_SEARCH_SHORTCUT      = 'search-shortcut';
 
-  const PREFERENCE_DIFFUSION_VIEW    = 'diffusion-view';
-  const PREFERENCE_DIFFUSION_SYMBOLS = 'diffusion-symbols';
+  const PREFERENCE_DIFFUSION_VIEW       = 'diffusion-view';
 
-  const PREFERENCE_NAV_WIDTH         = 'nav-width';
+  const PREFERENCE_NAV_COLLAPSED        = 'nav-collapsed';
+  const PREFERENCE_NAV_WIDTH            = 'nav-width';
+  const PREFERENCE_APP_TILES            = 'app-tiles';
+
+  const PREFERENCE_DIFF_FILETREE        = 'diff-filetree';
 
   protected $userPHID;
   protected $preferences = array();

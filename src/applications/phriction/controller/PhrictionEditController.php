@@ -95,8 +95,8 @@ final class PhrictionEditController
       $notes = $request->getStr('description');
 
       if (!strlen($title)) {
-        $e_title = 'Required';
-        $errors[] = 'Document title is required.';
+        $e_title = pht('Required');
+        $errors[] = pht('Document title is required.');
       } else {
         $e_title = null;
       }
@@ -107,9 +107,9 @@ final class PhrictionEditController
 
           $dialog = new AphrontDialogView();
           $dialog->setUser($user);
-          $dialog->setTitle('No Edits');
-          $dialog->appendChild(
-            '<p>You did not make any changes to the document.</p>');
+          $dialog->setTitle(pht('No Edits'));
+          $dialog->appendChild(phutil_tag('p', array(), pht(
+            'You did not make any changes to the document.')));
           $dialog->addCancelButton($request->getRequestURI());
 
           return id(new AphrontDialogResponse())->setDialog($dialog);
@@ -121,9 +121,9 @@ final class PhrictionEditController
 
         $dialog = new AphrontDialogView();
         $dialog->setUser($user);
-        $dialog->setTitle('Empty Page');
-        $dialog->appendChild(
-          '<p>You can not create an empty document.</p>');
+        $dialog->setTitle(pht('Empty Page'));
+        $dialog->appendChild(phutil_tag('p', array(), pht(
+          'You can not create an empty document.')));
         $dialog->addCancelButton($request->getRequestURI());
 
         return id(new AphrontDialogResponse())->setDialog($dialog);
@@ -150,24 +150,16 @@ final class PhrictionEditController
     $error_view = null;
     if ($errors) {
       $error_view = id(new AphrontErrorView())
-        ->setTitle('Form Errors')
+        ->setTitle(pht('Form Errors'))
         ->setErrors($errors);
     }
 
     if ($document->getID()) {
-      $panel_header = 'Edit Phriction Document';
-      $submit_button = 'Save Changes';
-      $delete_button = phutil_render_tag(
-        'a',
-        array(
-          'href' => '/phriction/delete/'.$document->getID().'/',
-          'class' => 'grey button',
-        ),
-        'Delete Document');
+      $panel_header = pht('Edit Phriction Document');
+      $submit_button = pht('Save Changes');
     } else {
-      $panel_header = 'Create New Phriction Document';
-      $submit_button = 'Create Document';
-      $delete_button = null;
+      $panel_header = pht('Create New Phriction Document');
+      $submit_button = pht('Create Document');
     }
 
     $uri = $document->getSlug();
@@ -181,18 +173,19 @@ final class PhrictionEditController
         ($draft->getDraft() != $content->getContent())) {
       $content_text = $draft->getDraft();
 
-      $discard = phutil_render_tag(
+      $discard = phutil_tag(
         'a',
         array(
           'href' => $request->getRequestURI()->alter('nodraft', true),
         ),
-        'discard this draft');
+        pht('discard this draft'));
 
       $draft_note = new AphrontErrorView();
       $draft_note->setSeverity(AphrontErrorView::SEVERITY_NOTICE);
       $draft_note->setTitle('Recovered Draft');
-      $draft_note->appendChild(
-        '<p>Showing a saved draft of your edits, you can '.$discard.'.</p>');
+      $draft_note->appendChild(hsprintf(
+        '<p>Showing a saved draft of your edits, you can %s.</p>',
+        $discard));
     } else {
       $content_text = $content->getContent();
       $draft_note = null;
@@ -206,24 +199,25 @@ final class PhrictionEditController
       ->addHiddenInput('nodraft', $request->getBool('nodraft'))
       ->appendChild(
         id(new AphrontFormTextControl())
-          ->setLabel('Title')
+          ->setLabel(pht('Title'))
           ->setValue($content->getTitle())
           ->setError($e_title)
           ->setName('title'))
       ->appendChild(
         id(new AphrontFormStaticControl())
-          ->setLabel('URI')
+          ->setLabel(pht('URI'))
           ->setValue($uri))
       ->appendChild(
         id(new PhabricatorRemarkupControl())
-          ->setLabel('Content')
+          ->setLabel(pht('Content'))
           ->setValue($content_text)
           ->setHeight(AphrontFormTextAreaControl::HEIGHT_VERY_TALL)
           ->setName('content')
-          ->setID('document-textarea'))
+          ->setID('document-textarea')
+          ->setUser($user))
       ->appendChild(
         id(new AphrontFormTextControl())
-          ->setLabel('Edit Notes')
+          ->setLabel(pht('Edit Notes'))
           ->setValue($notes)
           ->setError(null)
           ->setName('description'))
@@ -233,25 +227,19 @@ final class PhrictionEditController
           ->setValue($submit_button));
 
     $panel = id(new AphrontPanelView())
-      ->setWidth(AphrontPanelView::WIDTH_WIDE)
+      ->setNoBackground()
       ->setHeader($panel_header)
       ->appendChild($form);
 
-    if ($delete_button) {
-      $panel->addButton($delete_button);
-    }
-
-    $preview_panel =
+    $preview_panel = hsprintf(
       '<div class="aphront-panel-preview aphront-panel-preview-wide">
-        <div class="phriction-document-preview-header">
-          Document Preview
-        </div>
+        <div class="phriction-document-preview-header">%s</div>
         <div id="document-preview">
-          <div class="aphront-panel-preview-loading-text">
-            Loading preview...
-          </div>
+          <div class="aphront-panel-preview-loading-text">%s</div>
         </div>
-      </div>';
+      </div>',
+      pht('Document Preview'),
+      pht('Loading preview...'));
 
     Javelin::initBehavior(
       'phriction-document-preview',
@@ -261,7 +249,7 @@ final class PhrictionEditController
         'uri'       => '/phriction/preview/?draftkey='.$draft_key,
       ));
 
-    return $this->buildStandardPageResponse(
+    return $this->buildApplicationPage(
       array(
         $draft_note,
         $error_view,
@@ -269,7 +257,8 @@ final class PhrictionEditController
         $preview_panel,
       ),
       array(
-        'title' => 'Edit Document',
+        'title' => pht('Edit Document'),
+        'device' => true,
       ));
   }
 

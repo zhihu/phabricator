@@ -45,7 +45,7 @@ extends PhabricatorOAuthClientAuthorizationBaseController {
                                     $current_user);
 
     $panel = new AphrontPanelView();
-    $delete_button = phutil_render_tag(
+    $delete_button = phutil_tag(
       'a',
       array(
         'href' => $authorization->getDeleteURI(),
@@ -61,38 +61,31 @@ extends PhabricatorOAuthClientAuthorizationBaseController {
         id(new AphrontFormMarkupControl())
         ->setLabel('Client')
         ->setValue(
-          phutil_render_tag(
+          phutil_tag(
             'a',
             array(
               'href' => $client->getViewURI(),
             ),
-            phutil_escape_html($client->getName())))
-      )
+            $client->getName())))
       ->appendChild(
         id(new AphrontFormStaticControl())
         ->setLabel('Created')
-        ->setValue($created)
-      )
+        ->setValue($created))
       ->appendChild(
         id(new AphrontFormStaticControl())
         ->setLabel('Last Updated')
-        ->setValue($updated)
-      )
+        ->setValue($updated))
       ->appendChild(
         PhabricatorOAuthServerScope::getCheckboxControl(
-          $authorization->getScope()
-        )
-      )
+          $authorization->getScope()))
       ->appendChild(
         id(new AphrontFormSubmitControl())
         ->setValue('Save OAuth Client Authorization')
-        ->addCancelButton('/oauthserver/clientauthorization/')
-      );
+        ->addCancelButton('/oauthserver/clientauthorization/'));
 
     $panel->appendChild($form);
     return $this->buildStandardPageResponse(
       $panel,
-      array('title' => $title)
-    );
+      array('title' => $title));
   }
 }

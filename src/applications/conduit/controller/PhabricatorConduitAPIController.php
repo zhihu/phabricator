@@ -108,7 +108,9 @@ final class PhabricatorConduitAPIController
     } catch (Exception $ex) {
       phlog($ex);
       $result = null;
-      $error_code = 'ERR-CONDUIT-CORE';
+      $error_code = ($ex instanceof ConduitException
+        ? 'ERR-CONDUIT-CALL'
+        : 'ERR-CONDUIT-CORE');
       $error_info = $ex->getMessage();
     }
 
@@ -344,7 +346,7 @@ final class PhabricatorConduitAPIController
     if ($request) {
       foreach ($request->getAllParameters() as $key => $value) {
         $param_rows[] = array(
-          phutil_escape_html($key),
+          $key,
           $this->renderAPIValue($value),
         );
       }
@@ -360,7 +362,7 @@ final class PhabricatorConduitAPIController
     $result_rows = array();
     foreach ($result as $key => $value) {
       $result_rows[] = array(
-        phutil_escape_html($key),
+        $key,
         $this->renderAPIValue($value),
       );
     }
@@ -394,12 +396,9 @@ final class PhabricatorConduitAPIController
     $json = new PhutilJSON();
     if (is_array($value)) {
       $value = $json->encodeFormatted($value);
-      $value = phutil_escape_html($value);
-    } else {
-      $value = phutil_escape_html($value);
     }
 
-    $value = '<pre style="white-space: pre-wrap;">'.$value.'</pre>';
+    $value = hsprintf('<pre style="white-space: pre-wrap;">%s</pre>', $value);
 
     return $value;
   }
@@ -451,7 +450,18 @@ final class PhabricatorConduitAPIController
 
     $params_json = $request->getStr('params');
     if (!strlen($params_json)) {
-      $params = array();
+      if ($request->getBool('allowEmptyParams')) {
+        // TODO: This is a bit messy, but otherwise you can't call
+        // "conduit.ping" from the web console.
+        $params = array();
+      } else {
+        throw new Exception(
+          "Request has no 'params' key. This may mean that an extension like ".
+          "Suhosin has dropped data from the request. Check the PHP ".
+          "configuration on your server. If you are developing a Conduit ".
+          "client, you MUST provide a 'params' parameter when making a ".
+          "Conduit request, even if the value is empty (e.g., provide '{}').");
+      }
     } else {
       $params = json_decode($params_json, true);
       if (!is_array($params)) {

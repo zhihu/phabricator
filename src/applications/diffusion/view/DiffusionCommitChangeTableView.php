@@ -39,7 +39,7 @@ final class DiffusionCommitChangeTableView extends DiffusionView {
       }
 
       if (isset($this->renderingReferences[$id])) {
-        $path_column = javelin_render_tag(
+        $path_column = javelin_tag(
           'a',
           array(
             'href' => '#'.$hash,
@@ -49,9 +49,9 @@ final class DiffusionCommitChangeTableView extends DiffusionView {
             ),
             'sigil' => 'differential-load',
           ),
-          phutil_escape_html($path));
+          $path);
       } else {
-        $path_column = phutil_escape_html($path);
+        $path_column = $path;
       }
 
       $rows[] = array(
@@ -66,10 +66,14 @@ final class DiffusionCommitChangeTableView extends DiffusionView {
 
       $row_class = null;
       foreach ($this->ownersPaths as $owners_path) {
+        $excluded = $owners_path->getExcluded();
         $owners_path = $owners_path->getPath();
         if (strncmp('/'.$path, $owners_path, strlen($owners_path)) == 0) {
+          if ($excluded) {
+            $row_class = null;
+            break;
+          }
           $row_class = 'highlighted';
-          break;
         }
       }
       $rowc[] = $row_class;

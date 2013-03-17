@@ -15,7 +15,7 @@ final class AphrontAttachedFileView extends AphrontView {
     $file = $this->file;
     $phid = $file->getPHID();
 
-    $thumb = phutil_render_tag(
+    $thumb = phutil_tag(
       'img',
       array(
         'src'     => $file->getThumb60x45URI(),
@@ -23,16 +23,16 @@ final class AphrontAttachedFileView extends AphrontView {
         'height'  => 45,
       ));
 
-    $name = phutil_render_tag(
+    $name = phutil_tag(
       'a',
       array(
         'href'    => $file->getViewURI(),
         'target'  => '_blank',
       ),
-      phutil_escape_html($file->getName()));
-    $size = number_format($file->getByteSize()).' bytes';
+      $file->getName());
+    $size = number_format($file->getByteSize()).' ' .pht('bytes');
 
-    $remove = javelin_render_tag(
+    $remove = javelin_tag(
       'a',
       array(
         'class' => 'button grey',
@@ -44,14 +44,18 @@ final class AphrontAttachedFileView extends AphrontView {
       ),
       "\xE2\x9C\x96"); // "Heavy Multiplication X"
 
-    return
+    return hsprintf(
       '<table class="aphront-attached-file-view">
         <tr>
-          <td>'.$thumb.'</td>
-          <th><strong>'.$name.'</strong><br />'.$size.'</th>
-          <td class="aphront-attached-file-view-remove">'.$remove.'</td>
+          <td>%s</td>
+          <th><strong>%s</strong><br />%s</th>
+          <td class="aphront-attached-file-view-remove">%s</td>
         </tr>
-      </table>';
+      </table>',
+      $thumb,
+      $name,
+      $size,
+      $remove);
   }
 
 }

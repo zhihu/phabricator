@@ -1,0 +1,5 @@
+<?php
+
+abstract class PholioConstants {
+
+}

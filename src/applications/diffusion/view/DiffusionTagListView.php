@@ -3,14 +3,8 @@
 final class DiffusionTagListView extends DiffusionView {
 
   private $tags;
-  private $user;
   private $commits = array();
   private $handles = array();
-
-  public function setUser($user) {
-    $this->user = $user;
-    return $this;
-  }
 
   public function setTags($tags) {
     $this->tags = $tags;
@@ -40,7 +34,7 @@ final class DiffusionTagListView extends DiffusionView {
     foreach ($this->tags as $tag) {
       $commit = idx($this->commits, $tag->getCommitIdentifier());
 
-      $tag_link = phutil_render_tag(
+      $tag_link = phutil_tag(
         'a',
         array(
           'href' => $drequest->generateURI(
@@ -49,9 +43,9 @@ final class DiffusionTagListView extends DiffusionView {
               'commit' => $tag->getName(),
             )),
         ),
-        phutil_escape_html($tag->getName()));
+        $tag->getName());
 
-      $commit_link = phutil_render_tag(
+      $commit_link = phutil_tag(
         'a',
         array(
           'href' => $drequest->generateURI(
@@ -60,9 +54,8 @@ final class DiffusionTagListView extends DiffusionView {
               'commit' => $tag->getCommitIdentifier(),
             )),
         ),
-        phutil_escape_html(
           $repository->formatCommitName(
-            $tag->getCommitIdentifier())));
+            $tag->getCommitIdentifier()));
 
       $author = null;
       if ($commit && $commit->getAuthorPHID()) {
@@ -86,7 +79,6 @@ final class DiffusionTagListView extends DiffusionView {
           $description = $tag->getDescription();
         }
       }
-      $description = phutil_escape_html($description);
 
       $rows[] = array(
         $tag_link,

@@ -7,51 +7,54 @@ final class DarkConsoleErrorLogPlugin extends DarkConsolePlugin {
 
   public function getName() {
     $count = count($this->getData());
-
     if ($count) {
-      return
-        '<span style="color: #ff0000;">&bull;</span> '.
-        "Error Log ({$count})";
+      return pht('Error Log (%d)', $count);
     }
-
-    return 'Error Log';
+    return pht('Error Log');
   }
 
+  public function getOrder() {
+    return 0;
+  }
+
+  public function getColor() {
+    if (count($this->getData())) {
+      return '#ff0000';
+    }
+    return null;
+  }
 
   public function getDescription() {
-    return 'Shows errors and warnings.';
+    return pht('Shows errors and warnings.');
   }
-
 
   public function generateData() {
     return DarkConsoleErrorLogPluginAPI::getErrors();
   }
 
-
-  public function render() {
-
+  public function renderPanel() {
     $data = $this->getData();
 
     $rows = array();
-    $details = '';
+    $details = array();
 
     foreach ($data as $index => $row) {
       $file = $row['file'];
       $line = $row['line'];
 
-      $tag = phutil_render_tag(
+      $tag = phutil_tag(
         'a',
         array(
           'onclick' => jsprintf('show_details(%d)', $index),
         ),
-        phutil_escape_html($row['str'].' at ['.basename($file).':'.$line.']'));
+        $row['str'].' at ['.basename($file).':'.$line.']');
       $rows[] = array($tag);
 
-      $details .=
-        '<div class="dark-console-panel-error-details" id="row-details-'.
-        $index.'">'.
-        phutil_escape_html($row['details'])."\n".
-        'Stack trace:'."\n";
+      $details[] = hsprintf(
+        '<div class="dark-console-panel-error-details" id="row-details-%s">'.
+        "%s\nStack trace:\n",
+        $index,
+        $row['details']);
 
       foreach ($row['trace'] as $key => $entry) {
         $line = '';
@@ -70,16 +73,16 @@ final class DarkConsoleErrorLogPlugin extends DarkConsolePlugin {
           }
         }
 
-        $details .= phutil_render_tag(
+        $details[] = phutil_tag(
           'a',
           array(
             'href' => $href,
           ),
-          phutil_escape_html($line));
-        $details .= "\n";
+          $line);
+        $details[] = "\n";
       }
 
-      $details .= '</div>';
+      $details[] = hsprintf('</div>');
     }
 
     $table = new AphrontTableView($rows);
@@ -87,11 +90,13 @@ final class DarkConsoleErrorLogPlugin extends DarkConsolePlugin {
     $table->setHeaders(array('Error'));
     $table->setNoDataString('No errors.');
 
-    return '<div>'.
-      '<div>'.$table->render().'</div>'.
-      '<pre class="PhabricatorMonospaced">'.
-      $details.'</pre>'.
-      '</div>';
+    return hsprintf(
+      '<div>'.
+        '<div>%s</div>'.
+        '<pre class="PhabricatorMonospaced">%s</pre>'.
+      '</div>',
+      $table->render(),
+      phutil_implode_html('', $details));
   }
 }
 

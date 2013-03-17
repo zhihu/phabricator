@@ -4,6 +4,7 @@ final class AphrontTableView extends AphrontView {
 
   protected $data;
   protected $headers;
+  protected $shortHeaders;
   protected $rowClasses = array();
   protected $columnClasses = array();
   protected $cellClasses = array();
@@ -11,12 +12,14 @@ final class AphrontTableView extends AphrontView {
   protected $noDataString;
   protected $className;
   protected $columnVisibility = array();
+  private $deviceVisibility = array();
 
   protected $sortURI;
   protected $sortParam;
   protected $sortSelected;
   protected $sortReverse;
   protected $sortValues;
+  private $deviceReadyTable;
 
   public function __construct(array $data) {
     $this->data = $data;
@@ -62,6 +65,21 @@ final class AphrontTableView extends AphrontView {
     return $this;
   }
 
+  public function setDeviceVisibility(array $device_visibility) {
+    $this->deviceVisibility = $device_visibility;
+    return $this;
+  }
+
+  public function setDeviceReadyTable($ready) {
+    $this->deviceReadyTable = $ready;
+    return $this;
+  }
+
+  public function setShortHeaders(array $short_headers) {
+    $this->shortHeaders = $short_headers;
+    return $this;
+  }
+
   /**
    * Parse a sorting parameter:
    *
@@ -93,13 +111,7 @@ final class AphrontTableView extends AphrontView {
   public function render() {
     require_celerity_resource('aphront-table-view-css');
 
-    $table_class = $this->className;
-    if ($table_class !== null) {
-      $table_class = ' class="aphront-table-view '.$table_class.'"';
-    } else {
-      $table_class = ' class="aphront-table-view"';
-    }
-    $table = array('<table'.$table_class.'>');
+    $table = array();
 
     $col_classes = array();
     foreach ($this->columnClasses as $key => $class) {
@@ -111,16 +123,25 @@ final class AphrontTableView extends AphrontView {
     }
 
     $visibility = array_values($this->columnVisibility);
+    $device_visibility = array_values($this->deviceVisibility);
     $headers = $this->headers;
+    $short_headers = $this->shortHeaders;
     $sort_values = $this->sortValues;
     if ($headers) {
       while (count($headers) > count($visibility)) {
         $visibility[] = true;
       }
+      while (count($headers) > count($device_visibility)) {
+        $device_visibility[] = true;
+      }
+      while (count($headers) > count($short_headers)) {
+        $short_headers[] = null;
+      }
       while (count($headers) > count($sort_values)) {
         $sort_values[] = null;
       }
-      $table[] = '<tr>';
+
+      $tr = array();
       foreach ($headers as $col_num => $header) {
         if (!$visibility[$col_num]) {
           continue;
@@ -132,45 +153,70 @@ final class AphrontTableView extends AphrontView {
           $classes[] = $col_classes[$col_num];
         }
 
+        if (empty($device_visiblity[$col_num])) {
+          $classes[] = 'aphront-table-nodevice';
+        }
+
         if ($sort_values[$col_num] !== null) {
           $classes[] = 'aphront-table-view-sortable';
 
           $sort_value = $sort_values[$col_num];
-          $sort_glyph = "\xE2\x86\x93";
+          $sort_glyph_class = 'aphront-table-down-sort';
           if ($sort_value == $this->sortSelected) {
             if ($this->sortReverse) {
-              $sort_glyph = "\xE2\x86\x91";
+              $sort_glyph_class = 'aphront-table-up-sort';
             } else if (!$this->sortReverse) {
               $sort_value = '-'.$sort_value;
             }
             $classes[] = 'aphront-table-view-sortable-selected';
           }
 
-          $sort_glyph = phutil_render_tag(
+          $sort_glyph = phutil_tag(
             'span',
             array(
-              'class' => 'aphront-table-view-sort-glyph',
+              'class' => $sort_glyph_class,
             ),
-            $sort_glyph);
+            '');
 
-          $header = phutil_render_tag(
+          $header = phutil_tag(
             'a',
             array(
               'href'  => $this->sortURI->alter($this->sortParam, $sort_value),
               'class' => 'aphront-table-view-sort-link',
             ),
-            $sort_glyph.' '.$header);
+            array(
+              $header,
+              ' ',
+              $sort_glyph,
+            ));
         }
 
         if ($classes) {
-          $class = ' class="'.implode(' ', $classes).'"';
+          $class = implode(' ', $classes);
         } else {
           $class = null;
         }
 
-        $table[] = '<th'.$class.'>'.$header.'</th>';
+        if ($short_headers[$col_num] !== null) {
+          $header_nodevice = phutil_tag(
+            'span',
+            array(
+              'class' => 'aphront-table-view-nodevice',
+            ),
+            $header);
+          $header_device = phutil_tag(
+            'span',
+            array(
+              'class' => 'aphront-table-view-device',
+            ),
+            $short_headers[$col_num]);
+
+          $header = hsprintf('%s %s', $header_nodevice, $header_device);
+        }
+
+        $tr[] = phutil_tag('th', array('class' => $class), $header);
       }
-      $table[] = '</tr>';
+      $table[] = phutil_tag('tr', array(), $tr);
     }
 
     foreach ($col_classes as $key => $value) {
@@ -195,18 +241,7 @@ final class AphrontTableView extends AphrontView {
         while (count($row) > count($visibility)) {
           $visibility[] = true;
         }
-        $class = idx($this->rowClasses, $row_num);
-        if ($this->zebraStripes && ($row_num % 2)) {
-          if ($class !== null) {
-            $class = 'alt alt-'.$class;
-          } else {
-            $class = 'alt';
-          }
-        }
-        if ($class !== null) {
-          $class = ' class="'.$class.'"';
-        }
-        $table[] = '<tr'.$class.'>';
+        $tr = array();
         // NOTE: Use of a separate column counter is to allow this to work
         // correctly if the row data has string or non-sequential keys.
         $col_num = 0;
@@ -219,25 +254,40 @@ final class AphrontTableView extends AphrontView {
           if (!empty($this->cellClasses[$row_num][$col_num])) {
             $class = trim($class.' '.$this->cellClasses[$row_num][$col_num]);
           }
-          if ($class !== null) {
-            $table[] = '<td class="'.$class.'">';
-          } else {
-            $table[] = '<td>';
-          }
-          $table[] = $value.'</td>';
+          $tr[] = phutil_tag('td', array('class' => $class), $value);
           ++$col_num;
         }
+
+        $class = idx($this->rowClasses, $row_num);
+        if ($this->zebraStripes && ($row_num % 2)) {
+          if ($class !== null) {
+            $class = 'alt alt-'.$class;
+          } else {
+            $class = 'alt';
+          }
+        }
+
+        $table[] = phutil_tag('tr', array('class' => $class), $tr);
         ++$row_num;
       }
     } else {
       $colspan = max(count(array_filter($visibility)), 1);
-      $table[] =
-        '<tr class="no-data"><td colspan="'.$colspan.'">'.
-          coalesce($this->noDataString, 'No data available.').
-        '</td></tr>';
+      $table[] = hsprintf(
+        '<tr class="no-data"><td colspan="%s">%s</td></tr>',
+        $colspan,
+        coalesce($this->noDataString, pht('No data available.')));
     }
-    $table[] = '</table>';
-    return implode('', $table);
+
+    $table_class = 'aphront-table-view';
+    if ($this->className !== null) {
+      $table_class .= ' '.$this->className;
+    }
+    if ($this->deviceReadyTable) {
+      $table_class .= ' aphront-table-view-device-ready';
+    }
+
+    $html = phutil_tag('table', array('class' => $table_class), $table);
+    return hsprintf('<div class="aphront-table-wrap">%s</div>', $html);
   }
 
   public static function renderSingleDisplayLine($line) {
@@ -249,17 +299,20 @@ final class AphrontTableView extends AphrontView {
     // (alternatively, we could hard-code the line height). This is gross but
     // it's not clear that there's a better appraoch.
 
-    return phutil_render_tag(
+    return phutil_tag(
       'div',
       array(
         'class' => 'single-display-line-bounds',
       ),
-      phutil_render_tag(
-        'span',
-        array(
-          'class' => 'single-display-line-content',
-        ),
-        $line).'&nbsp;');
+      array(
+        phutil_tag(
+          'span',
+          array(
+            'class' => 'single-display-line-content',
+          ),
+          $line),
+        "\xC2\xA0",
+      ));
   }
 
 

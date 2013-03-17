@@ -13,15 +13,15 @@ final class AphrontRequestFailureView extends AphrontView {
   final public function render() {
     require_celerity_resource('aphront-request-failure-view-css');
 
-    return
+    return hsprintf(
       '<div class="aphront-request-failure-view">'.
         '<div class="aphront-request-failure-head">'.
-          '<h1>'.phutil_escape_html($this->header).'</h1>'.
+          '<h1>%s</h1>'.
         '</div>'.
-        '<div class="aphront-request-failure-body">'.
-          $this->renderChildren().
-        '</div>'.
-      '</div>';
+        '<div class="aphront-request-failure-body">%s</div>'.
+      '</div>',
+      $this->header,
+      $this->renderChildren());
   }
 
 }

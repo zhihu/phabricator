@@ -21,24 +21,37 @@ final class PhabricatorHelpKeyboardShortcutController
       'description' => 'Close any dialog, including this one.',
     );
 
+    $stroke_map = array(
+      'left' => "\xE2\x86\x90",
+      'right' => "\xE2\x86\x92",
+      'up' => "\xE2\x86\x91",
+      'down' => "\xE2\x86\x93",
+      'return' => "\xE2\x8F\x8E",
+      'tab' => "\xE2\x87\xA5",
+      'delete' => "\xE2\x8C\xAB",
+    );
+
     $rows = array();
     foreach ($keys as $shortcut) {
       $keystrokes = array();
       foreach ($shortcut['keys'] as $stroke) {
-        $keystrokes[] = '<kbd>'.phutil_escape_html($stroke).'</kbd>';
+        $stroke = idx($stroke_map, $stroke, $stroke);
+        $keystrokes[] = phutil_tag('kbd', array(), $stroke);
       }
-      $keystrokes = implode(' or ', $keystrokes);
-      $rows[] =
-        '<tr>'.
-          '<th>'.$keystrokes.'</th>'.
-          '<td>'.phutil_escape_html($shortcut['description']).'</td>'.
-        '</tr>';
+      $keystrokes = phutil_implode_html(' or ', $keystrokes);
+      $rows[] = phutil_tag(
+        'tr',
+        array(),
+        array(
+          phutil_tag('th', array(), $keystrokes),
+          phutil_tag('td', array(), $shortcut['description']),
+        ));
     }
 
-    $table =
-      '<table class="keyboard-shortcut-help">'.
-        implode('', $rows).
-      '</table>';
+    $table = phutil_tag(
+      'table',
+      array('class' => 'keyboard-shortcut-help'),
+      $rows);
 
     $dialog = id(new AphrontDialogView())
       ->setUser($user)

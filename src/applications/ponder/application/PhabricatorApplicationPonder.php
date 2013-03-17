@@ -10,7 +10,7 @@ final class PhabricatorApplicationPonder extends PhabricatorApplication {
     return 'Find Answers';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'ponder';
   }
 
@@ -20,6 +20,10 @@ final class PhabricatorApplicationPonder extends PhabricatorApplication {
     );
   }
 
+  public function getTitleGlyph() {
+    return "\xE2\x97\xB3";
+  }
+
   public function loadStatus(PhabricatorUser $user) {
     // replace with "x new unanswered questions" or some such
     $status = array();
@@ -27,11 +31,21 @@ final class PhabricatorApplicationPonder extends PhabricatorApplication {
     return $status;
   }
 
+  public function getRemarkupRules() {
+    return array(
+      new PonderRemarkupRule(),
+    );
+  }
+
   public function getApplicationGroup() {
     return self::GROUP_COMMUNICATION;
   }
 
-  public function getroutes() {
+  public function isBeta() {
+    return true;
+  }
+
+  public function getRoutes() {
     return array(
       '/Q(?P<id>[1-9]\d*)' => 'PonderQuestionViewController',
       '/ponder/' => array(
@@ -45,7 +59,8 @@ final class PhabricatorApplicationPonder extends PhabricatorApplication {
         'comment/add/' => 'PonderCommentSaveController',
         '(?P<kind>question)/vote/' => 'PonderVoteSaveController',
         '(?P<kind>answer)/vote/' => 'PonderVoteSaveController'
-      ));
+      ),
+    );
   }
-}
 
+}

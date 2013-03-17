@@ -4,18 +4,19 @@
 
 .maniphest-task-summary {
   width: 100%;
-  margin: -1px 0;
+  margin: 0 0 -1px 0;
   border-collapse: separate;
-  color: #222;
+  color: #333;
+  border: 1px solid #c0c5d1;
+}
+
+.maniphest-task-group {
+  padding-bottom: 30px;
 }
 
 .maniphest-task-summary td {
-  padding: 8px 3px;
-  white-space: nowrap;
-  border-style: solid;
-  border-bottom-color: #DDD;
-  border-width: 1px 0;
-  border-top-color: #DDD;
+  padding: 0 10px;
+  background: #fff;
 }
 
 .maniphest-task-summary td em {
@@ -23,19 +24,24 @@
 }
 
 .maniphest-batch-selected td {
-  background: #f6ff88;
+  background: #fff;
 }
 
-.maniphest-task-summary td.maniphest-task-handle {
-  padding: 0 6px;
-  width: 1px;
+.maniphest-task-summary .maniphest-task-handle {
+  padding: 0 4px 0 0;
+  width: 5px;
 }
 
 .maniphest-task-summary td.maniphest-task-batch {
-  padding-right: 0px;
-  width: 16px;
+  padding: 15px 4px 0 10px;
+  width: 8px;
   text-align: center;
   overflow: hidden;
+}
+
+.device-phone .maniphest-task-batch,
+.device-phone .maniphest-task-updated {
+  display: none;
 }
 
 .maniphest-task-summary td.maniphest-task-batch,
@@ -48,43 +54,39 @@
 }
 
 .maniphest-task-summary td.maniphest-task-number {
+  padding: 6px 0 2px 10px;
   font-weight: bold;
-  color: #444444;
-  width: 70px;
-  text-align: right;
+  color: #333;
 }
 
 .maniphest-task-summary td.maniphest-task-status {
-  width: 60px;
-  text-align: center;
+  padding: 2px 10px 6px 10px;
+  text-align: left;
+  color: #777;
+  font-size: 12px;
 }
 
-.maniphest-task-summary td.maniphest-task-owner {
-  width: 100px;
+.maniphest-task-summary .maniphest-task-owner {
+  padding-left: 20px;
 }
 
-.maniphest-task-summary td.maniphest-task-name {
+.maniphest-task-summary .maniphest-task-name {
   font-weight: bold;
-  white-space: normal;
   overflow: hidden;
+  margin-left: 5px;
 }
 
 .maniphest-task-summary td.maniphest-task-projects {
-  width: 180px;
   text-align: right;
-  white-space: normal;
+  padding: 0px 8px;
 }
 
-.maniphest-task-summary td.maniphest-task-updated {
-  text-align: right;
-  width: 85px;
-  padding-right: 8px;
-  border-right-width: 1px;
-  border-right-style: solid;
-  border-right-color: #DDD;
-}
-
-.maniphest-task-summary .pri-bullet {
+.maniphest-task-summary .maniphest-task-updated {
+  float: right;
+  padding: 0 8px;
+  color: #777;
+  font-size: 11px;
+  font-weight: normal;
 }
 
 .maniphest-task-summary .pri-unbreak {
@@ -118,37 +120,45 @@
 }
 
 .maniphest-task-group-header {
-  font-size: 18px;
-  margin: 1em 0;
-  border-bottom: 1px solid #dddddd;
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+  padding: 0 0 8px 0;
 }
 
 .maniphest-total-result-count {
   text-align: right;
-  padding-right: 2em;
+  padding: 5px 20px 0 0;
   font-size: 11px;
-  color: #666666;
+  color: #777;
+}
+
+.device-phone .maniphest-total-result-count {
+  padding-right: 5px;
 }
 
 .batch-editor-header {
-  font-size: 11px;
-  color: #666666;
-  padding: 4px 0px;
+  font-size: 16px;
+  color: #555;
+  padding: 8px 0px;
   font-weight: bold;
 }
 
-.maniphest-batch-editor {
-  margin: 1em 1em;
+/* TODO: Implement */
+.device-phone .maniphest-batch-editor {
+  display: none;
 }
 
 .maniphest-batch-editor-layout {
   width: 100%;
-  border-top: 1px solid #bbbbbb;
-  background: #efefef;
+  border-left: 1px solid #e7e7e7;
+  border-right: 1px solid #e7e7e7;
+  border-bottom: 1px solid #c0c5d1;
+  background: #fff;
 }
 
 .maniphest-batch-editor-layout td {
-  padding: 6px 8px;
+  padding: 10px 8px;
   white-space: nowrap;
 }
 
@@ -167,14 +177,6 @@
   font-size: 11px;
   vertical-align: middle;
   width: 100%;
-}
-
-.maniphest-list-container {
-  padding: 0 1em;
-}
-
-.maniphest-group-container {
-  padding: 0 1em 1em;
 }
 
 td.maniphest-active-handle {
@@ -197,5 +199,12 @@ td.maniphest-active-handle {
 .maniphest-task-dragging {
   position: relative;
   opacity: 0.5;
-  z-index: 5;
+}
+
+.maniphest-list-container {
+  padding: 20px;
+}
+
+.device-phone .maniphest-list-container {
+  padding: 20px 5px;
 }

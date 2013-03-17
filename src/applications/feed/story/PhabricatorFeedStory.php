@@ -149,12 +149,6 @@ abstract class PhabricatorFeedStory implements PhabricatorPolicyInterface {
 
   abstract public function renderView();
 
-//  TODO: Make abstract once all subclasses implement it.
-  public function renderNotificationView() {
-    return id(new PhabricatorFeedStoryUnknown($this->data))
-      ->renderNotificationView();
-  }
-
   public function getRequiredHandlePHIDs() {
     return array();
   }
@@ -230,7 +224,7 @@ abstract class PhabricatorFeedStory implements PhabricatorPolicyInterface {
     foreach ($phids as $phid) {
       $list[] = $this->linkTo($phid);
     }
-    return implode(', ', $list);
+    return phutil_implode_html(', ', $list);
   }
 
   final protected function linkTo($phid) {
@@ -239,25 +233,24 @@ abstract class PhabricatorFeedStory implements PhabricatorPolicyInterface {
     // NOTE: We render our own link here to customize the styling and add
     // the '_top' target for framed feeds.
 
-    return phutil_render_tag(
+    return phutil_tag(
       'a',
       array(
         'href'    => $handle->getURI(),
         'target'  => $this->framed ? '_top' : null,
       ),
-      phutil_escape_html($handle->getLinkName()));
+      $handle->getLinkName());
   }
 
   final protected function renderString($str) {
-    return '<strong>'.phutil_escape_html($str).'</strong>';
+    return phutil_tag('strong', array(), $str);
   }
 
   final protected function renderSummary($text, $len = 128) {
     if ($len) {
       $text = phutil_utf8_shorten($text, $len);
     }
-    $text = phutil_escape_html($text);
-    $text = str_replace("\n", '<br />', $text);
+    $text = phutil_escape_html_newlines($text);
     return $text;
   }
 

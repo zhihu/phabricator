@@ -7,8 +7,7 @@ final class PhabricatorAuditListView extends AphrontView {
   private $authorityPHIDs = array();
   private $noDataString;
   private $commits;
-  private $user;
-  private $showDescriptions = true;
+  private $showCommits = true;
 
   private $highlightedAudits;
 
@@ -44,13 +43,8 @@ final class PhabricatorAuditListView extends AphrontView {
     return $this;
   }
 
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
-
-  public function setShowDescriptions($show_descriptions) {
-    $this->showDescriptions = $show_descriptions;
+  public function setShowCommits($show_commits) {
+    $this->showCommits = $show_commits;
     return $this;
   }
 
@@ -135,10 +129,7 @@ final class PhabricatorAuditListView extends AphrontView {
       }
 
       $reasons = $audit->getAuditReasons();
-      foreach ($reasons as $key => $reason) {
-        $reasons[$key] = phutil_escape_html($reason);
-      }
-      $reasons = implode('<br />', $reasons);
+      $reasons = phutil_implode_html(phutil_tag('br'), $reasons);
 
       $status_code = $audit->getAuditStatus();
       $status = PhabricatorAuditStatusConstants::getStatusName($status_code);
@@ -146,10 +137,9 @@ final class PhabricatorAuditListView extends AphrontView {
       $auditor_handle = $this->getHandle($audit->getAuditorPHID());
       $rows[] = array(
         $commit_name,
-        phutil_escape_html($commit_desc),
         $committed,
         $auditor_handle->renderLink(),
-        phutil_escape_html($status),
+        $status,
         $reasons,
       );
 
@@ -164,7 +154,6 @@ final class PhabricatorAuditListView extends AphrontView {
     $table->setHeaders(
       array(
         'Commit',
-        'Description',
         'Committed',
         'Auditor',
         'Status',
@@ -173,18 +162,16 @@ final class PhabricatorAuditListView extends AphrontView {
     $table->setColumnClasses(
       array(
         'pri',
-        ($this->showDescriptions ? 'wide' : ''),
         '',
         '',
         '',
-        ($this->showDescriptions ? '' : 'wide'),
+        ($this->showCommits ? '' : 'wide'),
       ));
     $table->setRowClasses($rowc);
     $table->setColumnVisibility(
       array(
-        $this->showDescriptions,
-        $this->showDescriptions,
-        $this->showDescriptions,
+        $this->showCommits,
+        $this->showCommits,
         true,
         true,
         true,

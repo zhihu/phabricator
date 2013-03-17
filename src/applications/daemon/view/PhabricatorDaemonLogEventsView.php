@@ -4,7 +4,6 @@ final class PhabricatorDaemonLogEventsView extends AphrontView {
 
   private $events;
   private $combinedLog;
-  private $user;
 
   public function setEvents(array $events) {
     assert_instances_of($events, 'PhabricatorDaemonLogEvent');
@@ -14,11 +13,6 @@ final class PhabricatorDaemonLogEventsView extends AphrontView {
 
   public function setCombinedLog($is_combined) {
     $this->combinedLog = $is_combined;
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -66,21 +60,21 @@ final class PhabricatorDaemonLogEventsView extends AphrontView {
       }
 
       $row = array(
-        phutil_escape_html($event->getLogType()),
+        $event->getLogType(),
         phabricator_date($event->getEpoch(), $this->user),
         phabricator_time($event->getEpoch(), $this->user),
-        str_replace("\n", '<br />', phutil_escape_html($message.$more)),
+        phutil_escape_html_newlines($message.$more),
       );
 
       if ($this->combinedLog) {
         array_unshift(
           $row,
-          phutil_render_tag(
+          phutil_tag(
             'a',
             array(
               'href' => '/daemon/log/'.$event->getLogID().'/',
             ),
-            phutil_escape_html('Daemon '.$event->getLogID())));
+            'Daemon '.$event->getLogID()));
       }
 
       $rows[] = $row;

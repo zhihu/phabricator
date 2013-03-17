@@ -74,8 +74,8 @@ final class DiffusionHistoryTableView extends DiffusionView {
       $epoch = $history->getEpoch();
 
       if ($epoch) {
-        $date = date('M j, Y', $epoch);
-        $time = date('g:i A', $epoch);
+        $date = phabricator_date($epoch, $this->user);
+        $time = phabricator_time($epoch, $this->user);
       } else {
         $date = null;
         $time = null;
@@ -107,7 +107,7 @@ final class DiffusionHistoryTableView extends DiffusionView {
         } else {
           $committer = self::renderName($committer);
         }
-        $author .= '/'.$committer;
+        $author = hsprintf('%s/%s', $author, $committer);
       }
 
       $commit = $history->getCommit();
@@ -118,7 +118,7 @@ final class DiffusionHistoryTableView extends DiffusionView {
           $path = null,
           $history->getCommitIdentifier());
       } else {
-        $change = "<em>Importing\xE2\x80\xA6</em>";
+        $change = phutil_tag('em', array(), "Importing\xE2\x80\xA6");
       }
 
       $rows[] = array(
@@ -138,8 +138,7 @@ final class DiffusionHistoryTableView extends DiffusionView {
         $date,
         $time,
         $author,
-        AphrontTableView::renderSingleDisplayLine(
-          phutil_escape_html($history->getSummary())),
+        AphrontTableView::renderSingleDisplayLine($history->getSummary()),
         // TODO: etc etc
       );
     }
@@ -312,7 +311,7 @@ final class DiffusionHistoryTableView extends DiffusionView {
     // Render into tags for the behavior.
 
     foreach ($graph as $k => $meta) {
-      $graph[$k] = javelin_render_tag(
+      $graph[$k] = javelin_tag(
         'div',
         array(
           'sigil' => 'commit-graph',

@@ -18,6 +18,11 @@ abstract class PhabricatorApplication {
   const GROUP_DEVELOPER       = 'developer';
   const GROUP_MISC            = 'misc';
 
+  const TILE_INVISIBLE        = 'invisible';
+  const TILE_HIDE             = 'hide';
+  const TILE_SHOW             = 'show';
+  const TILE_FULL             = 'full';
+
   public static function getApplicationGroups() {
     return array(
       self::GROUP_CORE          => pht('Core Applications'),
@@ -29,6 +34,17 @@ abstract class PhabricatorApplication {
       self::GROUP_MISC          => pht('Miscellaneous Applications'),
     );
   }
+
+  public static function getTileDisplayName($constant) {
+    $names = array(
+      self::TILE_INVISIBLE => pht('Invisible'),
+      self::TILE_HIDE => pht('Hidden'),
+      self::TILE_SHOW => pht('Show Small Tile'),
+      self::TILE_FULL => pht('Show Large Tile'),
+    );
+    return idx($names, $constant);
+  }
+
 
 
 /* -(  Application Information  )-------------------------------------------- */
@@ -43,6 +59,25 @@ abstract class PhabricatorApplication {
   }
 
   public function isEnabled() {
+    return true;
+  }
+
+  public function isInstalled() {
+    $uninstalled = PhabricatorEnv::getEnvConfig(
+      'phabricator.uninstalled-applications');
+
+    if (!$this->canUninstall()) {
+      return true;
+    }
+
+    return empty($uninstalled[get_class($this)]);
+  }
+
+  public function isBeta() {
+    return false;
+  }
+
+  public function canUninstall() {
     return true;
   }
 
@@ -62,8 +97,8 @@ abstract class PhabricatorApplication {
     return null;
   }
 
-  public function getAutospriteName() {
-    return 'default';
+  public function getIconName() {
+    return 'application';
   }
 
   public function shouldAppearInLaunchView() {
@@ -93,6 +128,29 @@ abstract class PhabricatorApplication {
   }
 
   public function getEventListeners() {
+    return array();
+  }
+
+  public function getDefaultTileDisplay(PhabricatorUser $user) {
+    switch ($this->getApplicationGroup()) {
+      case self::GROUP_CORE:
+        return self::TILE_FULL;
+      case self::GROUP_UTILITIES:
+      case self::GROUP_DEVELOPER:
+        return self::TILE_HIDE;
+      case self::GROUP_ADMIN:
+        if ($user->getIsAdmin()) {
+          return self::TILE_SHOW;
+        } else {
+          return self::TILE_INVISIBLE;
+        }
+        break;
+      default:
+        return self::TILE_SHOW;
+    }
+  }
+
+  public function getRemarkupRules() {
     return array();
   }
 
@@ -159,31 +217,86 @@ abstract class PhabricatorApplication {
   }
 
 
+  /**
+   * On the Phabricator homepage sidebar, this function returns the URL for
+   * a quick create X link which is displayed in the wide button only.
+   *
+   * @return string
+   * @task ui
+   */
+  public function getQuickCreateURI() {
+    return null;
+  }
+
+
 /* -(  Application Management  )--------------------------------------------- */
 
+  public static function getByClass($class_name) {
+    $selected = null;
+    $applications = PhabricatorApplication::getAllApplications();
+
+    foreach ($applications as $application) {
+      if (get_class($application) == $class_name) {
+        $selected = $application;
+        break;
+      }
+    }
+    return $selected;
+  }
+
+  public static function getAllApplications() {
+    $classes = id(new PhutilSymbolLoader())
+            ->setAncestorClass(__CLASS__)
+            ->setConcreteOnly(true)
+            ->selectAndLoadSymbols();
+
+    $apps = array();
+
+    foreach ($classes as $class) {
+      $app = newv($class['name'], array());
+      $apps[] = $app;
+    }
+
+    // Reorder the applications into "application order". Notably, this ensures
+    // their event handlers register in application order.
+    $apps = msort($apps, 'getApplicationOrder');
+    $apps = mgroup($apps, 'getApplicationGroup');
+    $apps = array_select_keys($apps, self::getApplicationGroups()) + $apps;
+    $apps = array_mergev($apps);
+
+    return $apps;
+  }
 
   public static function getAllInstalledApplications() {
     static $applications;
 
-    if (empty($applications)) {
-      $classes = id(new PhutilSymbolLoader())
-        ->setAncestorClass(__CLASS__)
-        ->setConcreteOnly(true)
-        ->selectAndLoadSymbols();
+    $show_beta = PhabricatorEnv::getEnvConfig(
+      'phabricator.show-beta-applications');
 
+    if (empty($applications)) {
+      $all_applications = self::getAllApplications();
       $apps = array();
-      foreach ($classes as $class) {
-        $app = newv($class['name'], array());
+      foreach ($all_applications as $app) {
+        if (!$app->isInstalled()) {
+          continue;
+        }
+
         if (!$app->isEnabled()) {
           continue;
         }
+
+        if (!$show_beta && $app->isBeta()) {
+          continue;
+        }
+
         $apps[] = $app;
       }
+
       $applications = $apps;
     }
 
     return $applications;
   }
 
-
 }
+

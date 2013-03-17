@@ -6,25 +6,23 @@ final class PhabricatorApplicationAuth extends PhabricatorApplication {
     return false;
   }
 
+  public function canUninstall() {
+    return false;
+  }
+
   public function buildMainMenuItems(
     PhabricatorUser $user,
     PhabricatorController $controller = null) {
 
     $items = array();
 
-    if ($controller instanceof PhabricatorLogoutController) {
-      $class = 'main-menu-item-icon-logout-selected';
-    } else {
-      $class = 'main-menu-item-icon-logout';
-    }
-
     if ($user->isLoggedIn()) {
-      $item = new PhabricatorMainMenuIconView();
+      $item = new PhabricatorMenuItemView();
       $item->setName(pht('Log Out'));
-      $item->addClass('autosprite main-menu-item-icon '.$class);
+      $item->setIcon('power');
       $item->setWorkflow(true);
       $item->setHref('/logout/');
-      $item->setSortOrder(1.0);
+      $item->setSelected(($controller instanceof PhabricatorLogoutController));
       $items[] = $item;
     }
 

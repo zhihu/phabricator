@@ -49,31 +49,31 @@ final class PhrictionHistoryController
 
       $diff_uri = new PhutilURI('/phriction/diff/'.$document->getID().'/');
 
-      $vs_previous = '<em>Created</em>';
+      $vs_previous = phutil_tag('em', array(), pht('Created'));
       if ($content->getVersion() != 1) {
         $uri = $diff_uri
           ->alter('l', $content->getVersion() - 1)
           ->alter('r', $content->getVersion());
-        $vs_previous = phutil_render_tag(
+        $vs_previous = phutil_tag(
           'a',
           array(
             'href' => $uri,
           ),
-          'Show Change');
+          pht('Show Change'));
       }
 
-      $vs_head = '<em>Current</em>';
+      $vs_head = phutil_tag('em', array(), pht('Current'));
       if ($content->getID() != $document->getContentID()) {
         $uri = $diff_uri
           ->alter('l', $content->getVersion())
           ->alter('r', $current->getVersion());
 
-        $vs_head = phutil_render_tag(
+        $vs_head = phutil_tag(
           'a',
           array(
             'href' => $uri,
           ),
-          'Show Later Changes');
+          pht('Show Later Changes'));
       }
 
       $change_type = PhrictionChangeType::getChangeTypeLabel(
@@ -82,46 +82,31 @@ final class PhrictionHistoryController
       $rows[] = array(
         phabricator_date($content->getDateCreated(), $user),
         phabricator_time($content->getDateCreated(), $user),
-        phutil_render_tag(
+        phutil_tag(
           'a',
           array(
             'href' => $slug_uri.'?v='.$version,
           ),
-          'Version '.$version),
+          pht('Version %s', $version)),
         $handles[$content->getAuthorPHID()]->renderLink(),
         $change_type,
-        phutil_escape_html($content->getDescription()),
+        $content->getDescription(),
         $vs_previous,
         $vs_head,
       );
     }
 
-    $crumbs = new AphrontCrumbsView();
-    $crumbs->setCrumbs(
-      array(
-        'Phriction',
-        phutil_render_tag(
-          'a',
-          array(
-            'href' => PhrictionDocument::getSlugURI($document->getSlug()),
-          ),
-          phutil_escape_html($current->getTitle())
-        ),
-        'History',
-      ));
-
-
     $table = new AphrontTableView($rows);
     $table->setHeaders(
       array(
-        'Date',
-        'Time',
-        'Version',
-        'Author',
-        'Type',
-        'Description',
-        'Against Previous',
-        'Against Current',
+        pht('Date'),
+        pht('Time'),
+        pht('Version'),
+        pht('Author'),
+        pht('Type'),
+        pht('Description'),
+        pht('Against Previous'),
+        pht('Against Current'),
       ));
     $table->setColumnClasses(
       array(
@@ -135,18 +120,31 @@ final class PhrictionHistoryController
         '',
       ));
 
+    $crumbs = $this->buildApplicationCrumbs();
+    $crumb_views = $this->renderBreadcrumbs($document->getSlug());
+    foreach ($crumb_views as $view) {
+      $crumbs->addCrumb($view);
+    }
+    $crumbs->addCrumb(
+      id(new PhabricatorCrumbView())
+        ->setName(pht('History'))
+        ->setHref(
+          PhrictionDocument::getSlugURI($document->getSlug(), 'history')));
+
     $panel = new AphrontPanelView();
-    $panel->setHeader('Document History');
+    $panel->setHeader(pht('Document History'));
+    $panel->setNoBackground();
     $panel->appendChild($table);
     $panel->appendChild($pager);
 
-    return $this->buildStandardPageResponse(
+    return $this->buildApplicationPage(
       array(
         $crumbs,
         $panel,
       ),
       array(
-        'title'     => 'Document History',
+        'title'     => pht('Document History'),
+        'device'    => true,
       ));
 
   }

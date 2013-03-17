@@ -139,9 +139,11 @@ final class PhamePostViewController extends PhameController {
 
     $actions->addAction(
       id(new PhabricatorActionView())
+        ->setUser($user)
         ->setIcon('world')
         ->setHref($live_uri)
         ->setName(pht('View Live'))
+        ->setRenderAsForm(true)
         ->setDisabled(!$can_view_live)
         ->setWorkflow(!$can_view_live));
 
@@ -184,9 +186,12 @@ final class PhamePostViewController extends PhameController {
       ->process();
 
     $properties->addTextContent(
-      '<div class="phabricator-remarkup">'.
-        $engine->getOutput($post, PhamePost::MARKUP_FIELD_BODY).
-      '</div>');
+      phutil_tag(
+         'div',
+        array(
+          'class' => 'phabricator-remarkup',
+        ),
+        $engine->getOutput($post, PhamePost::MARKUP_FIELD_BODY)));
 
     return $properties;
   }

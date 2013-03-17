@@ -109,6 +109,10 @@ final class PhabricatorAuditCommentEditor extends PhabricatorEditor {
     $actor_is_author = ($actor->getPHID() == $commit->getAuthorPHID());
 
     if ($action == PhabricatorAuditActionConstants::CLOSE) {
+      if (!PhabricatorEnv::getEnvConfig('audit.can-author-close-audit')) {
+          throw new Exception('Cannot Close Audit without enabling'.
+          'audit.can-author-close-audit');
+      }
       // "Close" means wipe out all the concerns.
       $concerned_status = PhabricatorAuditStatusConstants::CONCERNED;
       foreach ($requests as $request) {
@@ -270,8 +274,29 @@ final class PhabricatorAuditCommentEditor extends PhabricatorEditor {
     $commit->updateAuditStatus($requests);
     $commit->save();
 
-    $this->publishFeedStory($comment, array_keys($audit_phids));
-    PhabricatorSearchCommitIndexer::indexCommit($commit);
+    $feed_dont_publish_phids = array();
+    foreach ($requests as $request) {
+      $status = $request->getAuditStatus();
+      switch ($status) {
+      case PhabricatorAuditStatusConstants::RESIGNED:
+      case PhabricatorAuditStatusConstants::NONE:
+      case PhabricatorAuditStatusConstants::AUDIT_NOT_REQUIRED:
+      case PhabricatorAuditStatusConstants::CC:
+        $feed_dont_publish_phids[$request->getAuditorPHID()] = 1;
+        break;
+      default:
+        unset($feed_dont_publish_phids[$request->getAuditorPHID()]);
+        break;
+      }
+    }
+    $feed_dont_publish_phids = array_keys($feed_dont_publish_phids);
+
+    $feed_phids = array_diff($requests_phids, $feed_dont_publish_phids);
+    $this->publishFeedStory($comment, $feed_phids);
+
+    id(new PhabricatorSearchIndexer())
+      ->indexDocumentByPHID($commit->getPHID());
+
     $this->sendMail($comment, $other_comments, $inline_comments, $requests);
   }
 
@@ -356,7 +381,9 @@ final class PhabricatorAuditCommentEditor extends PhabricatorEditor {
 
     $commit_phid = $commit->getPHID();
     $phids = array($commit_phid);
-    $handles = id(new PhabricatorObjectHandleData($phids))->loadHandles();
+    $handles = id(new PhabricatorObjectHandleData($phids))
+      ->setViewer($this->getActor())
+      ->loadHandles();
     $handle = $handles[$commit_phid];
 
     $name = $handle->getName();
@@ -410,7 +437,9 @@ final class PhabricatorAuditCommentEditor extends PhabricatorEditor {
     $email_cc = array_keys($email_cc);
 
     $phids = array_merge($email_to, $email_cc);
-    $handles = id(new PhabricatorObjectHandleData($phids))->loadHandles();
+    $handles = id(new PhabricatorObjectHandleData($phids))
+      ->setViewer($this->getActor())
+      ->loadHandles();
 
     // NOTE: Always set $is_new to false, because the "first" mail in the
     // thread is the Herald notification of the commit.

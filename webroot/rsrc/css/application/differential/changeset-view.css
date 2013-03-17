@@ -3,19 +3,16 @@
  */
 
 .differential-review-stage {
-  margin: 0 2em 0 2em;
-
-  /**
-   * This is potentially overridden by a 'style' attribute which selects a
-   * different width based on the maximum character width of the diff.
-   */
-  max-width:        1162px;
+  background: #FFFFFF;
+  padding: 0em 1.25em 0em 0em;
 }
 
 .differential-changeset {
-  z-index: 2;
   position: relative;
+  margin: 0;
+  padding: 10px 0% 20px 2%;
 }
+
 
 .differential-diff {
   background:         transparent;
@@ -23,15 +20,7 @@
 }
 
 .differential-diff td {
-  /* using monospace fonts makes ex/em most useful:
-   *
-   * Unfortunately, firefox 3.6 renders diffs columns for added and removed
-   * files "way-too-wide" when given em as the dimension measurement, so we
-   * use an eyeballed ex equivalent and reset it to the ch character width
-   * measurement for browsers that support that css3 measurement.
-   */
-  width:              88ex;
-  width:              81ch;
+  min-width: 320px;
   /*
     Disable ligatures in Firefox. Firefox 3 has fancypants ligature support, but
     it gets applied to monospaced fonts, which sucks because it means that the
@@ -44,16 +33,17 @@
   */
   letter-spacing:     0.0083334px;
   vertical-align:     top;
-  white-space:        pre;
+  white-space:        pre-wrap;
   padding:            0 8px 1px;
   line-height:        16px;
-  overflow:           hidden;
 }
 
 .differential-diff th {
   text-align:         right;
-  padding:            2px 6px;
-  width:              44px;
+  padding:            2px 6px 0px 0px;
+  width:              4%;
+  min-width:          45px;
+  max-width:          4%;
   vertical-align:     top;
   background:         #eeeeee;
   color:              #888888;
@@ -61,8 +51,6 @@
   border-style:       solid;
   border-width:       0px 1px;
   border-color:       #eeeeee #999999 #eeeeee #dddddd;
-  font-weight:        bold;
-  font-family:        "Verdana";
   font-size:          11px;
   overflow:           hidden;
 
@@ -71,6 +59,21 @@
   -webkit-user-select:  none;
   -ms-user-select:      none;
   user-select:          none;
+}
+.differential-diff td.left {
+  width: 45%;
+}
+
+.differential-diff td.right,
+.differential-diff td.right1 {
+  width: 43.5%;
+}
+
+.differential-diff td.right2 {
+  width: 44.5%;
+}
+.differential-diff td.right3 {
+  width: 45%;
 }
 
 .differential-changeset-immutable .differential-diff th {
@@ -104,7 +107,8 @@
 }
 
 .differential-diff td.copy {
-  width: 6px;
+  min-width: 0.5%;
+  width: 0.5%;
   padding: 0;
 }
 
@@ -123,7 +127,8 @@
 }
 
 .differential-diff td.cov {
-  width: 12px;
+  min-width: 1%;
+  width: 1%;
   padding: 0;
 }
 
@@ -163,7 +168,7 @@ td.cov-X {
 .differential-diff td.show-context,
 .differential-diff td.differential-shield {
   background: #ffffee;
-  padding: 1em;
+  padding: 1em 0em;
   border: 1px solid #ccccaa;
 }
 
@@ -184,11 +189,10 @@ td.cov-X {
 }
 
 .differential-diff td.show-context {
-  padding-left: 14px; /* td.copy + .differential-diff td */
+  padding-left: 14px;
 }
 
 .differential-diff td.differential-shield {
-  max-width: 1160px;
   text-align: center;
 }
 
@@ -219,16 +223,10 @@ td.cov-X {
   padding:            2px 0 8px;
 }
 
-.differential-changeset {
-  margin:             0.5em 0;
-  padding:            10px 0px 20px;
-}
-
 .differential-reticle {
   background: #ffeeaa;
   border:     1px solid #ffcc00;
   position:   absolute;
-  z-index:    2;
   opacity:    0.5;
   top:        0px;
   left:       0px;
@@ -246,7 +244,6 @@ td.cov-X {
   -moz-box-sizing:    border-box;
   -webkit-box-sizing: border-box;
   overflow:           hidden;
-  max-width:          520px;
   white-space:        normal;
 }
 

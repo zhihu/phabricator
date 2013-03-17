@@ -1,6 +1,7 @@
 <?php
 
-final class DifferentialRevision extends DifferentialDAO {
+final class DifferentialRevision extends DifferentialDAO
+  implements PhabricatorTokenReceiverInterface, PhabricatorPolicyInterface {
 
   protected $title;
   protected $originalTitle;
@@ -17,7 +18,6 @@ final class DifferentialRevision extends DifferentialDAO {
 
   protected $lineCount;
   protected $attached = array();
-  protected $unsubscribed = array();
 
   protected $mailKey;
   protected $branchName;
@@ -264,8 +264,10 @@ final class DifferentialRevision extends DifferentialDAO {
     return idx($this->relationships, $relation, array());
   }
 
-  public function getUnsubscribedPHIDs() {
-    return array_keys($this->getUnsubscribed());
+  public function loadUnsubscribedPHIDs() {
+    return PhabricatorEdgeQuery::loadDestinationPHIDs(
+      $this->phid,
+      PhabricatorEdgeConfig::TYPE_OBJECT_HAS_UNSUBSCRIBER);
   }
 
   public function getPrimaryReviewer() {
@@ -308,6 +310,27 @@ final class DifferentialRevision extends DifferentialDAO {
   public function attachHashes(array $hashes) {
     $this->hashes = $hashes;
     return $this;
+  }
+
+  public function getCapabilities() {
+    return array(
+      PhabricatorPolicyCapability::CAN_VIEW,
+      PhabricatorPolicyCapability::CAN_EDIT,
+    );
+  }
+
+  public function getPolicy($capability) {
+    return PhabricatorPolicies::POLICY_USER;
+  }
+
+  public function hasAutomaticCapability($capability, PhabricatorUser $user) {
+    return false;
+  }
+
+  public function getUsersToNotifyOfTokenGiven() {
+    return array(
+      $this->getAuthorPHID(),
+    );
   }
 
 }

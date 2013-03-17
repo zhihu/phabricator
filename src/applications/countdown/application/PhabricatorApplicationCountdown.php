@@ -6,12 +6,12 @@ final class PhabricatorApplicationCountdown extends PhabricatorApplication {
     return '/countdown/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'countdown';
   }
 
   public function getShortDescription() {
-    return 'Countdown Timers';
+    return pht('Countdown Timers');
   }
 
   public function getTitleGlyph() {

@@ -162,6 +162,18 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
       $this->cc = $revision->getCCPHIDs();
     }
 
+    if ($is_new) {
+      $content_blocks = array();
+      foreach ($this->auxiliaryFields as $field) {
+        if ($field->shouldExtractMentions()) {
+          $content_blocks[] = $field->renderValueForCommitMessage(false);
+        }
+      }
+      $phids = PhabricatorMarkupEngine::extractPHIDsFromMentions(
+        $content_blocks);
+      $this->cc = array_unique(array_merge($this->cc, $phids));
+    }
+
     $diff = $this->getDiff();
     if ($diff) {
       $revision->setLineCount($diff->getLineCount());
@@ -226,7 +238,7 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
         $diff);
       $adapter->setExplicitCCs($new['ccs']);
       $adapter->setExplicitReviewers($new['rev']);
-      $adapter->setForbiddenCCs($revision->getUnsubscribedPHIDs());
+      $adapter->setForbiddenCCs($revision->loadUnsubscribedPHIDs());
 
       $xscript = HeraldEngine::loadAndApplyRules($adapter);
       $xscript_uri = '/herald/transcript/'.$xscript->getID().'/';
@@ -334,6 +346,7 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     $phids = array($this->getActorPHID());
 
     $handles = id(new PhabricatorObjectHandleData($phids))
+      ->setViewer($this->getActor())
       ->loadHandles();
     $actor_handle = $handles[$this->getActorPHID()];
 
@@ -350,6 +363,7 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
             $revision,
             $actor_handle,
             $changesets))
+          ->setActor($this->getActor())
           ->setIsFirstMailAboutRevision($is_new)
           ->setIsFirstMailToRecipients($is_new)
           ->setComments($this->getComments())
@@ -413,6 +427,7 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
             $revision,
             $actor_handle,
             $changesets))
+          ->setActor($this->getActor())
           ->setIsFirstMailAboutRevision($is_new)
           ->setIsFirstMailToRecipients(true)
           ->setToPHIDs(array_keys($add['rev']));
@@ -444,6 +459,7 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
             $revision,
             $actor_handle,
             $changesets))
+          ->setActor($this->getActor())
           ->setIsFirstMailToRecipients(true)
           ->setToPHIDs(array_keys($add['ccs']));
       }
@@ -477,38 +493,36 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
       ->setMailRecipientPHIDs($mailed_phids)
       ->publish();
 
-    //  TODO: Move this into a worker task thing.
-    PhabricatorSearchDifferentialIndexer::indexRevision($revision);
+    id(new PhabricatorSearchIndexer())
+      ->indexDocumentByPHID($revision->getPHID());
   }
 
   public static function addCCAndUpdateRevision(
     $revision,
     $phid,
-    $reason) {
+    PhabricatorUser $actor) {
 
-    self::addCC($revision, $phid, $reason);
+    self::addCC($revision, $phid, $actor->getPHID());
 
-    $unsubscribed = $revision->getUnsubscribed();
-    if (isset($unsubscribed[$phid])) {
-      unset($unsubscribed[$phid]);
-      $revision->setUnsubscribed($unsubscribed);
-      $revision->save();
-    }
+    $type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_UNSUBSCRIBER;
+    id(new PhabricatorEdgeEditor())
+      ->setActor($actor)
+      ->removeEdge($revision->getPHID(), $type, $phid)
+      ->save();
   }
 
   public static function removeCCAndUpdateRevision(
     $revision,
     $phid,
-    $reason) {
+    PhabricatorUser $actor) {
 
-    self::removeCC($revision, $phid, $reason);
+    self::removeCC($revision, $phid, $actor->getPHID());
 
-    $unsubscribed = $revision->getUnsubscribed();
-    if (empty($unsubscribed[$phid])) {
-      $unsubscribed[$phid] = true;
-      $revision->setUnsubscribed($unsubscribed);
-      $revision->save();
-    }
+    $type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_UNSUBSCRIBER;
+    id(new PhabricatorEdgeEditor())
+      ->setActor($actor)
+      ->addEdge($revision->getPHID(), $type, $phid)
+      ->save();
   }
 
   public static function addCC(
@@ -807,21 +821,15 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     }
     $all_paths = array_keys($all_paths);
 
-    $path_map = id(new DiffusionPathIDQuery($all_paths))->loadPathIDs();
+    $path_ids =
+      PhabricatorRepositoryCommitChangeParserWorker::lookupOrCreatePaths(
+        $all_paths);
 
     $table = new DifferentialAffectedPath();
     $conn_w = $table->establishConnection('w');
 
     $sql = array();
-    foreach ($all_paths as $path) {
-      $path_id = idx($path_map, $path);
-      if (!$path_id) {
-        // Don't bother creating these, it probably means we're either adding
-        // a file (in which case having this row is irrelevant since Diffusion
-        // won't be querying for it) or something is misconfigured (in which
-        // case we'd just be writing garbage).
-        continue;
-      }
+    foreach ($path_ids as $path_id) {
       $sql[] = qsprintf(
         $conn_w,
         '(%d, %d, %d, %d)',

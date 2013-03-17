@@ -7,7 +7,7 @@ final class PhabricatorUINotificationExample extends PhabricatorUIExample {
   }
 
   public function getDescription() {
-    return 'Use <tt>JX.Notification</tt> to create notifications.';
+    return hsprintf('Use <tt>JX.Notification</tt> to create notifications.');
   }
 
   public function renderExample() {
@@ -15,7 +15,7 @@ final class PhabricatorUINotificationExample extends PhabricatorUIExample {
     require_celerity_resource('phabricator-notification-css');
     Javelin::initBehavior('phabricator-notification-example');
 
-    $content = javelin_render_tag(
+    $content = javelin_tag(
       'a',
       array(
         'sigil' => 'notification-example',
@@ -23,7 +23,7 @@ final class PhabricatorUINotificationExample extends PhabricatorUIExample {
       ),
       'Show Notification');
 
-    $content = '<div style="padding: 1em 3em;">'.$content.'</content>';
+    $content = hsprintf('<div style="padding: 1em 3em;">%s</div>', $content);
 
     return $content;
   }

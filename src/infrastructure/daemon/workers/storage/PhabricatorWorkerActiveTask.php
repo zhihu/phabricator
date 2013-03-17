@@ -5,10 +5,6 @@ final class PhabricatorWorkerActiveTask extends PhabricatorWorkerTask {
   private $serverTime;
   private $localTime;
 
-  public function getTableName() {
-    return 'worker_task';
-  }
-
   public function getConfiguration() {
     return array(
       self::CONFIG_IDS => self::IDS_COUNTER,
@@ -59,7 +55,10 @@ final class PhabricatorWorkerActiveTask extends PhabricatorWorkerTask {
     if ($this->leaseOwner) {
       $current_server_time = $this->serverTime + (time() - $this->localTime);
       if ($current_server_time >= $this->leaseExpires) {
-        throw new Exception("Trying to update task after lease expiration!");
+        $id = $this->getID();
+        $class = $this->getTaskClass();
+        throw new Exception(
+          "Trying to update Task {$id} ({$class}) after lease expiration!");
       }
     }
   }
@@ -71,7 +70,7 @@ final class PhabricatorWorkerActiveTask extends PhabricatorWorkerTask {
   }
 
   public function archiveTask($result, $duration) {
-    if (!$this->getID()) {
+    if ($this->getID() === null) {
       throw new Exception(
         "Attempting to archive a task which hasn't been save()d!");
     }
@@ -100,24 +99,12 @@ final class PhabricatorWorkerActiveTask extends PhabricatorWorkerTask {
     $this->checkLease();
 
     try {
-      $id = $this->getID();
-      $class = $this->getTaskClass();
-
-      if (!class_exists($class)) {
-        throw new PhabricatorWorkerPermanentFailureException(
-          "Task class '{$class}' does not exist!");
-      }
-
-      if (!is_subclass_of($class, 'PhabricatorWorker')) {
-        throw new PhabricatorWorkerPermanentFailureException(
-          "Task class '{$class}' does not extend PhabricatorWorker.");
-      }
-
-      $worker = newv($class, array($this->getData()));
+      $worker = $this->getWorkerInstance();
 
       $maximum_failures = $worker->getMaximumRetryCount();
       if ($maximum_failures !== null) {
         if ($this->getFailureCount() > $maximum_failures) {
+          $id = $this->getID();
           throw new PhabricatorWorkerPermanentFailureException(
             "Task {$id} has exceeded the maximum number of failures ".
             "({$maximum_failures}).");

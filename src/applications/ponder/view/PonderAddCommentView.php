@@ -3,17 +3,11 @@
 final class PonderAddCommentView extends AphrontView {
 
   private $target;
-  private $user;
   private $actionURI;
   private $questionID;
 
   public function setTarget($target) {
     $this->target = $target;
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -50,7 +44,7 @@ final class PonderAddCommentView extends AphrontView {
           ->setValue($is_serious ? 'Submit' : 'Editorialize'));
 
     $view = id(new AphrontMoreView())
-      ->setSome(id(new AphrontNullView())->render())
+      ->setSome('')
       ->setMore($form->render())
       ->setExpandText('Add Comment');
 

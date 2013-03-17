@@ -11,8 +11,11 @@ abstract class DiffusionFileContentQuery extends DiffusionQuery {
     return parent::newQueryObject(__CLASS__, $request);
   }
 
-  final public function loadFileContent() {
-    $this->fileContent = $this->executeQuery();
+  abstract public function getFileContentFuture();
+  abstract protected function executeQueryFromFuture(Future $future);
+
+  final public function loadFileContentFromFuture(Future $future) {
+    $this->fileContent = $this->executeQueryFromFuture($future);
 
     $repository = $this->getRequest()->getRepository();
     $try_encoding = $repository->getDetail('encoding');
@@ -25,22 +28,30 @@ abstract class DiffusionFileContentQuery extends DiffusionQuery {
     return $this->fileContent;
   }
 
+  final protected function executeQuery() {
+    return $this->loadFileContentFromFuture($this->getFileContentFuture());
+  }
+
+  final public function loadFileContent() {
+    return $this->executeQuery();
+  }
+
   final public function getRawData() {
     return $this->fileContent->getCorpus();
   }
 
   final public function getBlameData() {
-    $raw_data = $this->getRawData();
+    $raw_data = preg_replace('/\n$/', '', $this->getRawData());
 
     $text_list = array();
     $rev_list = array();
     $blame_dict = array();
 
     if (!$this->getNeedsBlame()) {
-      $text_list = explode("\n", rtrim($raw_data));
-    } else {
+      $text_list = explode("\n", $raw_data);
+    } else if ($raw_data != '') {
       $lines = array();
-      foreach (explode("\n", rtrim($raw_data)) as $k => $line) {
+      foreach (explode("\n", $raw_data) as $k => $line) {
         $lines[$k] = $this->tokenizeLine($line);
 
         list($rev_id, $author, $text) = $lines[$k];
@@ -72,32 +83,22 @@ abstract class DiffusionFileContentQuery extends DiffusionQuery {
           $commit->getEpoch();
       }
 
-      $commits_data = array();
       if ($commits) {
         $commits_data = id(new PhabricatorRepositoryCommitData())->loadAllWhere(
           'commitID IN (%Ls)',
           mpull($commits, 'getID'));
-      }
 
-      $phids = array();
-      foreach ($commits_data as $data) {
-        $phids[] = $data->getCommitDetail('authorPHID');
-      }
-
-      $loader = new PhabricatorObjectHandleData(array_unique($phids));
-      if ($this->viewer) {
-        $loader->setViewer($this->viewer);
-      }
-      $handles = $loader->loadHandles();
-
-      foreach ($commits_data as $data) {
-        if ($data->getCommitDetail('authorPHID')) {
-          $commit_identifier =
-            $commits[$data->getCommitID()]->getCommitIdentifier();
-          $blame_dict[$commit_identifier]['handle'] =
-            $handles[$data->getCommitDetail('authorPHID')];
+        foreach ($commits_data as $data) {
+          $author_phid = $data->getCommitDetail('authorPHID');
+          if (!$author_phid) {
+            continue;
+          }
+          $commit = $commits[$data->getCommitID()];
+          $commit_identifier = $commit->getCommitIdentifier();
+          $blame_dict[$commit_identifier]['authorPHID'] = $author_phid;
         }
       }
+
    }
 
     return array($text_list, $rev_list, $blame_dict);

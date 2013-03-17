@@ -104,7 +104,9 @@ final class DifferentialCommentMail extends DifferentialMail {
       array());
     $load = array_merge($m_reviewers, $m_cc);
     if ($load) {
-      $handles = id(new PhabricatorObjectHandleData($load))->loadHandles();
+      $handles = id(new PhabricatorObjectHandleData($load))
+        ->setViewer($this->getActor())
+        ->loadHandles();
       if ($m_reviewers) {
         $this->addedReviewers = $this->renderHandleList($handles, $m_reviewers);
       }
@@ -151,9 +153,10 @@ final class DifferentialCommentMail extends DifferentialMail {
     if ($inlines) {
       $body[] = 'INLINE COMMENTS';
       $changesets = $this->getChangesets();
+      $hunk_parser = new DifferentialHunkParser();
 
       if (PhabricatorEnv::getEnvConfig(
-            'metamta.differential.unified-comment-context', false)) {
+            'metamta.differential.unified-comment-context')) {
         foreach ($changesets as $changeset) {
           $changeset->attachHunks($changeset->loadHunks());
         }
@@ -175,12 +178,15 @@ final class DifferentialCommentMail extends DifferentialMail {
         $inline_content = $inline->getContent();
 
         if (!PhabricatorEnv::getEnvConfig(
-              'metamta.differential.unified-comment-context', false)) {
+              'metamta.differential.unified-comment-context')) {
           $body[] = $this->formatText("{$file}:{$range} {$inline_content}");
         } else {
           $body[] = "================";
           $body[] = "Comment at: " . $file . ":" . $range;
-          $body[] = $changeset->makeContextDiff($inline, 1);
+          $body[] = $hunk_parser->makeContextDiff(
+            $changeset->getHunks(),
+            $inline,
+            1);
           $body[] = "----------------";
 
           $body[] = $inline_content;

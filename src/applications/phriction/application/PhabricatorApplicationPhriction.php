@@ -3,14 +3,14 @@
 final class PhabricatorApplicationPhriction extends PhabricatorApplication {
 
   public function getShortDescription() {
-    return 'Wiki';
+    return pht('Wiki');
   }
 
   public function getBaseURI() {
     return '/w/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'phriction';
   }
 
@@ -20,6 +20,10 @@ final class PhabricatorApplicationPhriction extends PhabricatorApplication {
 
   public function isEnabled() {
     return PhabricatorEnv::getEnvConfig('phriction.enabled');
+  }
+
+  public function getTitleGlyph() {
+    return "\xE2\x9A\xA1";
   }
 
   public function getRoutes() {
@@ -39,6 +43,7 @@ final class PhabricatorApplicationPhriction extends PhabricatorApplication {
         'edit/(?:(?P<id>[1-9]\d*)/)?' => 'PhrictionEditController',
         'delete/(?P<id>[1-9]\d*)/'    => 'PhrictionDeleteController',
         'new/'                        => 'PhrictionNewController',
+        'move/(?:(?P<id>[1-9]\d*)/)?'      => 'PhrictionMoveController',
 
         'preview/' => 'PhrictionDocumentPreviewController',
         'diff/(?P<id>[1-9]\d*)/' => 'PhrictionDiffController',

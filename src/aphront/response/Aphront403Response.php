@@ -3,7 +3,7 @@
 /**
  * @group aphront
  */
-final class Aphront403Response extends AphrontWebpageResponse {
+final class Aphront403Response extends AphrontHTMLResponse {
 
   private $forbiddenText;
   public function setForbiddenText($text) {
@@ -26,7 +26,7 @@ final class Aphront403Response extends AphrontWebpageResponse {
     }
     $failure = new AphrontRequestFailureView();
     $failure->setHeader('403 Forbidden');
-    $failure->appendChild('<p>'.$forbidden_text.'</p>');
+    $failure->appendChild(phutil_tag('p', array(), $forbidden_text));
 
     $view = new PhabricatorStandardPageView();
     $view->setTitle('403 Forbidden');

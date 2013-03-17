@@ -7,10 +7,10 @@ final class PhabricatorApplicationMacro extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return 'Image Macros and Memes';
+    return pht('Image Macros and Memes');
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'macro';
   }
 
@@ -26,8 +26,13 @@ final class PhabricatorApplicationMacro extends PhabricatorApplication {
     return array(
       '/macro/' => array(
         '' => 'PhabricatorMacroListController',
-        'edit/(?:(?P<id>[1-9]\d*)/)?' => 'PhabricatorMacroEditController',
-        'delete/(?P<id>[1-9]\d*)/' => 'PhabricatorMacroDeleteController',
+        'create/' => 'PhabricatorMacroEditController',
+        'view/(?P<id>[1-9]\d*)/' => 'PhabricatorMacroViewController',
+        'comment/(?P<id>[1-9]\d*)/' => 'PhabricatorMacroCommentController',
+        'edit/(?P<id>[1-9]\d*)/' => 'PhabricatorMacroEditController',
+        'disable/(?P<id>[1-9]\d*)/' => 'PhabricatorMacroDisableController',
+        'meme/' => 'PhabricatorMacroMemeController',
+        'meme/create/' => 'PhabricatorMacroMemeDialogController',
       ),
     );
   }

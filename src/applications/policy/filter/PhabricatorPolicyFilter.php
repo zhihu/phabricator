@@ -173,6 +173,10 @@ final class PhabricatorPolicyFilter {
 
     $viewer = $this->viewer;
 
+    if ($viewer->isOmnipotent()) {
+      return true;
+    }
+
     if ($object->hasAutomaticCapability($capability, $viewer)) {
       return true;
     }
@@ -201,6 +205,12 @@ final class PhabricatorPolicyFilter {
         $type = phid_get_type($policy);
         if ($type == PhabricatorPHIDConstants::PHID_TYPE_PROJ) {
           if (isset($this->userProjects[$viewer->getPHID()][$policy])) {
+            return true;
+          } else {
+            $this->rejectObject($object, $policy, $capability);
+          }
+        } else if ($type == PhabricatorPHIDConstants::PHID_TYPE_USER) {
+          if ($viewer->getPHID() == $policy) {
             return true;
           } else {
             $this->rejectObject($object, $policy, $capability);
@@ -253,13 +263,16 @@ final class PhabricatorPolicyFilter {
         $who = "No one can {$verb} this object.";
         break;
       default:
+        $handle = PhabricatorObjectHandleData::loadOneHandle(
+          $policy,
+          $this->viewer);
+
         $type = phid_get_type($policy);
         if ($type == PhabricatorPHIDConstants::PHID_TYPE_PROJ) {
-          $handle = PhabricatorObjectHandleData::loadOneHandle(
-            $policy,
-            $this->viewer);
           $who = "To {$verb} this object, you must be a member of project ".
                  "'".$handle->getFullName()."'.";
+        } else if ($type == PhabricatorPHIDConstants::PHID_TYPE_USER) {
+          $who = "Only '".$handle->getFullName()."' can {$verb} this object.";
         } else {
           $who = "It is unclear who can {$verb} this object.";
         }

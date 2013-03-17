@@ -81,8 +81,8 @@ final class DiffusionSymbolController extends DiffusionController {
         $project_name = '-';
       }
 
-      $file = phutil_escape_html($symbol->getPath());
-      $line = phutil_escape_html($symbol->getLineNumber());
+      $file = $symbol->getPath();
+      $line = $symbol->getLineNumber();
 
       $repo = $symbol->getRepository();
       if ($repo) {
@@ -94,24 +94,24 @@ final class DiffusionSymbolController extends DiffusionController {
           return id(new AphrontRedirectResponse())->setURI($href);
         }
 
-        $location = phutil_render_tag(
+        $location = phutil_tag(
           'a',
           array(
             'href' => $href,
           ),
-          phutil_escape_html($file.':'.$line));
+          $file.':'.$line);
       } else if ($file) {
-        $location = phutil_escape_html($file.':'.$line);
+        $location = $file.':'.$line;
       } else {
         $location = '?';
       }
 
       $rows[] = array(
-        phutil_escape_html($symbol->getSymbolType()),
-        phutil_escape_html($symbol->getSymbolContext()),
-        phutil_escape_html($symbol->getSymbolName()),
-        phutil_escape_html($symbol->getSymbolLanguage()),
-        phutil_escape_html($project_name),
+        $symbol->getSymbolType(),
+        $symbol->getSymbolContext(),
+        $symbol->getSymbolName(),
+        $symbol->getSymbolLanguage(),
+        $project_name,
         $location,
       );
     }

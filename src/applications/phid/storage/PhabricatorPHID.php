@@ -7,16 +7,24 @@ final class PhabricatorPHID {
   protected $ownerPHID;
   protected $parentPHID;
 
-  public static function generateNewPHID($type) {
+  public static function generateNewPHID($type, $subtype = null) {
     if (!$type) {
       throw new Exception("Can not generate PHID with no type.");
     }
 
-    $uniq = Filesystem::readRandomCharacters(20);
-    return 'PHID-'.$type.'-'.$uniq;
+    if ($subtype === null) {
+      $uniq_len = 20;
+      $type_str = "{$type}";
+    } else {
+      $uniq_len = 15;
+      $type_str = "{$type}-{$subtype}";
+    }
+
+    $uniq = Filesystem::readRandomCharacters($uniq_len);
+    return "PHID-{$type_str}-{$uniq}";
   }
 
-  public static function fromObjectName($name) {
+  public static function fromObjectName($name, PhabricatorUser $viewer) {
     $object = null;
     $match = null;
     if (preg_match('/^PHID-[A-Z]+-.{20}$/', $name)) {
@@ -48,10 +56,18 @@ final class PhabricatorPHID {
       $object = id(new DifferentialRevision())->load($match[1]);
     } else if (preg_match('/^t(\d+)$/i', $name, $match)) {
       $object = id(new ManiphestTask())->load($match[1]);
+    } else if (preg_match('/^m(\d+)$/i', $name, $match)) {
+      $objects = id(new PholioMockQuery())
+        ->setViewer($viewer)
+        ->withIDs(array($match[1]))
+        ->execute();
+      $object = head($objects);
     }
+
     if ($object) {
       return $object->getPHID();
     }
+
     return null;
   }
 }

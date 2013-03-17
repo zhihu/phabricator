@@ -10,10 +10,14 @@ final class PhabricatorFeedStoryDifferential extends PhabricatorFeedStory {
     $data = $this->getStoryData();
 
     $view = new PhabricatorFeedStoryView();
+    $view->setViewed($this->getHasViewed());
 
     $line = $this->getLineForData($data);
     $view->setTitle($line);
     $view->setEpoch($data->getEpoch());
+
+    $href = $this->getHandle($data->getValue('revision_phid'))->getURI();
+    $view->setHref($href);
 
     $action = $data->getValue('action');
     switch ($action) {
@@ -37,18 +41,6 @@ final class PhabricatorFeedStoryDifferential extends PhabricatorFeedStory {
     return $view;
   }
 
-  public function renderNotificationView() {
-    $data = $this->getStoryData();
-
-    $view = new PhabricatorNotificationStoryView();
-
-    $view->setTitle($this->getLineForData($data));
-    $view->setEpoch($data->getEpoch());
-    $view->setViewed($this->getHasViewed());
-
-    return $view;
-  }
-
   private function getLineForData($data) {
     $actor_phid = $data->getAuthorPHID();
     $revision_phid = $data->getValue('revision_phid');
@@ -59,9 +51,28 @@ final class PhabricatorFeedStoryDifferential extends PhabricatorFeedStory {
 
     $verb = DifferentialAction::getActionPastTenseVerb($action);
 
-    $one_line = "{$actor_link} {$verb} revision {$revision_link}";
+    $one_line = hsprintf(
+      '%s %s revision %s',
+      $actor_link,
+      $verb,
+      $revision_link);
 
     return $one_line;
+  }
+
+  public function renderText() {
+    $author_name = $this->getHandle($this->getAuthorPHID())->getLinkName();
+
+    $revision_handle = $this->getHandle($this->getPrimaryObjectPHID());
+    $revision_title = $revision_handle->getLinkName();
+    $revision_uri = PhabricatorEnv::getURI($revision_handle->getURI());
+
+    $action = $this->getValue('action');
+    $verb = DifferentialAction::getActionPastTenseVerb($action);
+
+    $text = "{$author_name} {$verb} revision {$revision_title} {$revision_uri}";
+
+    return $text;
   }
 
   public function getNotificationAggregations() {

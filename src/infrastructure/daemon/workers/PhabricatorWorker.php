@@ -102,7 +102,7 @@ abstract class PhabricatorWorker {
   final public static function waitForTasks(array $task_ids) {
     $task_table = new PhabricatorWorkerActiveTask();
 
-    $waiting = array_combine($task_ids, $task_ids);
+    $waiting = array_fuse($task_ids);
     while ($waiting) {
       $conn_w = $task_table->establishConnection('w');
 
@@ -147,6 +147,11 @@ abstract class PhabricatorWorker {
         throw new Exception("Task ".$task->getID()." failed!");
       }
     }
+  }
+
+  public function renderForDisplay() {
+    $data = PhutilReadableSerializer::printableValue($this->data);
+    return phutil_tag('pre', array(), $data);
   }
 
 }

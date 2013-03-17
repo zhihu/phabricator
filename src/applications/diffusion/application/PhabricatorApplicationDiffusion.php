@@ -10,7 +10,7 @@ final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
     return '/diffusion/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'diffusion';
   }
 
@@ -21,6 +21,18 @@ final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
   public function getFactObjectsForAnalysis() {
     return array(
       new PhabricatorRepositoryCommit(),
+    );
+  }
+
+  public function getEventListeners() {
+    return array(
+      new DiffusionPeopleMenuEventListener()
+    );
+  }
+
+  public function getRemarkupRules() {
+    return array(
+      new DiffusionRemarkupRule(),
     );
   }
 
@@ -63,6 +75,7 @@ final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
         ),
         'symbol/(?P<name>[^/]+)/' => 'DiffusionSymbolController',
         'external/' => 'DiffusionExternalController',
+        'lint/' => 'DiffusionLintController',
       ),
     );
   }

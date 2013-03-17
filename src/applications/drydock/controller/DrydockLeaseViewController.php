@@ -12,14 +12,14 @@ final class DrydockLeaseViewController extends DrydockController {
     $request = $this->getRequest();
     $user = $request->getUser();
 
-    $nav = $this->buildSideNav('lease');
-
     $lease = id(new DrydockLease())->load($this->id);
     if (!$lease) {
       return new Aphront404Response();
     }
 
-    $title = 'Lease '.$lease->getID();
+    $lease_uri = $this->getApplicationURI('lease/'.$lease->getID().'/');
+
+    $title = pht('Lease %d', $lease->getID());
 
     $header = id(new PhabricatorHeaderView())
       ->setHeader($title);
@@ -28,9 +28,7 @@ final class DrydockLeaseViewController extends DrydockController {
     $properties = $this->buildPropertyListView($lease);
 
     $pager = new AphrontPagerView();
-    $pager->setURI(
-      new PhutilURI($this->getApplicationURI('lease/'.$lease->getID().'/')),
-      'offset');
+    $pager->setURI(new PhutilURI($lease_uri), 'offset');
     $pager->setOffset($request->getInt('offset'));
 
     $logs = id(new DrydockLogQuery())
@@ -40,16 +38,20 @@ final class DrydockLeaseViewController extends DrydockController {
     $log_table = $this->buildLogTableView($logs);
     $log_table->appendChild($pager);
 
-    $nav->appendChild(
+    $crumbs = $this->buildApplicationCrumbs();
+    $crumbs->addCrumb(
+      id(new PhabricatorCrumbView())
+        ->setName($title)
+        ->setHref($lease_uri));
+
+    return $this->buildApplicationPage(
       array(
+        $crumbs,
         $header,
         $actions,
         $properties,
         $log_table,
-      ));
-
-    return $this->buildApplicationPage(
-      $nav,
+      ),
       array(
         'device'  => true,
         'title'   => $title,
@@ -61,6 +63,18 @@ final class DrydockLeaseViewController extends DrydockController {
     $view = id(new PhabricatorActionListView())
       ->setUser($this->getRequest()->getUser())
       ->setObject($lease);
+
+    $id = $lease->getID();
+
+    $can_release = ($lease->getStatus() == DrydockLeaseStatus::STATUS_ACTIVE);
+
+    $view->addAction(
+      id(new PhabricatorActionView())
+        ->setName(pht('Release Lease'))
+        ->setIcon('delete')
+        ->setHref($this->getApplicationURI("/lease/{$id}/release/"))
+        ->setWorkflow(true)
+        ->setDisabled(!$can_release));
 
     return $view;
   }
@@ -95,11 +109,19 @@ final class DrydockLeaseViewController extends DrydockController {
 
     $view->addProperty(
       pht('Resource Type'),
-      phutil_escape_html($lease->getResourceType()));
+      $lease->getResourceType());
 
     $view->addProperty(
       pht('Resource'),
-      phutil_escape_html($lease->getResourceID()));
+      $lease->getResourceID());
+
+    $attributes = $lease->getAttributes();
+    if ($attributes) {
+      $view->addSectionHeader(pht('Attributes'));
+      foreach ($attributes as $key => $value) {
+        $view->addProperty($key, $value);
+      }
+    }
 
     return $view;
   }

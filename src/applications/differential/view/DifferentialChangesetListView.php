@@ -1,7 +1,6 @@
 <?php
 
-final class DifferentialChangesetListView
-  extends DifferentialCodeWidthSensitiveView {
+final class DifferentialChangesetListView extends AphrontView {
 
   private $changesets = array();
   private $visibleChangesets = array();
@@ -14,12 +13,21 @@ final class DifferentialChangesetListView
   private $leftRawFileURI;
   private $rightRawFileURI;
 
-  private $user;
   private $symbolIndexes = array();
   private $repository;
   private $branch;
   private $diff;
   private $vsMap = array();
+
+  private $title;
+
+  public function setTitle($title) {
+    $this->title = $title;
+    return $this;
+  }
+  private function getTitle() {
+    return $this->title;
+  }
 
   public function setBranch($branch) {
     $this->branch = $branch;
@@ -41,11 +49,6 @@ final class DifferentialChangesetListView
 
   public function setInlineCommentControllerURI($uri) {
     $this->inlineURI = $uri;
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -124,14 +127,9 @@ final class DifferentialChangesetListView
         $ref,
         $changeset);
 
-      $prefs = $this->user->loadPreferences();
-      $pref_symbols = $prefs->getPreference(
-        PhabricatorUserPreferences::PREFERENCE_DIFFUSION_SYMBOLS);
       $detail->setChangeset($changeset);
       $detail->addButton($view_options);
-      if ($pref_symbols != 'disabled') {
-        $detail->setSymbolIndex(idx($this->symbolIndexes, $key));
-      }
+      $detail->setSymbolIndex(idx($this->symbolIndexes, $key));
       $detail->setVsChangesetID(idx($this->vsMap, $changeset->getID()));
       $detail->setEditable(true);
 
@@ -140,7 +138,7 @@ final class DifferentialChangesetListView
         $load = 'Loading...';
         $mapping[$uniq_id] = $ref;
       } else {
-        $load = javelin_render_tag(
+        $load = javelin_tag(
           'a',
           array(
             'href' => '#'.$uniq_id,
@@ -152,15 +150,15 @@ final class DifferentialChangesetListView
             'sigil' => 'differential-load',
             'mustcapture' => true,
           ),
-          'Load');
+          pht('Load'));
       }
       $detail->appendChild(
-        phutil_render_tag(
+        phutil_tag(
           'div',
           array(
             'id' => $uniq_id,
           ),
-          '<div class="differential-loading">'.$load.'</div>'));
+          phutil_tag('div', array('class' => 'differential-loading'), $load)));
       $output[] = $detail->render();
     }
 
@@ -189,44 +187,53 @@ final class DifferentialChangesetListView
       ));
     }
 
-    return phutil_render_tag(
-      'div',
-      array(
-        'class' => 'differential-review-stage',
-        'id'    => 'differential-review-stage',
-        'style' => "max-width: {$this->calculateSideBySideWidth()}px; ",
-      ),
-      implode("\n", $output));
+    return array(
+      id(new PhabricatorHeaderView())
+        ->setHeader($this->getTitle())
+        ->render(),
+      phutil_tag(
+        'div',
+        array(
+          'class' => 'differential-review-stage',
+          'id'    => 'differential-review-stage',
+        ),
+        $output),
+    );
   }
 
   /**
    * Render the "Undo" markup for the inline comment undo feature.
    */
   private function renderUndoTemplates() {
-    $link = javelin_render_tag(
+    $link = javelin_tag(
       'a',
       array(
         'href'  => '#',
         'sigil' => 'differential-inline-comment-undo',
       ),
-      'Undo');
+      pht('Undo'));
 
-    $div = phutil_render_tag(
+    $div = phutil_tag(
       'div',
       array(
         'class' => 'differential-inline-undo',
       ),
-      'Changes discarded. '.$link);
-
-    $template =
-      '<table><tr>'.
-      '<th></th><td>%s</td>'.
-      '<th></th><td colspan="2">%s</td>'.
-      '</tr></table>';
+      array('Changes discarded. ', $link));
 
     return array(
-      'l' => sprintf($template, $div, ''),
-      'r' => sprintf($template, '', $div),
+      'l' => hsprintf(
+        '<table><tr>'.
+          '<th></th><td>%s</td>'.
+          '<th></th><td colspan="3"></td>'.
+        '</tr></table>',
+        $div),
+
+      'r' => hsprintf(
+        '<table><tr>'.
+          '<th></th><td></td>'.
+          '<th></th><td colspan="3">%s</td>'.
+        '</tr></table>',
+        $div),
     );
   }
 
@@ -250,10 +257,15 @@ final class DifferentialChangesetListView
 
     $repository = $this->repository;
     if ($repository) {
-      $meta['diffusionURI'] = (string)$repository->getDiffusionBrowseURIForPath(
-        $changeset->getAbsoluteRepositoryPath($repository, $this->diff),
-        idx($changeset->getMetadata(), 'line:first'),
-        $this->getBranch());
+      try {
+        $meta['diffusionURI'] =
+          (string)$repository->getDiffusionBrowseURIForPath(
+            $changeset->getAbsoluteRepositoryPath($repository, $this->diff),
+            idx($changeset->getMetadata(), 'line:first'),
+            $this->getBranch());
+      } catch (DiffusionSetupException $e) {
+        // Ignore
+      }
     }
 
     $change = $changeset->getChangeType();
@@ -296,7 +308,7 @@ final class DifferentialChangesetListView
       'differential-dropdown-menus',
       array());
 
-    return javelin_render_tag(
+    return javelin_tag(
       'a',
       array(
         'class'   => 'button small grey',
@@ -305,7 +317,7 @@ final class DifferentialChangesetListView
         'target'  => '_blank',
         'sigil'   => 'differential-view-options',
       ),
-      "View Options \xE2\x96\xBC");
+      pht("View Options \xE2\x96\xBC"));
   }
 
 }

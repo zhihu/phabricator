@@ -49,8 +49,14 @@ final class PhabricatorFileTransformController
     $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
 
     switch ($this->transform) {
+      case 'thumb-280x210':
+        $xformed_file = $this->executeThumbTransform($file, 280, 210);
+        break;
       case 'thumb-220x165':
         $xformed_file = $this->executeThumbTransform($file, 220, 165);
+        break;
+      case 'preview-140':
+        $xformed_file = $this->executePreviewTransform($file, 140);
         break;
       case 'preview-220':
         $xformed_file = $this->executePreviewTransform($file, 220);

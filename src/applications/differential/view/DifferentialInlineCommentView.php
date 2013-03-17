@@ -90,28 +90,28 @@ final class DifferentialInlineCommentView extends AphrontView {
 
     $is_draft = false;
     if ($inline->isDraft() && !$is_synthetic) {
-      $links[] = 'Not Submitted Yet';
+      $links[] = pht('Not Submitted Yet');
       $is_draft = true;
     }
 
     if (!$this->preview) {
-      $links[] = javelin_render_tag(
+      $links[] = javelin_tag(
         'a',
         array(
           'href'  => '#',
           'mustcapture' => true,
           'sigil' => 'differential-inline-prev',
         ),
-        'Previous');
+        pht('Previous'));
 
-      $links[] = javelin_render_tag(
+      $links[] = javelin_tag(
         'a',
         array(
           'href'  => '#',
           'mustcapture' => true,
           'sigil' => 'differential-inline-next',
         ),
-        'Next');
+        pht('Next'));
 
       if ($this->allowReply) {
 
@@ -122,14 +122,14 @@ final class DifferentialInlineCommentView extends AphrontView {
           // file/line information, and synthetic comments don't have an inline
           // comment ID.
 
-          $links[] = javelin_render_tag(
+          $links[] = javelin_tag(
             'a',
             array(
               'href'        => '#',
               'mustcapture' => true,
               'sigil'       => 'differential-inline-reply',
             ),
-            'Reply');
+            pht('Reply'));
         }
 
       }
@@ -138,24 +138,24 @@ final class DifferentialInlineCommentView extends AphrontView {
     $anchor_name = 'inline-'.$inline->getID();
 
     if ($this->editable && !$this->preview) {
-      $links[] = javelin_render_tag(
+      $links[] = javelin_tag(
         'a',
         array(
           'href'        => '#',
           'mustcapture' => true,
           'sigil'       => 'differential-inline-edit',
         ),
-        'Edit');
-      $links[] = javelin_render_tag(
+        pht('Edit'));
+      $links[] = javelin_tag(
         'a',
         array(
           'href'        => '#',
           'mustcapture' => true,
           'sigil'       => 'differential-inline-delete',
         ),
-        'Delete');
+        pht('Delete'));
     } else if ($this->preview) {
-      $links[] = javelin_render_tag(
+      $links[] = javelin_tag(
         'a',
         array(
           'meta'        => array(
@@ -163,22 +163,22 @@ final class DifferentialInlineCommentView extends AphrontView {
           ),
           'sigil'       => 'differential-inline-preview-jump',
         ),
-        'Not Visible');
-      $links[] = javelin_render_tag(
+        pht('Not Visible'));
+      $links[] = javelin_tag(
         'a',
         array(
           'href'        => '#',
           'mustcapture' => true,
           'sigil'       => 'differential-inline-delete',
         ),
-        'Delete');
+        pht('Delete'));
     }
 
     if ($links) {
-      $links =
-        '<span class="differential-inline-comment-links">'.
-          implode(' &middot; ', $links).
-        '</span>';
+      $links = phutil_tag(
+        'span',
+        array('class' => 'differential-inline-comment-links'),
+        phutil_implode_html(" \xC2\xB7 ", $links));
     } else {
       $links = null;
     }
@@ -190,7 +190,7 @@ final class DifferentialInlineCommentView extends AphrontView {
     if ($this->preview) {
       $anchor = null;
     } else {
-      $anchor = phutil_render_tag(
+      $anchor = phutil_tag(
         'a',
         array(
           'name'    => $anchor_name,
@@ -217,24 +217,25 @@ final class DifferentialInlineCommentView extends AphrontView {
       $author = $handles[$inline->getAuthorPHID()]->getName();
     }
 
-    $markup = javelin_render_tag(
+    $markup = javelin_tag(
       'div',
       array(
         'class' => $classes,
         'sigil' => $sigil,
         'meta'  => $metadata,
       ),
-      '<div class="differential-inline-comment-head">'.
-        $anchor.
-        $links.
-        ' <span class="differential-inline-comment-line">'.$line.'</span> '.
-        phutil_escape_html($author).
-      '</div>'.
-      '<div class="differential-inline-comment-content">'.
-        '<div class="phabricator-remarkup">'.
-          $content.
+      hsprintf(
+        '<div class="differential-inline-comment-head">'.
+          '%s%s <span class="differential-inline-comment-line">%s</span> %s'.
         '</div>'.
-      '</div>');
+        '<div class="differential-inline-comment-content">'.
+          '<div class="phabricator-remarkup">%s</div>'.
+        '</div>',
+        $anchor,
+        $links,
+        $line,
+        $author,
+        $content));
 
     return $this->scaffoldMarkup($markup);
   }
@@ -247,15 +248,17 @@ final class DifferentialInlineCommentView extends AphrontView {
     $left_markup = !$this->onRight ? $markup : '';
     $right_markup = $this->onRight ? $markup : '';
 
-    return
+    return hsprintf(
       '<table>'.
         '<tr class="inline">'.
           '<th></th>'.
-          '<td>'.$left_markup.'</td>'.
+          '<td class="left">%s</td>'.
           '<th></th>'.
-          '<td colspan="2">'.$right_markup.'</td>'.
+          '<td class="right3" colspan="3">%s</td>'.
         '</tr>'.
-      '</table>';
+      '</table>',
+      $left_markup,
+      $right_markup);
   }
 
 }

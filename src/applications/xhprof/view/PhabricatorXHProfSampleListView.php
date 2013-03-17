@@ -3,17 +3,11 @@
 final class PhabricatorXHProfSampleListView extends AphrontView {
 
   private $samples;
-  private $user;
   private $showType = false;
 
   public function setSamples(array $samples) {
     assert_instances_of($samples, 'PhabricatorXHProfSample');
     $this->samples = $samples;
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -29,9 +23,11 @@ final class PhabricatorXHProfSampleListView extends AphrontView {
     }
 
     $user_phids = mpull($this->samples, 'getUserPHID');
-    $users = id(new PhabricatorObjectHandleData($user_phids))->loadObjects();
+    $users = id(new PhabricatorObjectHandleData($user_phids))
+      ->setViewer($this->getUser())
+      ->loadObjects();
     foreach ($this->samples as $sample) {
-      $sample_link = phutil_render_tag(
+      $sample_link = phutil_tag(
         'a',
         array(
           'href' => '/xhprof/profile/'.$sample->getFilePHID().'/',

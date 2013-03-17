@@ -4,7 +4,7 @@ final class PhabricatorJavelinLinter extends ArcanistLinter {
 
   private $symbols = array();
 
-  private $haveSymbolsBinary;
+  private $symbolsBinary;
   private $haveWarnedAboutBinary;
 
   const LINT_PRIVATE_ACCESS = 1;
@@ -13,21 +13,28 @@ final class PhabricatorJavelinLinter extends ArcanistLinter {
   const LINT_UNKNOWN_DEPENDENCY = 4;
   const LINT_MISSING_BINARY = 5;
 
+  private function getBinaryPath() {
+    if ($this->symbolsBinary === null) {
+      list($err, $stdout) = exec_manual('which javelinsymbols');
+      $this->symbolsBinary = ($err ? false : rtrim($stdout));
+    }
+    return $this->symbolsBinary;
+  }
+
   public function willLintPaths(array $paths) {
+    if (!$this->getBinaryPath()) {
+      return;
+    }
 
     $root = dirname(phutil_get_library_root('phabricator'));
     require_once $root.'/scripts/__init_script__.php';
 
-    if ($this->haveSymbolsBinary === null) {
-      $binary = $this->getSymbolsBinaryPath();
-      $this->haveSymbolsBinary = Filesystem::pathExists($binary);
-      if (!$this->haveSymbolsBinary) {
-        return;
-      }
-    }
-
     $futures = array();
     foreach ($paths as $path) {
+      if ($this->shouldIgnorePath($path)) {
+        continue;
+      }
+
       $future = $this->newSymbolsFuture($path);
       $futures[$path] = $future;
     }
@@ -53,13 +60,33 @@ final class PhabricatorJavelinLinter extends ArcanistLinter {
       self::LINT_MISSING_DEPENDENCY => 'Missing Javelin Dependency',
       self::LINT_UNNECESSARY_DEPENDENCY => 'Unnecessary Javelin Dependency',
       self::LINT_UNKNOWN_DEPENDENCY => 'Unknown Javelin Dependency',
-      self::LINT_MISSING_BINARY => '`javelinsymbols` Binary Not Built',
+      self::LINT_MISSING_BINARY => '`javelinsymbols` Not In Path',
     );
   }
 
-  public function lintPath($path) {
+  public function getCacheGranularity() {
+    return ArcanistLinter::GRANULARITY_REPOSITORY;
+  }
 
-    if (!$this->haveSymbolsBinary) {
+  public function getCacheVersion() {
+    $version = '0';
+    $binary_path = $this->getBinaryPath();
+    if ($binary_path) {
+      $version .= '-'.md5_file($binary_path);
+    }
+    return $version;
+  }
+
+  private function shouldIgnorePath($path) {
+    return preg_match('@/__tests__/|externals/javelinjs/src/docs/@', $path);
+  }
+
+  public function lintPath($path) {
+    if ($this->shouldIgnorePath($path)) {
+      return;
+    }
+
+    if (!$this->symbolsBinary) {
       if (!$this->haveWarnedAboutBinary) {
         $this->haveWarnedAboutBinary = true;
         // TODO: Write build documentation for the Javelin binaries and point
@@ -68,9 +95,10 @@ final class PhabricatorJavelinLinter extends ArcanistLinter {
           1,
           0,
           self::LINT_MISSING_BINARY,
-          "The 'javelinsymbols' binary in the Javelin project has not been ".
-          "built, so the Javelin linter can't run. This isn't a big concern, ".
-          "but means some Javelin problems can't be automatically detected.");
+          "The 'javelinsymbols' binary in the Javelin project is not ".
+          "available in \$PATH, so the Javelin linter can't run. This ".
+          "isn't a big concern, but means some Javelin problems can't be ".
+          "automatically detected.");
       }
       return;
     }
@@ -114,7 +142,7 @@ final class PhabricatorJavelinLinter extends ArcanistLinter {
     $celerity = CelerityResourceMap::getInstance();
 
     $path = preg_replace(
-      '@^externals/javelin/src/@',
+      '@^externals/javelinjs/src/@',
       'webroot/rsrc/js/javelin/',
       $path);
     $need = $external_classes;
@@ -175,18 +203,9 @@ final class PhabricatorJavelinLinter extends ArcanistLinter {
   }
 
   private function newSymbolsFuture($path) {
-    $javelinsymbols = $this->getSymbolsBinaryPath();
-
-    $future = new ExecFuture($javelinsymbols.' # '.escapeshellarg($path));
+    $future = new ExecFuture('javelinsymbols # %s', $path);
     $future->write($this->getData($path));
     return $future;
-  }
-
-  private function getSymbolsBinaryPath() {
-    $root = dirname(phutil_get_library_root('phabricator'));
-
-    $support = $root.'/externals/javelin/support';
-    return $support.'/javelinsymbols/javelinsymbols';
   }
 
   private function getUsedAndInstalledSymbolsForPath($path) {

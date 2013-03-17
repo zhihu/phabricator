@@ -4,7 +4,6 @@ final class HeraldRuleEditHistoryView extends AphrontView {
 
   private $edits;
   private $handles;
-  private $user;
 
   public function setEdits(array $edits) {
     $this->edits = $edits;
@@ -21,31 +20,26 @@ final class HeraldRuleEditHistoryView extends AphrontView {
     return $this;
   }
 
-  public function setUser($user) {
-    $this->user = $user;
-    return $this;
-  }
-
   public function render() {
     $rows = array();
 
     foreach ($this->edits as $edit) {
       $name = nonempty($edit->getRuleName(), 'Unknown Rule');
-      $rule_name = phutil_render_tag(
+      $rule_name = phutil_tag(
         'strong',
         array(),
-        phutil_escape_html($name));
+        $name);
 
       switch ($edit->getAction()) {
         case 'create':
-          $details = "Created rule '{$rule_name}'.";
+          $details = pht("Created rule '%s'.", $rule_name);
           break;
         case 'delete':
-          $details = "Deleted rule '{$rule_name}'.";
+          $details = pht("Deleted rule '%s'.", $rule_name);
           break;
         case 'edit':
         default:
-          $details = "Edited rule '{$rule_name}'.";
+          $details = pht("Edited rule '%s'.", $rule_name);
           break;
       }
 

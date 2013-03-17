@@ -1,17 +1,8 @@
 <?php
 
 final class PhortuneMonthYearExpiryControl extends AphrontFormControl {
-  private $user;
   private $monthValue;
   private $yearValue;
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
-  private function getUser() {
-    return $this->user;
-  }
 
   public function setMonthInputValue($value) {
     $this->monthValue = $value;
@@ -68,7 +59,7 @@ final class PhortuneMonthYearExpiryControl extends AphrontFormControl {
 
     $current_year = $this->getCurrentYear();
     $years = range($current_year, $current_year + 20);
-    $years = array_combine($years, $years);
+    $years = array_fuse($years);
 
     if ($this->getMonthInputValue()) {
       $selected_month = $this->getMonthInputValue();
@@ -89,12 +80,7 @@ final class PhortuneMonthYearExpiryControl extends AphrontFormControl {
         'sigil' => 'year-input',
       ));
 
-    return self::renderSingleView(
-      array(
-        $months_sel,
-        $years_sel
-      )
-    );
+    return hsprintf('%s%s', $months_sel, $years_sel);
   }
 
 }

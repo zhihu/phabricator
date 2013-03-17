@@ -1,0 +1,174 @@
+/**
+ * @provides conpherence-widget-pane-css
+ */
+
+.conpherence-widget-pane {
+  position: fixed;
+  right: 0px;
+  top: 124px;
+  width: 320px;
+  height: 100%;
+  border-width: 0 0 0 1px;
+  border-color: #CCC;
+  border-style: solid;
+  background: url('/rsrc/image/texture/dust_background.jpg');
+  overflow-y: auto;
+}
+
+.conpherence-widget-pane .aphront-form-input {
+  margin: 0;
+  width: 100%;
+}
+
+.conpherence-widget-pane .widgets-header {
+  background-color: #d8dce2;
+  width: 320px;
+  box-shadow: 0px 2px 2px rgba(0,0,0,0.15);
+}
+
+.conpherence-widget-pane .widgets-header .widgets-header-icon-holder {
+  height: 40px;
+}
+
+.device-desktop .conpherence-widget-pane .widgets-header
+.widgets-header-icon-holder {
+  width: 196px;
+  margin: 0px auto 0px auto;
+}
+
+.conpherence-widget-pane .widgets-header .sprite-conpherence {
+  display: block;
+  width: 29px;
+  height: 34px;
+  margin: 4px 0px 0px 20px;
+  float: left;
+  clear: none;
+}
+
+.conpherence-widget-pane .widgets-header .conpherence_list_on,
+.conpherence-widget-pane .widgets-header .conpherence_conversation_on,
+.conpherence-widget-pane .widgets-header .conpherence_people_on,
+.conpherence-widget-pane .widgets-header .conpherence_files_on,
+.conpherence-widget-pane .widgets-header .conpherence_calendar_on,
+.conpherence-widget-pane .widgets-header .conpherence_settings_on {
+  border-bottom: 3px solid #525252;
+}
+
+.device-desktop .conpherence-widget-pane .widgets-header
+#widgets-conpherence-list-toggle,
+.device-desktop .conpherence-widget-pane .widgets-header
+#widgets-conpherence-conversation-toggle {
+  display: none;
+}
+
+.conpherence-widget-pane .widgets-body {
+  position: fixed;
+  overflow-y: auto;
+  top: 165px;
+  bottom: 0px;
+  width: 320px;
+}
+
+/* files widget */
+
+.conpherence-widget-pane #widgets-files .file-entry {
+  padding: 12px 0px 14px 0px;
+  width: 320px;
+}
+.conpherence-widget-pane #widgets-files .file-icon {
+  position: relative;
+  top: 0px;
+  left: 8px;
+  width: 32px;
+  height: 32px;
+  float: left;
+}
+.conpherence-widget-pane #widgets-files .file-title {
+  position: relative;
+  top: -4px;
+  left: 20px;
+  font-weight: bold;
+}
+.conpherence-widget-pane #widgets-files .file-uploaded-by {
+  color: #bfbfbf;
+  position: relative;
+  top: 0px;
+  left: 20px;
+  width: 270px;
+  font-size: 11px;
+}
+
+.conpherence-widget-pane #widgets-files .file-extra {
+  display: block;
+  height: 120px;
+  width: 160px;
+  margin: 8px 0px 8px 52px;
+  border: 1px solid rgb(24, 85, 157);
+}
+
+.conpherence-widget-pane #widgets-files .divider {
+  float: left;
+  clear: both;
+  width: 242px;
+  margin: 8px 0px 0px 52px;
+  border: 1px dashed #bfbfbf;
+}
+
+/* calendar widget */
+
+.conpherence-widget-pane #widgets-calendar .user-status {
+  height: 60px;
+}
+
+.conpherence-widget-pane #widgets-calendar .user-status .icon {
+  border-radius: 10px;
+  position: relative;
+  top: 24px;
+  left: 12px;
+  height: 16px;
+  width: 16px;
+  box-shadow: 0px 0px 1px #000;
+}
+
+.conpherence-widget-pane #widgets-calendar .sporadic .icon {
+  background-color: rgb(222, 226, 232);
+}
+
+.conpherence-widget-pane #widgets-calendar .away .icon {
+  background-color: rgb(102, 204, 255);
+}
+
+.conpherence-widget-pane #widgets-calendar .user-status .epoch-range {
+  float: right;
+  font-style: italic;
+  position: relative;
+  top: 24px;
+  right: 8px;
+  font-size: 11px;
+}
+
+.conpherence-widget-pane #widgets-calendar .user-status .description {
+  position: relative;
+  left: 40px;
+  top: 0px;
+  width: 260px;
+}
+
+.conpherence-widget-pane #widgets-calendar .user-status .participant {
+  position: relative;
+  left: 40px;
+  top: 0px;
+  font-style: italic;
+  font-size: 11px;
+  width: 260px;
+}
+
+.conpherence-widget-pane .widget-icon {
+  display: block;
+  height: 14px;
+  width: 14px;
+}
+
+.conpherence-widget-pane .phabricator-remarkup-embed-layout-link {
+  padding-bottom: 1px;
+}

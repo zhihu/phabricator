@@ -6,14 +6,10 @@ final class PhabricatorFeedStoryView extends PhabricatorFeedView {
   private $image;
   private $phid;
   private $epoch;
-  private $viewer;
+  private $viewed;
+  private $href;
 
   private $oneLine;
-
-  public function setViewer(PhabricatorUser $viewer) {
-    $this->viewer = $viewer;
-    return $this;
-  }
 
   public function setTitle($title) {
     $this->title = $title;
@@ -35,9 +31,48 @@ final class PhabricatorFeedStoryView extends PhabricatorFeedView {
     return $this;
   }
 
+  public function setViewed($viewed) {
+    $this->viewed = $viewed;
+    return $this;
+  }
+
+  public function getViewed() {
+    return $this->viewed;
+  }
+
+  public function setHref($href) {
+    $this->href = $href;
+    return $this;
+  }
+
+  public function getHref() {
+    return $this->href;
+  }
+
+  public function renderNotification() {
+    $classes = array(
+      'phabricator-notification',
+    );
+
+    if (!$this->viewed) {
+      $classes[] = 'phabricator-notification-unread';
+    }
+
+    return javelin_tag(
+      'div',
+      array(
+        'class' => implode(' ', $classes),
+        'sigil' => 'notification',
+        'meta' => array(
+          'href' => $this->getHref(),
+        ),
+      ),
+      $this->title);
+  }
+
   public function render() {
 
-    $head = phutil_render_tag(
+    $head = phutil_tag(
       'div',
       array(
         'class' => 'phabricator-feed-story-head',
@@ -49,7 +84,7 @@ final class PhabricatorFeedStoryView extends PhabricatorFeedView {
     $image_style = null;
 
     if (!$this->oneLine) {
-      $body = phutil_render_tag(
+      $body = phutil_tag(
         'div',
         array(
           'class' => 'phabricator-feed-story-body',
@@ -57,12 +92,12 @@ final class PhabricatorFeedStoryView extends PhabricatorFeedView {
         $this->renderChildren());
 
       if ($this->epoch) {
-        $foot = phabricator_datetime($this->epoch, $this->viewer);
+        $foot = phabricator_datetime($this->epoch, $this->user);
       } else {
         $foot = '';
       }
 
-      $foot = phutil_render_tag(
+      $foot = phutil_tag(
         'div',
         array(
           'class' => 'phabricator-feed-story-foot',
@@ -76,7 +111,7 @@ final class PhabricatorFeedStoryView extends PhabricatorFeedView {
 
     require_celerity_resource('phabricator-feed-css');
 
-    return phutil_render_tag(
+    return phutil_tag(
       'div',
       array(
         'class' => $this->oneLine
@@ -84,7 +119,7 @@ final class PhabricatorFeedStoryView extends PhabricatorFeedView {
           : 'phabricator-feed-story',
         'style' => $image_style,
       ),
-      $head.$body.$foot);
+      array($head, $body, $foot));
   }
 
 }

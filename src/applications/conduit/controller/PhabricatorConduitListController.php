@@ -25,12 +25,12 @@ final class PhabricatorConduitListController
 
         $rows[] = array(
           $group,
-          phutil_render_tag(
+          phutil_tag(
             'a',
             array(
               'href' => '/conduit/method/'.$info['full_name'],
             ),
-            phutil_escape_html($info['full_name'])),
+            $info['full_name']),
           $info['description'],
           $status,
         );
@@ -59,11 +59,11 @@ final class PhabricatorConduitListController
 
     $utils = new AphrontPanelView();
     $utils->setHeader('Utilities');
-    $utils->appendChild(
+    $utils->appendChild(hsprintf(
       '<ul>'.
       '<li><a href="/conduit/log/">Log</a> - Conduit Method Calls</li>'.
       '<li><a href="/conduit/token/">Token</a> - Certificate Install</li>'.
-      '</ul>');
+      '</ul>'));
     $utils->setWidth(AphrontPanelView::WIDTH_FULL);
 
     $this->setShowSideNav(false);

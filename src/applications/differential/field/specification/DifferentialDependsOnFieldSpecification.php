@@ -26,13 +26,25 @@ final class DifferentialDependsOnFieldSpecification
       $links[] = $this->getHandle($revision_phids)->renderLink();
     }
 
-    return implode('<br />', $links);
+    return phutil_implode_html(phutil_tag('br'), $links);
   }
 
   private function getDependentRevisionPHIDs() {
     return PhabricatorEdgeQuery::loadDestinationPHIDs(
       $this->getRevision()->getPHID(),
       PhabricatorEdgeConfig::TYPE_DREV_DEPENDS_ON_DREV);
+  }
+
+  public function shouldAppearOnConduitView() {
+    return true;
+  }
+
+  public function getValueForConduit() {
+    return $this->getDependentRevisionPHIDs();
+  }
+
+  public function getKeyForConduit() {
+    return 'phabricator:depends-on';
   }
 
 }

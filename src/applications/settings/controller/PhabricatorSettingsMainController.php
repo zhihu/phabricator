@@ -54,9 +54,11 @@ final class PhabricatorSettingsMainController
         continue;
       }
       if (!empty($result[$key])) {
-        throw new Exception(
-          "Two settings panels share the same panel key ('{$key}'): ".
-          get_class($panel).', '.get_class($result[$key]).'.');
+        throw new Exception(pht(
+          "Two settings panels share the same panel key ('%s'): %s, %s.",
+          $key,
+          get_class($panel),
+          get_class($result[$key])));
       }
       $result[$key] = $panel;
     }
@@ -73,9 +75,6 @@ final class PhabricatorSettingsMainController
     $group = null;
     foreach ($panels as $panel) {
       if ($panel->getPanelGroup() != $group) {
-        if ($group !== null) {
-          $nav->addSpacer();
-        }
         $group = $panel->getPanelGroup();
         $nav->addLabel($group);
       }

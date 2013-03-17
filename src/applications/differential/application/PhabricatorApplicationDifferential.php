@@ -7,10 +7,10 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return 'Review Code';
+    return pht('Review Code');
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'differential';
   }
 
@@ -21,6 +21,16 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
   public function getFactObjectsForAnalysis() {
     return array(
       new DifferentialRevision(),
+    );
+  }
+
+  public function getTitleGlyph() {
+    return "\xE2\x9A\x99";
+  }
+
+  public function getEventListeners() {
+    return array(
+      new DifferentialPeopleMenuEventListener()
     );
   }
 
@@ -63,34 +73,46 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
     return 0.100;
   }
 
+  public function getRemarkupRules() {
+    return array(
+      new DifferentialRemarkupRule(),
+    );
+  }
+
   public function loadStatus(PhabricatorUser $user) {
     $revisions = id(new DifferentialRevisionQuery())
       ->withResponsibleUsers(array($user->getPHID()))
       ->withStatus(DifferentialRevisionQuery::STATUS_OPEN)
+      ->needRelationships(true)
       ->execute();
 
-    list($active, $waiting) = DifferentialRevisionQuery::splitResponsible(
-      $revisions,
-      $user->getPHID());
+    list($blocking, $active, $waiting) =
+      DifferentialRevisionQuery::splitResponsible(
+        $revisions,
+        array($user->getPHID()));
 
     $status = array();
 
+    $blocking = count($blocking);
+    $type = PhabricatorApplicationStatusView::TYPE_NEEDS_ATTENTION;
+    $status[] = id(new PhabricatorApplicationStatusView())
+      ->setType($type)
+      ->setText(pht('%d Review(s) Blocking Others', $blocking))
+      ->setCount($blocking);
+
     $active = count($active);
-    $type = $active
-      ? PhabricatorApplicationStatusView::TYPE_NEEDS_ATTENTION
-      : PhabricatorApplicationStatusView::TYPE_EMPTY;
+    $type = PhabricatorApplicationStatusView::TYPE_WARNING;
     $status[] = id(new PhabricatorApplicationStatusView())
       ->setType($type)
       ->setText(pht('%d Review(s) Need Attention', $active))
       ->setCount($active);
 
     $waiting = count($waiting);
-    $type = $waiting
-      ? PhabricatorApplicationStatusView::TYPE_INFO
-      : PhabricatorApplicationStatusView::TYPE_EMPTY;
+    $type = PhabricatorApplicationStatusView::TYPE_INFO;
     $status[] = id(new PhabricatorApplicationStatusView())
       ->setType($type)
-      ->setText(pht('%d Review(s) Waiting on Others', $waiting));
+      ->setText(pht('%d Review(s) Waiting on Others', $waiting))
+      ->setCount($waiting);
 
     return $status;
   }

@@ -3,7 +3,18 @@
 /**
  * @task uri Repository URI Management
  */
-final class PhabricatorRepository extends PhabricatorRepositoryDAO {
+final class PhabricatorRepository extends PhabricatorRepositoryDAO
+  implements PhabricatorPolicyInterface {
+
+  /**
+   * Shortest hash we'll recognize in raw "a829f32" form.
+   */
+  const MINIMUM_UNQUALIFIED_HASH = 7;
+
+  /**
+   * Shortest hash we'll recognize in qualified "rXab7ef2f8" form.
+   */
+  const MINIMUM_QUALIFIED_HASH = 5;
 
   const TABLE_PATH = 'repository_path';
   const TABLE_PATHCHANGE = 'repository_pathchange';
@@ -34,6 +45,19 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO {
   public function generatePHID() {
     return PhabricatorPHID::generateNewPHID(
       PhabricatorPHIDConstants::PHID_TYPE_REPO);
+  }
+
+  public function toDictionary() {
+    return array(
+      'name'        => $this->getName(),
+      'phid'        => $this->getPHID(),
+      'callsign'    => $this->getCallsign(),
+      'vcs'         => $this->getVersionControlSystem(),
+      'uri'         => PhabricatorEnv::getProductionURI($this->getURI()),
+      'remoteURI'   => (string)$this->getPublicRemoteURI(),
+      'tracking'    => $this->getDetail('tracking-enabled'),
+      'description' => $this->getDetail('description'),
+    );
   }
 
   public function getDetail($key, $default = null) {
@@ -410,9 +434,13 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO {
     // with the credentials in the URI or something zany like that.
 
     if ($uri instanceof PhutilGitURI) {
-      $uri->setUser(null);
+      if (!$this->getDetail('show-user', false)) {
+        $uri->setUser(null);
+      }
     } else {
-      $uri->setUser(null);
+      if (!$this->getDetail('show-user', false)) {
+        $uri->setUser(null);
+      }
       $uri->setPass(null);
     }
 
@@ -589,4 +617,45 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO {
     $this->saveTransaction();
     return $result;
   }
+
+  public function isGit() {
+    $vcs = $this->getVersionControlSystem();
+    return ($vcs == PhabricatorRepositoryType::REPOSITORY_TYPE_GIT);
+  }
+
+  public function isSVN() {
+    $vcs = $this->getVersionControlSystem();
+    return ($vcs == PhabricatorRepositoryType::REPOSITORY_TYPE_SVN);
+  }
+
+  public function isHg() {
+    $vcs = $this->getVersionControlSystem();
+    return ($vcs == PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL);
+  }
+
+
+
+/* -(  PhabricatorPolicyInterface  )----------------------------------------- */
+
+
+  public function getCapabilities() {
+    return array(
+      PhabricatorPolicyCapability::CAN_VIEW,
+      PhabricatorPolicyCapability::CAN_EDIT,
+    );
+  }
+
+  public function getPolicy($capability) {
+    switch ($capability) {
+      case PhabricatorPolicyCapability::CAN_VIEW:
+        return PhabricatorPolicies::POLICY_USER;
+      case PhabricatorPolicyCapability::CAN_EDIT:
+        return PhabricatorPolicies::POLICY_ADMIN;
+    }
+  }
+
+  public function hasAutomaticCapability($capability, PhabricatorUser $user) {
+    return false;
+  }
+
 }

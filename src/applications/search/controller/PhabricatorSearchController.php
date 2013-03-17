@@ -115,8 +115,7 @@ final class PhabricatorSearchController
       $query->getParameter('author', array()),
       $query->getParameter('owner', array()),
       $query->getParameter('subscribers', array()),
-      $query->getParameter('project', array())
-    );
+      $query->getParameter('project', array()));
 
     $handles = $this->loadViewerHandles($phids);
 
@@ -145,7 +144,7 @@ final class PhabricatorSearchController
       ->setUser($user)
       ->setAction('/search/')
       ->appendChild(
-        phutil_render_tag(
+        phutil_tag(
           'input',
           array(
             'type' => 'hidden',
@@ -222,7 +221,7 @@ final class PhabricatorSearchController
       $results = $pager->sliceResults($results);
 
       if (!$request->getInt('page')) {
-        $jump = PhabricatorPHID::fromObjectName($query->getQuery());
+        $jump = PhabricatorPHID::fromObjectName($query->getQuery(), $user);
         if ($jump) {
           array_unshift($results, $jump);
         }
@@ -242,18 +241,18 @@ final class PhabricatorSearchController
             ->setObject(idx($objects, $phid));
           $results[] = $view->render();
         }
-        $results =
+        $results = hsprintf(
           '<div class="phabricator-search-result-list">'.
-            implode("\n", $results).
-            '<div class="search-results-pager">'.
-              $pager->render().
-            '</div>'.
-          '</div>';
+            '%s'.
+            '<div class="search-results-pager">%s</div>'.
+          '</div>',
+          phutil_implode_html("\n", $results),
+          $pager->render());
       } else {
-        $results =
+        $results = hsprintf(
           '<div class="phabricator-search-result-list">'.
             '<p class="phabricator-search-no-results">No search results.</p>'.
-          '</div>';
+          '</div>');
       }
     } else {
       $results = null;

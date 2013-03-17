@@ -10,12 +10,16 @@ final class PhabricatorApplicationFact extends PhabricatorApplication {
     return '/fact/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'fact';
   }
 
   public function getApplicationGroup() {
     return self::GROUP_UTILITIES;
+  }
+
+  public function isBeta() {
+    return true;
   }
 
   public function getRoutes() {

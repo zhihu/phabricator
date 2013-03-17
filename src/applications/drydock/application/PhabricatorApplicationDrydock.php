@@ -10,7 +10,7 @@ final class PhabricatorApplicationDrydock extends PhabricatorApplication {
     return 'Allocate Software Resources';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'drydock';
   }
 
@@ -26,14 +26,23 @@ final class PhabricatorApplicationDrydock extends PhabricatorApplication {
     return self::GROUP_UTILITIES;
   }
 
+  public function isBeta() {
+    return true;
+  }
+
   public function getRoutes() {
     return array(
       '/drydock/' => array(
         '' => 'DrydockResourceListController',
-        'resource/' => 'DrydockResourceListController',
+        'resource/' => array(
+          '' => 'DrydockResourceListController',
+          '(?P<id>[1-9]\d*)/' => 'DrydockResourceViewController',
+          '(?P<id>[1-9]\d*)/close/' => 'DrydockResourceCloseController',
+        ),
         'lease/' => array(
           '' => 'DrydockLeaseListController',
           '(?P<id>[1-9]\d*)/' => 'DrydockLeaseViewController',
+          '(?P<id>[1-9]\d*)/release/' => 'DrydockLeaseReleaseController',
         ),
         'log/' => 'DrydockLogController',
       ),

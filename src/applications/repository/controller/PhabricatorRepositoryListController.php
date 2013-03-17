@@ -14,35 +14,36 @@ final class PhabricatorRepositoryListController
     $is_admin = $user->getIsAdmin();
 
     $repos = id(new PhabricatorRepository())->loadAll();
+    $repos = msort($repos, 'getName');
 
     $rows = array();
     foreach ($repos as $repo) {
 
       if ($repo->isTracked()) {
-        $diffusion_link = phutil_render_tag(
+        $diffusion_link = phutil_tag(
           'a',
           array(
             'href' => '/diffusion/'.$repo->getCallsign().'/',
           ),
           'View in Diffusion');
       } else {
-        $diffusion_link = '<em>Not Tracked</em>';
+        $diffusion_link = phutil_tag('em', array(), 'Not Tracked');
       }
 
       $rows[] = array(
-        phutil_escape_html($repo->getCallsign()),
-        phutil_escape_html($repo->getName()),
+        $repo->getCallsign(),
+        $repo->getName(),
         PhabricatorRepositoryType::getNameForRepositoryType(
           $repo->getVersionControlSystem()),
         $diffusion_link,
-        phutil_render_tag(
+        phutil_tag(
           'a',
           array(
             'class' => 'button small grey',
             'href'  => '/repository/edit/'.$repo->getID().'/',
           ),
           'Edit'),
-        javelin_render_tag(
+        javelin_tag(
           'a',
           array(
             'class' => 'button small grey',
@@ -89,6 +90,7 @@ final class PhabricatorRepositoryListController
       $panel->setCreateButton('Create New Repository', '/repository/create/');
     }
     $panel->appendChild($table);
+    $panel->setNoBackground();
 
     $projects = id(new PhabricatorRepositoryArcanistProject())->loadAll();
 
@@ -96,22 +98,22 @@ final class PhabricatorRepositoryListController
     foreach ($projects as $project) {
       $repo = idx($repos, $project->getRepositoryID());
       if ($repo) {
-        $repo_name = phutil_escape_html($repo->getName());
+        $repo_name = $repo->getName();
       } else {
         $repo_name = '-';
       }
 
       $rows[] = array(
-        phutil_escape_html($project->getName()),
+        $project->getName(),
         $repo_name,
-        phutil_render_tag(
+        phutil_tag(
           'a',
           array(
             'href' => '/repository/project/edit/'.$project->getID().'/',
             'class' => 'button grey small',
           ),
           'Edit'),
-        javelin_render_tag(
+        javelin_tag(
           'a',
           array(
             'href' => '/repository/project/delete/'.$project->getID().'/',
@@ -150,6 +152,7 @@ final class PhabricatorRepositoryListController
     $project_panel = new AphrontPanelView();
     $project_panel->setHeader('Arcanist Projects');
     $project_panel->appendChild($project_table);
+    $project_panel->setNoBackground();
 
     return $this->buildStandardPageResponse(
       array(

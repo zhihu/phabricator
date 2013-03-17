@@ -43,24 +43,28 @@ final class PhabricatorLoginValidateController
 
       $list = array();
       foreach ($failures as $failure) {
-        $list[] = '<li>'.phutil_escape_html($failure).'</li>';
+        $list[] = phutil_tag('li', array(), $failure);
       }
-      $list = '<ul>'.implode("\n", $list).'</ul>';
+      $list = phutil_tag('ul', array(), $list);
 
       $view = new AphrontRequestFailureView();
-      $view->setHeader('Login Failed');
-      $view->appendChild(
-        '<p>Login failed:</p>'.
-        $list.
-        '<p><strong>Clear your cookies</strong> and try again.</p>');
-      $view->appendChild(
+      $view->setHeader(pht('Login Failed'));
+      $view->appendChild(hsprintf(
+        '<p>%s</p>%s<p>%s</p>',
+        pht('Login failed:'),
+        $list,
+        pht(
+          '<strong>Clear your cookies</strong> and try again.',
+          hsprintf(''))));
+      $view->appendChild(hsprintf(
         '<div class="aphront-failure-continue">'.
-          '<a class="button" href="/login/">Try Again</a>'.
-        '</div>');
+          '<a class="button" href="/login/">%s</a>'.
+        '</div>',
+        pht('Try Again')));
       return $this->buildStandardPageResponse(
         $view,
         array(
-          'title' => 'Login Failed',
+          'title' => pht('Login Failed'),
         ));
     }
 

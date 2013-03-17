@@ -38,6 +38,7 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
     }
 
     $this->filterStatus = $request->getStr('status', 'all');
+
     $handle = $this->loadHandle();
 
     $nav->appendChild($this->buildListFilters($handle));
@@ -49,13 +50,17 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
     if (!$handle) {
       switch ($this->filter) {
         case 'project':
-          $title = 'Choose A Project';
-          $message = 'Choose a project to view audits for.';
+          $title = pht('Choose A Project');
+          $message = pht('Choose a project to view audits for.');
+          break;
+        case 'repository':
+          $title = pht('Choose A Repository');
+          $message = pht('Choose a repository to view audits for.');
           break;
         case 'package':
         case 'packagecommits':
-          $title = 'Choose a Package';
-          $message = 'Choose a package to view audits for.';
+          $title = pht('Choose a Package');
+          $message = pht('Choose a package to view audits for.');
           break;
       }
     }
@@ -73,26 +78,27 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
     return $this->buildStandardPageResponse(
       $nav,
       array(
-        'title' => 'Audits',
+        'title' => pht('Audits'),
       ));
   }
 
   private function buildNavAndSelectFilter() {
     $nav = new AphrontSideNavFilterView();
     $nav->setBaseURI(new PhutilURI('/audit/view/'));
-    $nav->addLabel('Active');
-    $nav->addFilter('active',  'Need Attention');
+    $nav->addLabel(pht('Active'));
+    $nav->addFilter('active', pht('Need Attention'));
 
-    $nav->addLabel('Audits');
-    $nav->addFilter('audits', 'All');
-    $nav->addFilter('user', 'By User');
-    $nav->addFilter('project', 'By Project');
-    $nav->addFilter('package', 'By Package');
+    $nav->addLabel(pht('Audits'));
+    $nav->addFilter('audits', pht('All'));
+    $nav->addFilter('user', pht('By User'));
+    $nav->addFilter('project', pht('By Project'));
+    $nav->addFilter('package', pht('By Package'));
+    $nav->addFilter('repository', pht('By Repository'));
 
-    $nav->addLabel('Commits');
-    $nav->addFilter('commits', 'All');
-    $nav->addFilter('author', 'By Author');
-    $nav->addFilter('packagecommits', 'By Package');
+    $nav->addLabel(pht('Commits'));
+    $nav->addFilter('commits', pht('All'));
+    $nav->addFilter('author', pht('By Author'));
+    $nav->addFilter('packagecommits', pht('By Package'));
 
     $this->filter = $nav->selectFilter($this->filter, 'active');
 
@@ -110,6 +116,7 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
     $show_user    = false;
     $show_project = false;
     $show_package = false;
+    $show_repository = false;
 
     switch ($this->filter) {
       case 'audits':
@@ -128,6 +135,10 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
         $show_project = true;
         $show_status = true;
         break;
+      case 'repository':
+        $show_repository = true;
+        $show_status = true;
+        break;
       case 'package':
       case 'packagecommits':
         $show_package = true;
@@ -135,16 +146,19 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
         break;
     }
 
-    if ($show_user || $show_project || $show_package) {
+    if ($show_user || $show_project || $show_package || $show_repository) {
       if ($show_user) {
         $uri = '/typeahead/common/users/';
-        $label = 'User';
+        $label = pht('User');
       } else if ($show_project) {
         $uri = '/typeahead/common/projects/';
-        $label = 'Project';
+        $label = pht('Project');
       } else if ($show_package) {
         $uri = '/typeahead/common/packages/';
-        $label = 'Package';
+        $label = pht('Package');
+      } else if ($show_repository) {
+        $uri = '/typeahead/common/repositories/';
+        $label = pht('Repository');
       }
 
       $tok_value = null;
@@ -167,19 +181,20 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
       $form->appendChild(
         id(new AphrontFormToggleButtonsControl())
           ->setName('status')
-          ->setLabel('Status')
+          ->setLabel(pht('Status'))
           ->setBaseURI($request->getRequestURI(), 'status')
           ->setValue($this->filterStatus)
           ->setButtons(
             array(
-              'all'   => 'All',
-              'open'  => 'Open',
+              'all'   => pht('All'),
+              'open'  => pht('Open'),
+              'concern' => pht('Concern Raised'),
             )));
     }
 
     $form->appendChild(
       id(new AphrontFormSubmitControl())
-        ->setValue('Filter Audits'));
+        ->setValue(pht('Filter Audits')));
 
     $view = new AphrontListFilterView();
     $view->appendChild($form);
@@ -239,6 +254,11 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
           throw new Exception("PHID must be a project PHID!");
         }
         break;
+      case 'repository':
+        if ($handle->getType() !== PhabricatorPHIDConstants::PHID_TYPE_REPO) {
+          throw new Exception("PHID must be a repository PHID!");
+        }
+        break;
       case 'audits':
       case 'commits':
         break;
@@ -251,13 +271,14 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
     $views = array();
     switch ($this->filter) {
       case 'active':
-        $views[] = $this->buildAuditView($handle);
         $views[] = $this->buildCommitView($handle);
+        $views[] = $this->buildAuditView($handle);
         break;
       case 'audits':
       case 'user':
       case 'package':
       case 'project':
+      case 'repository':
         $views[] = $this->buildAuditView($handle);
         break;
       case 'commits':
@@ -288,6 +309,7 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
     $awaiting = null;
 
     $phids = null;
+    $repository_phids = null;
     switch ($this->filter) {
       case 'user':
       case 'active':
@@ -304,6 +326,9 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
       case 'package':
         $phids = array($handle->getPHID());
         break;
+      case 'repository':
+        $repository_phids = array($handle->getPHID());
+        break;
       case 'audits';
         break;
       default:
@@ -314,52 +339,60 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
       $query->withAuditorPHIDs($phids);
     }
 
+    if ($repository_phids) {
+      $query->withRepositoryPHIDs($repository_phids);
+    }
+
     if ($awaiting) {
       $query->withAwaitingUser($awaiting);
     }
 
     switch ($this->filter) {
-      case 'audits':
-      case 'user':
-      case 'project':
-      case 'package':
+      case 'active':
+        $query->withStatus(PhabricatorAuditQuery::STATUS_OPEN);
+        break;
+      default:
         switch ($this->filterStatus) {
           case 'open':
             $query->withStatus(PhabricatorAuditQuery::STATUS_OPEN);
             break;
+          case 'concern':
+            $query->withStatus(PhabricatorAuditQuery::STATUS_CONCERN);
+            break;
         }
-        break;
-      case 'active':
-        $query->withStatus(PhabricatorAuditQuery::STATUS_OPEN);
         break;
     }
 
     if ($handle) {
-      $handle_name = phutil_escape_html($handle->getName());
+      $handle_name = $handle->getFullName();
     } else {
       $handle_name = null;
     }
 
     switch ($this->filter) {
       case 'active':
-        $header = 'Required Audits';
-        $nodata = 'No commits require your audit.';
+        $header = pht('Required Audits');
+        $nodata = pht('No commits require your audit.');
         break;
       case 'user':
-        $header = "Audits for {$handle_name}";
-        $nodata = "No matching audits by {$handle_name}.";
+        $header = pht("Audits for %s", $handle_name);
+        $nodata = pht("No matching audits by %s.", $handle_name);
         break;
       case 'audits':
-        $header = "Audits";
-        $nodata = "No matching audits.";
+        $header = pht('Audits');
+        $nodata = pht('No matching audits.');
         break;
       case 'project':
-        $header = "Audits in Project '{$handle_name}'";
-        $nodata = "No matching audits in project '{$handle_name}'.";
+        $header = pht("Audits in Project %s", $handle_name);
+        $nodata = pht("No matching audits in project %s.", $handle_name);
         break;
       case 'package':
-        $header = "Audits for Package '{$handle_name}'";
-        $nodata = "No matching audits in package '{$handle_name}'.";
+        $header = pht("Audits for Package %s", $handle_name);
+        $nodata = pht("No matching audits in package %s.", $handle_name);
+        break;
+      case 'repository':
+        $header = pht("Audits in Repository %s", $handle_name);
+        $nodata = pht("No matching audits in repository %s.", $handle_name);
         break;
     }
 
@@ -383,6 +416,7 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
     $panel = new AphrontPanelView();
     $panel->setHeader($header);
     $panel->appendChild($view);
+    $panel->setNoBackground();
 
     if ($use_pager) {
       $panel->appendChild($pager);
@@ -421,40 +455,42 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
 
     switch ($this->filter) {
       case 'active':
-        $query->withStatus(PhabricatorAuditQuery::STATUS_OPEN);
+        $query->withStatus(PhabricatorAuditCommitQuery::STATUS_CONCERN);
         break;
-      case 'author':
-      case 'packagecommits':
+      default:
         switch ($this->filterStatus) {
           case 'open':
-            $query->withStatus(PhabricatorAuditQuery::STATUS_OPEN);
+            $query->withStatus(PhabricatorAuditCommitQuery::STATUS_OPEN);
+            break;
+          case 'concern':
+            $query->withStatus(PhabricatorAuditCommitQuery::STATUS_CONCERN);
             break;
         }
         break;
     }
 
     if ($handle) {
-      $handle_name = phutil_escape_html($handle->getName());
+      $handle_name = $handle->getName();
     } else {
       $handle_name = null;
     }
 
     switch ($this->filter) {
       case 'active':
-        $header = 'Problem Commits';
-        $nodata = 'None of your commits have open concerns.';
+        $header = pht('Problem Commits');
+        $nodata = pht('None of your commits have open concerns.');
         break;
       case 'author':
-        $header = "Commits by {$handle_name}";
-        $nodata = "No matching commits by {$handle_name}.";
+        $header = pht("Commits by %s", $handle_name);
+        $nodata = pht("No matching commits by %s.", $handle_name);
         break;
       case 'commits':
-        $header = "Commits";
-        $nodata = "No matching commits.";
+        $header = pht("Commits");
+        $nodata = pht("No matching commits.");
         break;
       case 'packagecommits':
-        $header = "Commits in Package '{$handle_name}'";
-        $nodata = "No matching commits in package '{$handle_name}'.";
+        $header = pht("Commits in Package %s", $handle_name);
+        $nodata = pht("No matching commits in package %s.", $handle_name);
         break;
     }
 
@@ -476,6 +512,7 @@ final class PhabricatorAuditListController extends PhabricatorAuditController {
     $panel = new AphrontPanelView();
     $panel->setHeader($header);
     $panel->appendChild($view);
+    $panel->setNoBackground();
 
     if ($use_pager) {
       $panel->appendChild($pager);

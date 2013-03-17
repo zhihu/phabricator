@@ -1,7 +1,6 @@
 <?php
 
 final class PonderQuestionSummaryView extends AphrontView {
-  private $user;
   private $question;
   private $handles;
 
@@ -12,11 +11,6 @@ final class PonderQuestionSummaryView extends AphrontView {
 
   public function setHandles($handles) {
     $this->handles = $handles;
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -31,57 +25,46 @@ final class PonderQuestionSummaryView extends AphrontView {
     $authorlink = $handles[$author_phid]
       ->renderLink();
 
-    $votecount =
+    $votecount = hsprintf(
       '<div class="ponder-summary-votes">'.
-        phutil_escape_html($question->getVoteCount()).
-        '<div class="ponder-question-label">'.
-          'votes'.
-        '</div>'.
-      '</div>';
+        '%s'.
+        '<div class="ponder-question-label">votes</div>'.
+      '</div>',
+      $question->getVoteCount());
 
     $answerclass = "ponder-summary-answers";
     if ($question->getAnswercount() == 0) {
       $answerclass .= " ponder-not-answered";
     }
-    $answercount =
+    $answercount = hsprintf(
       '<div class="ponder-summary-answers">'.
-        phutil_escape_html($question->getAnswerCount()).
-        '<div class="ponder-question-label">'.
-          'answers'.
-        '</div>'.
-      '</div>';
+        '%s'.
+        '<div class="ponder-question-label">answers</div>'.
+      '</div>',
+      $question->getAnswerCount());
 
+    $title = hsprintf('<h2 class="ponder-question-title">%s</h2>',
+      phutil_tag(
+        'a',
+        array(
+          "href" => '/Q' . $question->getID(),
+        ),
+          'Q' . $question->getID() .
+          ' ' . $question->getTitle()));
 
-    $title =
-      '<h2 class="ponder-question-title">'.
-        phutil_render_tag(
-          'a',
-          array(
-            "href" => '/Q' . $question->getID(),
-          ),
-          phutil_escape_html(
-            'Q' . $question->getID() .
-            ' ' . $question->getTitle()
-          )
-        ) .
-      '</h2>';
-
-    $rhs =
+    $rhs = hsprintf(
       '<div class="ponder-metadata">'.
-        $title.
-       '<span class="ponder-small-metadata">'.
-        'asked on '.
-        phabricator_datetime($question->getDateCreated(), $user).
-        ' by ' . $authorlink.
-       '</span>'.
-      '</div>';
+        '%s <span class="ponder-small-metadata">asked on %s by %s</span>'.
+      '</div>',
+      $title,
+      phabricator_datetime($question->getDateCreated(), $user),
+      $authorlink);
 
-    $summary =
-      '<div class="ponder-question-summary">'.
-        $votecount.
-        $answercount.
-        $rhs.
-      '</div>';
+    $summary = hsprintf(
+      '<div class="ponder-question-summary">%s%s%s</div>',
+      $votecount,
+      $answercount,
+      $rhs);
 
 
     return $summary;

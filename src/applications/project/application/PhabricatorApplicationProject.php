@@ -3,18 +3,18 @@
 final class PhabricatorApplicationProject extends PhabricatorApplication {
 
   public function getName() {
-    return 'Projects';
+    return pht('Projects');
   }
 
   public function getShortDescription() {
-    return 'Organize Work';
+    return pht('Organize Work');
   }
 
   public function getBaseURI() {
     return '/project/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'projects';
   }
 

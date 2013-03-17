@@ -3,6 +3,17 @@
 final class DifferentialLintFieldSpecification
   extends DifferentialFieldSpecification {
 
+  public function shouldAppearOnDiffView() {
+      return true;
+  }
+
+  public function renderLabelForDiffView() {
+    return $this->renderLabelForRevisionView();
+  }
+
+  public function renderValueForDiffView() {
+    return $this->renderValueForRevisionView();
+  }
   public function shouldAppearOnRevisionView() {
     return true;
   }
@@ -42,7 +53,7 @@ final class DifferentialLintFieldSpecification
       $rows[] = array(
         'style'   => 'excuse',
         'name'    => 'Excuse',
-        'value'   => nl2br(phutil_escape_html($excuse)),
+        'value'   => phutil_escape_html_newlines($excuse),
         'show'    => true,
       );
     }
@@ -56,7 +67,7 @@ final class DifferentialLintFieldSpecification
 
         $rows[] = array(
           'style' => 'section',
-          'name'  => phutil_escape_html($path),
+          'name'  => $path,
           'show'  => $show_limit,
         );
 
@@ -76,7 +87,7 @@ final class DifferentialLintFieldSpecification
             if ($diff->getID() != $this->getDiff()->getID()) {
               $href = '/D'.$diff->getRevisionID().'?id='.$diff->getID().$href;
             }
-            $line_link = phutil_render_tag(
+            $line_link = phutil_tag(
               'a',
               array(
                 'href' => $href,
@@ -97,18 +108,30 @@ final class DifferentialLintFieldSpecification
 
           $rows[] = array(
             'style' => $this->getSeverityStyle($severity),
-            'name'  => phutil_escape_html(ucwords($severity)),
+            'name'  => ucwords($severity),
             'value' => hsprintf(
-              "(%s) %s at {$line_link}",
+              '(%s) %s at %s',
               $code,
-              $name),
+              $name,
+              $line_link),
             'show'  => $show,
           );
+
+          if (!empty($message['locations'])) {
+            $locations = array();
+            foreach ($message['locations'] as $location) {
+              $other_line = idx($location, 'line');
+              $locations[] =
+                idx($location, 'path', $path).
+                ($other_line ? ":{$other_line}" : "");
+            }
+            $description .= "\nOther locations: ".implode(", ", $locations);
+          }
 
           if (strlen($description)) {
             $rows[] = array(
               'style' => 'details',
-              'value' => nl2br(phutil_escape_html($description)),
+              'value' => phutil_escape_html_newlines($description),
               'show'  => false,
             );
             if (empty($hidden['details'])) {
@@ -126,7 +149,7 @@ final class DifferentialLintFieldSpecification
         $rows[] = array(
           'style' => $this->getPostponedStyle(),
           'name' => 'Postponed',
-          'value' => phutil_escape_html($linter),
+          'value' => $linter,
           'show'  => false,
           );
         if (empty($hidden['postponed'])) {
@@ -207,30 +230,40 @@ final class DifferentialLintFieldSpecification
   }
 
   public function renderWarningBoxForRevisionAccept() {
-    $diff = $this->getDiff();
-    $lint_warning = null;
-    if ($diff->getLintStatus() >= DifferentialLintStatus::LINT_WARN) {
-      $titles =
-        array(
-          DifferentialLintStatus::LINT_WARN => 'Lint Warning',
-          DifferentialLintStatus::LINT_FAIL => 'Lint Failure',
-          DifferentialLintStatus::LINT_SKIP => 'Lint Skipped'
-        );
-      if ($diff->getLintStatus() == DifferentialLintStatus::LINT_SKIP) {
-        $content =
-          "<p>This diff was created without running lint. Make sure you are ".
-          "OK with that before you accept this diff.</p>";
-      } else {
-        $content =
-          "<p>This diff has Lint Problems. Make sure you are OK with them ".
-          "before you accept this diff.</p>";
-      }
-      $lint_warning = id(new AphrontErrorView())
-        ->setSeverity(AphrontErrorView::SEVERITY_ERROR)
-        ->appendChild($content)
-        ->setTitle(idx($titles, $diff->getLintStatus(), 'Warning'));
+    $status = $this->getDiff()->getLintStatus();
+    if ($status < DifferentialLintStatus::LINT_WARN) {
+      return null;
     }
-    return $lint_warning;
+
+    $severity = AphrontErrorView::SEVERITY_ERROR;
+    $titles = array(
+      DifferentialLintStatus::LINT_WARN => 'Lint Warning',
+      DifferentialLintStatus::LINT_FAIL => 'Lint Failure',
+      DifferentialLintStatus::LINT_SKIP => 'Lint Skipped',
+      DifferentialLintStatus::LINT_POSTPONED => 'Lint Postponed',
+    );
+
+    if ($status == DifferentialLintStatus::LINT_SKIP) {
+      $content =
+        "This diff was created without running lint. Make sure you are ".
+        "OK with that before you accept this diff.";
+
+    } else if ($status == DifferentialLintStatus::LINT_POSTPONED) {
+      $severity = AphrontErrorView::SEVERITY_WARNING;
+      $content =
+        "Postponed linters didn't finish yet. Make sure you are OK with ".
+        "that before you accept this diff.";
+
+    } else {
+      $content =
+        "This diff has Lint Problems. Make sure you are OK with them ".
+        "before you accept this diff.";
+    }
+
+    return id(new AphrontErrorView())
+      ->setSeverity($severity)
+      ->appendChild(phutil_tag('p', array(), $content))
+      ->setTitle(idx($titles, $status, 'Warning'));
   }
 
 }

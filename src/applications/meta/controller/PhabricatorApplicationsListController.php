@@ -1,59 +1,71 @@
 <?php
 
 final class PhabricatorApplicationsListController
-  extends PhabricatorController {
+  extends PhabricatorApplicationsController {
 
   public function processRequest() {
     $request = $this->getRequest();
     $user = $request->getUser();
 
-    $applications = PhabricatorApplication::getAllInstalledApplications();
+    $nav = $this->buildSideNavView();
+    $nav->selectFilter('/');
 
-    foreach ($applications as $key => $application) {
-      if (!$application->shouldAppearInLaunchView()) {
-        unset($applications[$key]);
-      }
-    }
+    $applications = PhabricatorApplication::getAllApplications();
 
-    $groups = PhabricatorApplication::getApplicationGroups();
+    $list = $this->buildInstalledApplicationsList($applications);
 
-    $applications = msort($applications, 'getApplicationOrder');
-    $applications = mgroup($applications, 'getApplicationGroup');
-    $applications = array_select_keys($applications, array_keys($groups));
+    $title = pht('Installed Applications');
 
-    $view = array();
-    foreach ($applications as $group => $application_list) {
-      $status = array();
-      foreach ($application_list as $key => $application) {
-        $status[$key] = $application->loadStatus($user);
-      }
+    $header = id(new PhabricatorHeaderView())
+      ->setHeader($title);
 
-      $views = array();
-      foreach ($application_list as $key => $application) {
-        $views[] = id(new PhabricatorApplicationLaunchView())
-          ->setApplication($application)
-          ->setApplicationStatus(idx($status, $key, array()))
-          ->setUser($user);
-      }
+    $nav->appendChild(
+      array(
+        $header,
+        $list
+      ));
 
-      $view[] = id(new PhabricatorHeaderView())
-        ->setHeader($groups[$group]);
+    $crumbs = $this
+      ->buildApplicationCrumbs()
+      ->addCrumb(
+        id(new PhabricatorCrumbView())
+          ->setName(pht('Applications'))
+          ->setHref($this->getApplicationURI()));
 
-      $view[] = phutil_render_tag(
-        'div',
-        array(
-          'class' => 'phabricator-application-list',
-        ),
-        id(new AphrontNullView())->appendChild($views)->render());
-    }
+    $nav->setCrumbs($crumbs);
 
     return $this->buildApplicationPage(
-      $view,
+      $nav,
       array(
-        'title' => 'Applications',
+        'title' => $title,
         'device' => true,
       ));
   }
 
-}
 
+  private function buildInstalledApplicationsList(array $applications) {
+    $list = new PhabricatorObjectItemListView();
+
+    $applications = msort($applications, 'getName');
+
+    foreach ($applications as $application) {
+        $item = id(new PhabricatorObjectItemView())
+          ->setHeader($application->getName())
+          ->setHref('/applications/view/'.get_class($application).'/')
+          ->addAttribute($application->getShortDescription());
+
+        if (!$application->isInstalled()) {
+          $item->addIcon('delete', pht('Uninstalled'));
+        }
+
+        if ($application->isBeta()) {
+          $item->addIcon('lint-warning', pht('Beta'));
+        }
+
+        $list->addItem($item);
+
+      }
+    return $list;
+   }
+
+}

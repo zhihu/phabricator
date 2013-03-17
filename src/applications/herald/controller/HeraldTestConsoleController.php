@@ -96,25 +96,26 @@ final class HeraldTestConsoleController extends HeraldController {
 
     $form = id(new AphrontFormView())
       ->setUser($user)
-      ->appendChild(
+      ->appendChild(hsprintf(
         '<p class="aphront-form-instructions">Enter an object to test rules '.
         'for, like a Diffusion commit (e.g., <tt>rX123</tt>) or a '.
         'Differential revision (e.g., <tt>D123</tt>). You will be shown the '.
-        'results of a dry run on the object.</p>')
+        'results of a dry run on the object.</p>'))
       ->appendChild(
         id(new AphrontFormTextControl())
-          ->setLabel('Object Name')
+          ->setLabel(pht('Object Name'))
           ->setName('object_name')
           ->setError($e_name)
           ->setValue($object_name))
       ->appendChild(
         id(new AphrontFormSubmitControl())
-          ->setValue('Test Rules'));
+          ->setValue(pht('Test Rules')));
 
     $panel = new AphrontPanelView();
-    $panel->setHeader('Test Herald Rules');
+    $panel->setHeader(pht('Test Herald Rules'));
     $panel->setWidth(AphrontPanelView::WIDTH_FULL);
     $panel->appendChild($form);
+    $panel->setNoBackground();
 
     $nav = $this->renderNav();
     $nav->selectFilter('test');
@@ -123,6 +124,16 @@ final class HeraldTestConsoleController extends HeraldController {
         $error_view,
         $panel,
       ));
+
+    $crumbs = id($this->buildApplicationCrumbs())
+      ->addCrumb(
+        id(new PhabricatorCrumbView())
+          ->setName(pht('Transcripts'))
+          ->setHref($this->getApplicationURI('/transcript/')))
+      ->addCrumb(
+        id(new PhabricatorCrumbView())
+          ->setName(pht('Test Console')));
+    $nav->setCrumbs($crumbs);
 
     return $this->buildStandardPageResponse(
       $nav,

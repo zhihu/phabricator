@@ -4,7 +4,8 @@ final class PonderQuestion extends PonderDAO
   implements
     PhabricatorMarkupInterface,
     PonderVotableInterface,
-    PhabricatorSubscribableInterface {
+    PhabricatorSubscribableInterface,
+    PhabricatorPolicyInterface {
 
   const MARKUP_FIELD_CONTENT = 'markup:content';
 
@@ -54,8 +55,7 @@ final class PonderQuestion extends PonderDAO
         ->execute();
 
       $comments = mgroup($comments, 'getTargetPHID');
-    }
-    else {
+    } else {
       $comments = array();
     }
 
@@ -166,6 +166,28 @@ final class PonderQuestion extends PonderDAO
       $this->setMailKey(Filesystem::readRandomCharacters(20));
     }
     return parent::save();
+  }
+
+  public function getCapabilities() {
+    return array(
+      PhabricatorPolicyCapability::CAN_VIEW,
+    );
+  }
+
+  public function getPolicy($capability) {
+    $policy = PhabricatorPolicies::POLICY_NOONE;
+
+    switch ($capability) {
+      case PhabricatorPolicyCapability::CAN_VIEW:
+        $policy = PhabricatorPolicies::POLICY_USER;
+        break;
+    }
+
+    return $policy;
+  }
+
+  public function hasAutomaticCapability($capability, PhabricatorUser $viewer) {
+    return false;
   }
 
 }

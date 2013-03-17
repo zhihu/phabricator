@@ -7,7 +7,7 @@ final class PhabricatorUITooltipExample extends PhabricatorUIExample {
   }
 
   public function getDescription() {
-    return 'Use <tt>JX.Tooltip</tt> to create tooltips.';
+    return hsprintf('Use <tt>JX.Tooltip</tt> to create tooltips.');
   }
 
   public function renderExample() {
@@ -36,14 +36,22 @@ EOTEXT;
       'hi' => array(
         'tip' => 'Hi',
       ),
-      'lorem' => array(
+      'lorem (north)' => array(
         'tip' => $lorem,
       ),
       'lorem (east)' => array(
         'tip' => $lorem,
         'align' => 'E',
       ),
-      'lorem (large)' => array(
+      'lorem (south)' => array(
+        'tip' => $lorem,
+        'align' => 'S',
+      ),
+      'lorem (west)' => array(
+        'tip' => $lorem,
+        'align' => 'W',
+      ),
+      'lorem (large, north)' => array(
         'tip' => $lorem,
         'size' => 300,
       ),
@@ -52,6 +60,16 @@ EOTEXT;
         'size' => 300,
         'align' => 'E',
       ),
+      'lorem (large, west)' => array(
+        'tip' => $lorem,
+        'size' => 300,
+        'align' => 'W',
+      ),
+      'lorem (large, south)' => array(
+        'tip' => $lorem,
+        'size' => 300,
+        'align' => 'S',
+      ),
       'overflow (north)' => array(
         'tip' => $overflow,
       ),
@@ -59,18 +77,26 @@ EOTEXT;
         'tip' => $overflow,
         'align' => 'E',
       ),
+      'overflow (south)' => array(
+        'tip' => $overflow,
+        'align' => 'S',
+      ),
+      'overflow (west)' => array(
+        'tip' => $overflow,
+        'align' => 'W',
+      ),
     );
 
     $content = array();
     foreach ($metas as $key => $meta) {
-      $content[] = javelin_render_tag(
+      $content[] = javelin_tag(
         'div',
         array(
           'sigil' => 'has-tooltip',
           'meta'  => $meta,
           'style' => $style,
         ),
-        phutil_escape_html($key));
+        $key);
     }
 
     return $content;

@@ -50,6 +50,22 @@ final class PhabricatorLDAPProvider {
     return PhabricatorEnv::getEnvConfig('ldap.referrals');
   }
 
+  public function getLDAPStartTLS() {
+    return PhabricatorEnv::getEnvConfig('ldap.start-tls');
+  }
+
+  public function bindAnonymousUserEnabled() {
+    return strlen(trim($this->getAnonymousUserName())) > 0;
+  }
+
+  public function getAnonymousUserName() {
+    return PhabricatorEnv::getEnvConfig('ldap.anonymous-user-name');
+  }
+
+  public function getAnonymousUserPassword() {
+    return PhabricatorEnv::getEnvConfig('ldap.anonymous-user-password');
+  }
+
   public function retrieveUserEmail() {
     return $this->userData['mail'][0];
   }
@@ -102,6 +118,13 @@ final class PhabricatorLDAPProvider {
         $this->getLDAPVersion());
       ldap_set_option($this->connection, LDAP_OPT_REFERRALS,
        $this->getLDAPReferrals());
+
+      if ($this->getLDAPStartTLS()) {
+        if (!ldap_start_tls($this->getConnection())) {
+          throw new Exception('Unabled to initialize STARTTLS for LDAP host at '.
+            $this->getHostname().':'.$this->getPort());
+        }
+      }
     }
 
     return $this->connection;
@@ -143,11 +166,15 @@ final class PhabricatorLDAPProvider {
     if ($activeDirectoryDomain) {
       $dn = $username.'@'.$activeDirectoryDomain;
     } else {
-      $dn = ldap_sprintf(
-        '%Q=%s,%Q',
-        $this->getSearchAttribute(),
-        $username,
-        $this->getBaseDN());
+      if (isset($user)) {
+        $dn = $user['dn'];
+      } else {
+        $dn = ldap_sprintf(
+          '%Q=%s,%Q',
+          $this->getSearchAttribute(),
+          $username,
+          $this->getBaseDN());
+      }
     }
 
     // NOTE: It is very important we suppress any messages that occur here,
@@ -170,6 +197,24 @@ final class PhabricatorLDAPProvider {
   private function getUser($attribute, $username) {
     $conn = $this->getConnection();
 
+    if ($this->bindAnonymousUserEnabled()) {
+      // NOTE: It is very important we suppress any messages that occur here,
+      // because it logs passwords if it reaches an error log of any sort.
+      DarkConsoleErrorLogPluginAPI::enableDiscardMode();
+      $result = ldap_bind(
+        $conn,
+        $this->getAnonymousUserName(),
+        $this->getAnonymousUserPassword());
+      DarkConsoleErrorLogPluginAPI::disableDiscardMode();
+
+      if (!$result) {
+        throw new Exception('Bind anonymous account failed. '.
+          $this->invalidLDAPUserErrorMessage(
+            ldap_errno($conn),
+            ldap_error($conn)));
+      }
+    }
+
     $query = ldap_sprintf(
       '%Q=%S',
       $attribute,
@@ -178,8 +223,10 @@ final class PhabricatorLDAPProvider {
     $result = ldap_search($conn, $this->getBaseDN(), $query);
 
     if (!$result) {
-      throw new Exception('Search failed. Please check your LDAP and HTTP '.
-        'logs for more information.');
+      throw new Exception('Search failed. '.
+        $this->invalidLDAPUserErrorMessage(
+          ldap_errno($conn),
+          ldap_error($conn)));
     }
 
     $entries = ldap_get_entries($conn, $result);
@@ -222,13 +269,13 @@ final class PhabricatorLDAPProvider {
 
     $rows = array();
 
-    for($i = 0; $i < $entries['count']; $i++) {
+    for ($i = 0; $i < $entries['count']; $i++) {
       $row = array();
       $entry = $entries[$i];
 
       // Get username, email and realname
       $username = $entry[$this->getSearchAttribute()][0];
-      if(empty($username)) {
+      if (empty($username)) {
         continue;
       }
       $row[] = $username;

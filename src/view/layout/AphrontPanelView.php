@@ -15,7 +15,7 @@ final class AphrontPanelView extends AphrontView {
 
   public function setCreateButton($create_button, $href) {
     $this->addButton(
-      phutil_render_tag(
+      phutil_tag(
         'a',
         array(
           'href' => $href,
@@ -56,34 +56,40 @@ final class AphrontPanelView extends AphrontView {
     return $this;
   }
 
+  public function setNoBackground() {
+    $this->classes[] = 'aphront-panel-plain';
+    return $this;
+  }
+
   public function render() {
     if ($this->header !== null) {
-      $header = '<h1>'.$this->header.'</h1>';
+      $header = phutil_tag('h1', array(), $this->header);
     } else {
       $header = null;
     }
 
     if ($this->caption !== null) {
-      $caption =
-        '<div class="aphront-panel-view-caption">'.
-          $this->caption.
-        '</div>';
+      $caption = phutil_tag(
+        'div',
+        array('class' => 'aphront-panel-view-caption'),
+        $this->caption);
     } else {
       $caption = null;
     }
 
     $buttons = null;
     if ($this->buttons) {
-      $buttons =
-        '<div class="aphront-panel-view-buttons">'.
-          implode(" ", $this->buttons).
-        '</div>';
+      $buttons = hsprintf(
+        '<div class="aphront-panel-view-buttons">%s</div>',
+        phutil_implode_html(" ", $this->buttons));
     }
-    $header_elements =
-      '<div class="aphront-panel-header">'.
-        $buttons.$header.$caption.
-      '</div>';
-    $table = $this->renderChildren();
+    $header_elements = hsprintf(
+      '<div class="aphront-panel-header">%s%s%s</div>',
+      $buttons,
+      $header,
+      $caption);
+
+    $table = phutil_implode_html('', $this->renderChildren());
 
     require_celerity_resource('aphront-panel-view-css');
 
@@ -93,13 +99,13 @@ final class AphrontPanelView extends AphrontView {
       $classes[] = 'aphront-panel-width-'.$this->width;
     }
 
-    return phutil_render_tag(
+    return phutil_tag(
       'div',
       array(
         'class' => implode(' ', $classes),
         'id'    => $this->id,
       ),
-      $header_elements.$table);
+      array($header_elements, $table));
   }
 
 }

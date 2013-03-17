@@ -26,6 +26,7 @@ final class PhabricatorUser extends PhabricatorUserDAO implements PhutilPerson {
   protected $isDisabled = 0;
 
   private $preferences = null;
+  private $omnipotent = false;
 
   protected function readField($field) {
     switch ($field) {
@@ -104,7 +105,9 @@ final class PhabricatorUser extends PhabricatorUserDAO implements PhutilPerson {
     $result = parent::save();
 
     $this->updateNameTokens();
-    PhabricatorSearchUserIndexer::indexUser($this);
+
+    id(new PhabricatorSearchIndexer())
+      ->indexDocumentByPHID($this->getPHID());
 
     return $result;
   }
@@ -438,7 +441,8 @@ final class PhabricatorUser extends PhabricatorUserDAO implements PhutilPerson {
       $default_dict = array(
         PhabricatorUserPreferences::PREFERENCE_TITLES => 'glyph',
         PhabricatorUserPreferences::PREFERENCE_EDITOR => '',
-        PhabricatorUserPreferences::PREFERENCE_MONOSPACED => '');
+        PhabricatorUserPreferences::PREFERENCE_MONOSPACED => '',
+        PhabricatorUserPreferences::PREFERENCE_DARK_CONSOLE => 0);
 
       $preferences->setPreferences($default_dict);
     }
@@ -450,6 +454,19 @@ final class PhabricatorUser extends PhabricatorUserDAO implements PhutilPerson {
   public function loadEditorLink($path, $line, $callsign) {
     $editor = $this->loadPreferences()->getPreference(
       PhabricatorUserPreferences::PREFERENCE_EDITOR);
+
+    if (is_array($path)) {
+      $multiedit = $this->loadPreferences()->getPreference(
+        PhabricatorUserPreferences::PREFERENCE_MULTIEDIT);
+      switch ($multiedit) {
+        case '':
+          $path = implode(' ', $path);
+          break;
+        case 'disable':
+          return null;
+      }
+    }
+
     if ($editor) {
       return strtr($editor, array(
         '%%' => '%',
@@ -619,9 +636,11 @@ EOBODY;
   public function loadProfileImageURI() {
     $src_phid = $this->getProfileImagePHID();
 
-    $file = id(new PhabricatorFile())->loadOneWhere('phid = %s', $src_phid);
-    if ($file) {
-      return $file->getBestURI();
+    if ($src_phid) {
+      $file = id(new PhabricatorFile())->loadOneWhere('phid = %s', $src_phid);
+      if ($file) {
+        return $file->getBestURI();
+      }
     }
 
     return self::getDefaultProfileImageURI();
@@ -645,6 +664,37 @@ EOBODY;
     return id(new PhabricatorUser())->loadOneWhere(
       'phid = %s',
       $email->getUserPHID());
+  }
+
+
+/* -(  Omnipotence  )-------------------------------------------------------- */
+
+
+  /**
+   * Returns true if this user is omnipotent. Omnipotent users bypass all policy
+   * checks.
+   *
+   * @return bool True if the user bypasses policy checks.
+   */
+  public function isOmnipotent() {
+    return $this->omnipotent;
+  }
+
+
+  /**
+   * Get an omnipotent user object for use in contexts where there is no acting
+   * user, notably daemons.
+   *
+   * @return PhabricatorUser An omnipotent user.
+   */
+  public static function getOmnipotentUser() {
+    static $user = null;
+    if (!$user) {
+      $user = new PhabricatorUser();
+      $user->omnipotent = true;
+      $user->makeEphemeral();
+    }
+    return $user;
   }
 
 }

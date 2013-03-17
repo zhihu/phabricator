@@ -3,18 +3,11 @@
 final class PhabricatorContentSourceView extends AphrontView {
 
   private $contentSource;
-  private $user;
 
   public function setContentSource(PhabricatorContentSource $content_source) {
     $this->contentSource = $content_source;
     return $this;
   }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
-
 
   public function render() {
     require_celerity_resource('phabricator-content-source-view-css');
@@ -35,7 +28,7 @@ final class PhabricatorContentSourceView extends AphrontView {
       return;
     }
 
-    return phutil_render_tag(
+    return phutil_tag(
       'span',
       array(
         'class' => "phabricator-content-source-view",

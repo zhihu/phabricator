@@ -24,37 +24,44 @@ final class PhabricatorEmailVerificationController
       $user->getPHID(),
       $this->code);
 
-    $home_link = phutil_render_tag(
+    $home_link = phutil_tag(
       'a',
       array(
         'href' => '/',
       ),
-      'Continue to Phabricator');
-    $home_link = '<br /><p><strong>'.$home_link.'</strong></p>';
+      pht('Continue to Phabricator'));
+    $home_link = hsprintf(
+      '<br /><p><strong>%s</strong></p>',
+      $home_link);
 
-    $settings_link = phutil_render_tag(
+    $settings_link = phutil_tag(
       'a',
       array(
         'href' => '/settings/panel/email/',
       ),
-      'Return to Email Settings');
-    $settings_link = '<br /><p><strong>'.$settings_link.'</strong></p>';
-
+      pht('Return to Email Settings'));
+    $settings_link = hsprintf(
+      '<br /><p><strong>%s</strong></p>',
+      $settings_link);
 
     if (!$email) {
       $content = id(new AphrontErrorView())
-        ->setTitle('Unable To Verify')
-        ->appendChild(
-          '<p>The verification code is incorrect, the email address has '.
-          'been removed, or the email address is owned by another user. Make '.
-          'sure you followed the link in the email correctly.</p>');
+        ->setTitle(pht('Unable To Verify'))
+        ->appendChild(phutil_tag(
+          'p',
+          array(),
+          pht('The verification code is incorrect, the email address has been '.
+            'removed, or the email address is owned by another user. Make '.
+            'sure you followed the link in the email correctly.')));
     } else if ($email->getIsVerified()) {
+      $inst = pht('This email address has already been verified.');
       $content = id(new AphrontErrorView())
         ->setSeverity(AphrontErrorView::SEVERITY_NOTICE)
-        ->setTitle('Address Already Verified')
-        ->appendChild(
-          '<p>This email address has already been verified.</p>'.
-          $settings_link);
+        ->setTitle(pht('Address Already Verified'))
+        ->appendChild(hsprintf(
+          '<p>%s</p>%s',
+          $inst,
+          $settings_link));
     } else {
 
       $guard = AphrontWriteGuard::beginScopedUnguardedWrites();
@@ -62,19 +69,22 @@ final class PhabricatorEmailVerificationController
         $email->save();
       unset($guard);
 
+      $inst = pht('This email address has now been verified. Thanks!');
       $content = id(new AphrontErrorView())
         ->setSeverity(AphrontErrorView::SEVERITY_NOTICE)
-        ->setTitle('Address Verified')
-        ->appendChild(
-          '<p>This email address has now been verified. Thanks!</p>'.
-          $home_link.
-          $settings_link);
+        ->setTitle(pht('Address Verified'))
+        ->appendChild(hsprintf(
+          '<p>%s</p>%s%s',
+          $inst,
+          $home_link,
+          $settings_link));
     }
 
     return $this->buildApplicationPage(
       $content,
       array(
-        'title' => 'Verify Email',
+        'title' => pht('Verify Email'),
+        'device' => true,
       ));
   }
 

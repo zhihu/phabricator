@@ -84,20 +84,20 @@ final class PhabricatorXHProfProfileTopLevelView
       array(
         'Symbol',
         'Count',
-        javelin_render_tag(
+        javelin_tag(
           'span',
           array(
             'sigil' => 'has-tooltip',
             'meta'  => array(
               'tip' => 'Total wall time spent in this function and all of '.
-                       'its children (chilren are other functions it called '.
+                       'its children (children are other functions it called '.
                        'while executing).',
               'size' => 200,
             ),
           ),
           'Wall Time (Inclusive)'),
         '%',
-        javelin_render_tag(
+        javelin_tag(
           'span',
           array(
             'sigil' => 'has-tooltip',
@@ -126,7 +126,7 @@ final class PhabricatorXHProfProfileTopLevelView
 
     if ($this->file) {
       $panel->addButton(
-        phutil_render_tag(
+        phutil_tag(
           'a',
           array(
             'href' => $this->file->getBestURI(),

@@ -37,7 +37,10 @@ abstract class PhabricatorMailReplyHandler {
   abstract public function validateMailReceiver($mail_receiver);
   abstract public function getPrivateReplyHandlerEmailAddress(
     PhabricatorObjectHandle $handle);
-  abstract public function getReplyHandlerDomain();
+  public function getReplyHandlerDomain() {
+    return PhabricatorEnv::getEnvConfig(
+      'metamta.reply-handler-domain');
+  }
   abstract public function getReplyHandlerInstructions();
   abstract protected function receiveEmail(
     PhabricatorMetaMTAReceivedMail $mail);
@@ -73,8 +76,8 @@ abstract class PhabricatorMailReplyHandler {
    * since this code is running and everything.
    */
   private function shouldSendErrorEmail(PhabricatorMetaMTAReceivedMail $mail) {
-    return count($mail->getToAddresses() == 1) &&
-           count($mail->getCCAddresses() == 0);
+    return (count($mail->getToAddresses()) == 1) &&
+           (count($mail->getCCAddresses()) == 0);
   }
 
   private function sendErrorEmail($error,
@@ -85,7 +88,10 @@ abstract class PhabricatorMailReplyHandler {
     $template->setRelatedPHID($mail->getRelatedPHID());
     $phid = $this->getActor()->getPHID();
     $tos = array(
-      $phid => PhabricatorObjectHandleData::loadOneHandle($phid)
+      $phid => PhabricatorObjectHandleData::loadOneHandle(
+        $phid,
+        // TODO: This could be cleaner (T603).
+        PhabricatorUser::getOmnipotentUser()),
     );
     $mails = $this->multiplexMail($template, $tos, array());
 
@@ -291,8 +297,10 @@ EOBODY;
     return $this->getSingleReplyHandlerPrefix($address);
   }
 
-  final protected function enhanceBodyWithAttachments($body,
-                                                      array $attachments) {
+  final protected function enhanceBodyWithAttachments(
+    $body,
+    array $attachments,
+    $format = '- {F%d, layout=link}') {
     if (!$attachments) {
       return $body;
     }
@@ -306,7 +314,7 @@ EOBODY;
     }
 
     foreach ($files as $file) {
-      $file_str = sprintf('- {F%d, layout=link}', $file->getID());
+      $file_str = sprintf($format, $file->getID());
       $body .= $file_str."\n";
     }
 

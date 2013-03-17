@@ -20,8 +20,7 @@ final class PhabricatorMetaMTAReceivedListController
 
     $phids = array_merge(
       mpull($mails, 'getAuthorPHID'),
-      mpull($mails, 'getRelatedPHID')
-    );
+      mpull($mails, 'getRelatedPHID'));
     $phids = array_unique(array_filter($phids));
 
     $handles = $this->loadViewerHandles($phids);
@@ -38,19 +37,19 @@ final class PhabricatorMetaMTAReceivedListController
         $mail->getRelatedPHID()
           ? $handles[$mail->getRelatedPHID()]->renderLink()
           : '-',
-        phutil_escape_html($mail->getMessage()),
+        $mail->getMessage(),
       );
     }
 
     $table = new AphrontTableView($rows);
     $table->setHeaders(
       array(
-        'ID',
-        'Date',
-        'Time',
-        'Author',
-        'Object',
-        'Message',
+        pht('ID'),
+        pht('Date'),
+        pht('Time'),
+        pht('Author'),
+        pht('Object'),
+        pht('Message'),
       ));
     $table->setColumnClasses(
       array(
@@ -63,9 +62,10 @@ final class PhabricatorMetaMTAReceivedListController
       ));
 
     $panel = new AphrontPanelView();
-    $panel->setHeader('Received Mail');
+    $panel->setHeader(pht('Received Mail'));
     $panel->appendChild($table);
     $panel->appendChild($pager);
+    $panel->setNoBackground();
 
     $nav = $this->buildSideNavView();
     $nav->selectFilter('received');
@@ -74,7 +74,8 @@ final class PhabricatorMetaMTAReceivedListController
     return $this->buildApplicationPage(
       $nav,
       array(
-        'title' => 'Received Mail',
+        'title' => pht('Received Mail'),
+        'device' => true,
       ));
   }
 }

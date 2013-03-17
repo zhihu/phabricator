@@ -75,17 +75,19 @@ if ($args->getArg('password') === null) {
 } else {
   // Put this in a PhutilOpaqueEnvelope.
   $password = new PhutilOpaqueEnvelope($args->getArg('password'));
+  PhabricatorEnv::overrideConfig('mysql.pass', $args->getArg('password'));
 }
 
 $api = new PhabricatorStorageManagementAPI();
 $api->setUser($args->getArg('user'));
+PhabricatorEnv::overrideConfig('mysql.user', $args->getArg('user'));
 $api->setHost($default_host);
 $api->setPassword($password);
 $api->setNamespace($args->getArg('namespace'));
 
 try {
   queryfx(
-    $api->getConn('meta_data', $select_database = false),
+    $api->getConn(null),
     'SELECT 1');
 } catch (AphrontQueryException $ex) {
   echo phutil_console_format(

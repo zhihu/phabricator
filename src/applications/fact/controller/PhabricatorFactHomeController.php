@@ -32,10 +32,7 @@ final class PhabricatorFactHomeController extends PhabricatorFactController {
       $name = $spec->getName();
       $value = $spec->formatValueForDisplay($user, $fact->getValueX());
 
-      $rows[] = array(
-        phutil_escape_html($name),
-        phutil_escape_html($value),
-      );
+      $rows[] = array($name, $value);
     }
 
     $table = new AphrontTableView($rows);
@@ -94,9 +91,10 @@ final class PhabricatorFactHomeController extends PhabricatorFactController {
       return id(new AphrontErrorView())
         ->setSeverity(AphrontErrorView::SEVERITY_NOTICE)
         ->setTitle(pht('No Chartable Facts'))
-        ->appendChild(
-          '<p>'.pht(
-            'There are no facts that can be plotted yet.').'</p>');
+        ->appendChild(phutil_tag(
+          'p',
+          array(),
+          pht('There are no facts that can be plotted yet.')));
     }
 
     $form = id(new AphrontFormView())

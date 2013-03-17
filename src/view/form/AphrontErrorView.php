@@ -11,6 +11,15 @@ final class AphrontErrorView extends AphrontView {
   private $errors;
   private $severity;
   private $id;
+  private $insideDialogue;
+
+  public function setInsideDialogue($inside_dialogue) {
+    $this->insideDialogue = $inside_dialogue;
+    return $this;
+  }
+  public function getInsideDialogue() {
+    return $this->insideDialogue;
+  }
 
   public function setTitle($title) {
     $this->title = $title;
@@ -32,6 +41,15 @@ final class AphrontErrorView extends AphrontView {
     return $this;
   }
 
+  private function getBaseClass() {
+    if ($this->getInsideDialogue()) {
+      $class = 'aphront-error-view-dialogue';
+    } else {
+      $class = 'aphront-error-view';
+    }
+    return $class;
+  }
+
   final public function render() {
 
     require_celerity_resource('aphront-error-view-css');
@@ -40,52 +58,57 @@ final class AphrontErrorView extends AphrontView {
     if ($errors) {
       $list = array();
       foreach ($errors as $error) {
-        $list[] = phutil_render_tag(
+        $list[] = phutil_tag(
           'li',
           array(),
-          phutil_escape_html($error));
+          $error);
       }
-      $list = phutil_render_tag(
+      $list = phutil_tag(
         'ul',
         array(
           'class' => 'aphront-error-view-list',
         ),
-        implode("\n", $list));
+        $list);
     } else {
       $list = null;
     }
 
     $title = $this->title;
     if (strlen($title)) {
-      $title = phutil_render_tag(
+      $title = phutil_tag(
         'h1',
         array(
           'class' => 'aphront-error-view-head',
         ),
-        phutil_escape_html($title));
+        $title);
     } else {
       $title = null;
     }
 
     $this->severity = nonempty($this->severity, self::SEVERITY_ERROR);
 
-    $more_classes = array();
-    $more_classes[] = 'aphront-error-severity-'.$this->severity;
-    $more_classes = implode(' ', $more_classes);
+    $classes = array();
+    $classes[] = $this->getBaseClass();
+    $classes[] = 'aphront-error-severity-'.$this->severity;
+    $classes = implode(' ', $classes);
 
-    return phutil_render_tag(
+    $children = $this->renderChildren();
+    $children[] = $list;
+
+    return phutil_tag(
       'div',
       array(
         'id' => $this->id,
-        'class' => 'aphront-error-view '.$more_classes,
+        'class' => $classes,
       ),
-      $title.
-      phutil_render_tag(
-        'div',
-        array(
-          'class' => 'aphront-error-view-body',
-        ),
-        $this->renderChildren().
-        $list));
+      array(
+        $title,
+        phutil_tag(
+          'div',
+          array(
+            'class' => 'aphront-error-view-body',
+          ),
+          $children),
+      ));
   }
 }

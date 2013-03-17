@@ -47,32 +47,25 @@ final class PhabricatorOwnersDetailController
 
     $rows = array();
 
-    $rows[] = array(
-      'Name',
-      phutil_escape_html($package->getName()));
-    $rows[] = array(
-      'Description',
-      phutil_escape_html($package->getDescription()));
+    $rows[] = array('Name', $package->getName());
+    $rows[] = array('Description', $package->getDescription());
 
     $primary_owner = null;
     $primary_phid = $package->getPrimaryOwnerPHID();
     if ($primary_phid && isset($handles[$primary_phid])) {
-      $primary_owner =
-        '<strong>'.$handles[$primary_phid]->renderLink().'</strong>';
+      $primary_owner = phutil_tag(
+        'strong',
+        array(),
+        $handles[$primary_phid]->renderLink());
     }
-    $rows[] = array(
-      'Primary Owner',
-      $primary_owner,
-      );
+    $rows[] = array('Primary Owner', $primary_owner);
 
     $owner_links = array();
     foreach ($owners as $owner) {
       $owner_links[] = $handles[$owner->getUserPHID()]->renderLink();
     }
-    $owner_links = implode('<br />', $owner_links);
-    $rows[] = array(
-      'Owners',
-      $owner_links);
+    $owner_links = phutil_implode_html(phutil_tag('br'), $owner_links);
+    $rows[] = array('Owners', $owner_links);
 
     $rows[] = array(
       'Auditing',
@@ -81,7 +74,10 @@ final class PhabricatorOwnersDetailController
 
     $path_links = array();
     foreach ($paths as $path) {
-      $repo = $repositories[$path->getRepositoryPHID()];
+      $repo = idx($repositories, $path->getRepositoryPHID());
+      if (!$repo) {
+        continue;
+      }
       $href = DiffusionRequest::generateDiffusionURI(
         array(
           'callsign' => $repo->getCallsign(),
@@ -89,20 +85,21 @@ final class PhabricatorOwnersDetailController
           'path'     => $path->getPath(),
           'action'   => 'browse'
         ));
-      $repo_name = '<strong>'.phutil_escape_html($repo->getName()).
-                   '</strong>';
-      $path_link = phutil_render_tag(
+      $repo_name = phutil_tag('strong', array(), $repo->getName());
+      $path_link = phutil_tag(
         'a',
         array(
           'href' => (string) $href,
         ),
-        phutil_escape_html($path->getPath()));
-      $path_links[] = $repo_name.' '.$path_link;
+        $path->getPath());
+      $path_links[] = hsprintf(
+        '%s %s %s',
+        ($path->getExcluded() ? "\xE2\x80\x93" : '+'),
+        $repo_name,
+        $path_link);
     }
-    $path_links = implode('<br />', $path_links);
-    $rows[] = array(
-      'Paths',
-      $path_links);
+    $path_links = phutil_implode_html(phutil_tag('br'), $path_links);
+    $rows[] = array('Paths', $path_links);
 
     $table = new AphrontTableView($rows);
     $table->setColumnClasses(
@@ -112,10 +109,9 @@ final class PhabricatorOwnersDetailController
       ));
 
     $panel = new AphrontPanelView();
-    $panel->setHeader(
-      'Package Details for "'.phutil_escape_html($package->getName()).'"');
+    $panel->setHeader('Package Details for "'.$package->getName().'"');
     $panel->addButton(
-      javelin_render_tag(
+      javelin_tag(
         'a',
         array(
           'href' => '/owners/delete/'.$package->getID().'/',
@@ -124,7 +120,7 @@ final class PhabricatorOwnersDetailController
         ),
         'Delete Package'));
     $panel->addButton(
-      phutil_render_tag(
+      phutil_tag(
         'a',
         array(
           'href' => '/owners/edit/'.$package->getID().'/',
@@ -146,7 +142,7 @@ final class PhabricatorOwnersDetailController
 
     $attention_query = id(new PhabricatorAuditCommitQuery())
       ->withPackagePHIDs(array($package->getPHID()))
-      ->withStatus(PhabricatorAuditCommitQuery::STATUS_OPEN)
+      ->withStatus(PhabricatorAuditCommitQuery::STATUS_CONCERN)
       ->needCommitData(true)
       ->needAudits(true)
       ->setLimit(10);
@@ -159,7 +155,7 @@ final class PhabricatorOwnersDetailController
       $commit_views[] = array(
         'view'    => $view,
         'header'  => 'Commits in this Package that Need Attention',
-        'button'  => phutil_render_tag(
+        'button'  => phutil_tag(
           'a',
           array(
             'href'  => $commit_uri->alter('status', 'open'),
@@ -184,7 +180,7 @@ final class PhabricatorOwnersDetailController
     $commit_views[] = array(
       'view'    => $view,
       'header'  => 'Recent Commits in Package',
-      'button'  => phutil_render_tag(
+      'button'  => phutil_tag(
         'a',
         array(
           'href'  => $commit_uri,
@@ -203,7 +199,7 @@ final class PhabricatorOwnersDetailController
     $commit_panels = array();
     foreach ($commit_views as $commit_view) {
       $commit_panel = new AphrontPanelView();
-      $commit_panel->setHeader(phutil_escape_html($commit_view['header']));
+      $commit_panel->setHeader($commit_view['header']);
       if (isset($commit_view['button'])) {
         $commit_panel->addButton($commit_view['button']);
       }
@@ -223,12 +219,9 @@ final class PhabricatorOwnersDetailController
       ));
   }
 
-  protected function getExtraPackageViews() {
+  protected function getExtraPackageViews(AphrontSideNavFilterView $view) {
     $package = $this->package;
-    return array(
-      array('name' => 'Details',
-            'key'  => 'package/'.$package->getID(),
-        ));
+    $view->addFilter('package/'.$package->getID(), 'Details');
   }
 
 }

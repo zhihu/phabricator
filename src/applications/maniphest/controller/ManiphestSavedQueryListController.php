@@ -40,7 +40,7 @@ final class ManiphestSavedQueryListController extends ManiphestController {
         $default = $query;
       }
       $rows[] = array(
-        phutil_render_tag(
+        phutil_tag(
           'input',
           array(
             'type'      => 'radio',
@@ -48,20 +48,20 @@ final class ManiphestSavedQueryListController extends ManiphestController {
             'value'     => $query->getID(),
             'checked'   => ($query->getIsDefault() ? 'checked' : null),
           )),
-        phutil_render_tag(
+        phutil_tag(
           'a',
           array(
             'href' => '/maniphest/view/custom/?key='.$query->getQueryKey(),
           ),
-          phutil_escape_html($query->getName())),
-        phutil_render_tag(
+          $query->getName()),
+        phutil_tag(
           'a',
           array(
             'href'  => '/maniphest/custom/edit/'.$query->getID().'/',
             'class' => 'grey small button',
           ),
           'Edit'),
-        javelin_render_tag(
+        javelin_tag(
           'a',
           array(
             'href'  => '/maniphest/custom/delete/'.$query->getID().'/',
@@ -73,7 +73,7 @@ final class ManiphestSavedQueryListController extends ManiphestController {
     }
 
     $rows[] = array(
-      phutil_render_tag(
+      phutil_tag(
         'input',
         array(
           'type'      => 'radio',
@@ -81,7 +81,7 @@ final class ManiphestSavedQueryListController extends ManiphestController {
           'value'     => 0,
           'checked'   => ($default === null ? 'checked' : null),
         )),
-      '<em>No Default</em>',
+      phutil_tag('em', array(), pht('No Default')),
       '',
       '',
     );
@@ -89,10 +89,10 @@ final class ManiphestSavedQueryListController extends ManiphestController {
     $table = new AphrontTableView($rows);
     $table->setHeaders(
       array(
-        'Default',
-        'Name',
-        'Edit',
-        'Delete',
+        pht('Default'),
+        pht('Name'),
+        pht('Edit'),
+        pht('Delete'),
       ));
     $table->setColumnClasses(
       array(
@@ -103,15 +103,15 @@ final class ManiphestSavedQueryListController extends ManiphestController {
       ));
 
     $panel = new AphrontPanelView();
-    $panel->setHeader('Saved Custom Queries');
+    $panel->setHeader(pht('Saved Custom Queries'));
     $panel->addButton(
-      phutil_render_tag(
+      phutil_tag(
         'button',
         array(),
-        'Save Default Query'));
+        pht('Save Default Query')));
     $panel->appendChild($table);
 
-    $form = phabricator_render_form(
+    $form = phabricator_form(
       $user,
       array(
         'method' => 'POST',
@@ -122,10 +122,11 @@ final class ManiphestSavedQueryListController extends ManiphestController {
     $nav->selectFilter('saved', 'saved');
     $nav->appendChild($form);
 
-    return $this->buildStandardPageResponse(
+    return $this->buildApplicationPage(
       $nav,
       array(
-        'title' => 'Saved Queries',
+        'title' => pht('Saved Queries'),
+        'device' => true,
       ));
   }
 

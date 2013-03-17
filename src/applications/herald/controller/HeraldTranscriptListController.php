@@ -58,7 +58,7 @@ final class HeraldTranscriptListController extends HeraldController {
         $handles[$xscript['objectPHID']]->renderLink(),
         $xscript['dryRun'] ? 'Yes' : '',
         number_format((int)(1000 * $xscript['duration'])).' ms',
-        phutil_render_tag(
+        phutil_tag(
           'a',
           array(
             'href' => '/herald/transcript/'.$xscript['id'].'/',
@@ -90,13 +90,20 @@ final class HeraldTranscriptListController extends HeraldController {
 
     // Render the whole page.
     $panel = new AphrontPanelView();
-    $panel->setHeader('Herald Transcripts');
+    $panel->setHeader(pht('Herald Transcripts'));
     $panel->appendChild($table);
     $panel->appendChild($pager);
+    $panel->setNoBackground();
 
     $nav = $this->renderNav();
     $nav->selectFilter('transcript');
     $nav->appendChild($panel);
+
+    $crumbs = id($this->buildApplicationCrumbs())
+      ->addCrumb(
+        id(new PhabricatorCrumbView())
+          ->setName(pht('Transcripts')));
+    $nav->setCrumbs($crumbs);
 
     return $this->buildStandardPageResponse(
       $nav,

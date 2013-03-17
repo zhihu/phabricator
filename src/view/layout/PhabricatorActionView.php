@@ -3,12 +3,21 @@
 final class PhabricatorActionView extends AphrontView {
 
   private $name;
-  private $user;
   private $icon;
   private $href;
   private $disabled;
   private $workflow;
   private $renderAsForm;
+  private $download;
+
+  public function setDownload($download) {
+    $this->download = $download;
+    return $this;
+  }
+
+  public function getDownload() {
+    return $this->download;
+  }
 
   public function setHref($href) {
     $this->href = $href;
@@ -40,20 +49,22 @@ final class PhabricatorActionView extends AphrontView {
     return $this;
   }
 
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
-    return $this;
-  }
-
   public function render() {
 
     $icon = null;
     if ($this->icon) {
-      $icon = phutil_render_tag(
+
+      $suffix = '';
+      if ($this->disabled) {
+        $suffix = '-grey';
+      }
+
+      require_celerity_resource('sprite-icon-css');
+      $icon = phutil_tag(
         'span',
         array(
-          'class' => 'phabricator-action-view-icon autosprite '.
-                       'action-'.$this->icon,
+          'class' => 'phabricator-action-view-icon sprite-icon '.
+                       'action-'.$this->icon.$suffix,
         ),
         '');
     }
@@ -65,38 +76,46 @@ final class PhabricatorActionView extends AphrontView {
             'Call setUser() when rendering an action as a form.');
         }
 
-        $item = javelin_render_tag(
+        $item = javelin_tag(
           'button',
           array(
             'class' => 'phabricator-action-view-item',
           ),
-          phutil_escape_html($this->name));
+          $this->name);
 
-        $item = phabricator_render_form(
+        $sigils = array();
+        if ($this->workflow) {
+          $sigils[] = 'workflow';
+        }
+        if ($this->download) {
+          $sigils[] = 'download';
+        }
+
+        $item = phabricator_form(
           $this->user,
           array(
             'action'    => $this->href,
             'method'    => 'POST',
-            'sigil'     => $this->workflow ? 'workflow' : null,
+            'sigil'     => implode(' ', $sigils),
           ),
           $item);
       } else {
-        $item = javelin_render_tag(
+        $item = javelin_tag(
           'a',
           array(
             'href'  => $this->href,
             'class' => 'phabricator-action-view-item',
             'sigil' => $this->workflow ? 'workflow' : null,
           ),
-          phutil_escape_html($this->name));
+          $this->name);
       }
     } else {
-      $item = phutil_render_tag(
+      $item = phutil_tag(
         'span',
         array(
           'class' => 'phabricator-action-view-item',
         ),
-        phutil_escape_html($this->name));
+        $this->name);
     }
 
     $classes = array();
@@ -105,41 +124,33 @@ final class PhabricatorActionView extends AphrontView {
       $classes[] = 'phabricator-action-view-disabled';
     }
 
-    return phutil_render_tag(
+    return phutil_tag(
       'li',
       array(
         'class' => implode(' ', $classes),
       ),
-      $icon.$item);
+      array($icon, $item));
   }
 
   public static function getAvailableIcons() {
-    return array(
-      'delete',
-      'download',
-      'edit',
-      'file',
-      'flag-0',
-      'flag-1',
-      'flag-2',
-      'flag-3',
-      'flag-4',
-      'flag-5',
-      'flag-6',
-      'flag-7',
-      'flag-ghost',
-      'fork',
-      'move',
-      'new',
-      'preview',
-      'subscribe-add',
-      'subscribe-auto',
-      'subscribe-delete',
-      'undo',
-      'unlock',
-      'unpublish',
-      'world',
-    );
+    $root = dirname(phutil_get_library_root('phabricator'));
+    $path = $root.'/resources/sprite/manifest/icon.json';
+    $data = Filesystem::readFile($path);
+    $manifest = json_decode($data, true);
+
+    $results = array();
+    $prefix = 'action-';
+    foreach ($manifest['sprites'] as $sprite) {
+      $name = $sprite['name'];
+      if (preg_match('/-(white|grey)$/', $name)) {
+        continue;
+      }
+      if (!strncmp($name, $prefix, strlen($prefix))) {
+        $results[] = substr($name, strlen($prefix));
+      }
+    }
+
+    return $results;
   }
 
 }

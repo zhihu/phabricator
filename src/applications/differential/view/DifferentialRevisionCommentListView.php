@@ -6,7 +6,6 @@ final class DifferentialRevisionCommentListView extends AphrontView {
   private $handles;
   private $inlines;
   private $changesets;
-  private $user;
   private $target;
   private $versusDiffID;
   private $id;
@@ -32,11 +31,6 @@ final class DifferentialRevisionCommentListView extends AphrontView {
   public function setChangesets(array $changesets) {
     assert_instances_of($changesets, 'DifferentialChangeset');
     $this->changesets = $changesets;
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -165,34 +159,40 @@ final class DifferentialRevisionCommentListView extends AphrontView {
         array(
           'markup' => implode("\n", $hidden),
         ));
-      $hidden = javelin_render_tag(
+      $hidden = javelin_tag(
         'div',
         array(
           'sigil' =>  "differential-all-comments-container",
         ),
-        '<div class="differential-older-comments-are-hidden">'.
-          number_format(count($hidden)).' older comments are hidden. '.
-          javelin_render_tag(
-            'a',
-            array(
-              'href' => '#',
-              'mustcapture' => true,
-              'sigil' => 'differential-show-all-comments',
-            ),
-            'Show all comments.').
-        '</div>');
+        phutil_tag(
+          'div',
+          array(
+            'class' => 'differential-older-comments-are-hidden',
+          ),
+          array(
+            pht(
+              '%s older comments are hidden.',
+              new PhutilNumber(count($hidden))),
+            ' ',
+            javelin_tag(
+              'a',
+              array(
+                'href' => '#',
+                'mustcapture' => true,
+                'sigil' => 'differential-show-all-comments',
+              ),
+              pht('Show all comments.')),
+          )));
     } else {
       $hidden = null;
     }
 
-    return javelin_render_tag(
+    return javelin_tag(
       'div',
       array(
         'class' => 'differential-comment-list',
         'id' => $this->getID(),
       ),
-      implode("\n", $header).
-      $hidden.
-      implode("\n", $visible));
+      array_merge($header, array($hidden), $visible));
   }
 }

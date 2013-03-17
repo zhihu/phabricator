@@ -15,7 +15,6 @@ final class ManiphestTransactionDetailView extends ManiphestView {
 
   private $renderSummaryOnly;
   private $renderFullSummary;
-  private $user;
 
   private $auxiliaryFields;
 
@@ -71,11 +70,6 @@ final class ManiphestTransactionDetailView extends ManiphestView {
 
   public function setCommentNumber($comment_number) {
     $this->commentNumber = $comment_number;
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -170,26 +164,32 @@ final class ManiphestTransactionDetailView extends ManiphestView {
       if ($this->getRenderFullSummary()) {
         $full_summary = $this->renderFullSummary($transaction);
       }
-      $descs[] = javelin_render_tag(
+      $descs[] = javelin_tag(
         'div',
         array(
           'sigil' => 'maniphest-transaction-description',
         ),
-        $author->renderLink().' '.$desc.'.'.$full_summary);
+        array(
+          $author->renderLink(),
+          ' ',
+          $desc,
+          '.',
+          $full_summary,
+        ));
     }
 
     if ($this->getRenderSummaryOnly()) {
-      return implode("\n", $descs);
+      return phutil_implode_html("\n", $descs);
     }
 
     if ($comment_transaction && $comment_transaction->hasComments()) {
       $comment_block = $this->markupEngine->getOutput(
         $comment_transaction,
         ManiphestTransaction::MARKUP_FIELD_BODY);
-      $comment_block =
-        '<div class="maniphest-transaction-comments phabricator-remarkup">'.
-          $comment_block.
-        '</div>';
+      $comment_block = phutil_tag(
+        'div',
+        array('class' => 'maniphest-transaction-comments phabricator-remarkup'),
+        $comment_block);
     } else {
       $comment_block = null;
     }
@@ -212,7 +212,9 @@ final class ManiphestTransactionDetailView extends ManiphestView {
       $xaction_view->setEpoch($any_transaction->getDateCreated());
       if ($this->commentNumber) {
         $anchor_name = 'comment-'.$this->commentNumber;
-        $anchor_text = 'T'.$any_transaction->getTaskID().'#'.$anchor_name;
+        $anchor_text =
+          'T'.$any_transaction->getTaskID().
+          '#'.$this->commentNumber;
 
         $xaction_view->setAnchor($anchor_name, $anchor_text);
       }
@@ -551,6 +553,11 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         return array($type, ' brazenly '.$type."'d", $classes);
     }
 
+    // TODO: [HTML] This code will all be rewritten when we switch to using
+    // ApplicationTransactions. It does not handle HTML or translations
+    // correctly right now.
+    $desc = phutil_safe_html($desc);
+
     return array($verb, $desc, $classes);
   }
 
@@ -559,8 +566,10 @@ final class ManiphestTransactionDetailView extends ManiphestView {
       case ManiphestTransactionType::TYPE_DESCRIPTION:
         $id = $transaction->getID();
 
-        $old_text = wordwrap($transaction->getOldValue(), 80);
-        $new_text = wordwrap($transaction->getNewValue(), 80);
+        $old_text = phutil_utf8_hard_wrap($transaction->getOldValue(), 80);
+        $old_text = implode("\n", $old_text);
+        $new_text = phutil_utf8_hard_wrap($transaction->getNewValue(), 80);
+        $new_text = implode("\n", $new_text);
 
         $engine = new PhabricatorDifferenceEngine();
         $changeset = $engine->generateChangesetFromFileContent($old_text,
@@ -571,6 +580,7 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         $parser = new DifferentialChangesetParser();
         $parser->setChangeset($changeset);
         $parser->setRenderingReference($id);
+        $parser->setMarkupEngine($this->markupEngine);
         $parser->setWhitespaceMode($whitespace_mode);
 
         $spec = $this->getRangeSpecification();
@@ -589,7 +599,7 @@ final class ManiphestTransactionDetailView extends ManiphestView {
 
     Javelin::initBehavior('maniphest-transaction-expand');
 
-    return javelin_render_tag(
+    return javelin_tag(
       'a',
       array(
         'href'          => '/maniphest/task/descriptionchange/'.$id.'/',
@@ -612,7 +622,11 @@ final class ManiphestTransactionDetailView extends ManiphestView {
         $links[] = $this->handles[$phid]->renderLink();
       }
     }
-    return implode(', ', $links);
+    if ($this->forEmail) {
+      return implode(', ', $links);
+    } else {
+      return phutil_implode_html(', ', $links);
+    }
   }
 
   private function renderString($string) {

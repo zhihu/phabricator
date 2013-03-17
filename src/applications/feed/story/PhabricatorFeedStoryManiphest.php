@@ -17,6 +17,7 @@ final class PhabricatorFeedStoryManiphest
     $data = $this->getStoryData();
 
     $view = new PhabricatorFeedStoryView();
+    $view->setViewed($this->getHasViewed());
 
     $line = $this->getLineForData($data);
     $view->setTitle($line);
@@ -25,6 +26,7 @@ final class PhabricatorFeedStoryManiphest
     $action = $data->getValue('action');
     switch ($action) {
       case ManiphestAction::ACTION_CREATE:
+      case ManiphestAction::ACTION_COMMENT:
         $full_size = true;
         break;
       default:
@@ -34,23 +36,27 @@ final class PhabricatorFeedStoryManiphest
 
     if ($full_size) {
       $view->setImage($this->getHandle($data->getAuthorPHID())->getImageURI());
-      $content = $this->renderSummary($data->getValue('description'));
+
+      switch ($action) {
+        case ManiphestAction::ACTION_COMMENT:
+          // I'm just fetching the comments here
+          // Don't repeat this at home!
+          $comments = $data->getValue('comments');
+          $content = $this->renderSummary($comments);
+          break;
+        default:
+          // I think this is just for create
+          $content = $this->renderSummary($data->getValue('description'));
+          break;
+      }
+
       $view->appendChild($content);
     } else {
       $view->setOneLineStory(true);
     }
 
-    return $view;
-  }
-
-  public function renderNotificationView() {
-    $data = $this->getStoryData();
-
-    $view = new PhabricatorNotificationStoryView();
-
-    $view->setTitle($this->getLineForData($data));
-    $view->setEpoch($data->getEpoch());
-    $view->setViewed($this->getHasViewed());
+    $href = $this->getHandle($data->getValue('taskPHID'))->getURI();
+    $view->setHref($href);
 
     return $view;
   }
@@ -74,20 +80,65 @@ final class PhabricatorFeedStoryManiphest
       case ManiphestAction::ACTION_REASSIGN:
         if ($owner_phid) {
           if ($owner_phid == $actor_phid) {
-            $one_line = "{$actor_link} claimed {$task_link}";
+            $one_line = hsprintf('%s claimed %s', $actor_link, $task_link);
           } else {
-            $one_line = "{$actor_link} {$verb} {$task_link} to {$owner_link}";
+            $one_line = hsprintf('%s %s %s to %s',
+              $actor_link,
+              $verb,
+              $owner_link,
+              $task_link);
           }
         } else {
-          $one_line = "{$actor_link} placed {$task_link} up for grabs";
+          $one_line = hsprintf(
+            '%s placed %s up for grabs',
+            $actor_link,
+            $task_link);
         }
         break;
       default:
-        $one_line = "{$actor_link} {$verb} {$task_link}";
+        $one_line = hsprintf('%s %s %s', $actor_link, $verb, $task_link);
         break;
     }
 
     return $one_line;
+  }
+
+  public function renderText() {
+    $actor_phid = $this->getAuthorPHID();
+    $author_name = $this->getHandle($actor_phid)->getLinkName();
+
+    $owner_phid = $this->getValue('ownerPHID');
+    $owner_name = $this->getHandle($owner_phid)->getLinkName();
+
+    $task_phid = $this->getPrimaryObjectPHID();
+    $task_handle = $this->getHandle($task_phid);
+    $task_title = $task_handle->getLinkName();
+    $task_uri = PhabricatorEnv::getURI($task_handle->getURI());
+
+    $action = $this->getValue('action');
+    $verb = ManiphestAction::getActionPastTenseVerb($action);
+
+    switch ($action) {
+      case ManiphestAction::ACTION_ASSIGN:
+      case ManiphestAction::ACTION_REASSIGN:
+        if ($owner_phid) {
+          if ($owner_phid == $actor_phid) {
+            $text = "{$author_name} claimed {$task_title}";
+          } else {
+            $text = "{$author_name} {$verb} {$task_title} to {$owner_name}";
+          }
+        } else {
+          $text = "{$author_name} placed {$task_title} up for grabs";
+        }
+        break;
+      default:
+        $text = "{$author_name} {$verb} {$task_title}";
+        break;
+    }
+
+    $text .= " {$task_uri}";
+
+    return $text;
   }
 
   public function getNotificationAggregations() {

@@ -32,7 +32,16 @@
   text-align: right;
   font-weight: bold;
   font-size: 13px;
-  color: #666666;
+  color: #666;
+}
+
+.device-phone .aphront-form-view label.aphront-form-label {
+  display: block;
+  float: none;
+  text-align: left;
+  width: 100%;
+  color: #777;
+  margin-bottom: 3px;
 }
 .aphront-form-control-select label.aphront-form-label  {
   padding-top: 4px;
@@ -44,12 +53,39 @@
   width: 55%;
 }
 
+.device-phone .aphront-form-input {
+  margin-left: 0%;
+  margin-right: 0%;
+  width: 100%;
+}
+
+.aphront-form-control-text .aphront-form-input input,
+.aphront-form-control-password .aphront-form-input input {
+  font-size: 13px;
+  padding: 4px 4px;
+  color: #333;
+  vertical-align: middle;
+  background-color: #ffffff;
+  border: 1px solid #96A6C5;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
 .aphront-form-error {
   width: 23%;
   float: right;
   color: #aa0000;
   font-weight: bold;
   padding-top: 4px;
+}
+
+.device-phone .aphront-form-error {
+  float: none;
+  width: 100%;
+}
+
+.device-phone .aphront-form-drag-and-drop-upload {
+  display: none;
 }
 
 .aphront-form-required {
@@ -59,7 +95,7 @@
 
 .aphront-form-input input,
 .aphront-form-input textarea {
-  font-size: 12px;
+  font-size: 13px;
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -82,6 +118,9 @@
 
 .aphront-form-control-textarea textarea.aphront-textarea-very-short {
   height: 3em;
+  border: 1px solid #96A6C5;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .aphront-form-control-textarea textarea.aphront-textarea-very-tall {
@@ -94,11 +133,16 @@
 
 
 .aphront-form-view .aphront-form-caption {
-  font-size: 11px;
-  color: #444444;
+  font-size: 12px;
+  color: #888;
+  padding: 2px;
   text-align: right;
   margin-right: 25%;
   margin-left: 20%;
+}
+
+.device-phone .aphront-form-view .aphront-form-caption {
+  margin-right: 0%;
 }
 
 /* override for when inside an aphront-panel-view */
@@ -129,7 +173,7 @@
 }
 
 .aphront-form-control-togglebuttons .aphront-form-input {
-  padding-top: 5px;
+  padding: 2px 0 0 0;
 }
 
 table.aphront-form-control-radio-layout,
@@ -157,15 +201,12 @@ table.aphront-form-control-checkbox-layout th {
   max-width: 400px;
 }
 
-.aphront-form-control-image .image {
-  width: 164px;
-}
-
 .aphront-form-control-image span {
   margin: 0px 4px 0px 2px;
 }
 
 .aphront-form-control-image .default-image {
+  display: inline;
   width: 12px;
 }
 
@@ -203,6 +244,18 @@ table.aphront-form-control-checkbox-layout th {
   border-color: #669966;
 }
 
+.aphront-form-crop .crop-box {
+  cursor: move;
+  overflow: hidden;
+}
+
+.aphront-form-crop .crop-box .crop-image {
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
+
+
 .calendar-button {
   display: inline;
   background: url(/rsrc/image/icon/fatcow/calendar_edit.png)
@@ -210,7 +263,6 @@ table.aphront-form-control-checkbox-layout th {
   padding: 8px 12px;
   margin: 2px 8px 2px 2px;
   position: relative;
-  z-index: 8;
   border: 1px solid transparent;
 }
 
@@ -232,7 +284,6 @@ table.aphront-form-control-checkbox-layout th {
 .fancy-datepicker {
   position: absolute;
   width: 240px;
-  z-index: 7;
 }
 
 .fancy-datepicker-core {
@@ -324,4 +375,48 @@ table.aphront-form-control-checkbox-layout th {
 
 .picker-open .calendar-button {
   border-left: 1px solid white;
+}
+
+.login-to-comment {
+  padding: 12px;
+  float: right;
+}
+
+.aphront-form-control-counted-togglebuttons {
+  padding-top: 7px;
+}
+
+.aphront-form-control-counted-togglebuttons .toggle {
+  position: relative;
+}
+
+.aphront-form-control-counted-togglebuttons .toggle-fixed {
+  cursor: pointer;
+}
+
+.aphront-form-control-counted-togglebuttons .toggle .counter {
+  font-size: smaller;
+  display: none;
+  position: absolute;
+  top: -9px;
+  right: -8px;
+  padding: 0px 3px;
+  border-radius: 3px;
+}
+
+.aphront-form-control-counted-togglebuttons:hover .toggle .counter {
+  display: block;
+}
+
+.aphront-form-control-counted-togglebuttons .toggle .counter {
+  background: gray;
+  color: #ddd;
+}
+
+.aphront-form-control-counted-togglebuttons .toggle-selected .counter {
+  color: white;
+}
+
+.aphront-form-control-counted-togglebuttons .toggle.disabled:hover {
+  background-color: #a7a7a7;
 }

@@ -6,7 +6,7 @@ final class PhabricatorApplicationPaste extends PhabricatorApplication {
     return '/paste/';
   }
 
-  public function getAutospriteName() {
+  public function getIconName() {
     return 'paste';
   }
 
@@ -18,12 +18,23 @@ final class PhabricatorApplicationPaste extends PhabricatorApplication {
     return self::GROUP_UTILITIES;
   }
 
+  public function getQuickCreateURI() {
+    return $this->getBaseURI().'create/';
+  }
+
+  public function getRemarkupRules() {
+    return array(
+      new PhabricatorPasteRemarkupRule(),
+    );
+  }
+
   public function getRoutes() {
     return array(
       '/P(?P<id>[1-9]\d*)' => 'PhabricatorPasteViewController',
       '/paste/' => array(
-        '' => 'PhabricatorPasteEditController',
-        'edit/(?P<id>[1-9]\d*)/' => 'PhabricatorPasteEditController',
+        ''                        => 'PhabricatorPasteListController',
+        'create/'                 => 'PhabricatorPasteEditController',
+        'edit/(?P<id>[1-9]\d*)/'  => 'PhabricatorPasteEditController',
         'filter/(?P<filter>\w+)/' => 'PhabricatorPasteListController',
       ),
     );

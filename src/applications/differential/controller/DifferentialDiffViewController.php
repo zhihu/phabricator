@@ -19,27 +19,35 @@ final class DifferentialDiffViewController extends DifferentialController {
     if ($diff->getRevisionID()) {
       $top_panel = new AphrontPanelView();
       $top_panel->setWidth(AphrontPanelView::WIDTH_WIDE);
-      $link = phutil_render_tag(
+      $link = phutil_tag(
         'a',
         array(
           'href' => PhabricatorEnv::getURI('/D'.$diff->getRevisionID()),
         ),
-        phutil_escape_html('D'.$diff->getRevisionID()));
-      $top_panel->appendChild("<h1>This diff belongs to revision {$link}</h1>");
+        'D'.$diff->getRevisionID());
+      $top_panel->appendChild(phutil_tag(
+        'h1',
+        array(),
+        pht('This diff belongs to revision %s', $link)));
     } else {
       $action_panel = new AphrontPanelView();
       $action_panel->setHeader('Preview Diff');
       $action_panel->setWidth(AphrontPanelView::WIDTH_WIDE);
-      $action_panel->appendChild(
-        '<p class="aphront-panel-instructions">Review the diff for '.
-        'correctness. When you are satisfied, either <strong>create a new '.
-        'revision</strong> or <strong>update an existing revision</strong>.');
+      $action_panel->appendChild(hsprintf(
+        '<p class="aphront-panel-instructions">%s</p>',
+        pht(
+          'Review the diff for correctness. When you are satisfied, either '.
+          '<strong>create a new revision</strong> or <strong>update '.
+          'an existing revision</strong>.',
+          hsprintf(''))));
 
       // TODO: implmenent optgroup support in AphrontFormSelectControl?
       $select = array();
-      $select[] = '<optgroup label="Create New Revision">';
-      $select[] = '<option value="">Create a new Revision...</option>';
-      $select[] = '</optgroup>';
+      $select[] = hsprintf('<optgroup label="%s">', pht('Create New Revision'));
+      $select[] = hsprintf(
+        '<option value="">%s</option>',
+        pht('Create a new Revision...'));
+      $select[] = hsprintf('</optgroup>');
 
       $revision_data = new DifferentialRevisionListData(
         DifferentialRevisionListData::QUERY_OPEN_OWNED,
@@ -47,22 +55,24 @@ final class DifferentialDiffViewController extends DifferentialController {
       $revisions = $revision_data->loadRevisions();
 
       if ($revisions) {
-        $select[] = '<optgroup label="Update Existing Revision">';
+        $select[] = hsprintf(
+          '<optgroup label="%s">',
+          pht('Update Existing Revision'));
         foreach ($revisions as $revision) {
-          $select[] = phutil_render_tag(
+          $select[] = phutil_tag(
             'option',
             array(
               'value' => $revision->getID(),
             ),
-            phutil_escape_html($revision->getTitle()));
+            $revision->getTitle());
         }
-        $select[] = '</optgroup>';
+        $select[] = hsprintf('</optgroup>');
       }
 
-      $select =
-        '<select name="revisionID">'.
-        implode("\n", $select).
-        '</select>';
+      $select = phutil_tag(
+        'select',
+        array('name' => 'revisionID'),
+        $select);
 
       $action_form = new AphrontFormView();
       $action_form
@@ -72,25 +82,47 @@ final class DifferentialDiffViewController extends DifferentialController {
         ->addHiddenInput('viaDiffView', 1)
         ->appendChild(
           id(new AphrontFormMarkupControl())
-          ->setLabel('Attach To')
+          ->setLabel(pht('Attach To'))
           ->setValue($select))
         ->appendChild(
           id(new AphrontFormSubmitControl())
-          ->setValue('Continue'));
+          ->setValue(pht('Continue')));
 
       $action_panel->appendChild($action_form);
 
       $top_panel = $action_panel;
     }
 
-    $arc_unit = id(new DifferentialDiffProperty())->loadOneWhere(
-      'diffID = %d and name = %s',
-      $this->id,
-      'arc:unit');
-    if ($arc_unit) {
-      $test_data = array($arc_unit->getName() => $arc_unit->getData());
-    } else {
-      $test_data = array();
+    $props = id(new DifferentialDiffProperty())->loadAllWhere(
+      'diffID = %d',
+      $diff->getID());
+    $props = mpull($props, 'getData', 'getName');
+
+    $aux_fields = DifferentialFieldSelector::newSelector()
+      ->getFieldSpecifications();
+    foreach ($aux_fields as $key => $aux_field) {
+      if (!$aux_field->shouldAppearOnDiffView()) {
+        unset($aux_fields[$key]);
+      } else {
+        $aux_field->setUser($this->getRequest()->getUser());
+      }
+    }
+
+    $dict = array();
+    foreach ($aux_fields as $key => $aux_field) {
+      $aux_field->setDiff($diff);
+      $aux_field->setManualDiff($diff);
+      $aux_field->setDiffProperties($props);
+      $value = $aux_field->renderValueForDiffView();
+      if (strlen($value)) {
+        $label = rtrim($aux_field->renderLabelForDiffView(), ':');
+        $dict[$label] = $value;
+      }
+    }
+
+    $property_view = new PhabricatorPropertyListView();
+    foreach ($dict as $key => $value) {
+      $property_view->addProperty($key, $value);
     }
 
     $changesets = $diff->loadChangesets();
@@ -99,7 +131,7 @@ final class DifferentialDiffViewController extends DifferentialController {
     $table_of_contents = id(new DifferentialDiffTableOfContentsView())
       ->setChangesets($changesets)
       ->setVisibleChangesets($changesets)
-      ->setUnitTestData($test_data);
+      ->setUnitTestData(idx($props, 'arc:unit', array()));
 
     $refs = array();
     foreach ($changesets as $changeset) {
@@ -109,22 +141,23 @@ final class DifferentialDiffViewController extends DifferentialController {
     $details = id(new DifferentialChangesetListView())
       ->setChangesets($changesets)
       ->setVisibleChangesets($changesets)
-      ->setLineWidthFromChangesets($changesets)
       ->setRenderingReferences($refs)
       ->setStandaloneURI('/differential/changeset/')
+      ->setDiff($diff)
+      ->setTitle(pht('Diff %d', $diff->getID()))
       ->setUser($request->getUser());
 
     return $this->buildStandardPageResponse(
       id(new DifferentialPrimaryPaneView())
-        ->setLineWidthFromChangesets($changesets)
         ->appendChild(
           array(
             $top_panel->render(),
+            $property_view,
             $table_of_contents->render(),
             $details->render(),
           )),
       array(
-        'title' => 'Diff View',
+        'title' => pht('Diff View'),
       ));
   }
 

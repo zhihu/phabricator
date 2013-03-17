@@ -4,7 +4,6 @@ final class PonderAnswerListView extends AphrontView {
 
   private $question;
   private $handles;
-  private $user;
   private $answers;
 
   public function setQuestion($question) {
@@ -15,11 +14,6 @@ final class PonderAnswerListView extends AphrontView {
   public function setHandles(array $handles) {
     assert_instances_of($handles, 'PhabricatorObjectHandle');
     $this->handles = $handles;
-    return $this;
-  }
-
-  public function setUser(PhabricatorUser $user) {
-    $this->user = $user;
     return $this;
   }
 
@@ -76,7 +70,8 @@ final class PonderAnswerListView extends AphrontView {
 
       $panel->appendChild($view);
       $panel->appendChild($commentview);
-      $panel->appendChild('<div style="height: 40px; clear : both"></div>');
+      $panel->appendChild(
+        hsprintf('<div style="height: 40px; clear : both"></div>'));
 
     }
 
