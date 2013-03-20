@@ -3,9 +3,9 @@
  */
 
 .aphront-contextbar-view {
-  background: #E4EDF7;
-  padding: 10px 2em;
-  border-bottom: 1px solid #CBD9E6;
+  background: #efefef;
+  padding: 6px 2em;
+  border-bottom: 1px solid #dfdfdf;
 }
 
 .aphront-contextbar-core {
@@ -13,7 +13,8 @@
 
 .aphront-contextbar-content {
   padding-top: 5px;
-  color: #222;
+  font-size: 13px;
+  color: #666666;
 }
 
 .aphront-contextbar-buttons {
@@ -26,5 +27,5 @@
 }
 
 .aphront-contextbar-buttons a {
-  margin: 0 0 0 1em;
+  margin: 0 0 0 .5em;
 }

@@ -16,13 +16,25 @@
   min-height: 44px;
 }
 
-.phabricator-main-menu a:hover {
-  text-decoration: none;
-  opacity: .8;
+@media
+only screen and (min-device-pixel-ratio: 1.5),
+only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+  .phabricator-main-menu {
+    background-image: url(http://static.zhihu.com/static/img/sticky_header/header-bg@2x.png);
+    background-size: contain;
+  }
 }
 
 .device-desktop .phabricator-main-menu {
   height: 44px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.device-desktop .phabricator-standard-page-body {
+  padding-top: 44px;
 }
 
 .phabricator-main-menu a:hover {
@@ -42,10 +54,9 @@
 }
 
 .phabricator-main-menu-logo {
-  background: 6px 9px url(/res/da055af1/rsrc/image/custom/logo.png) no-repeat;
   display: inline-block;
-  width: 54px;
-  height: 48px;
+  width: 139px;
+  height: 44px;
   float: left;
   margin-right: 6px;
   padding-right: 6px;
@@ -174,6 +185,7 @@
 .phabricator-main-menu-search input {
   outline: 0;
   margin: 0;
+
   width: 100%;
   right: 0;
   position: absolute;
@@ -210,6 +222,7 @@
   box-shadow: none;
   text-shadow: none;
   min-width: 0;
+
   height: 20px;
   width: 20px;
   top: 11px;
@@ -280,7 +293,6 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   display: inline-block;
   border-radius: 15px;
   float: left;
-  background: rgba(0,0,0,.2);
   height: 20px;
   padding: 2px 10px 3px 8px;
   margin-top: 9px;
@@ -351,7 +363,6 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   background-image: url(/rsrc/image/texture/dark-menu.png);
   padding: 4px 0;
   display: block;
-  background: url(/res/005c7630/rsrc/image/custom/noti.png) no-repeat;
 }
 
 
@@ -425,9 +436,6 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
 }
 
 .device-desktop .phabricator-core-menu .phabricator-core-menu-item-profile {
-  border-width: 0 1px;
-  border-style: solid;
-  border-color: #44494d;
   margin: 0 8px;
 }
 

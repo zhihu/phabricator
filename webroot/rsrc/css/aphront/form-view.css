@@ -16,17 +16,13 @@
   padding: 1em;
 }
 
-.aphront-panel-header {
-  margin-bottom: 15px;
-}
-
 /*fall back for homepage*/
 .aphront-side-nav-content .aphront-panel-header {
   margin: 0;
 }
 
 .aphront-form-view label.aphront-form-label {
-  padding-top: 8px;
+  padding-top: 4px;
   width: 19%;
   float: left;
   text-align: right;
@@ -229,14 +225,15 @@ table.aphront-form-control-checkbox-layout th {
 }
 
 .drag-and-drop-instructions {
-  color: #555;
-  padding: 15px;
+  color: #333333;
+  font-size: 11px;
+  padding: 6px 8px;
 }
 
 .drag-and-drop-file-target {
-  border: 1px dashed #BBB;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  border: 1px dashed #bfbfbf;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .aphront-textarea-drag-and-drop {

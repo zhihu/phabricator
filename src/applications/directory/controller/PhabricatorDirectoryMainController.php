@@ -62,7 +62,7 @@ final class PhabricatorDirectoryMainController
     return $this->buildStandardPageResponse(
       $nav,
       array(
-        'title' => '知乎海盗船(Phabricator)',
+        'title' => '知乎海盗船 (Phabricator)',
       ));
   }
 

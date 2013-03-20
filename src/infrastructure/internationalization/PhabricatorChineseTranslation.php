@@ -175,7 +175,6 @@ final class PhabricatorChineseTranslation
       'added project %s' => '把任务添加进了项目：%s',
       'added %s to CC' => '把 %s 加进了 CC',
       'added CCs: %s' => '把他们加进了 CC：%s',
-      'Closed' => '已关闭',
       'closed this task as "%s"' => '关闭了这个任务：%s',
       'assigned this task to %s' => '把这个任务分配给了：%s',
       'added %d dependent task(s): %s' => '添加了父任务：%2$s',
@@ -192,9 +191,9 @@ final class PhabricatorChineseTranslation
       'file(s)' => '文件',
       'raised the priority of this task from "%s" to "%s"' => '将任务到优先级从 %s 提高为 %s',
 
-      'Status' => '状态',
       'Assigned To' => '负责人',
       'Priority' => '优先级',
+      'Subscribers' => '订阅者',
       'CC' => '抄送',
       'Author' => '创建人',
       'Projects' => '项目',
