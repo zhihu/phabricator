@@ -16,9 +16,10 @@ input.inputsubmit {
   font-weight: bold;
   font-size: 13px;
   display: inline-block;
+  padding: 3px 10px 4px;
   text-align: center;
-  padding: 4px 10px;
-  cursor: pointer;
+  white-space: nowrap;
+
   border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
