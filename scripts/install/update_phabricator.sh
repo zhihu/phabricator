@@ -33,14 +33,17 @@ $ROOT/phabricator/bin/phd stop
 # Stop the webserver (apache, nginx, lighttpd, etc). This command will differ
 # depending on which system and webserver you are running: replace it with an
 # appropriate command for your system.
-sudo /etc/init.d/httpd stop
+#sudo /etc/init.d/httpd stop
 
 # Upgrade the database schema. You may want to add the "--force" flag to allow
 # this script to run noninteractively.
 $ROOT/phabricator/bin/storage upgrade
 
+$ROOT/phabricator/scripts/celerity_mapper.php $ROOT/phabricator/webroot
+$ROOT/arcanist/bin/arc liberate $ROOT/phabricator/src
+
 # Restart the webserver. As above, this depends on your system and webserver.
-sudo /etc/init.d/httpd start
+#sudo /etc/init.d/httpd start
 
 # Restart daemons.
 $ROOT/phabricator/bin/phd start
