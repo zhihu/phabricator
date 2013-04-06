@@ -22,6 +22,7 @@ cd $ROOT/arcanist
 git pull
 
 cd $ROOT/phabricator
+git checkout -- .
 git pull
 
 

@@ -34,7 +34,7 @@ final class PhabricatorRemarkupRuleEmoji
   private function markupEmoji($matches) {
     $name = $matches[1];
     if ($this->hasEmoji($name)) {
-      $img = phutil_render_tag(
+      $img = phutil_tag(
         'img',
         array(
           'alt'    => $name,
