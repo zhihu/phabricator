@@ -11,37 +11,30 @@
 */
 
 .phabricator-main-menu {
-/*  background: #2d3236;
-  background-image: url(/rsrc/image/main_texture.png);
-  background-repeat: repeat-x;
-  position: relative;
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.25);
-<<<<<<< HEAD
-  height: 44px;*/
-
   background-image: url(http://static.zhihu.com/static/img/sticky_header/header-bg.png);
   position: relative;
-  height: 48px;
-  z-index: 6;
-}
-
-.phabricator-main-menu a:hover {
-  text-decoration: none;
-  opacity: .8;
-||||||| merged common ancestors
-  height: 44px;
-  z-index: 6;
-}
-
-.phabricator-main-menu a:hover {
-  text-decoration: none;
-=======
   min-height: 44px;
->>>>>>> upstream/master
+}
+
+@media
+only screen and (min-device-pixel-ratio: 1.5),
+only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+  .phabricator-main-menu {
+    background-image: url(http://static.zhihu.com/static/img/sticky_header/header-bg@2x.png);
+    background-size: contain;
+  }
 }
 
 .device-desktop .phabricator-main-menu {
   height: 44px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.device-desktop .phabricator-standard-page-body {
+  padding-top: 44px;
 }
 
 .phabricator-main-menu a:hover {
@@ -62,12 +55,12 @@
 
 .phabricator-main-menu-logo {
   display: inline-block;
-<<<<<<< HEAD
-  height: 48px;
-  width: 54px;
-  margin: 0 6px;
-  background: 6px 9px url(/res/da055af1/rsrc/image/custom/logo.png) no-repeat;
+  width: 139px;
+  height: 44px;
   float: left;
+  margin-right: 6px;
+  padding-right: 6px;
+  padding-left: 6px;
 }
 
 .phabricator-main-menu-phriction-logo,
@@ -91,31 +84,8 @@
 
 .phabricator-main-menu-create-task-logo {
   background: 6px 11px url(/res/da055af1/rsrc/image/custom/create-header.png) no-repeat;
-||||||| merged common ancestors
-  height: 44px;
-  width: 170px;
-  margin-right: 12px;
-  background: 6px 9px url(/rsrc/image/header_logo.png) no-repeat;
-=======
-  width: 139px;
-  height: 44px;
-  float: left;
-  margin-right: 6px;
-  padding-right: 6px;
-  padding-left: 6px;
->>>>>>> upstream/master
 }
 
-<<<<<<< HEAD
-.phabricator-main-menu-logo span,
-.phabricator-main-menu-phriction-logo span,
-.phabricator-main-menu-maniphest-logo span,
-.phabricator-main-menu-create-task-logo span {
-  display: none;
-||||||| merged common ancestors
-.phabricator-main-menu-logo span {
-  display: none;
-=======
 .phabricator-main-menu-logo:hover {
   background-color: #3a4247;
 }
@@ -125,11 +95,14 @@
   width: 139px;
   height: 25px;
   top: 9px;
->>>>>>> upstream/master
 }
 
-.device .phabricator-main-menu-logo {
-  display: none;
+.device-phone .phabricator-main-menu-logo {
+  margin-left: -45px;
+}
+
+.device .phabricator-main-menu-logo:hover {
+  background-color: transparent;
 }
 
 /* - Expand/Collapse Button ----------------------------------------------------
@@ -139,139 +112,23 @@
 
 */
 
-.phabricator-main-menu-expand-button {
-  position: absolute;
-  top: 7px;
-  display: block;
-  width: 40px;
-  height: 28px;
-}
-
 .phabricator-menu-button-icon {
-  position: absolute;
   width: 24px;
-  height: 20px;
-  top: 5px;
-  left: 8px;
+  height: 24px;
+  float: left;
+  margin: 10px 10px 0 5px;
 }
 
-.phabricator-expand-core-menu {
-  left: 5px;
+.phabricator-expand-application-menu,
+.phabricator-expand-search-menu {
+  float: right;
 }
 
-<<<<<<< HEAD
-
-/* - Icon Menus ----------------------------------------------------------------
-
-  These are the small icons for actions like "Settings" and "Log Out" which
-  appear on the right side of the main menu. On tablets and phones these layout
-  vertically.
-
-*/
-
-.phabricator-main-menu-icon {
-  width: 28px;
-  height: 28px;
-  margin: 9px;
-  display: inline-block;
-||||||| merged common ancestors
-
-/* - Icon Menus ----------------------------------------------------------------
-
-  These are the small icons for actions like "Settings" and "Log Out" which
-  appear on the right side of the main menu. On tablets and phones these layout
-  vertically.
-
-*/
-
-.phabricator-main-menu-icon {
-  width: 26px;
-  height: 26px;
-  margin: 9px 6px;
-  display: inline-block;
-=======
-.phabricator-expand-application-menu {
-  right: 5px;
->>>>>>> upstream/master
-}
-
+.device-desktop .phabricator-main-menu-search-button,
 .device-desktop .phabricator-main-menu-expand-button {
   display: none;
 }
 
-.device .phabricator-main-menu-expand-button {
-  display: block;
-<<<<<<< HEAD
-  line-height: 44px;
-  left: 60px;
-  right: 0px;
-  top: 0px;
-}
-
-.device-tablet .phabricator-main-menu-icon,
-.device-phone .phabricator-main-menu-icon {
-  margin-left: 20px;
-  position: absolute;
-}
-
-.main-menu-item-icon-profile {
-  background-repeat: no-repeat;
-  background-size: 28px 28px;
-  margin: 8px;
-}
-
-.device-desktop .main-menu-item-icon-profile {
-  background-position: 0 0;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, .15);
-||||||| merged common ancestors
-  line-height: 44px;
-  left: 60px;
-  right: 0px;
-  top: 0px;
-}
-
-.device-tablet .phabricator-main-menu-icon,
-.device-phone .phabricator-main-menu-icon {
-  margin-left: 20px;
-  position: absolute;
-}
-
-.main-menu-item-icon-profile {
-  background-repeat: no-repeat;
-  background-size: 26px 26px;
-}
-
-.device-desktop .main-menu-item-icon-profile {
-  background-position: 12px 9px;
-  margin: 0 6px;
-  padding: 0 12px;
-  height: 44px;
-  border-width: 0 1px;
-  border-style: solid;
-  border-color: #44494d;
-=======
->>>>>>> upstream/master
-}
-
-<<<<<<< HEAD
-.main-menu-item-icon-profile-not-selected:hover {
-  border: 1px solid rgba(0, 0, 0, 0.5);
-}
-
-.main-menu-item-icon-profile-selected {
-  background-color: #44494d;
-}
-||||||| merged common ancestors
-.main-menu-item-icon-profile-not-selected:hover {
-  background-color: #44494d;
-}
-
-.main-menu-item-icon-profile-selected {
-  background-color: #44494d;
-}
-=======
->>>>>>> upstream/master
 
 /* - Search --------------------------------------------------------------------
 
@@ -317,6 +174,7 @@
 .phabricator-main-menu-search input {
   outline: 0;
   margin: 0;
+
   width: 100%;
   right: 0;
   position: absolute;
@@ -353,6 +211,7 @@
   box-shadow: none;
   text-shadow: none;
   min-width: 0;
+
   height: 20px;
   width: 20px;
   top: 11px;
@@ -363,7 +222,6 @@
 .device .phabricator-main-menu-search button {
   top: 3px;
 }
-
 
 .phabricator-main-menu-search-target div.jx-typeahead-results {
   border-radius: 4px;
@@ -415,15 +273,10 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
 
 */
 
-.device .phabricator-main-menu-alerts {
-  margin-left: 60px;
-}
-
 .phabricator-main-menu-alerts {
   display: inline-block;
   border-radius: 15px;
   float: left;
-  background: rgba(0,0,0,.2);
   height: 20px;
   padding: 2px 10px 3px 8px;
   margin-top: 9px;
@@ -466,16 +319,6 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
 
 */
 
-<<<<<<< HEAD
-.phabricator-main-menu-alert {
-  display: inline-block;
-  position: relative;
-  float: left;
-||||||| merged common ancestors
-.phabricator-main-menu-alert {
-  display: inline-block;
-  position: relative;
-=======
 .device .phabricator-dark-menu,
 .device .phabricator-dark-menu a.phabricator-menu-item-type-link {
   color: #fff;
@@ -495,29 +338,15 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   .phabricator-menu-item-name {
   display: block;
   padding: 6px 0 0;
->>>>>>> upstream/master
 }
 
-<<<<<<< HEAD
-.phabricator-main-menu-alert-item {
-  width: 18px;
-  height: 28px;
-  margin: 10px 12px;
-||||||| merged common ancestors
-.phabricator-main-menu-alert-item {
-  width: 26px;
-  height: 26px;
-  margin: 9px;
-=======
 .device .phabricator-dark-menu .phabricator-menu-item-type-link {
   border-width: 1px 0;
   border-style: solid;
   border-color: #34373b transparent #282c2d;
   background-image: url(/rsrc/image/texture/dark-menu.png);
   padding: 4px 0;
->>>>>>> upstream/master
   display: block;
-  background: url(/res/005c7630/rsrc/image/custom/noti.png) no-repeat;
 }
 
 
@@ -527,22 +356,20 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
 
 */
 
-.phabricator-core-menu-icon {
-  position: absolute;
-  display: block;
-  width: 28px;
-  height: 28px;
-}
-
 .phabricator-core-menu-profile-image {
   background-size: 28px 28px;
 }
 
-.device .phabricator-core-menu {
+.device .phabricator-search-menu {
   display: none;
 }
 
-.device .phabricator-core-menu-expanded .phabricator-core-menu {
+.device-desktop .phabricator-search-menu {
+  float: right;
+  margin-right: 116px;
+}
+
+.device .phabricator-search-menu-expanded .phabricator-search-menu {
   display: block;
   padding-top: 44px;
 }
@@ -553,58 +380,42 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   line-height: 28px;
 }
 
-.device .phabricator-core-menu
-   .phabricator-menu-item-type-link .phabricator-menu-item-name {
-  margin-left: 40px;
+.device .phabricator-menu-item-type-link
+  .phabricator-core-menu-icon + .phabricator-menu-item-name {
+  margin-left: 36px;
 }
 
-.device-desktop .phabricator-core-menu {
+.device-desktop .phabricator-application-menu {
   position: absolute;
   right: 0;
   top: 0;
   vertical-align: top;
 }
 
-.device-desktop .phabricator-core-menu .phabricator-menu-item-name {
+.device-desktop .phabricator-application-menu a.phabricator-menu-item-view,
+.device-desktop .phabricator-application-menu .phabricator-menu-item-name {
   display: none;
 }
 
-.device-desktop .phabricator-core-menu .phabricator-menu-item-view {
+.device-desktop .phabricator-application-menu
+  a.phabricator-menu-item-view.phabricator-core-menu-item {
   display: block;
-<<<<<<< HEAD
-  right: -3px;
-  top: 4px;
-  padding: 0px 6px;
-  background: #CA2C2C;
-  border: 1px solid #A30101;
-  font-size: 11px;
-  border-radius: 10px;
-  font-weight: bold;
-  color: white;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-||||||| merged common ancestors
+}
 
-  right: 0px;
-  top: 2px;
-  padding: 1px 4px 2px;
+.device-desktop .phabricator-application-menu
+  a.phabricator-menu-item-view.phabricator-core-menu-item:hover {
+  background-color: #3a4247;
+}
 
-  background: #dd3333;
-
-  border: 1px solid #aa0000;
-  font-size: 11px;
-
-  box-shadow: 0px 0px 6px rgba(255, 255, 255, 0.5);
-  border-radius: 6px;
-  font-weight: bold;
-  color: #ffffff;
-=======
+.device-desktop .phabricator-application-menu .phabricator-menu-item-view {
+  display: block;
   float: left;
   position: relative;
-  min-width: 38px;
+  min-width: 40px;
   height: 44px;
 }
 
-.device-desktop .phabricator-core-menu .phabricator-core-item-device {
+.device-desktop .phabricator-application-menu .phabricator-core-item-device {
   display: none;
 }
 
@@ -617,13 +428,23 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   left: 6px;
 }
 
+<<<<<<< HEAD
+.device-desktop .phabricator-core-menu .phabricator-core-menu-item-profile {
+  margin: 0 8px;
+||||||| merged common ancestors
 .device-desktop .phabricator-core-menu .phabricator-core-menu-item-profile {
   border-width: 0 1px;
   border-style: solid;
   border-color: #44494d;
   margin: 0 8px;
+=======
+.phabricator-core-menu-icon {
+  position: absolute;
+  display: block;
+  width: 28px;
+  height: 28px;
+>>>>>>> upstream/master
 }
-
 
 /* - Application Menu ----------------------------------------------------------
 
@@ -636,12 +457,11 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   padding-top: 44px;
 }
 
-.phabricator-application-menu {
+.device .phabricator-application-menu,
+.device-desktop .phabricator-dark-menu .phabricator-menu-item-type-label {
   display: none;
 }
 
-.phabricator-application-menu .phabricator-menu-item-type-link
-  .phabricator-menu-item-name {
+.phabricator-application-menu .phabricator-menu-item-name {
   padding-left: 12px;
->>>>>>> upstream/master
 }

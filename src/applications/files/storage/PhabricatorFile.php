@@ -22,6 +22,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
   protected $storageHandle;
 
   protected $ttl;
+  protected $isExplicitUpload = 1;
 
   public function getConfiguration() {
     return array(
@@ -165,6 +166,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
       $new_file->setStorageHandle($copy_of_storage_handle);
       $new_file->setStorageFormat($copy_of_storage_format);
       $new_file->setMimeType($copy_of_mimeType);
+      $new_file->copyDimensions($file);
 
       $new_file->save();
 
@@ -245,6 +247,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
     // TODO: This is probably YAGNI, but allows for us to do encryption or
     // compression later if we want.
     $file->setStorageFormat(self::STORAGE_FORMAT_RAW);
+    $file->setIsExplicitUpload(idx($params, 'isExplicitUpload') ? 1 : 0);
 
     if (isset($params['mime-type'])) {
       $file->setMimeType($params['mime-type']);
@@ -365,7 +368,19 @@ final class PhabricatorFile extends PhabricatorFileDAO
   }
 
   public static function normalizeFileName($file_name) {
-    return preg_replace('/[^a-zA-Z0-9.~_-]/', '_', $file_name);
+    $pattern = "@[\\x00-\\x19#%&+!~'\$\"\/=\\\\?<> ]+@";
+    $file_name = preg_replace($pattern, '_', $file_name);
+    $file_name = preg_replace('@_+@', '_', $file_name);
+    $file_name = trim($file_name, '_');
+
+    $disallowed_filenames = array(
+      '.'  => 'dot',
+      '..' => 'dotdot',
+      ''   => 'file',
+    );
+    $file_name = idx($disallowed_filenames, $file_name, $file_name);
+
+    return $file_name;
   }
 
   public function delete() {
@@ -631,6 +646,20 @@ final class PhabricatorFile extends PhabricatorFileDAO
 
     if ($save) {
       $this->save();
+    }
+
+    return $this;
+  }
+
+  public function copyDimensions(PhabricatorFile $file) {
+    $metadata = $file->getMetadata();
+    $width = idx($metadata, self::METADATA_IMAGE_WIDTH);
+    if ($width) {
+      $this->metadata[self::METADATA_IMAGE_WIDTH] = $width;
+    }
+    $height = idx($metadata, self::METADATA_IMAGE_HEIGHT);
+    if ($height) {
+      $this->metadata[self::METADATA_IMAGE_HEIGHT] = $height;
     }
 
     return $this;

@@ -11,6 +11,8 @@ final class ConpherenceThreadQuery
   private $needWidgetData;
   private $needHeaderPics;
   private $needOrigPics;
+  private $needAllTransactions;
+  private $afterMessageID;
 
   public function needOrigPics($need_orig_pics) {
     $this->needOrigPics = $need_orig_pics;
@@ -27,6 +29,11 @@ final class ConpherenceThreadQuery
     return $this;
   }
 
+  public function needAllTransactions($need_all_transactions) {
+    $this->needAllTransactions = $need_all_transactions;
+    return $this;
+  }
+
   public function withIDs(array $ids) {
     $this->ids = $ids;
     return $this;
@@ -34,6 +41,12 @@ final class ConpherenceThreadQuery
 
   public function withPHIDs(array $phids) {
     $this->phids = $phids;
+    return $this;
+  }
+
+  // TODO: This is pretty hacky!!!!~~
+  public function setAfterMessageID($id) {
+    $this->afterMessageID = $id;
     return $this;
   }
 
@@ -54,8 +67,13 @@ final class ConpherenceThreadQuery
     if ($conpherences) {
       $conpherences = mpull($conpherences, null, 'getPHID');
       $this->loadParticipants($conpherences);
-      $this->loadTransactionsAndHandles($conpherences);
+
+      if ($this->needAllTransactions) {
+        $this->loadTransactionsAndHandles($conpherences);
+      }
+
       $this->loadFilePHIDs($conpherences);
+
       if ($this->needWidgetData) {
         $this->loadWidgetData($conpherences);
       }
@@ -113,7 +131,9 @@ final class ConpherenceThreadQuery
       ->setViewer($this->getViewer())
       ->withObjectPHIDs(array_keys($conpherences))
       ->needHandles(true)
+      ->setAfterID($this->afterMessageID)
       ->execute();
+
     $transactions = mgroup($transactions, 'getObjectPHID');
     foreach ($conpherences as $phid => $conpherence) {
       $current_transactions = $transactions[$phid];
@@ -153,11 +173,11 @@ final class ConpherenceThreadQuery
     // statuses of everyone currently in the conpherence
     // for a rolling one week window
     $start_of_week = phabricator_format_local_time(
-      strtotime('today'),
+      strtotime('last monday', strtotime('tomorrow')),
       $this->getViewer(),
       'U');
     $end_of_week = phabricator_format_local_time(
-      strtotime('midnight +1 week'),
+      strtotime('last monday +1 week', strtotime('tomorrow')),
       $this->getViewer(),
       'U');
     $statuses = id(new PhabricatorUserStatus())
@@ -194,7 +214,13 @@ final class ConpherenceThreadQuery
       $conpherence_files = array();
       $files_authors = array();
       foreach ($conpherence->getFilePHIDs() as $curr_phid) {
-        $conpherence_files[$curr_phid] = $files[$curr_phid];
+        $curr_file = idx($files, $curr_phid);
+        if (!$curr_file) {
+          // this file was deleted or user doesn't have permission to see it
+          // this is generally weird
+          continue;
+        }
+        $conpherence_files[$curr_phid] = $curr_file;
         // some files don't have authors so be careful
         $current_author = null;
         $current_author_phid = idx($file_author_phids, $curr_phid);

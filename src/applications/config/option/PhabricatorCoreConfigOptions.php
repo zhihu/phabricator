@@ -84,7 +84,8 @@ final class PhabricatorCoreConfigOptions
             "of the user running Phabricator (normally 'apache', 'httpd', or ".
             "'nobody'). Here you can add extra directories to the \$PATH ".
             "environment variable, for when these binaries are in ".
-            "non-standard locations."))
+            "non-standard locations. Note that you can also put binaries in ".
+            "`phabricator/support/bin`."))
         ->addExample('/usr/local/bin', pht('Add One Path'))
         ->addExample("/usr/bin\n/usr/local/bin", pht('Add Multiple Paths')),
        $this->newOption('tokenizer.ondemand', 'bool', false)
@@ -135,7 +136,15 @@ final class PhabricatorCoreConfigOptions
         ->setLocked(true)
         ->setDescription(
           pht('Array containing list of Uninstalled applications.')),
+      $this->newOption('welcome.html', 'string', null)
+        ->setLocked(true)
+        ->setDescription(
+          pht('Custom HTML to show on the main Phabricator dashboard.')),
+      $this->newOption('phabricator.cache-namespace', 'string', null)
+        ->setLocked(true)
+        ->setDescription(pht('Cache namespace.')),
       );
+
   }
 
   protected function didValidateOption(

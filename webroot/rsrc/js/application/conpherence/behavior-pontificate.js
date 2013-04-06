@@ -4,64 +4,52 @@
  *           javelin-dom
  *           javelin-util
  *           javelin-workflow
+ *           javelin-stratcom
  */
 
 JX.behavior('conpherence-pontificate', function(config) {
-
-  var root = JX.$(config.form_pane);
-
   var onsubmit = function(e) {
     e.kill();
-    var form = JX.DOM.find(root, 'form');
+
+    var form = e.getNode('tag:form');
+
+    var root = e.getNode('conpherence-layout');
+    var messages = JX.DOM.find(root, 'div', 'conpherence-messages');
+    var header = JX.DOM.find(root, 'div', 'conpherence-header');
+
     JX.Workflow.newFromForm(form)
       .setHandler(JX.bind(this, function(r) {
         // add the new transactions, probably just our post but who knows
-        var messages = JX.$(config.messages);
         JX.DOM.appendContent(messages, JX.$H(r.transactions));
         messages.scrollTop = messages.scrollHeight;
+        JX.DOM.setContent(header, JX.$H(r.header));
 
-        // update the menu entry as well
-        JX.DOM.replace(
-          JX.$(r.conpherence_phid + '-nav-item'),
-          JX.$H(r.nav_item)
-        );
-        JX.DOM.replace(
-          JX.$(r.conpherence_phid + '-menu-item'),
-          JX.$H(r.menu_item)
-        );
+        try {
+          JX.DOM.replace(
+            JX.$(r.conpherence_phid + '-nav-item'),
+            JX.$H(r.nav_item));
+        } catch (ex) {
+          // Ignore; this view may not have a menu.
+        }
 
-        // update the header
-        JX.DOM.setContent(
-          JX.$(config.header),
-          JX.$H(r.header)
-        );
+        var inputs = JX.DOM.scry(form, 'input');
+        for (var ii = 0; ii < inputs.length; ii++) {
+          JX.log(inputs[ii]);
+          if (inputs[ii].name == 'latest_transaction_id') {
+            inputs[ii].value = r.latest_transaction_id;
+            break;
+          }
+        }
 
-        // update the file widget
-        JX.DOM.setContent(
-          JX.$(config.file_widget),
-          JX.$H(r.file_widget)
-        );
-
-        // clear the textarea
         var textarea = JX.DOM.find(form, 'textarea');
         textarea.value = '';
-
       }))
     .start();
   };
 
-  JX.DOM.listen(
-    root,
+  JX.Stratcom.listen(
     ['submit', 'didSyntheticSubmit'],
-    null,
-    onsubmit
-  );
-
-  JX.DOM.listen(
-    root,
-    ['click'],
     'conpherence-pontificate',
-    onsubmit
-  );
+    onsubmit);
 
 });

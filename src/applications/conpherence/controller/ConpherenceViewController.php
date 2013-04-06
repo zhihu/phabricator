@@ -41,6 +41,7 @@ final class ConpherenceViewController extends
       ->setViewer($user)
       ->withIDs(array($conpherence_id))
       ->needHeaderPics(true)
+      ->needAllTransactions(true)
       ->executeOne();
     $this->setConpherence($conpherence);
 
@@ -48,20 +49,38 @@ final class ConpherenceViewController extends
     $transactions = $conpherence->getTransactions();
     $latest_transaction = end($transactions);
     $write_guard = AphrontWriteGuard::beginScopedUnguardedWrites();
-    $participant->markUpToDate($latest_transaction);
+    $participant->markUpToDate($conpherence, $latest_transaction);
     unset($write_guard);
 
     $header = $this->renderHeaderPaneContent();
     $messages = $this->renderMessagePaneContent();
     $content = $header + $messages;
-    return id(new AphrontAjaxResponse())->setContent($content);
+
+    if ($request->isAjax()) {
+      return id(new AphrontAjaxResponse())->setContent($content);
+    }
+
+    $layout = id(new ConpherenceLayoutView())
+      ->setBaseURI($this->getApplicationURI())
+      ->setThread($conpherence)
+      ->setHeader($header)
+      ->setMessages($messages['messages'])
+      ->setReplyForm($messages['form'])
+      ->setRole('thread');
+
+    return $this->buildApplicationPage(
+      $layout,
+      array(
+        'title' => $conpherence->getTitle(),
+        'device' => true,
+      ));
   }
 
   private function renderHeaderPaneContent() {
     require_celerity_resource('conpherence-header-pane-css');
     $conpherence = $this->getConpherence();
     $header = $this->buildHeaderPaneContent($conpherence);
-    return array('header' => $header);
+    return array('header' => hsprintf('%s', $header));
   }
 
 
@@ -75,13 +94,15 @@ final class ConpherenceViewController extends
     $transactions = $data['transactions'];
 
     $update_uri = $this->getApplicationURI('update/'.$conpherence->getID().'/');
-    $form_id = celerity_generate_unique_node_id();
+
+    Javelin::initBehavior('conpherence-pontificate');
 
     $form =
       id(new AphrontFormView())
-      ->setID($form_id)
       ->setAction($update_uri)
       ->setFlexible(true)
+      ->addSigil('conpherence-pontificate')
+      ->setWorkflow(true)
       ->setUser($user)
       ->addHiddenInput('action', 'message')
       ->addHiddenInput('latest_transaction_id', $latest_transaction_id)
@@ -90,8 +111,8 @@ final class ConpherenceViewController extends
         ->setUser($user)
         ->setName('text'))
       ->appendChild(
-        id(new ConpherencePontificateControl())
-        ->setFormID($form_id))
+        id(new AphrontFormSubmitControl())
+          ->setValue(pht('Pontificate')))
       ->render();
 
     $scrollbutton = javelin_tag(
@@ -105,7 +126,7 @@ final class ConpherenceViewController extends
       pht('Show Older Messages'));
 
     return array(
-      'messages' => $scrollbutton.$transactions,
+      'messages' => hsprintf('%s%s', $scrollbutton, $transactions),
       'form' => $form
     );
 

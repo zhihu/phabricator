@@ -80,7 +80,7 @@ final class DifferentialManiphestTasksFieldSpecification
   }
 
   public function shouldAppearOnCommitMessageTemplate() {
-    return PhabricatorEnv::getEnvConfig('maniphest.enabled');
+    return false;
   }
 
   public function shouldAppearOnCommitMessage() {
@@ -92,7 +92,7 @@ final class DifferentialManiphestTasksFieldSpecification
   }
 
   public function setValueFromParsedCommitMessage($value) {
-    $this->maniphestTasks = nonempty($value, array());
+    $this->maniphestTasks = array_unique(nonempty($value, array()));
     return $this;
   }
 
@@ -115,7 +115,7 @@ final class DifferentialManiphestTasksFieldSpecification
     $names = array();
     foreach ($this->maniphestTasks as $phid) {
       $handle = $this->getHandle($phid);
-      $names[] = 'T'.$handle->getAlternateID();
+      $names[] = $handle->getName();
     }
     return implode(', ', $names);
   }
@@ -171,6 +171,13 @@ final class DifferentialManiphestTasksFieldSpecification
       $body[] = '  '.PhabricatorEnv::getProductionURI($handle->getURI());
     }
     return implode("\n", $body);
+  }
+
+  public function getCommitMessageTips() {
+    return array(
+      'Use "Fixes T123" in your summary to mark that the current '.
+      'revision completes a given task.'
+      );
   }
 
 }

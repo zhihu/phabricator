@@ -12,6 +12,9 @@ tags
 # NetBeans project files
 /nbproject/
 
+# PhpStorm project files
+.idea/
+
 # Arcanist scratch directory
 /.arc
 
@@ -33,3 +36,6 @@ tags
 
 # User-accessible hook for adhoc debugging scripts
 /support/debug.php
+
+# Users can link binaries here
+/support/bin/*
