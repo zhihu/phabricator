@@ -4,7 +4,7 @@
 
 .phabricator-transaction-view {
   background: 0px 2px no-repeat;
-  margin: 1em 0;
+  margin: 1em 0 1.25em;
   min-height: 50px;
   padding: 2px 0px;
 }
@@ -14,11 +14,10 @@
 }
 
 .phabricator-transaction-detail {
-  border-color: #DDD;
+  border-color: #dddddd;
   border-width: 1px 10px;
   border-style: solid;
-  margin-left: 62px;
-  border-radius: 2px;
+  margin-left: 54px;
 }
 
 .device-phone .phabricator-transaction-detail {
@@ -28,8 +27,8 @@
 }
 
 .phabricator-transaction-header {
-  background: #F8F8F8;
-  padding: 12px 15px;
+  background: #f3f3f3;
+  padding: 4px 1em;
 }
 
 .phabricator-transaction-header a {
@@ -37,9 +36,9 @@
 }
 
 .phabricator-transaction-info {
-  color:       #999;
-  float:       right;
-  font-size:   11px;
+  color: #777;
+  float: right;
+  font-size: 11px;
 }
 
 .device-phone .phabricator-transaction-info {
@@ -47,8 +46,10 @@
 }
 
 .phabricator-transaction-content {
-  padding: 12px 15px;
-  overflow: auto;
+  background:     #fcfcfc;
+  line-height:    1.4em;
+  padding:        .3em 1em;
+  overflow:       auto;
 }
 
 .phabricator-transaction-subheader {
