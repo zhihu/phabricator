@@ -51,7 +51,7 @@ final class PhabricatorDirectoryMainController
     $commit_panel = $this->buildCommitPanel();
 
     $content = array(
-      $jump_panel,
+      // $jump_panel,
       $welcome_panel,
       $unbreak_panel,
       $triage_panel,
