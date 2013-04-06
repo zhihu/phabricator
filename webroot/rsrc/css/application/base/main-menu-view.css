@@ -63,6 +63,14 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
   padding-left: 6px;
 }
 
+@media
+only screen and (min-device-pixel-ratio: 1.5),
+only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+  .phabricator-main-menu-logo {
+      height: 42px;
+  }
+}
+
 .phabricator-main-menu-phriction-logo,
 .phabricator-main-menu-maniphest-logo,
 .phabricator-main-menu-create-task-logo {
@@ -413,6 +421,14 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   position: relative;
   min-width: 40px;
   height: 44px;
+}
+
+@media
+only screen and (min-device-pixel-ratio: 1.5),
+only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+  .device-desktop .phabricator-application-menu .phabricator-menu-item-view {
+      height: 42px;
+  }
 }
 
 .device-desktop .phabricator-application-menu .phabricator-core-item-device {
