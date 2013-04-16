@@ -260,12 +260,9 @@ final class PhabricatorMainMenuView extends AphrontView {
       'alert-notifications',
     );
 
-    $conpherence = id(new PhabricatorApplicationConpherence())->isBeta();
-    $allow_beta =
-      PhabricatorEnv::getEnvConfig('phabricator.show-beta-applications');
     $message_tag = '';
-
-    if (!$conpherence || $allow_beta) {
+    $conpherence = 'PhabricatorApplicationConpherence';
+    if (PhabricatorApplication::isClassInstalled($conpherence)) {
       $message_id = celerity_generate_unique_node_id();
       $message_count_id = celerity_generate_unique_node_id();
 
@@ -380,7 +377,7 @@ final class PhabricatorMainMenuView extends AphrontView {
       'span',
       array(
         'class' => 'phabricator-core-menu-icon '.
-                   'sprite-apps-large app-'.$name,
+                   'sprite-apps-large apps-'.$name,
       ),
       '');
   }

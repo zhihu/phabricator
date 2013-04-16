@@ -6,3 +6,12 @@
   color: #666;
   margin-bottom: 1em;
 }
+
+.maniphest-auxiliary-header {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333333;
+  border-bottom: 1px solid #999999;
+  padding: 12px 0 4px;
+  margin-bottom: 4px;
+}

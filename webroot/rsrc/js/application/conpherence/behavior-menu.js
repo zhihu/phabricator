@@ -2,6 +2,7 @@
  * @provides javelin-behavior-conpherence-menu
  * @requires javelin-behavior
  *           javelin-dom
+ *           javelin-util
  *           javelin-request
  *           javelin-stratcom
  *           javelin-workflow
@@ -17,25 +18,24 @@ JX.behavior('conpherence-menu', function(config) {
     visible: null
   };
 
-  function selectthreadid(id) {
+  function selectthreadid(id, updatePageData) {
     var threads = JX.DOM.scry(document.body, 'a', 'conpherence-menu-click');
     for (var ii = 0; ii < threads.length; ii++) {
       var data = JX.Stratcom.getData(threads[ii]);
       if (data.id == id) {
-        selectthread(threads[ii]);
+        selectthread(threads[ii], updatePageData);
         return;
       }
     }
   }
 
-  function selectthread(node) {
-    if (node === thread.node) {
-      return;
-    }
+  function selectthread(node, updatePageData) {
 
     if (thread.node) {
       JX.DOM.alterClass(thread.node, 'conpherence-selected', false);
-      JX.DOM.alterClass(thread.node, 'hide-unread-count', false);
+      // keep the unread-count hidden still. big TODO once we ajax in updates
+      // to threads to make this work right and move threads between read /
+      // unread
     }
 
     JX.DOM.alterClass(node, 'conpherence-selected', true);
@@ -46,10 +46,40 @@ JX.behavior('conpherence-menu', function(config) {
     var data = JX.Stratcom.getData(node);
     thread.selected = data.id;
 
-    JX.History.replace(config.base_uri + data.id + '/');
+    if (updatePageData) {
+      updatepagedata(data);
+    }
 
     redrawthread();
   }
+
+  function updatepagedata(data) {
+    var uri_suffix = thread.selected + '/';
+    if (data.use_base_uri) {
+      uri_suffix = '';
+    }
+    JX.History.replace(config.base_uri + uri_suffix);
+    if (data.title) {
+      document.title = data.title;
+    }
+  }
+
+  JX.Stratcom.listen(
+    'conpherence-update-page-data',
+    null,
+    function (e) {
+      updatepagedata(e.getData());
+    }
+  );
+
+  JX.Stratcom.listen(
+    'conpherence-selectthread',
+    null,
+    function (e) {
+      var node = JX.$(e.getData().id);
+      selectthread(node);
+    }
+  );
 
   function redrawthread() {
     if (!thread.node) {
@@ -67,6 +97,8 @@ JX.behavior('conpherence-menu', function(config) {
       new JX.Workflow(uri, {})
         .setHandler(onresponse)
         .start();
+    } else {
+      didredrawthread();
     }
 
     if (thread.visible !== null || !config.hasWidgets) {
@@ -74,26 +106,59 @@ JX.behavior('conpherence-menu', function(config) {
       new JX.Workflow(widget_uri, {})
         .setHandler(onwidgetresponse)
         .start();
+    } else {
+      updatetoggledwidget();
     }
 
     thread.visible = thread.selected;
   }
 
   function onwidgetresponse(response) {
-    var widgets = JX.$H(response.widgets);
-    var widgetsRoot = JX.$(config.widgets_pane);
-    JX.DOM.setContent(widgetsRoot, widgets);
+    var root = JX.DOM.find(document, 'div', 'conpherence-layout');
+    var widgetsRoot = JX.DOM.find(root, 'div', 'conpherence-widget-pane');
+    JX.DOM.setContent(widgetsRoot, JX.$H(response.widgets));
+    updatetoggledwidget();
+  }
+
+  function updatetoggledwidget() {
+    var device = JX.Device.getDevice();
+    if (device != 'desktop') {
+      if (config.role == 'list') {
+        JX.Stratcom.invoke(
+          'conpherence-toggle-widget',
+          null,
+          {
+            widget : 'conpherence-menu-pane'
+          }
+        );
+      } else {
+        JX.Stratcom.invoke(
+          'conpherence-toggle-widget',
+          null,
+          {
+            widget : 'conpherence-message-pane'
+          }
+        );
+      }
+    } else {
+      JX.Stratcom.invoke(
+        'conpherence-toggle-widget',
+        null,
+        {
+          widget : 'widgets-files'
+        }
+      );
+    }
   }
 
   function onresponse(response) {
     var header = JX.$H(response.header);
     var messages = JX.$H(response.messages);
     var form = JX.$H(response.form);
-    var headerRoot = JX.$(config.header);
-    var messagesRoot = JX.$(config.messages);
-    var formRoot = JX.$(config.form_pane);
-    var widgetsRoot = JX.$(config.widgets_pane);
-    var menuRoot = JX.$(config.menu_pane);
+    var root = JX.DOM.find(document, 'div', 'conpherence-layout');
+    var headerRoot = JX.DOM.find(root, 'div', 'conpherence-header-pane');
+    var messagesRoot = JX.DOM.find(root, 'div', 'conpherence-messages');
+    var formRoot = JX.DOM.find(root, 'div', 'conpherence-form');
     JX.DOM.setContent(headerRoot, header);
     JX.DOM.setContent(messagesRoot, messages);
     JX.DOM.setContent(formRoot, form);
@@ -102,9 +167,18 @@ JX.behavior('conpherence-menu', function(config) {
   }
 
   function didredrawthread() {
-    var messagesRoot = JX.$(config.messages);
+    var root = JX.DOM.find(document, 'div', 'conpherence-layout');
+    var messagesRoot = JX.DOM.find(root, 'div', 'conpherence-messages');
     messagesRoot.scrollTop = messagesRoot.scrollHeight;
   }
+
+  JX.Stratcom.listen(
+    null,
+    'conpherence-redraw-thread',
+    function (e) {
+      didredrawthread();
+    }
+  );
 
   JX.Stratcom.listen(
     'click',
@@ -120,34 +194,42 @@ JX.behavior('conpherence-menu', function(config) {
       }
 
       e.kill();
-      selectthread(e.getNode('conpherence-menu-click'));
+      selectthread(e.getNode('conpherence-menu-click'), true);
     });
 
   JX.Stratcom.listen('click', 'conpherence-edit-metadata', function (e) {
     e.kill();
-    var root = JX.$(config.form_pane);
-    var form = JX.DOM.find(root, 'form');
+    var root = e.getNode('conpherence-layout');
+    var form = JX.DOM.find(root, 'form', 'conpherence-pontificate');
     var data = e.getNodeData('conpherence-edit-metadata');
+    var header = JX.DOM.find(root, 'div', 'conpherence-header-pane');
+    var messages = JX.DOM.find(root, 'div', 'conpherence-messages');
+
     new JX.Workflow.newFromForm(form, data)
-      .setHandler(function (r) {
-        // update the header
+      .setHandler(JX.bind(this, function(r) {
+        JX.DOM.appendContent(messages, JX.$H(r.transactions));
+        messages.scrollTop = messages.scrollHeight;
+
         JX.DOM.setContent(
-          JX.$(config.header),
+          header,
           JX.$H(r.header)
         );
 
-        // update the menu entry
-        JX.DOM.replace(
-          JX.$(r.conpherence_phid + '-nav-item'),
-          JX.$H(r.nav_item)
-        );
-
-        // update the people widget
-        JX.DOM.setContent(
-          JX.$(config.people_widget),
-          JX.$H(r.people_widget)
-        );
-      })
+        try {
+          // update the menu entry
+          JX.DOM.replace(
+            JX.$(r.conpherence_phid + '-nav-item'),
+            JX.$H(r.nav_item)
+          );
+          JX.Stratcom.invoke(
+            'conpherence-selectthread',
+            null,
+            { id : r.conpherence_phid + '-nav-item' }
+          );
+        } catch (ex) {
+          // Ignore; this view may not have a menu.
+        }
+      }))
       .start();
   });
 
@@ -156,7 +238,8 @@ JX.behavior('conpherence-menu', function(config) {
     var last_offset = e.getNodeData('show-older-messages').offset;
     var conf_id = e.getNodeData('show-older-messages').ID;
     JX.DOM.remove(e.getNode('show-older-messages'));
-    var messages_root = JX.$(config.messages);
+    var root = JX.DOM.find(document, 'div', 'conpherence-layout');
+    var messages_root = JX.DOM.find(root, 'div', 'conpherence-messages');
     new JX.Request(config.base_uri + conf_id + '/', function(r) {
       var messages = JX.$H(r.messages);
       JX.DOM.prependContent(messages_root,
@@ -175,15 +258,16 @@ JX.behavior('conpherence-menu', function(config) {
     if (new_device === old_device) {
       return;
     }
+    var update_toggled_widget =
+      new_device == 'desktop' || old_device == 'desktop';
     old_device = new_device;
 
-    if (new_device != 'desktop') {
-      return;
+    if (thread.visible !== null && update_toggled_widget) {
+      updatetoggledwidget();
     }
 
     if (!config.hasThreadList) {
       loadthreads();
-      didredrawthread();
     } else {
       didloadthreads();
     }
@@ -191,7 +275,6 @@ JX.behavior('conpherence-menu', function(config) {
 
   JX.Stratcom.listen('phabricator-device-change', null, ondevicechange);
   ondevicechange();
-
 
   function loadthreads() {
     var uri = config.base_uri + 'thread/' + config.selectedID + '/';
@@ -213,15 +296,18 @@ JX.behavior('conpherence-menu', function(config) {
     // first thread.
     if (!thread.selected) {
       if (config.selectedID) {
-        selectthreadid(config.selectedID);
+        selectthreadid(config.selectedID, true);
       } else {
-        var threads = JX.DOM.scry(document.body, 'a', 'conpherence-menu-click');
+        var layout = JX.$(config.layoutID);
+        var threads = JX.DOM.scry(layout, 'a', 'conpherence-menu-click');
         if (threads.length) {
           selectthread(threads[0]);
+        } else {
+          var nothreads = JX.DOM.find(layout, 'div', 'conpherence-no-threads');
+          nothreads.style.display = 'block';
         }
       }
     }
-
     redrawthread();
   }
 

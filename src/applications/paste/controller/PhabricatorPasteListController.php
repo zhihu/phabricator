@@ -16,16 +16,14 @@ final class PhabricatorPasteListController extends PhabricatorPasteController {
     $request = $this->getRequest();
     $user = $request->getUser();
 
-    $query = id(new PhabricatorPasteQuery())
-      ->setViewer($user)
-      ->needContent(true);
+    $saved_query = new PhabricatorSavedQuery();
 
     $nav = $this->buildSideNavView($this->filter);
     $filter = $nav->getSelectedFilter();
 
     switch ($filter) {
       case 'my':
-        $query->withAuthorPHIDs(array($user->getPHID()));
+        $saved_query->setParameter('authorPHIDs', array($user->getPHID()));
         $title = pht('My Pastes');
         $nodata = pht("You haven't created any Pastes yet.");
         break;
@@ -37,7 +35,11 @@ final class PhabricatorPasteListController extends PhabricatorPasteController {
 
     $pager = new AphrontCursorPagerView();
     $pager->readFromRequest($request);
-    $pastes = $query->executeWithCursorPager($pager);
+    $engine = new PhabricatorPasteSearchEngine();
+    $query = $engine->buildQueryFromSavedQuery($saved_query);
+    $pastes = $query->setViewer($request->getUser())
+      ->needContent(true)
+      ->executeWithCursorPager($pager);
 
     $list = $this->buildPasteList($pastes);
     $list->setPager($pager);
@@ -101,7 +103,7 @@ final class PhabricatorPasteListController extends PhabricatorPasteController {
         ->setHeader($title)
         ->setHref('/P'.$paste->getID())
         ->setObject($paste)
-        ->addAttribute(pht('Created %s by %s', $created, $author))
+        ->addByline(pht('Author: %s', $author))
         ->addIcon('none', $line_count)
         ->appendChild($source_code);
 
