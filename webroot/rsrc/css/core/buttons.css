@@ -149,6 +149,14 @@ button.link:hover {
   -webkit-box-shadow: 1px 3px 1px rgba(0, 0, 0, 0.25);
 }
 
+.maniphest-dropdown-menu-frame {
+  width: 120px;
+}
+
+.device-desktop .maniphest-dropdown-menu-frame {
+  position: fixed;
+}
+
 .dropdown-menu-frame a,
 .dropdown-menu-frame span {
   display: block;

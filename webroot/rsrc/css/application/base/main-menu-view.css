@@ -288,6 +288,18 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   margin: 2px 0 0 6px;
 }
 
+.phabricator-main-menu-maniphest-icon {
+  width: 14px;
+  height: 14px;
+  display: block;
+  float: left;
+  margin: 2px 0 0 0;
+}
+
+.alert-notifications .phabricator-main-menu-maniphest-icon {
+  margin: 4px 0 0 8px;
+}
+
 .phabricator-main-menu-alert-count,
 .phabricator-main-menu-message-count {
   font-weight: bold;

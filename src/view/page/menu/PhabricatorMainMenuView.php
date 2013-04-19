@@ -260,6 +260,26 @@ final class PhabricatorMainMenuView extends AphrontView {
       'alert-notifications',
     );
 
+    $maniphest_id = celerity_generate_unique_node_id();
+    $maniphest_icon_tag = javelin_tag(
+      'span',
+      array(
+        'class' => 'sprite-icon action-new-grey phabricator-main-menu-maniphest-icon',
+        'sigil' => 'phabricator-maniphest-menu',
+      ),
+      '');
+    $maniphest_tag = phutil_tag(
+      'a',
+      array(
+        'href'  => '/maniphest/task/create',
+        'class' => implode(' ', $container_classes),
+        'id'    => $maniphest_id,
+      ),
+      $maniphest_icon_tag);
+    Javelin::initBehavior(
+      'maniphest-dropdown-menus',
+      array());
+
     $message_tag = '';
     $conpherence = 'PhabricatorApplicationConpherence';
     if (PhabricatorApplication::isClassInstalled($conpherence)) {
@@ -367,7 +387,7 @@ final class PhabricatorMainMenuView extends AphrontView {
       '');
 
     return array(
-      hsprintf('%s%s', $bubble_tag, $message_tag),
+      hsprintf('%s%s%s', $bubble_tag, $message_tag, $maniphest_tag),
       $notification_dropdown,
     );
   }
