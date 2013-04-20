@@ -19,13 +19,7 @@ JX.behavior('maniphest-dropdown-menus', function(config) {
   menu.addItem(link_to('新建任务', '/maniphest/task/create'));
   menu.addItem(link_to('提交 Bug', '/maniphest/task/create/?projects=PHID-PROJ-ng2ucirw6embkz22vruj'));
   menu.addItem(link_to('提交新想法和建议', '/maniphest/task/create/?projects=PHID-PROJ-jjdydjiyr2275zl7qjvq'));
+  menu.addItem(link_to('提交原始用户反馈', '/maniphest/task/create/?projects=PHID-PROJ-sj23435jqi7ugo3sltel'));
   menu.addItem(link_to('本周上线记录', '/w/index_team/zhihu_release_note'));
-
-  JX.Stratcom.listen(
-    'click',
-    'phabricator-maniphest-menu',
-    function(e) {
-      e.prevent();
-    });
 
 });
