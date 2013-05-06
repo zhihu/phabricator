@@ -130,8 +130,8 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     $args = func_get_args();
     $args = $this->formatLocalCommand($args);
     return newv('ExecFuture', $args);
-
   }
+
   public function passthruLocalCommand($pattern /* , $arg, ... */) {
     $args = func_get_args();
     $args = $this->formatLocalCommand($args);
@@ -252,7 +252,8 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
         array_unshift($args, $this->getLocalPath());
         break;
       case PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL:
-        $pattern = "(cd %s && HGPLAIN=1 hg {$pattern})";
+        $hgplain = (phutil_is_windows() ? "set HGPLAIN=1 &&" : "HGPLAIN=1");
+        $pattern = "(cd %s && {$hgplain} hg {$pattern})";
         array_unshift($args, $this->getLocalPath());
         break;
       default:
@@ -633,6 +634,56 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     return ($vcs == PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL);
   }
 
+
+  /**
+   * Link external bug tracking system if defined.
+   *
+   * @param string Plain text.
+   * @param string Commit identifier.
+   * @return string Remarkup
+   */
+  public function linkBugtraq($message, $revision = null) {
+    $bugtraq_url = PhabricatorEnv::getEnvConfig('bugtraq.url');
+    list($bugtraq_re, $id_re) =
+      PhabricatorEnv::getEnvConfig('bugtraq.logregex') +
+      array('', '');
+
+    switch ($this->getVersionControlSystem()) {
+      case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:
+        // TODO: Get bugtraq:logregex and bugtraq:url from SVN properties.
+        break;
+    }
+
+    if (!$bugtraq_url || $bugtraq_re == '') {
+      return $message;
+    }
+
+    $matches = null;
+    $flags = PREG_SET_ORDER | PREG_OFFSET_CAPTURE;
+    preg_match_all('('.$bugtraq_re.')', $message, $matches, $flags);
+    foreach ($matches as $match) {
+      list($all, $all_offset) = array_shift($match);
+
+      if ($id_re != '') {
+        // Match substrings with bug IDs
+        preg_match_all('('.$id_re.')', $all, $match, PREG_OFFSET_CAPTURE);
+        list(, $match) = $match;
+      } else {
+        $all_offset = 0;
+      }
+
+      foreach ($match as $val) {
+        list($s, $offset) = $val;
+        $message = substr_replace(
+          $message,
+          '[[ '.str_replace('%BUGID%', $s, $bugtraq_url).' | '.$s.' ]]',
+          $offset + $all_offset,
+          strlen($s));
+      }
+    }
+
+    return $message;
+  }
 
 
 /* -(  PhabricatorPolicyInterface  )----------------------------------------- */

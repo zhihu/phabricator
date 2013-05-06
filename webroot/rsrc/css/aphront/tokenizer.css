@@ -21,6 +21,10 @@ div.jx-tokenizer-container {
   box-sizing: border-box;
 }
 
+div.jx-tokenizer-container-focused {
+  border-color: #0099ff;
+}
+
 var.jx-tokenizer-metrics {
   position: absolute;
   left: 20px;

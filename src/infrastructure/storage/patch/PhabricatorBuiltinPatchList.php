@@ -1242,6 +1242,34 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
         'type' => 'sql',
         'name' => $this->getPatchPath('20130417.externalaccount.sql'),
       ),
+      '20130423.updateexternalaccount.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130423.updateexternalaccount.sql'),
+      ),
+      '20130423.phortunepaymentrevised.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130423.phortunepaymentrevised.sql'),
+      ),
+      '20130423.conpherenceindices.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130423.conpherenceindices.sql'),
+      ),
+      '20130426.search_savedquery.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130426.search_savedquery.sql'),
+      ),
+      '20130502.countdownrevamp1.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130502.countdownrevamp1.sql'),
+      ),
+      '20130502.countdownrevamp2.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130502.countdownrevamp2.php'),
+      ),
+      '20130502.countdownrevamp3.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130502.countdownrevamp3.sql'),
+      ),
     );
   }
 }
