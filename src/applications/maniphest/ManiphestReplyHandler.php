@@ -118,6 +118,7 @@ final class ManiphestReplyHandler extends PhabricatorMailReplyHandler {
       $xactions[] = $xaction;
     }
 
+    $task->setCCPHIDs(array($user->getPHID()));
     $ccs = $mail->loadCCPHIDs();
     if ($ccs) {
       $old_ccs = $task->getCCPHIDs();
