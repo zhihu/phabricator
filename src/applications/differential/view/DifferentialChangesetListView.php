@@ -263,6 +263,7 @@ final class DifferentialChangesetListView extends AphrontView {
       try {
         $meta['diffusionURI'] =
           (string)$repository->getDiffusionBrowseURIForPath(
+            $this->user,
             $changeset->getAbsoluteRepositoryPath($repository, $this->diff),
             idx($changeset->getMetadata(), 'line:first'),
             $this->getBranch());
@@ -316,7 +317,7 @@ final class DifferentialChangesetListView extends AphrontView {
         'target'  => '_blank',
         'sigil'   => 'differential-view-options',
       ),
-      pht("View Options \xE2\x96\xBC"));
+      pht('View Options') . " \xE2\x96\xBC");
   }
 
 }

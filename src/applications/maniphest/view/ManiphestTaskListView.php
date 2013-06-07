@@ -49,6 +49,10 @@ final class ManiphestTaskListView extends ManiphestView {
       ManiphestTaskPriority::PRIORITY_WISH => 'sky',
     );
 
+    if ($this->showBatchControls) {
+      Javelin::initBehavior('maniphest-list-editor');
+    }
+
     foreach ($this->tasks as $task) {
       $item = new PhabricatorObjectItemView();
       $item->setObjectName('T'.$task->getID());
@@ -82,20 +86,26 @@ final class ManiphestTaskListView extends ManiphestView {
         $item->addSigil('maniphest-task');
       }
 
-      if ($task->getProjectPHIDs()) {
-        $projects_view = new ManiphestTaskProjectsView();
-        $projects_view->setHandles(
-          array_select_keys(
-            $handles,
-            $task->getProjectPHIDs()));
+      $projects_view = new ManiphestTaskProjectsView();
+      $projects_view->setHandles(
+        array_select_keys(
+          $handles,
+          $task->getProjectPHIDs()));
 
-        $item->addAttribute($projects_view);
-      }
+      $item->addAttribute($projects_view);
 
       $item->setMetadata(
         array(
           'taskID' => $task->getID(),
         ));
+
+      if ($this->showBatchControls) {
+        $item->addAction(
+          id(new PhabricatorMenuItemView())
+            ->setIcon('edit')
+            ->addSigil('maniphest-edit-task')
+            ->setHref('/maniphest/task/edit/'.$task->getID().'/'));
+      }
 
       $list->addItem($item);
     }

@@ -11,18 +11,11 @@
 */
 
 .phabricator-main-menu {
-  background-image: url(http://static.zhihu.com/static/img/sticky_header/header-bg.png);
+  background: #2d3236;
+  background-image: url(/rsrc/image/main_texture.png);
+  background-repeat: repeat-x;
   position: relative;
   min-height: 44px;
-}
-
-@media
-only screen and (min-device-pixel-ratio: 1.5),
-only screen and (-webkit-min-device-pixel-ratio: 1.5) {
-  .phabricator-main-menu {
-    background-image: url(http://static.zhihu.com/static/img/sticky_header/header-bg@2x.png);
-    background-size: contain;
-  }
 }
 
 .device-desktop .phabricator-main-menu {
@@ -63,6 +56,7 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
   padding-left: 6px;
 }
 
+<<<<<<< HEAD
 .phabricator-main-menu-phriction-logo,
 .phabricator-main-menu-maniphest-logo,
 .phabricator-main-menu-create-task-logo {
@@ -88,6 +82,13 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
 
 .phabricator-main-menu-logo:hover {
   background-color: #3a4247;
+||||||| merged common ancestors
+.phabricator-main-menu-logo:hover {
+  background-color: #3a4247;
+=======
+.device-desktop .phabricator-main-menu-logo:hover {
+  background-color: #1e2225;
+>>>>>>> upstream/master
 }
 
 .phabricator-main-menu-logo-image {
@@ -141,9 +142,10 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
 }
 
 .phabricator-main-menu-search-container {
-  padding: 9px 0;
+  padding: 10px 0;
   position: relative;
   height: 24px;
+  margin: 0 8px;
 }
 
 .phabricator-main-menu-search-target {
@@ -159,53 +161,55 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
 .device .phabricator-main-menu-search-target {
   width: 100%;
   margin-left: -25px;
-
-}
-
-.device-desktop .phabricator-main-menu-search-container {
-  margin: 0 8px 0 50px;
 }
 
 .device .phabricator-main-menu-search-container {
   padding: 0;
-  margin: 0 8px 0 52px;
 }
 
-.phabricator-main-menu-search input {
+.phabricator-main-menu .phabricator-main-menu-search input {
   outline: 0;
   margin: 0;
+  box-shadow: none;
+  transition: none;
 
+  color: #999;
   width: 100%;
   right: 0;
   position: absolute;
-  border: 1px solid #237BD5;
-  border-radius: 15px;
-  background: #555;
-  height: 14px;
-  line-height: 14px;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, .1),0 1px 0 rgba(255, 255, 255, .1);
+  font-size: 13px;
+  border: 1px solid #333;
+  border-radius: 12px;
+  background-color: #555;
+  height: 26px;
+  line-height: 12px;
+  box-shadow: 0px 1px 1px rgba(128, 128, 128, 0.25);
   padding: 6px 32px 6px 10px;
-  background-color: #ECF3F7;
 }
 
 .device .phabricator-main-menu-search input {
-  height: 16px;
+  height: 30px;
   font-size: 15px;
   border-radius: 15px;
 }
 
-.phabricator-main-menu-search input:focus {
-  background: #f6f6f6;
+.phabricator-main-menu .phabricator-main-menu-search input:focus {
+  background: #fff;
+  color: #333;
+  border-color: #e7e7e7;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
 }
 
 .phabricator-main-menu-search input.jx-typeahead-placeholder {
-  color: #999999;
+  color: #999;
 }
 
 .phabricator-main-menu-search button {
   position: absolute;
   color: transparent;
-  background: url('http://static.zhihu.com/static/img/icons_v13.4.png') no-repeat -100px -793px;
+  background: transparent 5px 6px url(/rsrc/image/search.png) no-repeat;
   border: none;
   outline: none;
   box-shadow: none;
@@ -216,7 +220,6 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
   width: 20px;
   top: 11px;
   right: 6px;
-  text-indent: 50px;
 }
 
 .device .phabricator-main-menu-search button {
@@ -224,23 +227,18 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
 }
 
 .phabricator-main-menu-search-target div.jx-typeahead-results {
-  border-radius: 4px;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.35);
-  border: 1px solid #33393d;
-}
-
-.phabricator-main-menu-search-target div.jx-typeahead-results a.jx-result {
-  border: 0;
-}
-
-.phabricator-main-menu-search-target div.jx-typeahead-results a.focused,
-.phabricator-main-menu-search-target div.jx-typeahead-results a:hover {
-  background: #3875d7;
+  background: #ffffff;
+  word-wrap: break-word;
+  overflow-y: auto;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.5);
+  border: 2px solid #33393d;
+  border-radius: 3px;
+  margin-left: 40px;
 }
 
 .phabricator-main-search-typeahead-result {
   display: block;
-  padding: 4px 4px 4px 38px;
+  padding: 1px 4px 1px 38px;
   background-position: 4px 4px;
   background-size: 25px 25px;
   background-repeat: no-repeat;
@@ -248,22 +246,15 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
 
 .phabricator-main-search-typeahead-result .result-name {
   display: block;
+  font-size: 12px;
   font-weight: bold;
-  color: #444444;
-}
-
-.focused .phabricator-main-search-typeahead-result .result-name,
-a:hover .phabricator-main-search-typeahead-result .result-name {
-  color: #eeeeee;
+  color: #333;
 }
 
 .phabricator-main-search-typeahead-result .result-type {
-  color: #888888;
-}
-
-.focused .phabricator-main-search-typeahead-result .result-type,
-a:hover .phabricator-main-search-typeahead-result .result-type {
-  color: #dddddd;
+  color: #888;
+  font-size: 11px;
+  font-weight: normal;
 }
 
 
@@ -277,6 +268,7 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   display: inline-block;
   border-radius: 15px;
   float: left;
+  background: rgba(0,0,0,.2);
   height: 20px;
   padding: 2px 10px 3px 8px;
   margin-top: 9px;
@@ -293,6 +285,18 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
 
 .alert-notifications .phabricator-main-menu-message-icon {
   margin: 2px 0 0 6px;
+}
+
+.phabricator-main-menu-maniphest-icon {
+  width: 14px;
+  height: 14px;
+  display: block;
+  float: left;
+  margin: 2px 0 0 0;
+}
+
+.alert-notifications .phabricator-main-menu-maniphest-icon {
+  margin: 4px 0 0 8px;
 }
 
 .phabricator-main-menu-alert-count,
@@ -404,7 +408,7 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
 
 .device-desktop .phabricator-application-menu
   a.phabricator-menu-item-view.phabricator-core-menu-item:hover {
-  background-color: #3a4247;
+  background-color: #1e2225;
 }
 
 .device-desktop .phabricator-application-menu .phabricator-menu-item-view {
@@ -428,22 +432,11 @@ a:hover .phabricator-main-search-typeahead-result .result-type {
   left: 6px;
 }
 
-<<<<<<< HEAD
-.device-desktop .phabricator-core-menu .phabricator-core-menu-item-profile {
-  margin: 0 8px;
-||||||| merged common ancestors
-.device-desktop .phabricator-core-menu .phabricator-core-menu-item-profile {
-  border-width: 0 1px;
-  border-style: solid;
-  border-color: #44494d;
-  margin: 0 8px;
-=======
 .phabricator-core-menu-icon {
   position: absolute;
   display: block;
   width: 28px;
   height: 28px;
->>>>>>> upstream/master
 }
 
 /* - Application Menu ----------------------------------------------------------

@@ -22,8 +22,9 @@ final class DiffusionPathValidateController extends DiffusionController {
 
     $drequest = DiffusionRequest::newFromDictionary(
       array(
-        'repository'  => $repository,
-        'path'        => $path,
+        'user' => $request->getUser(),
+        'repository' => $repository,
+        'path' => $path,
       ));
     $this->setDiffusionRequest($drequest);
 
@@ -55,12 +56,12 @@ final class DiffusionPathValidateController extends DiffusionController {
     if (!$valid) {
       $branch = $drequest->getBranch();
       if ($branch) {
-        $message = 'Not found in '.$branch;
+        $message = pht('Not found in %s', $branch);
       } else {
-        $message = 'Not found at HEAD';
+        $message = pht('Not found at HEAD');
       }
     } else {
-      $message = 'OK';
+      $message = pht('OK');
     }
 
     $output['message'] = $message;

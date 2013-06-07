@@ -37,16 +37,6 @@ final class ConpherenceThreadListView extends AphrontView {
       ->addClass('conpherence-menu')
       ->setID('conpherence-menu');
 
-    $menu->addMenuItem(
-      id(new PhabricatorMenuItemView())
-        ->addSigil('conpherence-new-conversation')
-        ->setName(pht('New Message'))
-        ->setWorkflow(true)
-        ->setKey('new')
-        ->setHref($this->baseURI.'new/')
-        ->setType(PhabricatorMenuItemView::TYPE_BUTTON));
-
-    $menu->newLabel('');
     $this->addThreadsToMenu($menu, $this->threads);
 
     return $menu;
@@ -94,6 +84,7 @@ final class ConpherenceThreadListView extends AphrontView {
     $unread_count = $data['unread_count'];
     $epoch = $data['epoch'];
     $image = $data['image'];
+    $dom_id = $thread->getPHID().'-nav-item';
 
     return id(new ConpherenceMenuItemView())
       ->setUser($user)
@@ -107,8 +98,9 @@ final class ConpherenceThreadListView extends AphrontView {
       ->addSigil('conpherence-menu-click')
       ->setMetadata(
         array(
-          'title' => $title,
-          'id' => $thread->getID(),
+          'title' => $data['js_title'],
+          'id' => $dom_id,
+          'threadID' => $thread->getID(),
           ));
   }
 
