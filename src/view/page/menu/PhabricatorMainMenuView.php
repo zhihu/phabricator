@@ -264,7 +264,7 @@ final class PhabricatorMainMenuView extends AphrontView {
     $maniphest_icon_tag = javelin_tag(
       'span',
       array(
-        'class' => 'sprite-icon action-new-grey phabricator-main-menu-maniphest-icon',
+        'class' => 'phabricator-main-menu-maniphest-icon sprite-icons icons-new-grey',
         'sigil' => 'phabricator-maniphest-menu',
       ),
       '');
