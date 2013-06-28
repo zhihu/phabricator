@@ -48,3 +48,4 @@ $ROOT/arcanist/bin/arc liberate $ROOT/phabricator/src
 
 # Restart daemons.
 $ROOT/phabricator/bin/phd start
+$ROOT/phabricator/bin/phd launch PhabricatorFactDaemon
