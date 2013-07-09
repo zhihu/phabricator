@@ -6,10 +6,13 @@
  * These styles are overrides for .aphront-form-view
  */
 .aphront-form-view-shaded {
-  border: 1px solid #CCC;
-  background: #F8F8F8;
-  border-radius: 5px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+  border-top: 1px solid #d4dae0;
+  border-bottom: 1px solid #d4dae0;
+  background: #f4f5f8;
+}
+
+.aphront-panel-width-form .aphront-form-view-shaded {
+  border: 1px solid #d4dae0;
 }
 
 .aphront-form-view-padded {
@@ -60,9 +63,9 @@
 .aphront-form-error {
   width: 18%;
   float: right;
-  color: #aa0000;
+  color: {$red};
   font-weight: bold;
-  padding-top: 4px;
+  padding-top: 5px;
 }
 
 .aphront-dialog-body .aphront-form-full-width {
@@ -187,12 +190,22 @@ table.aphront-form-control-checkbox-layout {
   font-size: 13px;
 }
 
-table.aphront-form-control-radio-layout th,
+table.aphront-form-control-radio-layout th {
+  padding-top: 3px;
+  padding-left: 8px;
+  padding-bottom: 12px;
+  font-weight: bold;
+  color: #222222;
+}
+
+
 table.aphront-form-control-checkbox-layout th {
   padding-top: 2px;
-  padding-left: 0.35em;
-  padding-bottom: 4px;
+  padding-left: 8px;
+  padding-bottom: 12px;
+  color: #222222;
 }
+
 
 .aphront-form-control-radio-layout td input,
 .aphront-form-control-checkbox-layout td input {
@@ -200,10 +213,17 @@ table.aphront-form-control-checkbox-layout th {
   width: auto;
 }
 
+
+.aphront-form-control-radio-layout label.disabled,
+.aphront-form-control-checkbox-layout label.disabled {
+  color: #777777;
+}
+
 .aphront-form-radio-caption {
-  font-size: 11px;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: normal;
   color: #444444;
-  max-width: 400px;
 }
 
 .aphront-form-control-image span {
@@ -252,8 +272,8 @@ table.aphront-form-control-checkbox-layout th {
 }
 
 .aphront-textarea-drag-and-drop {
-  background: #99ff99;
-  border-color: #669966;
+  background: {$lightgreen};
+  border-color: {$green};
 }
 
 .aphront-form-crop .crop-box {
@@ -445,4 +465,8 @@ table.aphront-form-control-checkbox-layout th {
   background: #c0c0c0;
   width: 85%;
   margin: 15px auto;
+}
+
+.recaptcha_only_if_privacy {
+  display: none;
 }

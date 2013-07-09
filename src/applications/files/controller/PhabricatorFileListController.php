@@ -10,7 +10,7 @@ final class PhabricatorFileListController extends PhabricatorFileController
   }
 
   public function willProcessRequest(array $data) {
-    $this->key = idx($data, 'key', 'authored');
+    $this->key = idx($data, 'key');
   }
 
   public function processRequest() {
@@ -23,7 +23,10 @@ final class PhabricatorFileListController extends PhabricatorFileController
     return $this->delegateToController($controller);
   }
 
-  public function renderResultsList(array $files) {
+  public function renderResultsList(
+    array $files,
+    PhabricatorSavedQuery $query) {
+
     assert_instances_of($files, 'PhabricatorFile');
 
     $request = $this->getRequest();

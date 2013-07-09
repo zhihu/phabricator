@@ -8,6 +8,7 @@
 abstract class PhabricatorWorker {
 
   private $data;
+  private static $runAllTasksInProcess = false;
 
 
 /* -(  Configuring Retries and Failures  )----------------------------------- */
@@ -58,7 +59,6 @@ abstract class PhabricatorWorker {
    *                                  retries, or to examine the execution
    *                                  exception if you want to react to
    *                                  different failures in different ways.
-   * @param   Exception               The exception which caused the failure.
    * @return  int|null                Number of seconds to wait between retries,
    *                                  or null for a default retry period
    *                                  (currently 60 seconds).
@@ -85,10 +85,15 @@ abstract class PhabricatorWorker {
   }
 
   final public static function scheduleTask($task_class, $data) {
-    return id(new PhabricatorWorkerActiveTask())
-      ->setTaskClass($task_class)
-      ->setData($data)
-      ->save();
+    if (self::$runAllTasksInProcess) {
+      $worker = newv($task_class, array($data));
+      $worker->doWork();
+    } else {
+      return id(new PhabricatorWorkerActiveTask())
+        ->setTaskClass($task_class)
+        ->setData($data)
+        ->save();
+    }
   }
 
 
@@ -152,6 +157,22 @@ abstract class PhabricatorWorker {
   public function renderForDisplay() {
     $data = PhutilReadableSerializer::printableValue($this->data);
     return phutil_tag('pre', array(), $data);
+  }
+
+  /**
+   * Set this flag to execute scheduled tasks synchronously, in the same
+   * process. This is useful for debugging, and otherwise dramatically worse
+   * in every way imaginable.
+   */
+  public static function setRunAllTasksInProcess($all) {
+    self::$runAllTasksInProcess = $all;
+  }
+
+  protected function log($pattern /* $args */) {
+    $console = PhutilConsole::getConsole();
+    $argv = func_get_args();
+    call_user_func_array(array($console, 'writeLog'), $argv);
+    return $this;
   }
 
 }

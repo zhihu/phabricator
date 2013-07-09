@@ -10,7 +10,7 @@ final class PhabricatorMacroListController extends PhabricatorMacroController
   }
 
   public function willProcessRequest(array $data) {
-    $this->key = idx($data, 'key', 'active');
+    $this->key = idx($data, 'key');
   }
 
   public function processRequest() {
@@ -23,7 +23,10 @@ final class PhabricatorMacroListController extends PhabricatorMacroController
     return $this->delegateToController($controller);
   }
 
-  public function renderResultsList(array $macros) {
+  public function renderResultsList(
+    array $macros,
+    PhabricatorSavedQuery $query) {
+
     assert_instances_of($macros, 'PhabricatorFileImageMacro');
     $viewer = $this->getRequest()->getUser();
 

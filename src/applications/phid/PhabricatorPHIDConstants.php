@@ -40,6 +40,8 @@ final class PhabricatorPHIDConstants {
   const PHID_TYPE_CHRG    = 'CHRG';
   const PHID_TYPE_CART    = 'CART';
   const PHID_TYPE_CDWN    = 'CDWN';
+  const PHID_TYPE_LEGD    = 'LEGD';
+  const PHID_TYPE_LEGB    = 'LEGB';
 
   const PHID_TYPE_XACT    = 'XACT';
   const PHID_TYPE_XCMT    = 'XCMT';
@@ -47,6 +49,8 @@ final class PhabricatorPHIDConstants {
 
   const PHID_TYPE_BOOK    = 'BOOK';
   const PHID_TYPE_ATOM    = 'ATOM';
+  const PHID_TYPE_AUTH    = 'AUTH';
+  const PHID_TYPE_XOBJ    = 'XOBJ';
 
   const PHID_TYPE_VOID    = 'VOID';
   const PHID_VOID         = 'PHID-VOID-00000000000000000000';

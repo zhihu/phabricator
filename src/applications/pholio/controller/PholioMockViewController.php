@@ -37,16 +37,8 @@ final class PholioMockViewController extends PholioController {
       ->withObjectPHIDs(array($mock->getPHID()))
       ->execute();
 
-    $subscribers = PhabricatorSubscribersQuery::loadSubscribersForPHID(
-      $mock->getPHID());
-
-    $phids = array();
-    $phids[] = $mock->getAuthorPHID();
-    foreach ($subscribers as $subscriber) {
-      $phids[] = $subscriber;
-    }
+    $phids = array($mock->getAuthorPHID());
     $this->loadHandles($phids);
-
 
     $engine = id(new PhabricatorMarkupEngine())
       ->setViewer($user);
@@ -66,13 +58,15 @@ final class PholioMockViewController extends PholioController {
       ->setHeader($title);
 
     $actions = $this->buildActionView($mock);
-    $properties = $this->buildPropertyView($mock, $engine, $subscribers);
+    $properties = $this->buildPropertyView($mock, $engine);
 
     require_celerity_resource('pholio-css');
     require_celerity_resource('pholio-inline-comments-css');
 
+    $comment_form_id = celerity_generate_unique_node_id();
     $output = id(new PholioMockImagesView())
       ->setRequestURI($request->getRequestURI())
+      ->setCommentFormID($comment_form_id)
       ->setUser($user)
       ->setMock($mock)
       ->setImageID($this->imageID);
@@ -82,7 +76,7 @@ final class PholioMockViewController extends PholioController {
       ->setTransactions($xactions)
       ->setMarkupEngine($engine);
 
-    $add_comment = $this->buildAddCommentView($mock);
+    $add_comment = $this->buildAddCommentView($mock, $comment_form_id);
 
     $crumbs = $this->buildApplicationCrumbs($this->buildSideNav());
     $crumbs->setActionList($actions);
@@ -135,8 +129,7 @@ final class PholioMockViewController extends PholioController {
 
   private function buildPropertyView(
     PholioMock $mock,
-    PhabricatorMarkupEngine $engine,
-    array $subscribers) {
+    PhabricatorMarkupEngine $engine) {
 
     $user = $this->getRequest()->getUser();
 
@@ -160,20 +153,6 @@ final class PholioMockViewController extends PholioController {
       pht('Visible To'),
       $descriptions[PhabricatorPolicyCapability::CAN_VIEW]);
 
-    if ($subscribers) {
-      $sub_view = array();
-      foreach ($subscribers as $subscriber) {
-        $sub_view[] = $this->getHandle($subscriber)->renderLink();
-      }
-      $sub_view = phutil_implode_html(', ', $sub_view);
-    } else {
-      $sub_view = phutil_tag('em', array(), pht('None'));
-    }
-
-    $properties->addProperty(
-      pht('Subscribers'),
-      $sub_view);
-
     $properties->invokeWillRenderEvent();
 
     $properties->addImageContent(
@@ -182,7 +161,7 @@ final class PholioMockViewController extends PholioController {
     return $properties;
   }
 
-  private function buildAddCommentView(PholioMock $mock) {
+  private function buildAddCommentView(PholioMock $mock, $comment_form_id) {
     $user = $this->getRequest()->getUser();
 
     $draft = PhabricatorDraft::newFromUserAndKey($user, $mock->getPHID());
@@ -202,6 +181,7 @@ final class PholioMockViewController extends PholioController {
 
     $form = id(new PhabricatorApplicationTransactionCommentView())
       ->setUser($user)
+      ->setFormID($comment_form_id)
       ->setDraft($draft)
       ->setSubmitButtonName($button_name)
       ->setAction($this->getApplicationURI('/comment/'.$mock->getID().'/'))

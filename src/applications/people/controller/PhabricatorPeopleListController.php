@@ -14,7 +14,7 @@ final class PhabricatorPeopleListController extends PhabricatorPeopleController
   }
 
   public function willProcessRequest(array $data) {
-    $this->key = idx($data, 'key', 'all');
+    $this->key = idx($data, 'key');
   }
 
   public function processRequest() {
@@ -27,7 +27,10 @@ final class PhabricatorPeopleListController extends PhabricatorPeopleController
     return $this->delegateToController($controller);
   }
 
-  public function renderResultsList(array $users) {
+  public function renderResultsList(
+    array $users,
+    PhabricatorSavedQuery $query) {
+
     assert_instances_of($users, 'PhabricatorUser');
 
     $request = $this->getRequest();
@@ -69,7 +72,7 @@ final class PhabricatorPeopleListController extends PhabricatorPeopleController
       if ($viewer->getIsAdmin()) {
         $uid = $user->getID();
         $item->addAction(
-          id(new PhabricatorMenuItemView())
+          id(new PHUIListItemView())
             ->setIcon('edit')
             ->setHref($this->getApplicationURI('edit/'.$uid.'/')));
       }

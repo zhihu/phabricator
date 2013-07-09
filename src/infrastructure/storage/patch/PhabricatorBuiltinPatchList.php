@@ -191,6 +191,18 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
         'type' => 'db',
         'name' => 'diviner',
       ),
+      'db.auth' => array(
+        'type' => 'db',
+        'name' => 'auth',
+      ),
+      'db.doorkeeper' => array(
+        'type' => 'db',
+        'name' => 'doorkeeper',
+      ),
+      'db.legalpad' => array(
+        'type' => 'db',
+        'name' => 'legalpad',
+      ),
       '0000.legacy.sql' => array(
         'type'    => 'sql',
         'name'    => $this->getPatchPath('0000.legacy.sql'),
@@ -1345,6 +1357,78 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
       '20130602.morediviner.sql' => array(
         'type' => 'sql',
         'name' => $this->getPatchPath('20130602.morediviner.sql'),
+      ),
+      '20130602.namedqueries.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130602.namedqueries.sql'),
+      ),
+      '20130606.userxactions.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130606.userxactions.sql'),
+      ),
+      '20130607.xaccount.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130607.xaccount.sql'),
+      ),
+      '20130611.migrateoauth.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130611.migrateoauth.php'),
+      ),
+      '20130611.nukeldap.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130611.nukeldap.php'),
+      ),
+      '20130613.authdb.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130613.authdb.sql'),
+      ),
+      '20130619.authconf.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130619.authconf.php'),
+      ),
+      '20130620.diffxactions.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130620.diffxactions.sql'),
+      ),
+      '20130621.diffcommentphid.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130621.diffcommentphid.sql'),
+      ),
+      '20130621.diffcommentphidmig.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130621.diffcommentphidmig.php'),
+      ),
+      '20130621.diffcommentunphid.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130621.diffcommentunphid.sql'),
+      ),
+      '20130622.doorkeeper.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130622.doorkeeper.sql'),
+      ),
+      '20130628.legalpadv0.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130628.legalpadv0.sql'),
+      ),
+      '20130701.conduitlog.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130701.conduitlog.sql'),
+      ),
+      'legalpad-mailkey.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('legalpad-mailkey.sql'),
+      ),
+      'legalpad-mailkey-populate.php' => array(
+        'type'    => 'php',
+        'name'    => $this->getPatchPath('legalpad-mailkey-populate.php'),
+      ),
+      '20130703.legalpaddocdenorm.sql' => array(
+        'type'    => 'sql',
+        'name'    => $this->getPatchPath('20130703.legalpaddocdenorm.sql'),
+      ),
+      '20130703.legalpaddocdenorm.php' => array(
+        'type'    => 'php',
+        'name'    => $this->getPatchPath('20130703.legalpaddocdenorm.php'),
       ),
     );
   }
