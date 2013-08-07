@@ -241,7 +241,7 @@ final class DiffusionBrowseFileController extends DiffusionController {
           'table',
           array(
             'class' => "diffusion-source remarkup-code PhabricatorMonospaced",
-            'sigil' => 'diffusion-source',
+            'sigil' => 'phabricator-source',
           ),
           $rows);
 
@@ -378,6 +378,7 @@ final class DiffusionBrowseFileController extends DiffusionController {
 
     return id(new PhabricatorActionListView())
       ->setUser($user)
+      ->setObjectURI($this->getRequest()->getRequestURI())
       ->addAction($blame_button)
       ->addAction($highlight_button)
       ->addAction($lint_button)
@@ -727,12 +728,12 @@ final class DiffusionBrowseFileController extends DiffusionController {
         'th',
         array(
           'class' => 'diffusion-line-link',
-          'sigil' => 'diffusion-line-link',
+          'sigil' => 'phabricator-source-line',
           'style' => $style,
         ),
         $line_link);
 
-      Javelin::initBehavior('diffusion-line-linker');
+      Javelin::initBehavior('phabricator-line-linker');
 
       if ($line['target']) {
         Javelin::initBehavior(
@@ -767,7 +768,9 @@ final class DiffusionBrowseFileController extends DiffusionController {
       $rows[] = phutil_tag(
         'tr',
         array(
-          'class' => ($line['highlighted'] ? 'highlighted' : null),
+          'class' => ($line['highlighted'] ?
+                      'phabricator-source-highlight' :
+                      null),
         ),
         $blame);
 
@@ -821,6 +824,7 @@ final class DiffusionBrowseFileController extends DiffusionController {
 
     $actions = id(new PhabricatorActionListView())
       ->setUser($this->getRequest()->getUser())
+      ->setObjectURI($this->getRequest()->getRequestURI())
       ->addAction($this->createEditAction());
 
     return array($actions, $properties);
@@ -837,6 +841,7 @@ final class DiffusionBrowseFileController extends DiffusionController {
 
     $actions = id(new PhabricatorActionListView())
       ->setUser($this->getRequest()->getUser())
+      ->setObjectURI($this->getRequest()->getRequestURI())
       ->addAction($this->createEditAction())
       ->addAction(
         id(new PhabricatorActionView())

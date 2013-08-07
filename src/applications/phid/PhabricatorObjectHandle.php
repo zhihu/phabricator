@@ -1,6 +1,7 @@
 <?php
 
-final class PhabricatorObjectHandle {
+final class PhabricatorObjectHandle
+  implements PhabricatorPolicyInterface {
 
   private $uri;
   private $phid;
@@ -38,6 +39,9 @@ final class PhabricatorObjectHandle {
   }
 
   public function getName() {
+    if ($this->name === null) {
+      return pht('Unknown Object (%s)', $this->getTypeName());
+    }
     return $this->name;
   }
 
@@ -99,25 +103,11 @@ final class PhabricatorObjectHandle {
   }
 
   public function getTypeName() {
-    static $map = array(
-      PhabricatorPHIDConstants::PHID_TYPE_USER => 'User',
-      PhabricatorPHIDConstants::PHID_TYPE_TASK => 'Task',
-      PhabricatorPHIDConstants::PHID_TYPE_DREV => 'Revision',
-      PhabricatorPHIDConstants::PHID_TYPE_CMIT => 'Commit',
-      PhabricatorPHIDConstants::PHID_TYPE_WIKI => 'Phriction Document',
-      PhabricatorPHIDConstants::PHID_TYPE_MCRO => 'Image Macro',
-      PhabricatorPHIDConstants::PHID_TYPE_MOCK => 'Pholio Mock',
-      PhabricatorPHIDConstants::PHID_TYPE_FILE => 'File',
-      PhabricatorPHIDConstants::PHID_TYPE_BLOG => 'Blog',
-      PhabricatorPHIDConstants::PHID_TYPE_POST => 'Post',
-      PhabricatorPHIDConstants::PHID_TYPE_QUES => 'Question',
-      PhabricatorPHIDConstants::PHID_TYPE_PVAR => 'Variable',
-      PhabricatorPHIDConstants::PHID_TYPE_PSTE => 'Paste',
-      PhabricatorPHIDConstants::PHID_TYPE_PROJ => 'Project',
-      PhabricatorPHIDConstants::PHID_TYPE_LEGD => 'Legalpad Document',
-    );
+    if ($this->getPHIDType()) {
+      return $this->getPHIDType()->getTypeName();
+    }
 
-    return idx($map, $this->getType(), $this->getType());
+    return $this->getType();
   }
 
 
@@ -182,24 +172,28 @@ final class PhabricatorObjectHandle {
     if ($name === null) {
       $name = $this->getLinkName();
     }
-    $class = null;
+    $classes = array();
     $title = $this->title;
 
     if ($this->status != PhabricatorObjectHandleStatus::STATUS_OPEN) {
-      $class .= ' handle-status-'.$this->status;
+      $classes[] = 'handle-status-'.$this->status;
       $title = $title ? $title : $this->status;
     }
 
     if ($this->disabled) {
-      $class .= ' handle-disabled';
+      $classes[] = 'handle-disabled';
       $title = 'disabled'; // Overwrite status.
+    }
+
+    if ($this->getType() == PhabricatorPeoplePHIDTypeUser::TYPECONST) {
+      $classes[] = 'phui-link-person';
     }
 
     return phutil_tag(
       'a',
       array(
         'href'  => $this->getURI(),
-        'class' => $class,
+        'class' => implode(' ', $classes),
         'title' => $title,
       ),
       $name);
@@ -207,11 +201,37 @@ final class PhabricatorObjectHandle {
 
   public function getLinkName() {
     switch ($this->getType()) {
+      // case PhabricatorPeoplePHIDTypeUser::TYPECONST:
+      //   $name = $this->getName();
+      //   break;
       default:
         $name = $this->getFullName();
         break;
     }
     return $name;
+  }
+
+  protected function getPHIDType() {
+    $types = PhabricatorPHIDType::getAllTypes();
+    return idx($types, $this->getType());
+  }
+
+
+/* -(  PhabricatorPolicyInterface  )----------------------------------------- */
+
+
+  public function getCapabilities() {
+    return array(
+      PhabricatorPolicyCapability::CAN_VIEW,
+    );
+  }
+
+  public function getPolicy($capability) {
+    return PhabricatorPolicies::POLICY_PUBLIC;
+  }
+
+  public function hasAutomaticCapability($capability, PhabricatorUser $viewer) {
+    return false;
   }
 
 }

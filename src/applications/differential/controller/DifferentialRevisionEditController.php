@@ -20,15 +20,17 @@ final class DifferentialRevisionEditController extends DifferentialController {
       $revision = id(new DifferentialRevisionQuery())
         ->setViewer($viewer)
         ->withIDs(array($this->id))
+        ->needRelationships(true)
+        ->needReviewerStatus(true)
         ->executeOne();
       if (!$revision) {
         return new Aphront404Response();
       }
     } else {
       $revision = new DifferentialRevision();
+      $revision->attachRelationships(array());
     }
 
-    $revision->loadRelationships();
     $aux_fields = $this->loadAuxiliaryFields($revision);
 
     $diff_id = $request->getInt('diffID');
@@ -145,11 +147,13 @@ final class DifferentialRevisionEditController extends DifferentialController {
           id(new AphrontFormDividerControl()));
     }
 
+    $preview = array();
     foreach ($aux_fields as $aux_field) {
       $control = $aux_field->renderEditControl();
       if ($control) {
         $form->appendChild($control);
       }
+      $preview[] = $aux_field->renderEditPreview();
     }
 
     $submit = id(new AphrontFormSubmitControl())
@@ -183,14 +187,14 @@ final class DifferentialRevisionEditController extends DifferentialController {
 
     $crumbs->addCrumb(
       id(new PhabricatorCrumbView())
-        ->setName($title)
-        ->setHref(''));
+        ->setName($title));
 
     return $this->buildApplicationPage(
       array(
         $crumbs,
         $error_view,
-        $form),
+        $form,
+        $preview),
       array(
         'title' => $title,
         'device' => true,

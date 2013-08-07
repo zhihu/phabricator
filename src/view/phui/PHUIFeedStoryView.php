@@ -14,6 +14,16 @@ final class PHUIFeedStoryView extends AphrontView {
   private $tokenBar = array();
   private $projects = array();
   private $actions = array();
+  private $chronologicalKey;
+
+  public function setChronologicalKey($chronological_key) {
+    $this->chronologicalKey = $chronological_key;
+    return $this;
+  }
+
+  public function getChronologicalKey() {
+    return $this->chronologicalKey;
+  }
 
   public function setTitle($title) {
     $this->title = $title;
@@ -113,8 +123,14 @@ final class PHUIFeedStoryView extends AphrontView {
   public function render() {
 
     require_celerity_resource('phui-feed-story-css');
+    Javelin::initBehavior('phabricator-hovercards');
+    $oneline = $this->isEmptyContent($this->renderChildren());
 
+    $body = null;
+    $foot = null;
+    $image_style = null;
     $actor = '';
+
     if ($this->image) {
       $actor = new PHUIIconView();
       $actor->setImage($this->image);
@@ -122,6 +138,46 @@ final class PHUIFeedStoryView extends AphrontView {
       if ($this->imageHref) {
         $actor->setHref($this->imageHref);
       }
+    }
+
+    if ($this->epoch) {
+      // TODO: This is really bad; when rendering through Conduit and via
+      // renderText() we don't have a user.
+      if ($this->user) {
+        $foot = phabricator_datetime($this->epoch, $this->user);
+      } else {
+        $foot = null;
+      }
+    } else {
+      $foot = pht('No time specified.');
+    }
+
+    if ($this->chronologicalKey) {
+      $foot = phutil_tag(
+        'a',
+        array(
+          'href' => '/feed/'.$this->chronologicalKey.'/',
+        ),
+        $foot);
+    }
+
+    $icon = null;
+    if ($this->appIcon) {
+      $icon = new PHUIIconView();
+      $icon->setSpriteIcon($this->appIcon);
+      $icon->setSpriteSheet(PHUIIconView::SPRITE_APPS);
+    }
+
+    $ol_foot = null;
+    if ($oneline) {
+      $ol_foot = phutil_tag(
+        'div',
+          array(
+            'class' => 'phui-feed-story-oneline-foot'
+          ),
+          array(
+            $icon,
+            $foot));
     }
 
     $action_list = array();
@@ -149,14 +205,11 @@ final class PHUIFeedStoryView extends AphrontView {
         'class' => 'phui-feed-story-head',
       ),
       array(
-        $actor,
+        (!$oneline ? $actor : null),
         nonempty($this->title, pht('Untitled Story')),
-        $icons
+        $icons,
+        $ol_foot
       ));
-
-    $body = null;
-    $foot = null;
-    $image_style = null;
 
     if (!empty($this->tokenBar)) {
       $tokenview = phutil_tag(
@@ -178,30 +231,26 @@ final class PHUIFeedStoryView extends AphrontView {
         $body_content);
     }
 
-    if ($this->epoch) {
-      $foot = phabricator_datetime($this->epoch, $this->user);
+    if ($oneline) {
+      $foot = null;
     } else {
-      $foot = pht('No time specified.');
+      $foot = phutil_tag(
+        'div',
+        array(
+          'class' => 'phui-feed-story-foot',
+        ),
+        array(
+          $icon,
+          $foot));
     }
 
-    $icon = null;
-    if ($this->appIcon) {
-      $icon = new PHUIIconView();
-      $icon->setSpriteIcon($this->appIcon);
-      $icon->setSpriteSheet(PHUIIconView::SPRITE_APPS);
+    $classes = array('phui-feed-story');
+    if ($oneline) {
+      $classes[] = 'phui-feed-story-oneline';
     }
-
-    $foot = phutil_tag(
-      'div',
-      array(
-        'class' => 'phui-feed-story-foot',
-      ),
-      array(
-        $icon,
-        $foot));
 
     return id(new PHUIBoxView())
-      ->addClass('phui-feed-story')
+      ->addClass(implode(' ', $classes))
       ->setShadow(true)
       ->addMargin(PHUI::MARGIN_MEDIUM_BOTTOM)
       ->appendChild(array($head, $body, $foot));
@@ -209,10 +258,10 @@ final class PHUIFeedStoryView extends AphrontView {
 
   public function setAppIconFromPHID($phid) {
     switch (phid_get_type($phid)) {
-      case PhabricatorPHIDConstants::PHID_TYPE_MOCK:
+      case PholioPHIDTypeMock::TYPECONST:
         $this->setAppIcon("pholio-dark");
         break;
-      case PhabricatorPHIDConstants::PHID_TYPE_MCRO:
+      case PhabricatorMacroPHIDTypeMacro::TYPECONST:
         $this->setAppIcon("macro-dark");
         break;
     }

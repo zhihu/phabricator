@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group paste
+ */
 final class PhabricatorPasteQuery
   extends PhabricatorCursorPagedPolicyAwareQuery {
 
@@ -85,10 +88,6 @@ final class PhabricatorPasteQuery
   }
 
   protected function willFilterPage(array $pastes) {
-    if (!$pastes) {
-      return $pastes;
-    }
-
     if ($this->needRawContent) {
       $pastes = $this->loadRawContent($pastes);
     }

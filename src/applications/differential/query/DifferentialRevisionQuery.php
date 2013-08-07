@@ -17,14 +17,15 @@ final class DifferentialRevisionQuery
 
   private $pathIDs = array();
 
-  private $status           = 'status-any';
-  const STATUS_ANY          = 'status-any';
-  const STATUS_OPEN         = 'status-open';
-  const STATUS_ACCEPTED     = 'status-accepted';
-  const STATUS_NEEDS_REVIEW = 'status-needs-review';
-  const STATUS_CLOSED       = 'status-closed';    // NOTE: Same as 'committed'.
-  const STATUS_COMMITTED    = 'status-committed'; // TODO: Remove.
-  const STATUS_ABANDONED    = 'status-abandoned';
+  private $status             = 'status-any';
+  const STATUS_ANY            = 'status-any';
+  const STATUS_OPEN           = 'status-open';
+  const STATUS_ACCEPTED       = 'status-accepted';
+  const STATUS_NEEDS_REVIEW   = 'status-needs-review';
+  const STATUS_NEEDS_REVISION = 'status-needs-revision';
+  const STATUS_CLOSED         = 'status-closed';    // NOTE: Same as 'committed'
+  const STATUS_COMMITTED      = 'status-committed'; // TODO: Remove.
+  const STATUS_ABANDONED      = 'status-abandoned';
 
   private $authors = array();
   private $draftAuthors = array();
@@ -56,6 +57,7 @@ final class DifferentialRevisionQuery
   private $needDiffIDs        = false;
   private $needCommitPHIDs    = false;
   private $needHashes         = false;
+  private $needReviewerStatus = false;
 
   private $buildingGlobalOrder;
 
@@ -326,6 +328,19 @@ final class DifferentialRevisionQuery
   }
 
 
+  /**
+   * Set whether or not the query should load associated reviewer status.
+   *
+   * @param bool True to load and attach reviewers.
+   * @return this
+   * @task config
+   */
+  public function needReviewerStatus($need_reviewer_status) {
+    $this->needReviewerStatus = $need_reviewer_status;
+    return $this;
+  }
+
+
 /* -(  Query Execution  )---------------------------------------------------- */
 
 
@@ -346,10 +361,6 @@ final class DifferentialRevisionQuery
   }
 
   public function willFilterPage(array $revisions) {
-    if (!$revisions) {
-      return $revisions;
-    }
-
     $table = new DifferentialRevision();
     $conn_r = $table->establishConnection('r');
 
@@ -374,6 +385,10 @@ final class DifferentialRevisionQuery
 
     if ($this->needHashes) {
       $this->loadHashes($conn_r, $revisions);
+    }
+
+    if ($this->needReviewerStatus) {
+      $this->loadReviewers($conn_r, $revisions);
     }
 
     return $revisions;
@@ -646,6 +661,14 @@ final class DifferentialRevisionQuery
                ArcanistDifferentialRevisionStatus::NEEDS_REVIEW,
           ));
         break;
+      case self::STATUS_NEEDS_REVISION:
+        $where[] = qsprintf(
+          $conn_r,
+          'r.status IN (%Ld)',
+          array(
+               ArcanistDifferentialRevisionStatus::NEEDS_REVISION,
+          ));
+        break;
       case self::STATUS_ACCEPTED:
         $where[] = qsprintf(
           $conn_r,
@@ -902,6 +925,38 @@ final class DifferentialRevisionQuery
       $revision->attachHashes($list);
     }
   }
+
+  private function loadReviewers(
+    AphrontDatabaseConnection $conn_r,
+    array $revisions) {
+
+    assert_instances_of($revisions, 'DifferentialRevision');
+    $edge_type = PhabricatorEdgeConfig::TYPE_DREV_HAS_REVIEWER;
+
+    $edges = id(new PhabricatorEdgeQuery())
+      ->withSourcePHIDs(mpull($revisions, 'getPHID'))
+      ->withEdgeTypes(array($edge_type))
+      ->needEdgeData(true)
+      ->execute();
+
+    foreach ($revisions as $revision) {
+      $revision_edges = $edges[$revision->getPHID()][$edge_type];
+
+      $reviewers = array();
+      foreach ($revision_edges as $user_phid => $edge) {
+        $data = $edge['data'];
+        $reviewers[] = new DifferentialReviewer(
+          $user_phid,
+          idx($data, 'status'),
+          idx($data, 'diff'));
+      }
+
+      $revision->attachReviewerStatus($reviewers);
+    }
+
+  }
+
+
 
   public static function splitResponsible(array $revisions, array $user_phids) {
     $blocking = array();

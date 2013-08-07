@@ -92,6 +92,8 @@ final class PhabricatorStartup {
     self::setupPHP();
     self::verifyPHP();
 
+    self::normalizeInput();
+
     self::verifyRewriteRules();
 
     self::detectPostMaxSizeTriggered();
@@ -227,16 +229,75 @@ final class PhabricatorStartup {
 
 
   /**
-   * @task valiation
+   * @task validation
    */
   private static function setupPHP() {
     error_reporting(E_ALL | E_STRICT);
     ini_set('memory_limit', -1);
   }
 
+  /**
+   * @task validation
+   */
+  private static function normalizeInput() {
+    // Replace superglobals with unfiltered versions, disrespect php.ini (we
+    // filter ourselves)
+    $filter = array(INPUT_GET, INPUT_POST,
+      INPUT_SERVER, INPUT_ENV, INPUT_COOKIE);
+    foreach ($filter as $type) {
+      $filtered = filter_input_array($type, FILTER_UNSAFE_RAW);
+      if (!is_array($filtered)) {
+        continue;
+      }
+      switch ($type) {
+        case INPUT_SERVER:
+          $_SERVER = array_merge($_SERVER, $filtered);
+          break;
+        case INPUT_GET:
+          $_GET = array_merge($_GET, $filtered);
+          break;
+        case INPUT_COOKIE:
+          $_COOKIE = array_merge($_COOKIE, $filtered);
+          break;
+        case INPUT_POST:
+          $_POST = array_merge($_POST, $filtered);
+          break;
+        case INPUT_ENV;
+          $_ENV = array_merge($_ENV, $filtered);
+          break;
+      }
+    }
+
+    // rebuild $_REQUEST, respecting order declared in ini files
+    $order = ini_get('request_order');
+    if (!$order) {
+      $order = ini_get('variables_order');
+    }
+    if (!$order) {
+      // $_REQUEST will be empty, leave it alone
+      return;
+    }
+    $_REQUEST = array();
+    for ($i = 0; $i < strlen($order); $i++) {
+      switch ($order[$i]) {
+        case 'G':
+          $_REQUEST = array_merge($_REQUEST, $_GET);
+          break;
+        case 'P':
+          $_REQUEST = array_merge($_REQUEST, $_POST);
+          break;
+        case 'C':
+          $_REQUEST = array_merge($_REQUEST, $_COOKIE);
+          break;
+        default:
+          // $_ENV and $_SERVER never go into $_REQUEST
+          break;
+      }
+    }
+  }
 
   /**
-   * @task valiation
+   * @task validation
    */
   private static function verifyPHP() {
     $required_version = '5.2.3';
@@ -254,11 +315,27 @@ final class PhabricatorStartup {
         "disable it to run Phabricator. Consult the PHP manual for ".
         "instructions.");
     }
+
+    if (extension_loaded('apc')) {
+      $apc_version = phpversion('apc');
+      $known_bad = array(
+        '3.1.14' => true,
+        '3.1.15' => true,
+        '3.1.15-dev' => true,
+      );
+      if (isset($known_bad[$apc_version])) {
+        self::didFatal(
+          "You have APC {$apc_version} installed. This version of APC is ".
+          "known to be bad, and does not work with Phabricator (it will ".
+          "cause Phabricator to fatal unrecoverably with nonsense errors). ".
+          "Downgrade to version 3.1.13.");
+      }
+    }
   }
 
 
   /**
-   * @task valiation
+   * @task validation
    */
   private static function verifyRewriteRules() {
     if (isset($_REQUEST['__path__']) && strlen($_REQUEST['__path__'])) {
@@ -288,7 +365,7 @@ final class PhabricatorStartup {
 
 
   /**
-   * @task valiation
+   * @task validation
    */
   private static function validateGlobal($key) {
     static $globals = array(

@@ -9,22 +9,33 @@ final class PhabricatorFeedStoryDifferential extends PhabricatorFeedStory {
   public function renderView() {
     $data = $this->getStoryData();
 
-    $view = new PHUIFeedStoryView();
+    $view = $this->newStoryView();
     $view->setAppIcon('differential-dark');
-    $view->setViewed($this->getHasViewed());
 
     $line = $this->getLineForData($data);
     $view->setTitle($line);
-    $view->setEpoch($data->getEpoch());
 
     $href = $this->getHandle($data->getValue('revision_phid'))->getURI();
     $view->setHref($href);
 
     $action = $data->getValue('action');
 
+    switch ($action) {
+      case DifferentialAction::ACTION_CREATE:
+      case DifferentialAction::ACTION_CLOSE:
+      case DifferentialAction::ACTION_COMMENT:
+        $full_size = true;
+        break;
+      default:
+        $full_size = false;
+        break;
+    }
+
     $view->setImage($this->getHandle($data->getAuthorPHID())->getImageURI());
-    $content = $this->renderSummary($data->getValue('feedback_content'));
-    $view->appendChild($content);
+    if ($full_size) {
+      $content = $this->renderSummary($data->getValue('feedback_content'));
+      $view->appendChild($content);
+    }
 
     return $view;
   }
@@ -76,4 +87,31 @@ final class PhabricatorFeedStoryDifferential extends PhabricatorFeedStory {
         => 'PhabricatorFeedStoryDifferentialAggregate',
     );
   }
+
+  // TODO: At some point, make feed rendering not terrible and remove this
+  // hacky mess.
+  public function renderForAsanaBridge() {
+    $data = $this->getStoryData();
+    $comment = $data->getValue('feedback_content');
+
+    $author_name = $this->getHandle($this->getAuthorPHID())->getName();
+    $action = $this->getValue('action');
+    $verb = DifferentialAction::getActionPastTenseVerb($action);
+
+    $title = "{$author_name} {$verb} this revision.";
+    if (strlen($comment)) {
+      $engine = PhabricatorMarkupEngine::newMarkupEngine(array())
+        ->setConfig('viewer', new PhabricatorUser())
+        ->setMode(PhutilRemarkupEngine::MODE_TEXT);
+
+      $comment = $engine->markupText($comment);
+
+      $title .= "\n\n";
+      $title .= $comment;
+    }
+
+    return $title;
+  }
+
+
 }
