@@ -20,6 +20,7 @@ JX.behavior('maniphest-dropdown-menus', function(config) {
   menu.addItem(link_to('提交 Bug', '/maniphest/task/create/?projects=PHID-PROJ-ng2ucirw6embkz22vruj'));
   menu.addItem(link_to('提交新想法和建议', '/maniphest/task/create/?projects=PHID-PROJ-jjdydjiyr2275zl7qjvq'));
   menu.addItem(link_to('提交原始用户反馈', '/maniphest/task/create/?projects=PHID-PROJ-sj23435jqi7ugo3sltel'));
+  menu.addItem(link_to('Call SA', '/maniphest/task/create/?projects=PHID-PROJ-eipqemisx4qzrejiehbz&description=NOTE:%20请参照%20%5B%5Bdev/index_it_operations/callsa%20%7C%20运维日常需求注意事项%5D%5D%20来填写%20task%20描述'));
   menu.addItem(link_to('本周上线记录', '/w/index_team/zhihu_release_note'));
 
 });
