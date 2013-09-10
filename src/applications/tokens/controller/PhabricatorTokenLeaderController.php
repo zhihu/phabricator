@@ -24,10 +24,10 @@ final class PhabricatorTokenLeaderController
         ->loadHandles();
     }
 
-    $list = new PhabricatorObjectItemListView();
+    $list = new PHUIObjectItemListView();
     foreach ($phids as $object) {
       $count = idx($counts, $object, 0);
-      $item = id(new PhabricatorObjectItemView());
+      $item = id(new PHUIObjectItemView());
       $handle = $handles[$object];
 
       $item->setHeader($handle->getFullName());
@@ -54,7 +54,6 @@ final class PhabricatorTokenLeaderController
       array(
         'title' => $title,
         'device' => true,
-        'dust' => true
       ));
   }
 

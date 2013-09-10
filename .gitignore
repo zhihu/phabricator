@@ -39,3 +39,6 @@ tags
 
 # Users can link binaries here
 /support/bin/*
+
+# User extensions
+/src/extensions/*

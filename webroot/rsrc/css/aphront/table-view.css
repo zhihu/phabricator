@@ -205,7 +205,7 @@ span.single-display-line-content {
 .aphront-table-view tr.no-data td {
   padding:    1em;
   text-align: center;
-  color:      #888888;
+  color:      {$lightgreytext};
   font-style: italic;
 }
 

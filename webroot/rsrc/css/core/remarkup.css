@@ -24,7 +24,7 @@
 .phabricator-remarkup .remarkup-code-header {
   padding: .25em 1em;
   background: #edead7;
-  color: #444444;
+  color: {$darkgreytext};
 }
 
 .phabricator-remarkup .remarkup-code-block pre {
@@ -182,7 +182,7 @@
 
 .phabricator-remarkup-toc-header {
   font-size: 11px;
-  color: #777;
+  color: {$greytext};
   border-bottom: 1px solid #d7d7d7;
   margin-bottom: 4px;
 }
@@ -255,12 +255,11 @@
   padding: 3px 6px;
 }
 
-
 .remarkup-assist-textarea {
-  border-left-color: #96A6C5;
-  border-right-color: #96A6C5;
-  border-bottom-color: #96A6C5;
-  border-top-color: #c9d4e9;
+  border-left-color: {$blueborder};
+  border-right-color: {$blueborder};
+  border-bottom-color: {$blueborder};
+  border-top-color: {$lightblueborder};
   border-radius: 0;
 
   /* Prevent Safari and Chrome users from dragging the textarea any wider,
@@ -278,11 +277,11 @@
 
   border-width: 1px 1px 0;
   border-style: solid;
-  border-top-color: #96A6C5;
-  border-left-color: #96A6C5;
-  border-right-color: #96A6C5;
+  border-top-color: {$blueborder};
+  border-left-color: {$blueborder};
+  border-right-color: {$blueborder};
 
-  background: #f5f5f5;
+  background: {$lightbluebackground};
   overflow: hidden;
 }
 
@@ -339,7 +338,12 @@
   opacity: 1.0;
 }
 
-.remarkup-control-order-mode {
+.remarkup-assist-textarea {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+.remarkup-control-fullscreen-mode {
   position: fixed;
   top: -1px;
   bottom: -1px;
@@ -347,7 +351,7 @@
   right: -1px;
 }
 
-.remarkup-control-order-mode textarea.remarkup-assist-textarea {
+.remarkup-control-fullscreen-mode textarea.remarkup-assist-textarea {
   position: absolute;
   top: 26px;
   left: 0;
@@ -359,81 +363,6 @@
   outline: none;
 }
 
-.remarkup-control-chaos-mode textarea.remarkup-assist-textarea {
-  position: relative;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-0
-  textarea.remarkup-assist-textarea {
-  background-image: url(/rsrc/image/checker_light.png);
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-1
-  textarea.remarkup-assist-textarea {
-  font-family: "Comic Sans", "Comic Sans MS";
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-2
-  textarea.remarkup-assist-textarea {
-  left: -6px;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-3
-  textarea.remarkup-assist-textarea {
-  top: -4px;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-4
-  textarea.remarkup-assist-textarea {
-  direction: rtl;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-5
-  textarea.remarkup-assist-textarea {
-  border: 8px ridge #666666;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-6
-  textarea.remarkup-assist-textarea {
-  opacity: 0.5;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-7
-  textarea.remarkup-assist-textarea {
-  border-radius: 24px;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-8
-  textarea.remarkup-assist-textarea {
-  font-weight: bold;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-9
-  textarea.remarkup-assist-textarea {
-  font-variant: small-caps;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-10
-  textarea.remarkup-assist-textarea {
-  text-transform: uppercase;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-11
-  textarea.remarkup-assist-textarea {
-  letter-spacing: 6px;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-12
-  textarea.remarkup-assist-textarea {
-  font-size: 16px;
-}
-
-.remarkup-control-chaos-mode.remarkup-control-chaos-mode-13
-  textarea.remarkup-assist-textarea {
-  transform: rotate(3deg);
-  -webkit-transform: rotate(3deg);
-}
-
 .phabricator-image-macro-hero {
   margin: auto;
   max-width: 95%;
@@ -443,12 +372,12 @@
    so here are custom rules to override remarkup defaults. */
 
 div.phabricator-remarkup-dark blockquote {
-  color: #999;
+  color: {$lightgreytext};
 }
 
 div.phabricator-remarkup-dark tt {
   color: #EEE;
-  background: #444;
+  background: {$darkgreytext};
 }
 
 div.phabricator-remarkup-dark .remarkup-note,

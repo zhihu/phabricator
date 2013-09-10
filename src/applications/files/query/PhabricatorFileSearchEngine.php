@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @group file
+ */
 final class PhabricatorFileSearchEngine
   extends PhabricatorApplicationSearchEngine {
 
@@ -7,7 +10,7 @@ final class PhabricatorFileSearchEngine
     $saved = new PhabricatorSavedQuery();
     $saved->setParameter(
       'authorPHIDs',
-      array_values($request->getArr('authors')));
+      $this->readUsersFromRequest($request, 'authors'));
 
     $saved->setParameter('explicit', $request->getBool('explicit'));
     $saved->setParameter('createdStart', $request->getStr('createdStart'));

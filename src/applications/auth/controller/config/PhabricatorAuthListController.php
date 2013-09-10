@@ -11,9 +11,9 @@ final class PhabricatorAuthListController
       ->setViewer($viewer)
       ->execute();
 
-    $list = new PhabricatorObjectItemListView();
+    $list = new PHUIObjectItemListView();
     foreach ($configs as $config) {
-      $item = new PhabricatorObjectItemView();
+      $item = new PHUIObjectItemView();
 
       $id = $config->getID();
 
@@ -97,7 +97,6 @@ final class PhabricatorAuthListController
       ),
       array(
         'title' => pht('Authentication Providers'),
-        'dust' => true,
         'device' => true,
       ));
   }

@@ -8,9 +8,8 @@
 }
 
 .device-desktop .phui-document-view {
-  border-left: 1px solid #e7e7e7;
-  border-right: 1px solid #e7e7e7;
-  border-bottom: 1px solid #c0c5d1;
+  border: 1px solid {$lightblueborder};
+  border-bottom: 1px solid {$blueborder};
   max-width: 960px;
   margin: 16px auto;
 }
@@ -47,27 +46,48 @@
 .phui-document-bookname {
   padding: 8px 16px;
   color: #9ca5b5;
+  background-color: #fff;
+  border-bottom: 1px solid {$lightblueborder};
+}
+
+.device-phone .phui-document-bookname {
+  padding: 8px;
 }
 
 .phui-document-bookname .bookname {
-  font-size: 14px;
-  font-weight: bold;
   float: left;
 }
 
 .phui-document-bookname .bookdescription {
-  font-size: 14px;
   float: right;
 }
 
 .phui-document-content .phabricator-header-shell {
-  background-color: #f6f7f8;
-  border-top: 1px solid #e7e7e7;
-  border-bottom: 1px solid #e7e7e7;
+  border-top: none;
+  border-bottom: 1px solid {$lightblueborder};
+}
+
+.phui-document-content
+  .phabricator-header-shell.phabricator-header-no-backgound {
+  border-bottom: 1px solid {$thinblueborder};
+  margin: 0 0 16px 0;
+}
+
+.phui-document-content
+  .phabricator-header-shell.phabricator-header-no-backgound
+  .phabricator-header-view {
+ padding: 8px 0 4px;
+ font-size: 14px;
 }
 
 .phui-document-content .phabricator-header-view {
   padding: 16px;
+  color: {$bluetext};
+  text-shadow: 0 1px 2px #fff;
+}
+
+.phui-document-content .phabricator-property-list-container {
+  border-color: #dde8ef;
 }
 
 .phui-document-content .phabricator-property-list-view {
@@ -78,7 +98,6 @@
 }
 
 .phui-document-content {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
   min-height: 240px;
   background: #fff;
 
@@ -90,13 +109,13 @@
 
 .device-desktop .phui-document-content .phabricator-action-list-view {
   margin: 10px 10px 0 0;
-  background: #f7f7f7;
+  background: {$lightgreybackground};
 }
 
 .device-phone .phui-document-content .phabricator-action-list-view {
   margin: 0;
   border-bottom: 1px solid #c0c5d1;
-  background: #f7f7f7;
+  background: {$lightgreybackground};
 }
 
 .phui-document-content .phabricator-remarkup {
@@ -116,9 +135,9 @@
   border-radius: 0;
   box-shadow: none;
   border: none;
-  border-top: 1px solid #e7e7e7;
-  border-bottom: 1px solid #e7e7e7;
-  border-right: 1px solid #e7e7e7;
+  border-top: 1px solid {$thinblueborder};
+  border-bottom: 1px solid {$thinblueborder};
+  border-right: 1px solid {$thinblueborder};
   width: 160px;
 }
 

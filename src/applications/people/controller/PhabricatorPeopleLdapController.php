@@ -63,7 +63,6 @@ final class PhabricatorPeopleLdapController
       array(
         'title'  => pht('Import Ldap Users'),
         'device' => true,
-        'dust'   => true,
       ));
   }
 
@@ -80,7 +79,7 @@ final class PhabricatorPeopleLdapController
       pht("Successfully imported users from LDAP"),
     ));
 
-    $list = new PhabricatorObjectItemListView();
+    $list = new PHUIObjectItemListView();
     $list->setNoDataString(pht("No users imported?"));
 
     foreach ($usernames as $username) {
@@ -112,7 +111,7 @@ final class PhabricatorPeopleLdapController
         $color = 'red';
       }
 
-      $item = id(new PhabricatorObjectItemView())
+      $item = id(new PHUIObjectItemView())
         ->setHeader($header)
         ->addAttribute($attribute)
         ->setBarColor($color);

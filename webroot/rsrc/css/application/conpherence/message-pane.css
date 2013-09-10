@@ -38,7 +38,7 @@
   margin: 10px;
   text-align: center;
   padding: 10px;
-  color: #18559D;
+  color: {$bluetext};
 }
 
 .conpherence-show-older-messages-loading {
@@ -74,9 +74,9 @@
   display: block;
 }
 
-.conpherence-message-pane .phabricator-form-view {
+.conpherence-message-pane .phui-form-view {
   border-width: 0;
-  background: none;
+  background-color: {$lightgreybackground};
   height: 190px;
   padding: 0;
   position: fixed;
@@ -85,11 +85,23 @@
   right: 241px;
 }
 
+/**
+ * When entering "Fullscreen Mode" in the remarkup control, we need to drop
+ * all of the "position: fixed" on parent elements or Chrome doesn't put the
+ * textarea on top.
+ */
+.remarkup-fullscreen-mode .conpherence-message-pane,
+.remarkup-fullscreen-mode .conpherence-message-pane .conpherence-messages,
+.remarkup-fullscreen-mode .conpherence-message-pane .phui-form-view,
+.remarkup-fullscreen-mode .conpherence-layout {
+  position: static;
+}
+
 .device .conpherence-message-pane .remarkup-assist-bar {
   height: 0px;
 }
 
-.device .conpherence-message-pane .phabricator-form-view {
+.device .conpherence-message-pane .phui-form-view {
   left: 0;
   right: 0;
   background-color: #d8dce2;
@@ -97,7 +109,7 @@
   width: 100%;
 }
 
-.conpherence-layout .conpherence-message-pane .phabricator-form-view
+.conpherence-layout .conpherence-message-pane .phui-form-view
   div.aphront-form-input {
   margin: 0;
   width: 100%;
@@ -137,12 +149,12 @@
 }
 
 .conpherence-message-pane .conpherence-edited {
-  color: #888;
+  color: {$lightgreytext};
   margin: 0;
 }
 
 .device-phone .conpherence-message-pane .conpherence-edited {
-  color: #888;
+  color: {$lightgreytext};
   margin: 0 10px;
 }
 
@@ -177,7 +189,7 @@
 }
 
 .conpherence-message-pane .aphront-form-control-submit {
-  margin-right: 8px;
+  margin: 3px 8px 0 0;
 }
 .conpherence-message-pane .remarkup-assist-bar {
   border-width: 1px 0 0;
@@ -188,8 +200,8 @@
 .conpherence-message-pane .remarkup-assist-textarea {
   height: 124px;
   padding: 6px;
-  border-width: 0 0 1px 0;
-  border-color: #e7e7e7;
+  border-width: 1px 0;
+  border-color: {$lightblueborder};
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;

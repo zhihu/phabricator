@@ -1519,6 +1519,59 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
         'type' => 'php',
         'name' => $this->getPatchPath('20130805.pastemailkeypop.php'),
       ),
+      '20130802.heraldphid.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130802.heraldphid.sql'),
+      ),
+      '20130802.heraldphids.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130802.heraldphids.php'),
+      ),
+      '20130802.heraldphidukey.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130802.heraldphidukey.sql'),
+      ),
+      '20130802.heraldxactions.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130802.heraldxactions.sql'),
+      ),
+      '20130731.releephrepoid.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130731.releephrepoid.sql'),
+      ),
+      '20130731.releephproject.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130731.releephproject.sql'),
+      ),
+      '20130731.releephcutpointidentifier.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130731.releephcutpointidentifier.sql'),
+      ),
+      '20130814.usercustom.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130814.usercustom.sql'),
+      ),
+      '20130820.releephxactions.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130820.releephxactions.sql'),
+      ),
+      '20130826.divinernode.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130826.divinernode.sql'),
+      ),
+      '20130820.filexactions.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130820.filexactions.sql'),
+      ),
+      '20130820.filemailkey.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130820.filemailkey.sql'),
+      ),
+      '20130820.file-mailkey-populate.php' => array(
+        'type' => 'php',
+        'name' =>
+          $this->getPatchPath('20130820.file-mailkey-populate.php'),
+      ),
     );
   }
 }

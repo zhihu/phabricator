@@ -95,7 +95,7 @@ final class HeraldTranscriptListController extends HeraldController {
     $panel->appendChild($pager);
     $panel->setNoBackground();
 
-    $nav = $this->renderNav();
+    $nav = $this->buildSideNavView();
     $nav->selectFilter('transcript');
     $nav->appendChild($panel);
 
@@ -110,7 +110,6 @@ final class HeraldTranscriptListController extends HeraldController {
       array(
         'title' => pht('Herald Transcripts'),
         'device' => true,
-        'dust' => true,
       ));
   }
 

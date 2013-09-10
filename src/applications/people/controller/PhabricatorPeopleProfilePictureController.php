@@ -98,7 +98,7 @@ final class PhabricatorPeopleProfilePictureController
       id(new PhabricatorCrumbView())
         ->setName($title));
 
-    $form = id(new AphrontFormLayoutView())
+    $form = id(new PHUIFormLayoutView())
       ->setUser($viewer);
 
     $default_image = PhabricatorFile::loadBuiltin($viewer, 'profile.png');
@@ -260,12 +260,13 @@ final class PhabricatorPeopleProfilePictureController
         ->setLabel(pht('Use Picture'))
         ->setValue($buttons));
 
-    $upload_head = id(new PhabricatorHeaderView())
-      ->setHeader(pht('Upload New Picture'));
+    $form_box = id(new PHUIFormBoxView())
+      ->setHeaderText($title)
+      ->setFormError($errors)
+      ->setForm($form);
 
     $upload_form = id(new AphrontFormView())
       ->setUser($user)
-      ->setFlexible(true)
       ->setEncType('multipart/form-data')
       ->appendChild(
         id(new AphrontFormFileControl())
@@ -283,18 +284,24 @@ final class PhabricatorPeopleProfilePictureController
       $errors = id(new AphrontErrorView())->setErrors($errors);
     }
 
+    $form_box = id(new PHUIFormBoxView())
+      ->setHeaderText($title)
+      ->setFormError($errors)
+      ->setForm($form);
+
+    $upload_box = id(new PHUIFormBoxView())
+      ->setHeaderText(pht('Upload New Picture'))
+      ->setForm($upload_form);
+
     return $this->buildApplicationPage(
       array(
         $crumbs,
-        $errors,
-        $form,
-        $upload_head,
-        $upload_form,
+        $form_box,
+        $upload_box,
       ),
       array(
         'title' => $title,
         'device' => true,
-        'dust' => true,
       ));
   }
 }

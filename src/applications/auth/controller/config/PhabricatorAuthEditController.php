@@ -97,8 +97,12 @@ final class PhabricatorAuthEditController
 
       if (!$errors) {
         if ($is_new) {
-          $config->setProviderType($provider->getProviderType());
-          $config->setProviderDomain($provider->getProviderDomain());
+          if (!strlen($config->getProviderType())) {
+            $config->setProviderType($provider->getProviderType());
+          }
+          if (!strlen($config->getProviderDomain())) {
+            $config->setProviderDomain($provider->getProviderDomain());
+          }
         }
 
         $xactions[] = id(new PhabricatorAuthProviderConfigTransaction())
@@ -134,8 +138,15 @@ final class PhabricatorAuthEditController
           ->setContinueOnNoEffect(true)
           ->applyTransactions($config, $xactions);
 
-        return id(new AphrontRedirectResponse())->setURI(
-          $this->getApplicationURI());
+
+        if ($provider->hasSetupStep() && $is_new) {
+          $id = $config->getID();
+          $next_uri = $this->getApplicationURI('config/edit/'.$id.'/');
+        } else {
+          $next_uri = $this->getApplicationURI();
+        }
+
+        return id(new AphrontRedirectResponse())->setURI($next_uri);
       }
     } else {
       $properties = $provider->readFormValuesFromProvider();
@@ -202,7 +213,6 @@ final class PhabricatorAuthEditController
 
     $form = id(new AphrontFormView())
       ->setUser($viewer)
-      ->setFlexible(true)
       ->appendChild(
         id(new AphrontFormStaticControl())
           ->setLabel(pht('Provider'))
@@ -270,16 +280,19 @@ final class PhabricatorAuthEditController
         ->setTransactions($xactions);
     }
 
+    $form_box = id(new PHUIFormBoxView())
+      ->setHeaderText($title)
+      ->setFormError($errors)
+      ->setForm($form);
+
     return $this->buildApplicationPage(
       array(
         $crumbs,
-        $errors,
-        $form,
+        $form_box,
         $xaction_view,
       ),
       array(
         'title' => $title,
-        'dust' => true,
         'device' => true,
       ));
   }

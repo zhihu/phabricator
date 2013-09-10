@@ -19,6 +19,7 @@ final class PhabricatorPeopleProfileController
     $user = id(new PhabricatorPeopleQuery())
       ->setViewer($viewer)
       ->withUsernames(array($this->username))
+      ->needProfileImage(true)
       ->executeOne();
     if (!$user) {
       return new Aphront404Response();
@@ -86,7 +87,6 @@ final class PhabricatorPeopleProfileController
       array(
         'title' => $user->getFullName(),
         'device' => true,
-        'dust' => true,
       ));
   }
 
@@ -97,15 +97,10 @@ final class PhabricatorPeopleProfileController
       ->setUser($viewer)
       ->setObject($user);
 
-    $fields = PhabricatorCustomField::getObjectFields(
+    $field_list = PhabricatorCustomField::getObjectFields(
       $user,
       PhabricatorCustomField::ROLE_VIEW);
-
-    foreach ($fields as $field) {
-      $field->setViewer($viewer);
-    }
-
-    $view->applyCustomFields($fields);
+    $field_list->appendFieldsToPropertyList($user, $viewer, $view);
 
     return $view;
   }
@@ -124,6 +119,7 @@ final class PhabricatorPeopleProfileController
 
     $builder = new PhabricatorFeedBuilder($stories);
     $builder->setUser($viewer);
+    $builder->setShowHovercards(true);
     $view = $builder->buildView();
 
     return hsprintf(

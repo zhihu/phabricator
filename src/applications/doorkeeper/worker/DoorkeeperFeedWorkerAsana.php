@@ -194,8 +194,9 @@ final class DoorkeeperFeedWorkerAsana extends FeedPushWorker {
       array_keys($phid_aid_map));
     $try_users = array_filter($try_users);
 
-    list($possessed_user, $oauth_token) = $this->findAnyValidAsanaAccessToken(
-      $try_users);
+    $access_info = $this->findAnyValidAsanaAccessToken($try_users);
+    list($possessed_user, $possessed_asana_id, $oauth_token) = $access_info;
+
     if (!$oauth_token) {
       throw new PhabricatorWorkerPermanentFailureException(
         'Unable to find any Asana user with valid credentials to '.
@@ -220,7 +221,6 @@ final class DoorkeeperFeedWorkerAsana extends FeedPushWorker {
 
     $main_data = $this->getAsanaTaskData($object) + array(
       'assignee' => $owner_asana_id,
-      'followers' => $all_asana_ids,
     );
 
     $extra_data = array();
@@ -250,38 +250,27 @@ final class DoorkeeperFeedWorkerAsana extends FeedPushWorker {
         // TODO: This probably breaks, very rarely, on 32-bit systems.
         if ($edge_cursor <= $story->getChronologicalKey()) {
           $this->log("Updating main task.\n");
-
-          // We need to synchronize follower data separately.
-          $put_data = $main_data;
-          unset($put_data['followers']);
+          $task_id = $parent_ref->getObjectID();
 
           $this->makeAsanaAPICall(
             $oauth_token,
             "tasks/".$parent_ref->getObjectID(),
             'PUT',
-            $put_data);
-
-          // To synchronize follower data, just add all the followers. The task
-          // might have additional followers, but we can't really tell how they
-          // got there: were they CC'd and then unsubscribed, or did they
-          // manually follow the task? Assume the latter since it's easier and
-          // less destructive and the former is rare.
-
-          if ($main_data['followers']) {
-            $this->makeAsanaAPICall(
-              $oauth_token,
-              'tasks/'.$parent_ref->getObjectID().'/addFollowers',
-              'POST',
-              array(
-                'followers' => $main_data['followers'],
-              ));
-          }
+            $main_data);
         } else {
           $this->log(
             "Skipping main task update, cursor is ahead of the story.\n");
         }
       }
     } else {
+      // If there are no followers (CCs), and no active or passive users
+      // (reviewers or auditors), and we haven't synchronized the object before,
+      // don't synchronize the object.
+      if (!$active_phids && !$passive_phids && !$follow_phids) {
+        $this->log("Object has no followers or active/passive users.\n");
+        return;
+      }
+
       $parent = $this->makeAsanaAPICall(
         $oauth_token,
         'tasks',
@@ -295,14 +284,46 @@ final class DoorkeeperFeedWorkerAsana extends FeedPushWorker {
           // we should not overwrite their choices.
           'assignee_status' => 'later',
         ) + $main_data);
+
       $parent_ref = $this->newRefFromResult(
         DoorkeeperBridgeAsana::OBJTYPE_TASK,
         $parent);
+
 
       $extra_data = array(
         'workspace' => $workspace_id,
       );
     }
+
+    // Synchronize main task followers.
+
+    $task_id = $parent_ref->getObjectID();
+
+    // Reviewers are added as followers of the parent task silently, because
+    // they receive a notification when they are assigned as the owner of their
+    // subtask, so the follow notification is redundant / non-actionable.
+    $silent_followers = array_select_keys($phid_aid_map, $active_phids) +
+                        array_select_keys($phid_aid_map, $passive_phids);
+    $silent_followers = array_values($silent_followers);
+
+    // CCs are added as followers of the parent task with normal notifications,
+    // since they won't get a secondary subtask notification.
+    $noisy_followers = array_select_keys($phid_aid_map, $follow_phids);
+    $noisy_followers = array_values($noisy_followers);
+
+    // To synchronize follower data, just add all the followers. The task might
+    // have additional followers, but we can't really tell how they got there:
+    // were they CC'd and then unsubscribed, or did they manually follow the
+    // task? Assume the latter since it's easier and less destructive and the
+    // former is rare. To be fully consistent, we should enumerate followers
+    // and remove unknown followers, but that's a fair amount of work for little
+    // benefit, and creates a wider window for race conditions.
+
+    // Add the silent followers first so that a user who is both a reviewer and
+    // a CC gets silently added and then implicitly skipped by then noisy add.
+    // They will get a subtask notification.
+    $this->addFollowers($oauth_token, $task_id, $silent_followers, true);
+    $this->addFollowers($oauth_token, $task_id, $noisy_followers);
 
     $dst_phid = $parent_ref->getExternalObject()->getPHID();
 
@@ -425,7 +446,6 @@ final class DoorkeeperFeedWorkerAsana extends FeedPushWorker {
     }
 
     // For each user that we don't have a subtask for, create a new subtask.
-
     foreach ($need_subtasks as $user_phid => $is_completed) {
       $subtask = $this->makeAsanaAPICall(
         $oauth_token,
@@ -472,14 +492,37 @@ final class DoorkeeperFeedWorkerAsana extends FeedPushWorker {
         ));
     }
 
+    foreach ($user_to_ref_map as $user_phid => $ref) {
+      // For each subtask, if the acting user isn't the same user as the subtask
+      // owner, remove the acting user as a follower. Currently, the acting user
+      // will be added as a follower only when they create the task, but this
+      // may change in the future (e.g., closing the task may also mark them
+      // as a follower). Wipe every subtask to be sure. The intent here is to
+      // leave only the owner as a follower so that the acting user doesn't
+      // receive notifications about changes to subtask state. Note that
+      // removing followers is silent in all cases in Asana and never produces
+      // any kind of notification, so this isn't self-defeating.
+      if ($user_phid != $possessed_user->getPHID()) {
+        $this->makeAsanaAPICall(
+          $oauth_token,
+          'tasks/'.$ref->getObjectID().'/removeFollowers',
+          'POST',
+          array(
+            'followers' => array($possessed_asana_id),
+          ));
+      }
+    }
+
     // Update edges on our side.
 
     $sub_editor->save();
 
     // Don't publish the "create" story, since pushing the object into Asana
     // naturally generates a notification which effectively serves the same
-    // purpose as the "create" story.
-    if (!$publisher->isStoryAboutObjectCreation($object)) {
+    // purpose as the "create" story. Similarly, "close" stories generate a
+    // close notification.
+    if (!$publisher->isStoryAboutObjectCreation($object) &&
+        !$publisher->isStoryAboutObjectClosure($object)) {
       // Post the feed story itself to the main Asana task. We do this last
       // because everything else is idempotent, so this is the only effect we
       // can't safely run more than once.
@@ -525,7 +568,7 @@ final class DoorkeeperFeedWorkerAsana extends FeedPushWorker {
 
   private function findAnyValidAsanaAccessToken(array $user_phids) {
     if (!$user_phids) {
-      return array(null, null);
+      return array(null, null, null);
     }
 
     $provider = $this->getProvider();
@@ -570,11 +613,11 @@ final class DoorkeeperFeedWorkerAsana extends FeedPushWorker {
         ->withPHIDs(array($account->getUserPHID()))
         ->executeOne();
       if ($user) {
-        return array($user, $token);
+        return array($user, $account->getAccountID(), $token);
       }
     }
 
-    return array(null, null);
+    return array(null, null, null);
   }
 
   private function makeAsanaAPICall($token, $action, $method, array $params) {
@@ -623,5 +666,33 @@ final class DoorkeeperFeedWorkerAsana extends FeedPushWorker {
     $count = $task->getFailureCount();
     return (5 * 60) * pow(8, $count);
   }
+
+  private function addFollowers(
+    $oauth_token,
+    $task_id,
+    array $followers,
+    $silent = false) {
+
+    if (!$followers) {
+      return;
+    }
+
+    $data = array(
+      'followers' => $followers,
+    );
+
+    // NOTE: This uses a currently-undocumented API feature to suppress the
+    // follow notifications.
+    if ($silent) {
+      $data['silent'] = true;
+    }
+
+    $this->makeAsanaAPICall(
+      $oauth_token,
+      "tasks/{$task_id}/addFollowers",
+      'POST',
+      $data);
+  }
+
 
 }

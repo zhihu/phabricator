@@ -3,40 +3,38 @@
  */
 
 .aphront-list-filter-wrap {
-  border-left: 1px solid #e7e7e7;
-  border-right: 1px solid #e7e7e7;
-  border-bottom: 1px solid #c0c5d1;
+  border-left: 1px solid {$lightgreyborder};
+  border-right: 1px solid {$lightgreyborder};
+  border-bottom: 1px solid {$greyborder};
   margin: 0 20px;
 }
 
 .aphront-list-filter-view {
   background: #fff;
-
   padding: 0;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-.device-phone .aphront-list-filter-view {
-  margin: 0;
+.device-phone .aphront-list-filter-wrap {
+  margin: 0 -2px;
 }
 
-.aphront-list-filter-view-content .aphront-form-view {
+.aphront-list-filter-view-content .phui-form-view {
   border-left: none;
   border-right: none;
   padding: 12px 0 6px;
 }
 
-.aphront-list-filter-view-content .aphront-form-view .aphront-form-label {
+.aphront-list-filter-view-content .phui-form-view .aphront-form-label {
   width: 12%;
 }
 
-.aphront-list-filter-view-content .aphront-form-view .aphront-form-input {
+.aphront-list-filter-view-content .phui-form-view .aphront-form-input {
   width: 70%;
   margin-left: 13%;
   margin-right: 17%;
 }
 
-.device-phone .aphront-list-filter-view-content .aphront-form-view
+.device-phone .aphront-list-filter-view-content .phui-form-view
   .aphront-form-input {
   width: 98%;
   margin-left: 0;
@@ -58,7 +56,7 @@
 .device .aphront-list-filter-reveal {
   width: 98%;
   margin: auto;
-  padding: 4px 0;
+  padding: 8px;
 }
 
 .aphront-list-filter-reveal a {
@@ -67,9 +65,8 @@
 }
 
 .device .aphront-list-filter-reveal a {
-  margin: 4px auto 0;
-  float: none;
-  display: block;
+  margin: 4px 0;
+  float: left;
 }
 
 .aphront-list-filter-description {
@@ -77,7 +74,7 @@
   float: left;
   text-align: left;
   line-height: 25px;
-  color: #666666;
+  color: {$greytext};
 }
 
 .device .aphront-list-filter-description {

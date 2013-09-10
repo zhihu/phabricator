@@ -55,7 +55,6 @@ final class DiffusionCommitEditController extends DiffusionController {
     $form         = id(new AphrontFormView())
       ->setUser($user)
       ->setAction($request->getRequestURI()->getPath())
-      ->setFlexible(true)
       ->appendChild(
         id(new AphrontFormTokenizerControl())
         ->setLabel(pht('Projects'))
@@ -82,18 +81,17 @@ final class DiffusionCommitEditController extends DiffusionController {
       ->addCancelButton('/r'.$callsign.$commit->getCommitIdentifier());
     $form->appendChild($submit);
 
-    $header = new PhabricatorHeaderView();
-    $header->setHeader(pht('Edit Diffusion Commit'));
+    $form_box = id(new PHUIFormBoxView())
+      ->setHeaderText($page_title)
+      ->setForm($form);
 
     return $this->buildApplicationPage(
       array(
-        $header,
-        $form,
+        $form_box,
       ),
       array(
         'title' => $page_title,
         'device' => true,
-        'dust' => true,
       ));
   }
 

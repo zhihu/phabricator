@@ -140,11 +140,21 @@ final class DiffusionCommitController extends DiffusionController {
 
     $content[] = $this->buildMergesTable($commit);
 
+    // TODO: This is silly, but the logic to figure out which audits are
+    // highlighted currently lives in PhabricatorAuditListView. Refactor this
+    // to be less goofy.
+    $highlighted_audits = id(new PhabricatorAuditListView())
+      ->setAudits($audit_requests)
+      ->setAuthorityPHIDs($this->auditAuthorityPHIDs)
+      ->setUser($user)
+      ->setCommits(array($commit->getPHID() => $commit))
+      ->getHighlightedAudits();
+
     $owners_paths = array();
-    if ($this->highlightedAudits) {
+    if ($highlighted_audits) {
       $packages = id(new PhabricatorOwnersPackage())->loadAllWhere(
         'phid IN (%Ls)',
-        mpull($this->highlightedAudits, 'getAuditorPHID'));
+        mpull($highlighted_audits, 'getAuditorPHID'));
       if ($packages) {
         $owners_paths = id(new PhabricatorOwnersPath())->loadAllWhere(
           'repositoryPHID = %s AND packageID IN (%Ld)',
@@ -202,10 +212,14 @@ final class DiffusionCommitController extends DiffusionController {
           $hard_limit));
       $content[] = $huge_commit;
     } else {
+      // The user has clicked "Show All Changes", and we should show all the
+      // changes inline even if there are more than the soft limit.
+      $show_all_details = $request->getBool('show_all');
+
       $change_panel = new AphrontPanelView();
       $change_panel->setHeader("Changes (".number_format($count).")");
       $change_panel->setID('toc');
-      if ($count > self::CHANGES_LIMIT) {
+      if ($count > self::CHANGES_LIMIT && !$show_all_details) {
         $show_all_button = phutil_tag(
           'a',
           array(
@@ -273,7 +287,7 @@ final class DiffusionCommitController extends DiffusionController {
         $changeset->setID($path_ids[$changeset->getFilename()]);
       }
 
-      if ($count <= self::CHANGES_LIMIT) {
+      if ($count <= self::CHANGES_LIMIT || $show_all_details) {
         $visible_changesets = $changesets;
       } else {
         $visible_changesets = array();
@@ -361,7 +375,6 @@ final class DiffusionCommitController extends DiffusionController {
       array(
         'title' => $commit_id,
         'pageObjects' => array($commit->getPHID()),
-        'dust' => true,
       ));
   }
 
@@ -611,6 +624,7 @@ final class DiffusionCommitController extends DiffusionController {
 
     $form = id(new AphrontFormView())
       ->setUser($user)
+      ->setShaded(true)
       ->setAction('/audit/addcomment/')
       ->addHiddenInput('commit', $commit->getPHID())
       ->appendChild(

@@ -3,11 +3,30 @@
  */
 
 .phabricator-header-shell {
-  background: #e0e3ec;
+  background-color: #e0e3ec;
   border-width: 1px 0;
   border-style: solid;
   border-color: #c0c5d1;
   overflow: hidden;
+}
+
+body .phabricator-header-shell.phabricator-header-no-backgound {
+  background-color: transparent;
+  border: none;
+}
+
+body .phabricator-header-shell.phabricator-bleed-header {
+  background-color: {$lightgreybackground};
+  border-top: 1px solid {$thinblueborder};
+  border-bottom: none;
+  width: auto;
+  margin-bottom: 16px;
+}
+
+body .phabricator-header-shell.phabricator-bleed-header
+  .phabricator-header-view {
+  padding: 8px 24px 8px 16px;
+  font-size: 18px;
 }
 
 .phabricator-header-shell + .phabricator-form-view {
@@ -15,9 +34,13 @@
 }
 
 .phabricator-header-view {
-  padding: 1.25em 2%;
+  padding: 16px;
   font-size: 15px;
-  color: #111111;
+  color: {$darkbluetext};
+}
+
+body.device-phone .phabricator-header-view {
+  padding: 12px 8px;
 }
 
 .device-desktop .phabricator-header-view {
@@ -44,7 +67,7 @@
 }
 
 .phabricator-header-subheader {
-  color: #444444;
+  color: {$lightbluetext};
   font-weight: normal;
   font-size: 13px;
   margin-top: 4px;

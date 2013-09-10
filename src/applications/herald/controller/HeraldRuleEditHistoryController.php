@@ -42,7 +42,7 @@ final class HeraldRuleEditHistoryController extends HeraldController {
           ->setName(pht('Edit History'))
           ->setHref($this->getApplicationURI('herald/history')));
 
-    $nav = $this->renderNav();
+    $nav = $this->buildSideNavView();
     $nav->selectFilter('history');
     $nav->appendChild($panel);
     $nav->setCrumbs($crumbs);
@@ -52,7 +52,6 @@ final class HeraldRuleEditHistoryController extends HeraldController {
       array(
         'title' => pht('Rule Edit History'),
         'device' => true,
-        'dust' => true,
       ));
   }
 

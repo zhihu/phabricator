@@ -86,7 +86,7 @@ final class DiffusionBrowseController extends DiffusionController {
       $readme = $this->callConduitWithDiffusionRequest(
         'diffusion.readmequery',
         array(
-          'paths' => $results->getPathDicts()
+          'paths' => $results->getPathDicts(),
         ));
       if ($readme) {
         $box = new PHUIBoxView();
@@ -120,7 +120,6 @@ final class DiffusionBrowseController extends DiffusionController {
       $nav,
       array(
         'device' => true,
-        'dust' => true,
         'title' => array(
           nonempty(basename($drequest->getPath()), '/'),
           $drequest->getRepository()->getCallsign().' Repository',
@@ -133,8 +132,7 @@ final class DiffusionBrowseController extends DiffusionController {
     $drequest = $this->getDiffusionRequest();
     $form = id(new AphrontFormView())
       ->setUser($this->getRequest()->getUser())
-      ->setMethod('GET')
-      ->setNoShading(true);
+      ->setMethod('GET');
 
     switch ($drequest->getRepository()->getVersionControlSystem()) {
       case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:

@@ -30,18 +30,17 @@ final class PhabricatorApplicationsListController
       array(
         'title' => $title,
         'device' => true,
-        'dust' => true,
       ));
   }
 
 
   private function buildInstalledApplicationsList(array $applications) {
-    $list = new PhabricatorObjectItemListView();
+    $list = new PHUIObjectItemListView();
 
     $applications = msort($applications, 'getName');
 
     foreach ($applications as $application) {
-        $item = id(new PhabricatorObjectItemView())
+        $item = id(new PHUIObjectItemView())
           ->setHeader($application->getName())
           ->setHref('/applications/view/'.get_class($application).'/')
           ->addAttribute($application->getShortDescription());

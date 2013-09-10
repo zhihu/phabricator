@@ -11,9 +11,9 @@ final class PhabricatorChatLogChannelListController
                 ->setViewer($user)
                 ->execute();
 
-    $list = new PhabricatorObjectItemListView();
+    $list = new PHUIObjectItemListView();
     foreach ($channels as $channel) {
-        $item = id(new PhabricatorObjectItemView())
+        $item = id(new PHUIObjectItemView())
           ->setHeader($channel->getChannelName())
           ->setHref('/chatlog/channel/'.$channel->getID().'/')
           ->addAttribute($channel->getServiceName())
@@ -36,7 +36,6 @@ final class PhabricatorChatLogChannelListController
       array(
         'title' => pht('Channel List'),
         'device' => true,
-        'dust' => true,
       ));
   }
 }

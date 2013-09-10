@@ -6,6 +6,16 @@ final class PhabricatorApplicationSearchController
   private $searchEngine;
   private $navigation;
   private $queryKey;
+  private $preface;
+
+  public function setPreface($preface) {
+    $this->preface = $preface;
+    return $this;
+  }
+
+  public function getPreface() {
+    return $this->preface;
+  }
 
   public function setQueryKey($query_key) {
     $this->queryKey = $query_key;
@@ -97,7 +107,15 @@ final class PhabricatorApplicationSearchController
       $run_query = false;
       $query_key = $request->getStr('query');
     } else if (!strlen($this->queryKey)) {
-      $query_key = head_key($engine->loadEnabledNamedQueries());
+      if ($request->isHTTPGet() && $request->getPassthroughRequestData()) {
+        // If this is a GET request and it has some query data, don't
+        // do anything. We'll build and execute a query from it below.
+        // This allows external tools to build URIs like "/query/?users=a,b".
+      } else {
+        // Otherwise, there's no query data so just run the user's default
+        // query for this application.
+        $query_key = head_key($engine->loadEnabledNamedQueries());
+      }
     }
 
     if ($engine->isBuiltinQuery($query_key)) {
@@ -123,7 +141,6 @@ final class PhabricatorApplicationSearchController
       'query/advanced');
 
     $form = id(new AphrontFormView())
-      ->setNoShading(true)
       ->setUser($user);
 
     $engine->buildSearchForm($form, $saved_query);
@@ -166,6 +183,10 @@ final class PhabricatorApplicationSearchController
         $this->getApplicationURI('query/advanced/?query='.$query_key));
     }
 
+    if ($this->getPreface()) {
+      $nav->appendChild($this->getPreface());
+    }
+
     $nav->appendChild($filter_view);
 
     if ($run_query) {
@@ -182,7 +203,7 @@ final class PhabricatorApplicationSearchController
       $nav->appendChild($list);
 
       // TODO: This is a bit hacky.
-      if ($list instanceof PhabricatorObjectItemListView) {
+      if ($list instanceof PHUIObjectItemListView) {
         $list->setNoDataString(pht("No results found for this query."));
         $list->setPager($pager);
       } else {
@@ -213,7 +234,6 @@ final class PhabricatorApplicationSearchController
       array(
         'title' => $title,
         'device' => true,
-        'dust' => true,
       ));
   }
 
@@ -228,7 +248,7 @@ final class PhabricatorApplicationSearchController
 
     $list_id = celerity_generate_unique_node_id();
 
-    $list = new PhabricatorObjectItemListView();
+    $list = new PHUIObjectItemListView();
     $list->setUser($user);
     $list->setID($list_id);
 
@@ -243,7 +263,7 @@ final class PhabricatorApplicationSearchController
       $class = get_class($engine);
       $key = $named_query->getQueryKey();
 
-      $item = id(new PhabricatorObjectItemView())
+      $item = id(new PHUIObjectItemView())
         ->setHeader($named_query->getQueryName())
         ->setHref($engine->getQueryResultsPageURI($key));
 
@@ -301,7 +321,6 @@ final class PhabricatorApplicationSearchController
       array(
         'title' => pht("Saved Queries"),
         'device' => true,
-        'dust' => true,
       ));
   }
 

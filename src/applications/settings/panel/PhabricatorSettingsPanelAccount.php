@@ -17,6 +17,10 @@ final class PhabricatorSettingsPanelAccount
 
   public function processRequest(AphrontRequest $request) {
     $user = $request->getUser();
+
+    $pref_time = PhabricatorUserPreferences::PREFERENCE_TIME_FORMAT;
+    $preferences = $user->loadPreferences();
+
     $errors = array();
     if ($request->isFormPost()) {
       $new_timezone = $request->getStr('timezone');
@@ -37,7 +41,10 @@ final class PhabricatorSettingsPanelAccount
       // Checked in runtime.
       $user->setTranslation($request->getStr('translation'));
 
+      $preferences->setPreference($pref_time, $request->getStr($pref_time));
+
       if (!$errors) {
+        $preferences->save();
         $user->save();
         return id(new AphrontRedirectResponse())
           ->setURI($this->getPanelURI('?saved=true'));
@@ -84,11 +91,9 @@ final class PhabricatorSettingsPanelAccount
       '' => pht('Server Default (%s)', $default->getName()),
     ) + $translations;
 
-
     $form = new AphrontFormView();
     $form
       ->setUser($user)
-      ->setFlexible(true)
       ->appendChild(
         id(new AphrontFormSelectControl())
           ->setLabel(pht('Timezone'))
@@ -107,17 +112,38 @@ final class PhabricatorSettingsPanelAccount
           ->setLabel(pht('Translation'))
           ->setName('translation')
           ->setValue($user->getTranslation()))
+      ->appendRemarkupInstructions(
+        pht(
+          "**Custom Date and Time Formats**\n\n".
+          "You can specify custom formats which will be used when ".
+          "rendering dates and times of day. Examples:\n\n".
+          "| Format  | Example  | Notes |\n".
+          "| ------  | -------- | ----- |\n".
+          "| `g:i A` | 2:34 PM  | Default 12-hour time. |\n".
+          "| `G.i a` | 02.34 pm | Alternate 12-hour time. |\n".
+          "| `H:i`   | 14:34    | 24-hour time. |\n".
+          "\n\n".
+          "You can find a [[%s | full reference in the PHP manual]].",
+          "http://www.php.net/manual/en/function.date.php"
+          ))
+      ->appendChild(
+        id(new AphrontFormTextControl())
+          ->setLabel(pht('Time-of-Day Format'))
+          ->setName($pref_time)
+          ->setCaption(
+            pht('Format used when rendering a time of day.'))
+          ->setValue($preferences->getPreference($pref_time)))
       ->appendChild(
         id(new AphrontFormSubmitControl())
           ->setValue(pht('Save Account Settings')));
 
-    $header = new PhabricatorHeaderView();
-    $header->setHeader(pht('Account Settings'));
+    $form_box = id(new PHUIFormBoxView())
+      ->setHeaderText(pht('Account Settings'))
+      ->setForm($form);
 
     return array(
       $notice,
-      $header,
-      $form,
+      $form_box,
     );
   }
 }

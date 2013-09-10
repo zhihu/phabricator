@@ -73,7 +73,6 @@ final class PhortuneAccountViewController extends PhortuneController {
       array(
         'title' => $title,
         'device' => true,
-        'dust' => true,
       ));
   }
 
@@ -96,7 +95,7 @@ final class PhortuneAccountViewController extends PhortuneController {
           ->setIcon('new')
           ->setHref($add_uri));
 
-    $list = id(new PhabricatorObjectItemListView())
+    $list = id(new PHUIObjectItemListView())
       ->setUser($user)
       ->setNoDataString(
         pht('No payment methods associated with this account.'));
@@ -112,7 +111,7 @@ final class PhortuneAccountViewController extends PhortuneController {
     }
 
     foreach ($methods as $method) {
-      $item = new PhabricatorObjectItemView();
+      $item = new PHUIObjectItemView();
       $item->setHeader($method->getBrand().' / '.$method->getLastFourDigits());
 
       switch ($method->getStatus()) {

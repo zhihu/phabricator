@@ -21,10 +21,6 @@ final class PholioTransaction extends PhabricatorApplicationTransaction {
     return new PholioTransactionView();
   }
 
-  public function getApplicationObjectTypeName() {
-    return pht('mock');
-  }
-
   public function getRequiredHandlePHIDs() {
     $phids = parent::getRequiredHandlePHIDs();
     $phids[] = $this->getObjectPHID();
@@ -42,6 +38,7 @@ final class PholioTransaction extends PhabricatorApplicationTransaction {
         break;
       case PholioTransactionType::TYPE_IMAGE_DESCRIPTION:
       case PholioTransactionType::TYPE_IMAGE_NAME:
+      case PholioTransactionType::TYPE_IMAGE_SEQUENCE:
         $phids[] = key($new);
         break;
     }
@@ -58,6 +55,9 @@ final class PholioTransaction extends PhabricatorApplicationTransaction {
       case PholioTransactionType::TYPE_IMAGE_NAME:
       case PholioTransactionType::TYPE_IMAGE_DESCRIPTION:
         return ($old === array(null => null));
+      // this is boring / silly to surface; changing sequence is NBD
+      case PholioTransactionType::TYPE_IMAGE_SEQUENCE:
+        return true;
     }
 
     return parent::shouldHide();
@@ -71,6 +71,7 @@ final class PholioTransaction extends PhabricatorApplicationTransaction {
       case PholioTransactionType::TYPE_DESCRIPTION:
       case PholioTransactionType::TYPE_IMAGE_NAME:
       case PholioTransactionType::TYPE_IMAGE_DESCRIPTION:
+      case PholioTransactionType::TYPE_IMAGE_SEQUENCE:
         return 'edit';
       case PholioTransactionType::TYPE_IMAGE_FILE:
       case PholioTransactionType::TYPE_IMAGE_REPLACE:
@@ -168,6 +169,12 @@ final class PholioTransaction extends PhabricatorApplicationTransaction {
           $this->renderHandleLink($author_phid),
           $this->renderHandleLink(key($new)));
         break;
+      case PholioTransactionType::TYPE_IMAGE_SEQUENCE:
+        return pht(
+          '%s updated an image\'s (%s) sequence.',
+          $this->renderHandleLink($author_phid),
+          $this->renderHandleLink(key($new)));
+        break;
     }
 
     return parent::getTitle();
@@ -228,20 +235,37 @@ final class PholioTransaction extends PhabricatorApplicationTransaction {
           $this->renderHandleLink($author_phid),
           $this->renderHandleLink($object_phid));
         break;
+      case PholioTransactionType::TYPE_IMAGE_SEQUENCE:
+        return pht(
+          '%s updated image sequence of %s.',
+          $this->renderHandleLink($author_phid),
+          $this->renderHandleLink($object_phid));
+        break;
     }
 
     return parent::getTitleForFeed();
   }
 
-  public function getBodyForFeed() {
+  public function getBodyForFeed(PhabricatorFeedStory $story) {
+    $text = null;
     switch ($this->getTransactionType()) {
+      case PholioTransactionType::TYPE_NAME:
+        if ($this->getOldValue() === null) {
+          $mock = $story->getPrimaryObject();
+          $text = $mock->getDescription();
+        }
+        break;
       case PholioTransactionType::TYPE_INLINE:
         $text = $this->getComment()->getContent();
-        return phutil_escape_html_newlines(
-          phutil_utf8_shorten($text, 128));
         break;
     }
-    return parent::getBodyForFeed();
+
+    if ($text) {
+      return phutil_escape_html_newlines(
+        phutil_utf8_shorten($text, 128));
+    }
+
+    return parent::getBodyForFeed($story);
   }
 
   public function hasChangeDetails() {
@@ -282,6 +306,7 @@ final class PholioTransaction extends PhabricatorApplicationTransaction {
       case PholioTransactionType::TYPE_DESCRIPTION:
       case PholioTransactionType::TYPE_IMAGE_NAME:
       case PholioTransactionType::TYPE_IMAGE_DESCRIPTION:
+      case PholioTransactionType::TYPE_IMAGE_SEQUENCE:
         return PhabricatorTransactions::COLOR_BLUE;
       case PholioTransactionType::TYPE_IMAGE_REPLACE:
         return PhabricatorTransactions::COLOR_YELLOW;
@@ -298,5 +323,18 @@ final class PholioTransaction extends PhabricatorApplicationTransaction {
     }
 
     return parent::getColor();
+  }
+
+  public function getNoEffectDescription() {
+    switch ($this->getTransactionType()) {
+      case PholioTransactionType::TYPE_IMAGE_NAME:
+        return pht('The image title was not updated.');
+      case PholioTransactionType::TYPE_IMAGE_DESCRIPTION:
+        return pht('The image description was not updated.');
+      case PholioTransactionType::TYPE_IMAGE_SEQUENCE:
+        return pht('The image sequence was not updated.');
+    }
+
+    return parent::getNoEffectDescription();
   }
 }

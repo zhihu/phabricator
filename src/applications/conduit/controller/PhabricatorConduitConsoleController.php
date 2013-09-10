@@ -69,7 +69,6 @@ final class PhabricatorConduitConsoleController
       ->setUser($request->getUser())
       ->setAction('/api/'.$this->method)
       ->addHiddenInput('allowEmptyParams', 1)
-      ->setFlexible(true)
       ->appendChild(
         id(new AphrontFormStaticControl())
           ->setLabel('Description')
@@ -111,6 +110,11 @@ final class PhabricatorConduitConsoleController
           ->addCancelButton($this->getApplicationURI())
           ->setValue('Call Method'));
 
+    $form_box = id(new PHUIFormBoxView())
+      ->setHeaderText($method->getAPIMethodName())
+      ->setFormError($status_view)
+      ->setForm($form);
+
     $crumbs = $this->buildApplicationCrumbs();
     $crumbs->addCrumb(
       id(new PhabricatorCrumbView())
@@ -119,13 +123,11 @@ final class PhabricatorConduitConsoleController
     return $this->buildApplicationPage(
       array(
         $crumbs,
-        $status_view,
-        $form,
+        $form_box,
       ),
       array(
         'title' => $method->getAPIMethodName(),
         'device' => true,
-        'dust' => true,
       ));
   }
 

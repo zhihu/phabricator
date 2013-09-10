@@ -115,7 +115,7 @@ final class PhabricatorAuthProviderPassword
       $errors = id(new AphrontErrorView())->setErrors($errors);
     }
 
-    $form = id(new AphrontFormLayoutView())
+    $form = id(new PHUIFormLayoutView())
       ->setFullWidth(true)
       ->appendChild($errors)
       ->appendChild(
@@ -241,7 +241,7 @@ final class PhabricatorAuthProviderPassword
 
   public function willRenderLinkedAccount(
     PhabricatorUser $viewer,
-    PhabricatorObjectItemView $item,
+    PHUIObjectItemView $item,
     PhabricatorExternalAccount $account) {
     return;
   }

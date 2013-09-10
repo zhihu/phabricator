@@ -8,6 +8,10 @@ final class ReleephDiffChurnFieldSpecification
   const UPDATES_WEIGHT    =  10;
   const MAX_POINTS        = 100;
 
+  public function getFieldKey() {
+    return 'churn';
+  }
+
   public function getName() {
     return 'Churn';
   }
@@ -19,10 +23,9 @@ final class ReleephDiffChurnFieldSpecification
     }
 
     $diff_rev = $this->getReleephRequest()->loadDifferentialRevision();
-    $comments = id(new DifferentialRevisionQuery())
-      ->setViewer($this->getUser())
+    $comments = id(new DifferentialCommentQuery())
       ->withRevisionIDs(array($diff_rev->getID()))
-      ->excute();
+      ->execute();
 
     $counts = array();
     foreach ($comments as $comment) {

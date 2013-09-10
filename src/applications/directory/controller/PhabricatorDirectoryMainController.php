@@ -71,7 +71,6 @@ final class PhabricatorDirectoryMainController
       array(
         'title' => '知乎海盗船 (Phabricator)',
         'device' => true,
-        'dust' => true,
       ));
   }
 

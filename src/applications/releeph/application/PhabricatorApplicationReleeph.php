@@ -38,11 +38,11 @@ final class PhabricatorApplicationReleeph extends PhabricatorApplication {
           '(?:query/(?P<queryKey>[^/]+)/)?' => 'ReleephProjectListController',
           'create/' => 'ReleephProjectCreateController',
           '(?P<projectID>[1-9]\d*)/' => array(
-            '' => 'ReleephProjectViewController',
-            'closedbranches/' => 'ReleephProjectViewController',
+            '(?:query/(?P<queryKey>[^/]+)/)?' => 'ReleephProjectViewController',
             'edit/' => 'ReleephProjectEditController',
             'cutbranch/' => 'ReleephBranchCreateController',
             'action/(?P<action>.+)/' => 'ReleephProjectActionController',
+            'history/' => 'ReleephProjectHistoryController',
           ),
         ),
         'branch/' => array(
@@ -51,10 +51,10 @@ final class PhabricatorApplicationReleeph extends PhabricatorApplication {
           '(?P<action>close|re-open)/(?P<branchID>[1-9]\d*)/' =>
             'ReleephBranchAccessController',
           'preview/' => 'ReleephBranchNamePreviewController',
-
-          // Left in, just in case the by-name stuff fails!
-          '(?P<branchID>[^/]+)/' =>
-            'ReleephBranchViewController',
+          '(?P<branchID>[^/]+)/' => array(
+            'history/' => 'ReleephBranchHistoryController',
+            '(?:query/(?P<queryKey>[^/]+)/)?' => 'ReleephBranchViewController',
+          ),
         ),
         'request/' => array(
           '(?P<requestID>[1-9]\d*)/' => 'ReleephRequestViewController',
@@ -75,7 +75,7 @@ final class PhabricatorApplicationReleeph extends PhabricatorApplication {
 
         // Branch navigation made pretty, as it's the most common:
         '(?P<projectName>[^/]+)/(?P<branchName>[^/]+)/' => array(
-          ''              => 'ReleephBranchViewController',
+          '(?:query/(?P<queryKey>[^/]+)/)?' => 'ReleephBranchViewController',
           'edit/'         => 'ReleephBranchEditController',
           'request/'      => 'ReleephRequestEditController',
           '(?P<action>close|re-open)/' => 'ReleephBranchAccessController',

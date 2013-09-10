@@ -12,7 +12,6 @@ final class PhabricatorStandardPageView extends PhabricatorBarePageView {
   private $glyph;
   private $menuContent;
   private $showChrome = true;
-  private $layDownSomeDust = false;
   private $disableConsole;
   private $searchDefaultScope;
   private $pageObjects = array();
@@ -55,17 +54,8 @@ final class PhabricatorStandardPageView extends PhabricatorBarePageView {
     return $this;
   }
 
-  public function setDust($is_dusty) {
-    $this->layDownSomeDust = $is_dusty;
-    return $this;
-  }
-
   public function getShowChrome() {
     return $this->showChrome;
-  }
-
-  public function getDust() {
-    return $this->layDownSomeDust;
   }
 
   public function setSearchDefaultScope($search_default_scope) {
@@ -199,7 +189,10 @@ final class PhabricatorStandardPageView extends PhabricatorBarePageView {
       Javelin::initBehavior(
         'dark-console',
         array(
-          'uri' => $request ? (string)$request->getRequestURI() : '?',
+          // NOTE: We use a generic label here to prevent input reflection
+          // and mitigate compression attacks like BREACH. See discussion in
+          // T3684.
+          'uri' => pht('Main Request'),
           'selected' => $user ? $user->getConsoleTab() : null,
           'visible'  => $user ? (int)$user->getConsoleVisible() : true,
           'headers' => $headers,
@@ -402,10 +395,6 @@ final class PhabricatorStandardPageView extends PhabricatorBarePageView {
 
     if (!$this->getShowChrome()) {
       $classes[] = 'phabricator-chromeless-page';
-    }
-
-    if ($this->getDust()) {
-      $classes[] = 'make-me-sneeze';
     }
 
     $agent = AphrontRequest::getHTTPHeader('User-Agent');
