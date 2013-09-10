@@ -251,7 +251,7 @@ final class PhabricatorMainMenuView extends AphrontView {
     $maniphest_icon_tag = javelin_tag(
       'span',
       array(
-        'class' => 'phabricator-main-menu-maniphest-icon sprite-icons icons-new-grey',
+        'class' => 'phabricator-main-menu-maniphest-icon sprite-icons icons-new-white',
         'sigil' => 'phabricator-maniphest-menu',
       ),
       '');
@@ -401,7 +401,7 @@ final class PhabricatorMainMenuView extends AphrontView {
       $message_notification_dropdown);
 
     return array(
-      hsprintf('%s%s', $bubble_tag, $message_tag, $maniphest_tag),
+      hsprintf('%s%s%s', $bubble_tag, $message_tag, $maniphest_tag),
       $dropdowns
     );
   }
