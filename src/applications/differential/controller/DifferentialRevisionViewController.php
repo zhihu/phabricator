@@ -5,7 +5,14 @@ final class DifferentialRevisionViewController extends DifferentialController {
   private $revisionID;
 
   public function shouldRequireLogin() {
-    return !$this->allowsAnonymousAccess();
+    if ($this->allowsAnonymousAccess()) {
+      return false;
+    }
+    return parent::shouldRequireLogin();
+  }
+
+  public function shouldAllowPublic() {
+    return true;
   }
 
   public function willProcessRequest(array $data) {
@@ -29,7 +36,11 @@ final class DifferentialRevisionViewController extends DifferentialController {
       return new Aphront404Response();
     }
 
-    $diffs = $revision->loadDiffs();
+    $diffs = id(new DifferentialDiffQuery())
+      ->setViewer($request->getUser())
+      ->withRevisionIDs(array($this->revisionID))
+      ->execute();
+    $diffs = array_reverse($diffs, $preserve_keys = true);
 
     if (!$diffs) {
       throw new Exception(
@@ -228,6 +239,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
     }
 
     $revision_detail = id(new DifferentialRevisionDetailView())
+      ->setUser($user)
       ->setRevision($revision)
       ->setDiff(end($diffs))
       ->setAuxiliaryFields($aux_fields)
@@ -400,7 +412,14 @@ final class DifferentialRevisionViewController extends DifferentialController {
       ));
     if ($comment_form) {
       $page_pane->appendChild($comment_form->render());
+    } else {
+      // TODO: For now, just use this to get "Login to Comment".
+      $page_pane->appendChild(
+        id(new PhabricatorApplicationTransactionCommentView())
+          ->setUser($user)
+          ->setRequestURI($request->getRequestURI()));
     }
+
 
     $object_id = 'D'.$revision->getID();
 
@@ -488,58 +507,64 @@ final class DifferentialRevisionViewController extends DifferentialController {
     $viewer_is_owner = ($revision->getAuthorPHID() == $viewer_phid);
     $viewer_is_reviewer = in_array($viewer_phid, $revision->getReviewers());
     $viewer_is_cc = in_array($viewer_phid, $revision->getCCPHIDs());
-    $viewer_is_anonymous = !$this->getRequest()->getUser()->isLoggedIn();
+    $logged_in = $this->getRequest()->getUser()->isLoggedIn();
     $status = $revision->getStatus();
     $revision_id = $revision->getID();
     $revision_phid = $revision->getPHID();
 
     $links = array();
 
-    if ($viewer_is_owner) {
+    $can_edit = PhabricatorPolicyFilter::hasCapability(
+      $user,
+      $revision,
+      PhabricatorPolicyCapability::CAN_EDIT);
+
+    $links[] = array(
+      'icon'  =>  'edit',
+      'href'  => "/differential/revision/edit/{$revision_id}/",
+      'name'  => pht('Edit Revision'),
+      'disabled' => !$can_edit,
+      'sigil' => $can_edit ? null : 'workflow',
+    );
+
+    if (!$viewer_is_owner && !$viewer_is_reviewer) {
+      $action = $viewer_is_cc ? 'rem' : 'add';
       $links[] = array(
-        'icon'  =>  'edit',
-        'href'  => "/differential/revision/edit/{$revision_id}/",
-        'name'  => pht('Edit Revision'),
+        'icon'    => $viewer_is_cc ? 'disable' : 'check',
+        'href'    => "/differential/subscribe/{$action}/{$revision_id}/",
+        'name'    => $viewer_is_cc ? pht('Unsubscribe') : pht('Subscribe'),
+        'instant' => $logged_in,
+        'disabled' => !$logged_in,
+        'sigil' => $can_edit ? null : 'workflow',
+      );
+    } else {
+      $links[] = array(
+        'icon'     => 'enable',
+        'name'     => pht('Automatically Subscribed'),
+        'disabled' => true,
       );
     }
 
-    if (!$viewer_is_anonymous) {
+    require_celerity_resource('phabricator-object-selector-css');
+    require_celerity_resource('javelin-behavior-phabricator-object-selector');
 
-      if (!$viewer_is_owner && !$viewer_is_reviewer) {
-        $action = $viewer_is_cc ? 'rem' : 'add';
-        $links[] = array(
-          'icon'    => $viewer_is_cc ? 'disable' : 'check',
-          'href'    => "/differential/subscribe/{$action}/{$revision_id}/",
-          'name'    => $viewer_is_cc ? pht('Unsubscribe') : pht('Subscribe'),
-          'instant' => true,
-        );
-      } else {
-        $links[] = array(
-          'icon'     => 'enable',
-          'name'     => pht('Automatically Subscribed'),
-          'disabled' => true,
-        );
-      }
+    $links[] = array(
+      'icon'  => 'link',
+      'name'  => pht('Edit Dependencies'),
+      'href'  => "/search/attach/{$revision_phid}/DREV/dependencies/",
+      'sigil' => 'workflow',
+      'disabled' => !$can_edit,
+    );
 
-      require_celerity_resource('phabricator-object-selector-css');
-      require_celerity_resource('javelin-behavior-phabricator-object-selector');
-
+    $maniphest = 'PhabricatorApplicationManiphest';
+    if (PhabricatorApplication::isClassInstalled($maniphest)) {
       $links[] = array(
-        'icon'  => 'link',
-        'name'  => pht('Edit Dependencies'),
-        'href'  => "/search/attach/{$revision_phid}/DREV/dependencies/",
+        'icon'  => 'attach',
+        'name'  => pht('Edit Maniphest Tasks'),
+        'href'  => "/search/attach/{$revision_phid}/TASK/",
         'sigil' => 'workflow',
+        'disabled' => !$can_edit,
       );
-
-      $maniphest = 'PhabricatorApplicationManiphest';
-      if (PhabricatorApplication::isClassInstalled($maniphest)) {
-        $links[] = array(
-          'icon'  => 'attach',
-          'name'  => pht('Edit Maniphest Tasks'),
-          'href'  => "/search/attach/{$revision_phid}/TASK/",
-          'sigil' => 'workflow',
-        );
-      }
     }
 
     $request_uri = $this->getRequest()->getRequestURI();
@@ -845,33 +870,11 @@ final class DifferentialRevisionViewController extends DifferentialController {
     $handles = $this->loadViewerHandles($phids);
     $view->setHandles($handles);
 
-    return array(
-      id(new PhabricatorHeaderView())
-        ->setHeader(pht('Open Revisions Affecting These Files')),
-      $view,
-    );
+    return id(new PHUIObjectBoxView())
+      ->setHeaderText(pht('Open Revisions Affecting These Files'))
+      ->appendChild($view);
   }
 
-  /**
-   * Straight copy of the loadFileByPhid method in
-   * @{class:DifferentialReviewRequestMail}.
-   *
-   * This is because of the code similarity between the buildPatch method in
-   * @{class:DifferentialReviewRequestMail} and @{method:buildRawDiffResponse}
-   * in this class. Both of these methods end up using call_user_func and this
-   * piece of code is the lucky function.
-   *
-   * @return mixed (@{class:PhabricatorFile} if found, null if not)
-   */
-  public function loadFileByPHID($phid) {
-    $file = id(new PhabricatorFile())->loadOneWhere(
-      'phid = %s',
-      $phid);
-    if (!$file) {
-      return null;
-    }
-    return $file->loadFileData();
-  }
 
   /**
    * Note this code is somewhat similar to the buildPatch method in
@@ -887,6 +890,8 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
     assert_instances_of($changesets,    'DifferentialChangeset');
     assert_instances_of($vs_changesets, 'DifferentialChangeset');
+
+    $viewer = $this->getRequest()->getUser();
 
     $engine = new PhabricatorDifferenceEngine();
     $generated_changesets = array();
@@ -925,15 +930,17 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
     $diff = new DifferentialDiff();
     $diff->attachChangesets($generated_changesets);
-    $diff_dict = $diff->getDiffDict();
-
+    $raw_changes = $diff->buildChangesList();
     $changes = array();
-    foreach ($diff_dict['changes'] as $changedict) {
+    foreach ($raw_changes as $changedict) {
       $changes[] = ArcanistDiffChange::newFromDictionary($changedict);
     }
-    $bundle = ArcanistBundle::newFromChanges($changes);
 
-    $bundle->setLoadFileDataCallback(array($this, 'loadFileByPHID'));
+    $loader = id(new PhabricatorFileBundleLoader())
+      ->setViewer($viewer);
+
+    $bundle = ArcanistBundle::newFromChanges($changes);
+    $bundle->setLoadFileDataCallback(array($loader, 'loadFileData'));
 
     $vcs = $repository ? $repository->getVersionControlSystem() : null;
     switch ($vcs) {

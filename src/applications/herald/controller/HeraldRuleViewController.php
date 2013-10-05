@@ -21,7 +21,7 @@ final class HeraldRuleViewController extends HeraldController {
       return new Aphront404Response();
     }
 
-    $header = id(new PhabricatorHeaderView())
+    $header = id(new PHUIHeaderView())
       ->setHeader($rule->getName());
 
     $actions = $this->buildActionView($rule);
@@ -32,12 +32,15 @@ final class HeraldRuleViewController extends HeraldController {
       id(new PhabricatorCrumbView())
         ->setName(pht('Rule %d', $rule->getID())));
 
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
+
     return $this->buildApplicationPage(
       array(
         $crumbs,
-        $header,
-        $actions,
-        $properties,
+        $object_box,
       ),
       array(
         'title' => $rule->getName(),
@@ -73,7 +76,7 @@ final class HeraldRuleViewController extends HeraldController {
   private function buildPropertyView(HeraldRule $rule) {
     $viewer = $this->getRequest()->getUser();
 
-    $this->loadHandles(array($rule->getAuthorPHID()));
+    $this->loadHandles(HeraldAdapter::getHandlePHIDs($rule));
 
     $view = id(new PhabricatorPropertyListView())
       ->setUser($viewer)
@@ -93,7 +96,9 @@ final class HeraldRuleViewController extends HeraldController {
     if ($adapter) {
       $view->addProperty(
         pht('Applies To'),
-        idx(HeraldAdapter::getEnabledAdapterMap(), $rule->getContentType()));
+        idx(
+          HeraldAdapter::getEnabledAdapterMap($viewer),
+          $rule->getContentType()));
 
       $view->invokeWillRenderEvent();
 
@@ -104,7 +109,7 @@ final class HeraldRuleViewController extends HeraldController {
           array(
             'style' => 'white-space: pre-wrap;',
           ),
-          $adapter->renderRuleAsText($rule)));
+          $adapter->renderRuleAsText($rule, $this->getLoadedHandles())));
     }
 
     return $view;

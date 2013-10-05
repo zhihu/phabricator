@@ -21,7 +21,7 @@ final class PonderAddAnswerView extends AphrontView {
 
     $question = $this->question;
 
-    $header = id(new PhabricatorHeaderView())
+    $header = id(new PHUIHeaderView())
       ->setHeader(pht('Add Answer'));
 
     $form = new AphrontFormView();
@@ -43,12 +43,8 @@ final class PonderAddAnswerView extends AphrontView {
             pht('Add Answer') :
             pht('Bequeath Wisdom')));
 
-    return id(new AphrontNullView())
-      ->appendChild(
-        array(
-          $header,
-          $form,
-        ))
-      ->render();
+    return id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->appendChild($form);
   }
 }

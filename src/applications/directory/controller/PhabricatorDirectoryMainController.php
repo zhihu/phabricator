@@ -76,10 +76,11 @@ final class PhabricatorDirectoryMainController
 
   private function buildJumpResponse() {
     $request = $this->getRequest();
-
     $jump = $request->getStr('jump');
 
-    $response = PhabricatorJumpNavHandler::jumpPostResponse($jump);
+    $response = PhabricatorJumpNavHandler::getJumpResponse(
+      $request->getUser(),
+      $jump);
 
     if ($response) {
 
@@ -97,13 +98,19 @@ final class PhabricatorDirectoryMainController
   }
 
   private function buildUnbreakNowPanel() {
-    $user = $this->getRequest()->getUser();
-    $user_phid = $user->getPHID();
+    $unbreak_now = PhabricatorEnv::getEnvConfig(
+      'maniphest.priorities.unbreak-now');
+    if (!$unbreak_now) {
+      return null;
+    }
 
-    $task_query = new ManiphestTaskQuery();
-    $task_query->withStatus(ManiphestTaskQuery::STATUS_OPEN);
-    $task_query->withPriority(ManiphestTaskPriority::PRIORITY_UNBREAK_NOW);
-    $task_query->setLimit(10);
+    $user = $this->getRequest()->getUser();
+
+    $task_query = id(new ManiphestTaskQuery())
+      ->setViewer($user)
+      ->withStatuses(array(ManiphestTaskStatus::STATUS_OPEN))
+      ->withPriorities(array($unbreak_now))
+      ->setLimit(10);
 
     $tasks = $task_query->execute();
 
@@ -120,7 +127,7 @@ final class PhabricatorDirectoryMainController
       phutil_tag(
         'a',
         array(
-          'href' => '/maniphest/view/all/',
+          'href' => '/maniphest/?statuses[]=0&priorities[]='.$unbreak_now.'#R',
           'class' => 'grey button',
         ),
         "View All Unbreak Now \xC2\xBB"));
@@ -134,15 +141,24 @@ final class PhabricatorDirectoryMainController
   private function buildNeedsTriagePanel(array $projects) {
     assert_instances_of($projects, 'PhabricatorProject');
 
+    $needs_triage = PhabricatorEnv::getEnvConfig(
+      'maniphest.priorities.needs-triage');
+    if (!$needs_triage) {
+      return null;
+    }
+
     $user = $this->getRequest()->getUser();
-    $user_phid = $user->getPHID();
+    if (!$user->isLoggedIn()) {
+      return null;
+    }
 
     if ($projects) {
-      $task_query = new ManiphestTaskQuery();
-      $task_query->withStatus(ManiphestTaskQuery::STATUS_OPEN);
-      $task_query->withPriority(ManiphestTaskPriority::PRIORITY_TRIAGE);
-      $task_query->withAnyProjects(mpull($projects, 'getPHID'));
-      $task_query->setLimit(10);
+      $task_query = id(new ManiphestTaskQuery())
+        ->setViewer($user)
+        ->withStatuses(array(ManiphestTaskStatus::STATUS_OPEN))
+        ->withPriorities(array($needs_triage))
+        ->withAnyProjects(mpull($projects, 'getPHID'))
+        ->setLimit(10);
       $tasks = $task_query->execute();
     } else {
       $tasks = array();
@@ -166,9 +182,8 @@ final class PhabricatorDirectoryMainController
       phutil_tag(
         'a',
         array(
-          // TODO: This should filter to just your projects' need-triage
-          // tasks?
-          'href' => '/maniphest/view/projecttriage/',
+          'href' => '/maniphest/?statuses[]=0&priorities[]='.$needs_triage.
+                    '&userProjects[]='.$user->getPHID().'#R',
           'class' => 'grey button',
         ),
         "View All Triage \xC2\xBB"));
@@ -249,11 +264,12 @@ final class PhabricatorDirectoryMainController
     $user = $this->getRequest()->getUser();
     $user_phid = $user->getPHID();
 
-    $task_query = new ManiphestTaskQuery();
-    $task_query->withStatus(ManiphestTaskQuery::STATUS_OPEN);
-    $task_query->setGroupBy(ManiphestTaskQuery::GROUP_PRIORITY);
-    $task_query->withOwners(array($user_phid));
-    $task_query->setLimit(10);
+    $task_query = id(new ManiphestTaskQuery())
+      ->setViewer($user)
+      ->withStatus(ManiphestTaskQuery::STATUS_OPEN)
+      ->setGroupBy(ManiphestTaskQuery::GROUP_PRIORITY)
+      ->withOwners(array($user_phid))
+      ->setLimit(10);
 
     $tasks = $task_query->execute();
 

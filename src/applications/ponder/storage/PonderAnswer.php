@@ -23,11 +23,6 @@ final class PonderAnswer extends PonderDAO
 
   private $userVotes = array();
 
-  // TODO: Get rid of this method.
-  public function setQuestion($question) {
-    return $this->attachQuestion($question);
-  }
-
   public function attachQuestion(PonderQuestion $question = null) {
     $this->question = $question;
     return $this;
@@ -35,6 +30,10 @@ final class PonderAnswer extends PonderDAO
 
   public function getQuestion() {
     return $this->assertAttached($this->question);
+  }
+
+  public function getURI() {
+    return '/Q'.$this->getQuestionID().'#A'.$this->getID();
   }
 
   public function setUserVote($vote) {
@@ -146,12 +145,28 @@ final class PonderAnswer extends PonderDAO
   public function hasAutomaticCapability($capability, PhabricatorUser $viewer) {
     switch ($capability) {
       case PhabricatorPolicyCapability::CAN_VIEW:
+        if ($this->getAuthorPHID() == $viewer->getPHID()) {
+          return true;
+        }
         return $this->getQuestion()->hasAutomaticCapability(
           $capability,
           $viewer);
       case PhabricatorPolicyCapability::CAN_EDIT:
         return ($this->getAuthorPHID() == $viewer->getPHID());
     }
+  }
+
+
+  public function describeAutomaticCapability($capability) {
+    $out = array();
+    $out[] = pht("The author of an answer can always view and edit it.");
+    switch ($capability) {
+      case PhabricatorPolicyCapability::CAN_VIEW:
+        $out[] = pht(
+          "The user who asks a question can always view the answers.");
+        break;
+    }
+    return $out;
   }
 
 

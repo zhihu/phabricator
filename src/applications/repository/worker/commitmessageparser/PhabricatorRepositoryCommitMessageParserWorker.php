@@ -226,9 +226,11 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
     if (!$user_phid) {
       return $default;
     }
-    $handle = PhabricatorObjectHandleData::loadOneHandle(
-      $user_phid,
-      $actor);
+    $handle = id(new PhabricatorHandleQuery())
+      ->setViewer($actor)
+      ->withPHIDs(array($user_phid))
+      ->executeOne();
+
     return '@'.$handle->getName();
   }
 
@@ -327,9 +329,10 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
 
     $files = array();
     if ($file_phids) {
-      $files = id(new PhabricatorFile())->loadAllWhere(
-        'phid IN (%Ls)',
-        $file_phids);
+      $files = id(new PhabricatorFileQuery())
+        ->setViewer(PhabricatorUser::getOmnipotentUser())
+        ->withPHIDs($file_phids)
+        ->execute();
       $files = mpull($files, null, 'getPHID');
     }
 

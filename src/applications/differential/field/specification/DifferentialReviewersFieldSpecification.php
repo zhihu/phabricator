@@ -70,7 +70,7 @@ final class DifferentialReviewersFieldSpecification
       $reviewer_map[$phid] = $this->getHandle($phid)->getFullName();
     }
     return id(new AphrontFormTokenizerControl())
-      ->setLabel('Reviewers')
+      ->setLabel(pht('Reviewers'))
       ->setName('reviewers')
       ->setUser($this->getUser())
       ->setDatasource('/typeahead/common/users/')
@@ -164,9 +164,10 @@ final class DifferentialReviewersFieldSpecification
       return null;
     }
 
-    $handles = id(new PhabricatorObjectHandleData($this->reviewers))
+    $handles = id(new PhabricatorHandleQuery())
       ->setViewer($this->getUser())
-      ->loadHandles();
+      ->withPHIDs($this->reviewers)
+      ->execute();
     $handles = array_select_keys(
       $handles,
       array($this->getRevision()->getPrimaryReviewer())) + $handles;

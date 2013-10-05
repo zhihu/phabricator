@@ -32,7 +32,14 @@ final class DivinerBookController extends DivinerController {
         ->setName($book->getShortTitle())
         ->setHref('/book/'.$book->getName().'/'));
 
-    $header = id(new PhabricatorHeaderView())->setHeader($book->getTitle());
+    $header = id(new PHUIHeaderView())
+      ->setHeader($book->getTitle())
+      ->setUser($viewer)
+      ->setPolicyObject($book);
+
+    $document = new PHUIDocumentView();
+    $document->setHeader($header);
+
     $properties = $this->buildPropertyList($book);
 
     $atoms = id(new DivinerAtomQuery())
@@ -57,18 +64,18 @@ final class DivinerBookController extends DivinerController {
     $out = array();
     foreach ($groups as $group => $atoms) {
       $group_name = $book->getGroupName($group);
-
-      $out[] = id(new PhabricatorHeaderView())
-        ->setHeader($group_name);
-      $out[] = $this->renderAtomList($atoms);
+      $section = id(new DivinerSectionView())
+          ->setHeader($group_name);
+      $section->addContent($this->renderAtomList($atoms));
+      $out[] = $section;
     }
+    $document->appendChild($properties);
+    $document->appendChild($out);
 
     return $this->buildApplicationPage(
       array(
         $crumbs,
-        $header,
-        $properties,
-        $out,
+        $document,
       ),
       array(
         'title' => $book->getTitle(),
@@ -84,10 +91,6 @@ final class DivinerBookController extends DivinerController {
     $policies = PhabricatorPolicyQuery::renderPolicyDescriptions(
       $user,
       $book);
-
-    $view->addProperty(
-      pht('Visible To'),
-      $policies[PhabricatorPolicyCapability::CAN_VIEW]);
 
     $view->addProperty(
       pht('Updated'),

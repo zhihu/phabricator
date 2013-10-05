@@ -194,18 +194,22 @@ final class DifferentialChangesetListView extends AphrontView {
       ));
     }
 
-    return array(
-      id(new PhabricatorHeaderView())
-        ->setHeader($this->getTitle())
-        ->render(),
-      phutil_tag(
-        'div',
-        array(
-          'class' => 'differential-review-stage',
-          'id'    => 'differential-review-stage',
-        ),
-        $output),
-    );
+    $header = id(new PHUIHeaderView())
+      ->setHeader($this->getTitle());
+
+    $content = phutil_tag(
+      'div',
+      array(
+        'class' => 'differential-review-stage',
+        'id'    => 'differential-review-stage',
+      ),
+      $output);
+
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->appendChild($content);
+
+    return $object_box;
   }
 
   /**
@@ -311,17 +315,18 @@ final class DifferentialChangesetListView extends AphrontView {
     }
 
     $meta['containerID'] = $detail->getID();
+    $caret = phutil_tag('span', array('class' => 'caret'), '');
 
     return javelin_tag(
       'a',
       array(
-        'class'   => 'button small grey',
+        'class'   => 'button grey small dropdown',
         'meta'    => $meta,
         'href'    => idx($meta, 'detailURI', '#'),
         'target'  => '_blank',
         'sigil'   => 'differential-view-options',
       ),
-      pht('View Options') . " \xE2\x96\xBC");
+      array(pht('View Options'), $caret));
   }
 
 }

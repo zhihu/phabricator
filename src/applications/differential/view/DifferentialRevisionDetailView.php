@@ -111,18 +111,25 @@ final class DifferentialRevisionDetailView extends AphrontView {
     }
     $properties->setHasKeyboardShortcuts(true);
 
-    return hsprintf(
-      '%s%s%s',
-      $header->render(),
-      $actions->render(),
-      $properties->render());
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
+
+    return $object_box;
   }
 
   private function renderHeader(DifferentialRevision $revision) {
-    $view = id(new PhabricatorHeaderView())
-      ->setHeader($revision->getTitle($revision));
+    $view = id(new PHUIHeaderView())
+      ->setHeader($revision->getTitle($revision))
+      ->setUser($this->getUser())
+      ->setPolicyObject($revision);
 
-    $view->addTag(self::renderTagForRevision($revision));
+    $status = $revision->getStatus();
+    $status_name =
+      DifferentialRevisionStatus::renderFullDescription($status);
+
+    $view->addProperty(PHUIHeaderView::PROPERTY_STATUS, $status_name);
 
     return $view;
   }
@@ -133,12 +140,10 @@ final class DifferentialRevisionDetailView extends AphrontView {
     $status = $revision->getStatus();
     $status_name =
       ArcanistDifferentialRevisionStatus::getNameForRevisionStatus($status);
-    $status_color =
-      DifferentialRevisionStatus::getRevisionStatusTagColor($status);
 
     return id(new PhabricatorTagView())
       ->setType(PhabricatorTagView::TYPE_STATE)
-      ->setName($status_name)
-      ->setBackgroundColor($status_color);
+      ->setName($status_name);
   }
+
 }

@@ -665,8 +665,7 @@ final class DifferentialChangesetParser {
     if ($changeset->getChangeType() == DifferentialChangeType::TYPE_DELETE &&
         $old == array('unix:filemode' => '100644')) {
       return false;
-     }
-
+    }
     return true;
   }
 
@@ -691,6 +690,7 @@ final class DifferentialChangesetParser {
     $renderer = $this->getRenderer()
       ->setChangeset($this->changeset)
       ->setRenderPropertyChangeHeader($render_pch)
+      ->setIsTopLevel($this->isTopLevel)
       ->setOldRender($this->oldRender)
       ->setNewRender($this->newRender)
       ->setHunkStartLines($this->hunkStartLines)
@@ -851,6 +851,7 @@ final class DifferentialChangesetParser {
             $file_phids[] = $new_phid;
           }
 
+          // TODO: (T603) Probably fine to use omnipotent viewer here?
           $files = id(new PhabricatorFile())->loadAllWhere(
             'phid IN (%Ls)',
             $file_phids);

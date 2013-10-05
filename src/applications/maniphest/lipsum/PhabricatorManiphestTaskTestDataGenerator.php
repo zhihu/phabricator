@@ -10,28 +10,29 @@ final class PhabricatorManiphestTaskTestDataGenerator
     $task = id(new ManiphestTask())
       ->setSubPriority($this->generateTaskSubPriority())
       ->setAuthorPHID($authorPHID)
-      ->setTitle($this->generateTitle());
+      ->setTitle($this->generateTitle())
+      ->setStatus(ManiphestTaskStatus::STATUS_OPEN);
+
     $content_source = PhabricatorContentSource::newForSource(
       PhabricatorContentSource::SOURCE_UNKNOWN,
       array());
-    $template = id(new ManiphestTransaction())
-      ->setAuthorPHID($authorPHID)
-      ->setContentSource($content_source);
+
+    $template = new ManiphestTransaction();
     // Accumulate Transactions
     $changes = array();
-    $changes[ManiphestTransactionType::TYPE_TITLE] =
+    $changes[ManiphestTransaction::TYPE_TITLE] =
       $this->generateTitle();
-    $changes[ManiphestTransactionType::TYPE_DESCRIPTION] =
+    $changes[ManiphestTransaction::TYPE_DESCRIPTION] =
       $this->generateDescription();
-    $changes[ManiphestTransactionType::TYPE_OWNER] =
+    $changes[ManiphestTransaction::TYPE_OWNER] =
       $this->loadOwnerPHID();
-    $changes[ManiphestTransactionType::TYPE_STATUS] =
+    $changes[ManiphestTransaction::TYPE_STATUS] =
       $this->generateTaskStatus();
-    $changes[ManiphestTransactionType::TYPE_PRIORITY] =
+    $changes[ManiphestTransaction::TYPE_PRIORITY] =
       $this->generateTaskPriority();
-    $changes[ManiphestTransactionType::TYPE_CCS] =
+    $changes[ManiphestTransaction::TYPE_CCS] =
       $this->getCCPHIDs();
-    $changes[ManiphestTransactionType::TYPE_PROJECTS] =
+    $changes[ManiphestTransaction::TYPE_PROJECTS] =
       $this->getProjectPHIDs();
     $transactions = array();
     foreach ($changes as $type => $value) {
@@ -40,25 +41,15 @@ final class PhabricatorManiphestTaskTestDataGenerator
       $transaction->setNewValue($value);
       $transactions[] = $transaction;
     }
-    // Accumulate Auxiliary Transactions
-    $aux_fields = id(ManiphestTaskExtensions::newExtensions())
-      ->loadFields($task, $author);
-    if ($aux_fields) {
-      foreach ($aux_fields as $aux_field) {
-        $transaction = clone $template;
-        $transaction->setTransactionType(
-          ManiphestTransactionType::TYPE_AUXILIARY);
-        $aux_key = $aux_field->getAuxiliaryKey();
-        $transaction->setMetadataValue('aux:key', $aux_key);
-        $transaction->setNewValue($aux_field->getValueForStorage());
-        $transactions[] = $transaction;
-      }
-    }
+
     // Apply Transactions
-    $editor = id(new ManiphestTransactionEditor())
+    $editor = id(new ManiphestTransactionEditorPro())
       ->setActor($author)
+      ->setContentSource($content_source)
+      ->setContinueOnNoEffect(true)
+      ->setContinueOnMissingFields(true)
       ->applyTransactions($task, $transactions);
-    return $task->save();
+    return $task;
   }
 
   public function getCCPHIDs() {

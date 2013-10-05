@@ -28,6 +28,7 @@ abstract class PhabricatorApplicationTransaction
   private $handles;
   private $renderingTarget = self::TARGET_HTML;
   private $transactionGroup = array();
+  private $viewer = self::ATTACHABLE;
 
   abstract public function getApplicationTransactionType();
 
@@ -120,6 +121,15 @@ abstract class PhabricatorApplicationTransaction
     return $this->renderingTarget;
   }
 
+  public function attachViewer(PhabricatorUser $viewer) {
+    $this->viewer = $viewer;
+    return $this;
+  }
+
+  public function getViewer() {
+    return $this->assertAttached($this->viewer);
+  }
+
   public function getRequiredHandlePHIDs() {
     $phids = array();
 
@@ -180,7 +190,7 @@ abstract class PhabricatorApplicationTransaction
     if ($this->renderingTarget == self::TARGET_HTML) {
       return $this->getHandle($phid)->renderLink();
     } else {
-      return hsprintf('%s', $this->getHandle($phid)->getName());
+      return $this->getHandle($phid)->getLinkName();
     }
   }
 
@@ -189,7 +199,23 @@ abstract class PhabricatorApplicationTransaction
     foreach ($phids as $phid) {
       $links[] = $this->renderHandleLink($phid);
     }
-    return phutil_implode_html(', ', $links);
+    if ($this->renderingTarget == self::TARGET_HTML) {
+      return phutil_implode_html(', ', $links);
+    } else {
+      return implode(', ', $links);
+    }
+  }
+
+  public function renderPolicyName($phid) {
+    $policy = PhabricatorPolicy::newFromPolicyAndHandle(
+      $phid,
+      $this->getHandleIfExists($phid));
+    if ($this->renderingTarget == self::TARGET_HTML) {
+      $output = $policy->renderDescription();
+    } else {
+      $output = hsprintf('%s', $policy->getFullName());
+    }
+    return $output;
   }
 
   public function getIcon() {
@@ -271,23 +297,15 @@ abstract class PhabricatorApplicationTransaction
           '%s changed the visibility of this %s from "%s" to "%s".',
           $this->renderHandleLink($author_phid),
           $this->getApplicationObjectTypeName(),
-          PhabricatorPolicy::newFromPolicyAndHandle(
-            $old,
-            $this->getHandleIfExists($old))->renderDescription(),
-          PhabricatorPolicy::newFromPolicyAndHandle(
-            $new,
-            $this->getHandleIfExists($new))->renderDescription());
+          $this->renderPolicyName($old),
+          $this->renderPolicyName($new));
       case PhabricatorTransactions::TYPE_EDIT_POLICY:
         return pht(
           '%s changed the edit policy of this %s from "%s" to "%s".',
           $this->renderHandleLink($author_phid),
           $this->getApplicationObjectTypeName(),
-          PhabricatorPolicy::newFromPolicyAndHandle(
-            $old,
-            $this->getHandleIfExists($old))->renderDescription(),
-          PhabricatorPolicy::newFromPolicyAndHandle(
-            $new,
-            $this->getHandleIfExists($new))->renderDescription());
+          $this->renderPolicyName($old),
+          $this->renderPolicyName($new));
       case PhabricatorTransactions::TYPE_SUBSCRIBERS:
         $add = array_diff($new, $old);
         $rem = array_diff($old, $new);
@@ -306,12 +324,18 @@ abstract class PhabricatorApplicationTransaction
             $this->renderHandleLink($author_phid),
             count($add),
             $this->renderHandleList($add));
-        } else {
+        } else if ($rem) {
           return pht(
             '%s removed %d subscriber(s): %s.',
             $this->renderHandleLink($author_phid),
             count($rem),
             $this->renderHandleList($rem));
+        } else {
+          // This is used when rendering previews, before the user actually
+          // selects any CCs.
+          return pht(
+            '%s updated subscribers...',
+            $this->renderHandleLink($author_phid));
         }
         break;
       case PhabricatorTransactions::TYPE_EDGE:
@@ -347,6 +371,24 @@ abstract class PhabricatorApplicationTransaction
             $this->renderHandleList($rem));
         }
 
+      case PhabricatorTransactions::TYPE_CUSTOMFIELD:
+        $key = $this->getMetadataValue('customfield:key');
+        $field = PhabricatorCustomField::getObjectField(
+          // TODO: This is a giant hack, but we currently don't have a way to
+          // get the contextual object and this pathway is only hit by
+          // Maniphest. We should provide a way to get the actual object here.
+          new ManiphestTask(),
+          PhabricatorCustomField::ROLE_APPLICATIONTRANSACTIONS,
+          $key);
+        if ($field) {
+          $field->setViewer($this->getViewer());
+          return $field->getApplicationTransactionTitle($this);
+        } else {
+          return pht(
+            '%s edited a custom field.',
+            $this->renderHandleLink($author_phid));
+        }
+
       default:
         return pht(
           '%s edited this %s.',
@@ -355,7 +397,7 @@ abstract class PhabricatorApplicationTransaction
     }
   }
 
-  public function getTitleForFeed() {
+  public function getTitleForFeed(PhabricatorFeedStory $story) {
     $author_phid = $this->getAuthorPHID();
     $object_phid = $this->getObjectPHID();
 
@@ -391,6 +433,25 @@ abstract class PhabricatorApplicationTransaction
           $string,
           $this->renderHandleLink($author_phid),
           $this->renderHandleLink($object_phid));
+      case PhabricatorTransactions::TYPE_CUSTOMFIELD:
+        $key = $this->getMetadataValue('customfield:key');
+        $field = PhabricatorCustomField::getObjectField(
+          // TODO: This is a giant hack, but we currently don't have a way to
+          // get the contextual object and this pathway is only hit by
+          // Maniphest. We should provide a way to get the actual object here.
+          new ManiphestTask(),
+          PhabricatorCustomField::ROLE_APPLICATIONTRANSACTIONS,
+          $key);
+        if ($field) {
+          $field->setViewer($this->getViewer());
+          return $field->getApplicationTransactionTitleForFeed($this, $story);
+        } else {
+          return pht(
+            '%s edited a custom field on %s.',
+            $this->renderHandleLink($author_phid),
+            $this->renderHandleLink($object_phid));
+        }
+
     }
 
     return $this->getTitle();
@@ -479,5 +540,11 @@ abstract class PhabricatorApplicationTransaction
   public function hasAutomaticCapability($capability, PhabricatorUser $viewer) {
     return ($viewer->getPHID() == $this->getAuthorPHID());
   }
+
+  public function describeAutomaticCapability($capability) {
+    // TODO: (T603) Exact policies are unclear here.
+    return null;
+  }
+
 
 }

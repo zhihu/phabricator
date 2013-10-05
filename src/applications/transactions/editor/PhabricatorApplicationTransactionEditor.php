@@ -4,6 +4,7 @@
  * @task mail   Sending Mail
  * @task feed   Publishing Feed Stories
  * @task search Search Index
+ * @task files  Integration with Files
  */
 abstract class PhabricatorApplicationTransactionEditor
   extends PhabricatorEditor {
@@ -15,6 +16,7 @@ abstract class PhabricatorApplicationTransactionEditor
   private $isNewObject;
   private $mentionedPHIDs;
   private $continueOnNoEffect;
+  private $continueOnMissingFields;
   private $parentMessageID;
   private $heraldAdapter;
   private $heraldTranscript;
@@ -43,6 +45,36 @@ abstract class PhabricatorApplicationTransactionEditor
   public function getContinueOnNoEffect() {
     return $this->continueOnNoEffect;
   }
+
+
+  /**
+   * When the editor tries to apply transactions which don't populate all of
+   * an object's required fields, should it raise an exception (default) or
+   * drop them and continue?
+   *
+   * For example, if a user adds a new required custom field (like "Severity")
+   * to a task, all existing tasks won't have it populated. When users
+   * manually edit existing tasks, it's usually desirable to have them provide
+   * a severity. However, other operations (like batch editing just the
+   * owner of a task) will fail by default.
+   *
+   * By setting this flag for edit operations which apply to specific fields
+   * (like the priority, batch, and merge editors in Maniphest), these
+   * operations can continue to function even if an object is outdated.
+   *
+   * @param bool  True to continue when transactions don't completely satisfy
+   *              all required fields.
+   * @return this
+   */
+  public function setContinueOnMissingFields($continue_on_missing_fields) {
+    $this->continueOnMissingFields = $continue_on_missing_fields;
+    return $this;
+  }
+
+  public function getContinueOnMissingFields() {
+    return $this->continueOnMissingFields;
+  }
+
 
   /**
    * Not strictly necessary, but reply handlers ideally set this value to
@@ -185,7 +217,6 @@ abstract class PhabricatorApplicationTransactionEditor
     PhabricatorLiskDAO $object,
     array $xactions) {
     return false;
-
   }
 
   protected function applyInitialEffects(
@@ -349,6 +380,7 @@ abstract class PhabricatorApplicationTransactionEditor
 
       $xaction->setAuthorPHID($actor->getPHID());
       $xaction->setContentSource($this->getContentSource());
+      $xaction->attachViewer($this->getActor());
     }
 
     $is_preview = $this->getIsPreview();
@@ -356,6 +388,28 @@ abstract class PhabricatorApplicationTransactionEditor
     $transaction_open = false;
 
     if (!$is_preview) {
+      $errors = array();
+      $type_map = mgroup($xactions, 'getTransactionType');
+      foreach ($this->getTransactionTypes() as $type) {
+        $type_xactions = idx($type_map, $type, array());
+        $errors[] = $this->validateTransaction($object, $type, $type_xactions);
+      }
+
+      $errors = array_mergev($errors);
+
+      $continue_on_missing = $this->getContinueOnMissingFields();
+      foreach ($errors as $key => $error) {
+        if ($continue_on_missing && $error->getIsMissingFieldError()) {
+          unset($errors[$key]);
+        }
+      }
+
+      if ($errors) {
+        throw new PhabricatorApplicationTransactionValidationException($errors);
+      }
+
+      $file_phids = $this->extractFilePHIDs($object, $xactions);
+
       if ($object->getID()) {
         foreach ($xactions as $xaction) {
 
@@ -437,6 +491,10 @@ abstract class PhabricatorApplicationTransactionEditor
         }
       }
 
+      if ($file_phids) {
+        $this->attachFiles($object, $file_phids);
+      }
+
       foreach ($xactions as $xaction) {
         $this->applyExternalEffects($object, $xaction);
       }
@@ -457,7 +515,7 @@ abstract class PhabricatorApplicationTransactionEditor
     $this->loadHandles($xactions);
 
     $mail = null;
-    if ($this->supportsMail()) {
+    if ($this->shouldSendMail($object, $xactions)) {
       $mail = $this->sendMail($object, $xactions);
     }
 
@@ -478,6 +536,19 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     $this->didApplyTransactions($xactions);
+
+    if ($object instanceof PhabricatorCustomFieldInterface) {
+      // Maybe this makes more sense to move into the search index itself? For
+      // now I'm putting it here since I think we might end up with things that
+      // need it to be up to date once the next page loads, but if we don't go
+      // there we we could move it into search once search moves to the daemons.
+
+      $fields = PhabricatorCustomField::getObjectFields(
+        $object,
+        PhabricatorCustomField::ROLE_APPLICATIONSEARCH);
+      $fields->readFieldsFromStorage($object);
+      $fields->rebuildIndexes($object);
+    }
 
     return $xactions;
   }
@@ -535,9 +606,10 @@ abstract class PhabricatorApplicationTransactionEditor
     $handles = array();
     $merged = array_mergev($phids);
     if ($merged) {
-      $handles = id(new PhabricatorObjectHandleData($merged))
+      $handles = id(new PhabricatorHandleQuery())
         ->setViewer($this->requireActor())
-        ->loadHandles();
+        ->withPHIDs($merged)
+        ->execute();
     }
     foreach ($xactions as $key => $xaction) {
       $xaction->setHandles(array_select_keys($handles, $phids[$key]));
@@ -593,8 +665,17 @@ abstract class PhabricatorApplicationTransactionEditor
           "You can not apply transactions which already have commentVersions!");
       }
 
-      $custom_field_type = PhabricatorTransactions::TYPE_CUSTOMFIELD;
-      if ($xaction->getTransactionType() != $custom_field_type) {
+      $exempt_types = array(
+        // CustomField logic currently prefills these before we enter the
+        // transaction editor.
+        PhabricatorTransactions::TYPE_CUSTOMFIELD => true,
+
+        // TODO: Remove this, this edge type is encumbered with a bunch of
+        // legacy nonsense.
+        ManiphestTransaction::TYPE_EDGE => true,
+      );
+
+      if (empty($exempt_types[$xaction->getTransactionType()])) {
         if ($xaction->getOldValue() !== null) {
           throw new Exception(
             "You can not apply transactions which already have oldValue!");
@@ -641,7 +722,7 @@ abstract class PhabricatorApplicationTransactionEditor
 
     $texts = array();
     foreach ($xactions as $xaction) {
-      $texts[] = $this->getMentionableTextsFromTransaction($xaction);
+      $texts[] = $this->getRemarkupBlocksFromTransaction($xaction);
     }
     $texts = array_mergev($texts);
 
@@ -674,7 +755,7 @@ abstract class PhabricatorApplicationTransactionEditor
     return $xaction;
   }
 
-  protected function getMentionableTextsFromTransaction(
+  protected function getRemarkupBlocksFromTransaction(
     PhabricatorApplicationTransaction $transaction) {
     $texts = array();
     if ($transaction->getComment()) {
@@ -989,6 +1070,55 @@ abstract class PhabricatorApplicationTransactionEditor
   }
 
 
+  /**
+   * Hook for validating transactions. This callback will be invoked for each
+   * available transaction type, even if an edit does not apply any transactions
+   * of that type. This allows you to raise exceptions when required fields are
+   * missing, by detecting that the object has no field value and there is no
+   * transaction which sets one.
+   *
+   * @param PhabricatorLiskDAO Object being edited.
+   * @param string Transaction type to validate.
+   * @param list<PhabricatorApplicationTransaction> Transactions of given type,
+   *   which may be empty if the edit does not apply any transactions of the
+   *   given type.
+   * @return list<PhabricatorApplicationTransactionValidationError> List of
+   *   validation errors.
+   */
+  protected function validateTransaction(
+    PhabricatorLiskDAO $object,
+    $type,
+    array $xactions) {
+
+    $errors = array();
+    switch ($type) {
+      case PhabricatorTransactions::TYPE_CUSTOMFIELD:
+        $groups = array();
+        foreach ($xactions as $xaction) {
+          $groups[$xaction->getMetadataValue('customfield:key')][] = $xaction;
+        }
+
+        $field_list = PhabricatorCustomField::getObjectFields(
+          $object,
+          PhabricatorCustomField::ROLE_EDIT);
+
+        $role_xactions = PhabricatorCustomField::ROLE_APPLICATIONTRANSACTIONS;
+        foreach ($field_list->getFields() as $field) {
+          if (!$field->shouldEnableForRole($role_xactions)) {
+            continue;
+          }
+          $errors[] = $field->validateApplicationTransactions(
+            $this,
+            $type,
+            idx($groups, $field->getFieldKey(), array()));
+        }
+        break;
+    }
+
+    return array_mergev($errors);
+  }
+
+
 /* -(  Implicit CCs  )------------------------------------------------------- */
 
 
@@ -1068,7 +1198,9 @@ abstract class PhabricatorApplicationTransactionEditor
   /**
    * @task mail
    */
-  protected function supportsMail() {
+  protected function shouldSendMail(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
     return false;
   }
 
@@ -1080,13 +1212,14 @@ abstract class PhabricatorApplicationTransactionEditor
     PhabricatorLiskDAO $object,
     array $xactions) {
 
-    $email_to = array_unique($this->getMailTo($object));
-    $email_cc = array_unique($this->getMailCC($object));
+    $email_to = array_filter(array_unique($this->getMailTo($object)));
+    $email_cc = array_filter(array_unique($this->getMailCC($object)));
 
     $phids = array_merge($email_to, $email_cc);
-    $handles = id(new PhabricatorObjectHandleData($phids))
+    $handles = id(new PhabricatorHandleQuery())
       ->setViewer($this->requireActor())
-      ->loadHandles();
+      ->withPHIDs($phids)
+      ->execute();
 
     $template = $this->buildMailTemplate($object);
     $body = $this->buildMailBody($object, $xactions);
@@ -1099,7 +1232,7 @@ abstract class PhabricatorApplicationTransactionEditor
       ->setFrom($this->requireActor()->getPHID())
       ->setSubjectPrefix($this->getMailSubjectPrefix())
       ->setVarySubjectPrefix('['.$action.']')
-      ->setThreadID($object->getPHID(), $this->getIsNewObject())
+      ->setThreadID($this->getMailThreadID($object), $this->getIsNewObject())
       ->setRelatedPHID($object->getPHID())
       ->setExcludeMailRecipientPHIDs($this->getExcludeMailRecipientPHIDs())
       ->setMailTags($mail_tags)
@@ -1125,6 +1258,10 @@ abstract class PhabricatorApplicationTransactionEditor
     $template->addCCs($email_cc);
 
     return $template;
+  }
+
+  protected function getMailThreadID(PhabricatorLiskDAO $object) {
+    return $object->getPHID();
   }
 
 
@@ -1366,6 +1503,7 @@ abstract class PhabricatorApplicationTransactionEditor
     array $xactions) {
 
     $adapter = $this->buildHeraldAdapter($object, $xactions);
+    $adapter->setContentSource($this->getContentSource());
     $xscript = HeraldEngine::loadAndApplyRules($adapter);
 
     $this->setHeraldAdapter($adapter);
@@ -1416,6 +1554,77 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     return $field;
+  }
+
+
+/* -(  Files  )-------------------------------------------------------------- */
+
+
+  /**
+   * Extract the PHIDs of any files which these transactions attach.
+   *
+   * @task files
+   */
+  private function extractFilePHIDs(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
+
+    $blocks = array();
+    foreach ($xactions as $xaction) {
+      $blocks[] = $this->getRemarkupBlocksFromTransaction($xaction);
+    }
+    $blocks = array_mergev($blocks);
+
+    if (!$blocks) {
+      return array();
+    }
+
+    $phids = PhabricatorMarkupEngine::extractFilePHIDsFromEmbeddedFiles(
+      $blocks);
+
+    if (!$phids) {
+      return array();
+    }
+
+    // Only let a user attach files they can actually see, since this would
+    // otherwise let you access any file by attaching it to an object you have
+    // view permission on.
+
+    $files = id(new PhabricatorFileQuery())
+      ->setViewer($this->getActor())
+      ->withPHIDs($phids)
+      ->execute();
+
+    return mpull($files, 'getPHID');
+  }
+
+
+  /**
+   * @task files
+   */
+  private function attachFiles(
+    PhabricatorLiskDAO $object,
+    array $file_phids) {
+
+    if (!$file_phids) {
+      return;
+    }
+
+    $editor = id(new PhabricatorEdgeEditor())
+      ->setActor($this->getActor());
+
+    // TODO: Edge-based events were almost certainly a terrible idea. If we
+    // don't suppress this event, the Maniphest listener reenters and adds
+    // more transactions. Just suppress it until that can get cleaned up.
+    $editor->setSuppressEvents(true);
+
+    $src = $object->getPHID();
+    $type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_FILE;
+    foreach ($file_phids as $dst) {
+      $editor->addEdge($src, $type, $dst);
+    }
+
+    $editor->save();
   }
 
 }

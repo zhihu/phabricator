@@ -44,9 +44,10 @@ final class PhabricatorPasteViewController extends PhabricatorPasteController {
       return new Aphront404Response();
     }
 
-    $file = id(new PhabricatorFile())->loadOneWhere(
-      'phid = %s',
-      $paste->getFilePHID());
+    $file = id(new PhabricatorFileQuery())
+      ->setViewer($user)
+      ->withPHIDs(array($paste->getFilePHID()))
+      ->executeOne();
     if (!$file) {
       return new Aphront400Response();
     }
@@ -68,10 +69,23 @@ final class PhabricatorPasteViewController extends PhabricatorPasteController {
     $header = $this->buildHeaderView($paste);
     $actions = $this->buildActionView($user, $paste, $file);
     $properties = $this->buildPropertyView($paste, $fork_phids);
+
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
+
     $source_code = $this->buildSourceCodeView(
       $paste,
       null,
       $this->highlightMap);
+
+    $source_code = id(new PHUIBoxView())
+      ->appendChild($source_code)
+      ->setBorder(true)
+      ->addMargin(PHUI::MARGIN_LARGE_LEFT)
+      ->addMargin(PHUI::MARGIN_LARGE_RIGHT)
+      ->addMargin(PHUI::MARGIN_LARGE_TOP);
 
     $crumbs = $this->buildApplicationCrumbs($this->buildSideNavView())
       ->setActionList($actions)
@@ -104,7 +118,7 @@ final class PhabricatorPasteViewController extends PhabricatorPasteController {
 
     $is_serious = PhabricatorEnv::getEnvConfig('phabricator.serious-business');
 
-    $add_comment_header = id(new PhabricatorHeaderView())
+    $add_comment_header = id(new PHUIHeaderView())
       ->setHeader(
         $is_serious
           ? pht('Add Comment')
@@ -123,16 +137,18 @@ final class PhabricatorPasteViewController extends PhabricatorPasteController {
       ->setAction($this->getApplicationURI('/comment/'.$paste->getID().'/'))
       ->setSubmitButtonName($submit_button_name);
 
+    $comment_box = id(new PHUIObjectBoxView())
+      ->setFlush(true)
+      ->setHeader($add_comment_header)
+      ->appendChild($add_comment_form);
+
     return $this->buildApplicationPage(
       array(
         $crumbs,
-        $header,
-        $actions,
-        $properties,
+        $object_box,
         $source_code,
         $timeline,
-        $add_comment_header,
-        $add_comment_form
+        $comment_box,
       ),
       array(
         'title' => $paste->getFullName(),
@@ -142,8 +158,12 @@ final class PhabricatorPasteViewController extends PhabricatorPasteController {
   }
 
   private function buildHeaderView(PhabricatorPaste $paste) {
-    return id(new PhabricatorHeaderView())
-      ->setHeader($paste->getTitle());
+    $header = id(new PHUIHeaderView())
+      ->setHeader($paste->getTitle())
+      ->setUser($this->getRequest()->getUser())
+      ->setPolicyObject($paste);
+
+    return $header;
   }
 
   private function buildActionView(
@@ -216,10 +236,6 @@ final class PhabricatorPasteViewController extends PhabricatorPasteController {
     $descriptions = PhabricatorPolicyQuery::renderPolicyDescriptions(
       $user,
       $paste);
-
-    $properties->addProperty(
-      pht('Visible To'),
-      $descriptions[PhabricatorPolicyCapability::CAN_VIEW]);
 
     return $properties;
   }

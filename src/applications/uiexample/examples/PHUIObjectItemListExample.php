@@ -15,13 +15,14 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
     $request = $this->getRequest();
     $user = $request->getUser();
 
-    $handle = PhabricatorObjectHandleData::loadOneHandle(
-      $user->getPHID(),
-      $user);
+    $handle = id(new PhabricatorHandleQuery())
+      ->setViewer($user)
+      ->withPHIDs(array($user->getPHID()))
+      ->executeOne();
 
     $out = array();
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('Basic List'));
 
     $list = new PHUIObjectItemListView();
@@ -47,7 +48,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
     $out[] = array($head, $list);
 
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('Empty List'));
     $list = new PHUIObjectItemListView();
 
@@ -56,7 +57,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
     $out[] = array($head, $list);
 
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('Stacked List'));
     $list = new PHUIObjectItemListView();
     $list->setStackable(true);
@@ -80,7 +81,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
 
     $out[] = array($head, $list);
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('Plain List'));
     $list = new PHUIObjectItemListView();
     $list->setPlain(true);
@@ -109,7 +110,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
     $out[] = array($head, $list);
 
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('Card List'));
     $list = new PHUIObjectItemListView();
     $list->setCards(true);
@@ -156,7 +157,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
     $out[] = array($head, $list);
 
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('Grippable List'));
     $list = new PHUIObjectItemListView();
     $list->setCards(true);
@@ -188,7 +189,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
 
     $out[] = array($head, $list);
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('List With Actions'));
     $list = new PHUIObjectItemListView();
 
@@ -222,7 +223,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
     $out[] = array($head, $list);
 
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('Extras'));
 
     $list = new PHUIObjectItemListView();
@@ -231,7 +232,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
       id(new PHUIObjectItemView())
         ->setHeader(pht('Ace of Hearts'))
         ->setSubHead(
-          pht('This is the most powerful card in the game "Hearts".'))
+          pht('This is a powerful card in the game "Hearts".'))
         ->setHref('#')
         ->addAttribute(pht('Suit: Hearts'))
         ->addAttribute(pht('Rank: Ace'))
@@ -267,7 +268,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
     $out[] = array($head, $list);
 
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('Effects'));
 
     $list = new PHUIObjectItemListView();
@@ -302,7 +303,7 @@ final class PHUIObjectItemListExample extends PhabricatorUIExample {
     $out[] = array($head, $list);
 
 
-    $head = id(new PhabricatorHeaderView())
+    $head = id(new PHUIHeaderView())
       ->setHeader(pht('Colors'));
 
     $list = new PHUIObjectItemListView();

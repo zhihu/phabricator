@@ -7,6 +7,10 @@ final class DiffusionCommitController extends DiffusionController {
   private $auditAuthorityPHIDs;
   private $highlightedAudits;
 
+  public function shouldAllowPublic() {
+    return true;
+  }
+
   public function willProcessRequest(array $data) {
     // This controller doesn't use blob/path stuff, just pass the dictionary
     // in directly instead of using the AphrontRequest parsing mechanism.
@@ -30,6 +34,10 @@ final class DiffusionCommitController extends DiffusionController {
     $repository = $drequest->getRepository();
     $commit = $drequest->loadCommit();
 
+    $crumbs = $this->buildCrumbs(array(
+      'commit' => true,
+    ));
+
     if (!$commit) {
       $exists = $this->callConduitWithDiffusionRequest(
         'diffusion.existsquery',
@@ -37,12 +45,22 @@ final class DiffusionCommitController extends DiffusionController {
       if (!$exists) {
         return new Aphront404Response();
       }
-      return $this->buildStandardPageResponse(
-        id(new AphrontErrorView())
-        ->setTitle(pht('Error displaying commit.'))
-        ->appendChild(pht('Failed to load the commit because the commit has '.
-                      'not been parsed yet.')),
-          array('title' => pht('Commit Still Parsing')));
+
+      $error = id(new AphrontErrorView())
+        ->setTitle(pht('Commit Still Parsing'))
+        ->appendChild(
+          pht(
+            'Failed to load the commit because the commit has not been '.
+            'parsed yet.'));
+
+      return $this->buildApplicationPage(
+        array(
+          $crumbs,
+          $error,
+        ),
+        array(
+          'title' => pht('Commit Still Parsing'),
+        ));
     }
 
     $commit_data = $drequest->loadCommitData();
@@ -85,7 +103,7 @@ final class DiffusionCommitController extends DiffusionController {
         'diffusion.commitparentsquery',
         array('commit' => $drequest->getCommit()));
 
-      $headsup_view = id(new PhabricatorHeaderView())
+      $headsup_view = id(new PHUIHeaderView())
         ->setHeader(nonempty($commit->getSummary(), pht('Commit Detail')));
 
       $headsup_actions = $this->renderHeadsupActionList($commit, $repository);
@@ -106,7 +124,7 @@ final class DiffusionCommitController extends DiffusionController {
       $message = $commit_data->getCommitMessage();
 
       $revision = $commit->getCommitIdentifier();
-      $message = $repository->linkBugtraq($message, $revision);
+      $message = $this->linkBugtraq($message);
 
       $message = $engine->markupText($message);
 
@@ -119,9 +137,13 @@ final class DiffusionCommitController extends DiffusionController {
           ),
           $message));
       $content[] = $top_anchor;
-      $content[] = $headsup_view;
-      $content[] = $headsup_actions;
-      $content[] = $property_list;
+
+      $object_box = id(new PHUIObjectBoxView())
+        ->setHeader($headsup_view)
+        ->setActionList($headsup_actions)
+        ->setPropertyList($property_list);
+
+      $content[] = $object_box;
     }
 
     $content[] = $this->buildComments($commit);
@@ -345,10 +367,6 @@ final class DiffusionCommitController extends DiffusionController {
     $short_name = DiffusionView::nameCommit(
       $repository,
       $commit->getCommitIdentifier());
-
-    $crumbs = $this->buildCrumbs(array(
-      'commit' => true,
-    ));
 
     $prefs = $user->loadPreferences();
     $pref_filetree = PhabricatorUserPreferences::PREFERENCE_DIFF_FILETREE;
@@ -599,7 +617,15 @@ final class DiffusionCommitController extends DiffusionController {
     PhabricatorRepositoryCommit $commit,
     array $audit_requests) {
     assert_instances_of($audit_requests, 'PhabricatorRepositoryAuditRequest');
-    $user = $this->getRequest()->getUser();
+
+    $request = $this->getRequest();
+    $user = $request->getUser();
+
+    if (!$user->isLoggedIn()) {
+      return id(new PhabricatorApplicationTransactionCommentView())
+        ->setUser($user)
+        ->setRequestURI($request->getRequestURI());
+    }
 
     $is_serious = PhabricatorEnv::getEnvConfig('phabricator.serious-business');
 
@@ -624,7 +650,6 @@ final class DiffusionCommitController extends DiffusionController {
 
     $form = id(new AphrontFormView())
       ->setUser($user)
-      ->setShaded(true)
       ->setAction('/audit/addcomment/')
       ->addHiddenInput('commit', $commit->getPHID())
       ->appendChild(
@@ -660,7 +685,7 @@ final class DiffusionCommitController extends DiffusionController {
         id(new AphrontFormSubmitControl())
           ->setValue($is_serious ? pht('Submit') : pht('Cook the Books')));
 
-    $header = new PhabricatorHeaderView();
+    $header = new PHUIHeaderView();
     $header->setHeader(
       $is_serious ? pht('Audit Commit') : pht('Creative Accounting'));
 
@@ -716,19 +741,22 @@ final class DiffusionCommitController extends DiffusionController {
     // Differential better.
     require_celerity_resource('differential-core-view-css');
 
+    $comment_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->appendChild($form);
+
     return phutil_tag(
       'div',
       array(
         'id' => $pane_id,
       ),
       hsprintf(
-        '<div class="differential-add-comment-panel">%s%s%s%s</div>',
+        '<div class="differential-add-comment-panel">%s%s%s</div>',
         id(new PhabricatorAnchorView())
           ->setAnchorName('comment')
           ->setNavigationMarker(true)
           ->render(),
-        $header,
-        $form,
+        $comment_box,
         $preview_panel));
   }
 
@@ -871,14 +899,20 @@ final class DiffusionCommitController extends DiffusionController {
       ->setObject($commit)
       ->setObjectURI($request->getRequestURI());
 
-    // TODO -- integrate permissions into whether or not this action is shown
-    $uri = '/diffusion/'.$repository->getCallSign().'/commit/'.
+    $can_edit = PhabricatorPolicyFilter::hasCapability(
+      $user,
+      $commit,
+      PhabricatorPolicyCapability::CAN_EDIT);
+
+    $uri = '/diffusion/'.$repository->getCallsign().'/commit/'.
            $commit->getCommitIdentifier().'/edit/';
 
     $action = id(new PhabricatorActionView())
       ->setName(pht('Edit Commit'))
       ->setHref($uri)
-      ->setIcon('edit');
+      ->setIcon('edit')
+      ->setDisabled(!$can_edit)
+      ->setWorkflow(!$can_edit);
     $actions->addAction($action);
 
     require_celerity_resource('phabricator-object-selector-css');
@@ -890,7 +924,8 @@ final class DiffusionCommitController extends DiffusionController {
         ->setName(pht('Edit Maniphest Tasks'))
         ->setIcon('attach')
         ->setHref('/search/attach/'.$commit->getPHID().'/TASK/edge/')
-        ->setWorkflow(true);
+        ->setWorkflow(true)
+        ->setDisabled(!$can_edit);
       $actions->addAction($action);
     }
 
@@ -997,6 +1032,29 @@ final class DiffusionCommitController extends DiffusionController {
     }
 
     return $view;
+  }
+
+  private function linkBugtraq($corpus) {
+    $url = PhabricatorEnv::getEnvConfig('bugtraq.url');
+    if (!strlen($url)) {
+      return $corpus;
+    }
+
+    $regexes = PhabricatorEnv::getEnvConfig('bugtraq.logregex');
+    if (!$regexes) {
+      return $corpus;
+    }
+
+    $parser = id(new PhutilBugtraqParser())
+      ->setBugtraqPattern("[[ {$url} | %BUGID% ]]")
+      ->setBugtraqCaptureExpression(array_shift($regexes));
+
+    $select = array_shift($regexes);
+    if ($select) {
+      $parser->setBugtraqSelectExpression($select);
+    }
+
+    return $parser->processCorpus($corpus);
   }
 
 }

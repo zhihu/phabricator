@@ -5,6 +5,8 @@ final class DifferentialDiffQuery
 
   private $ids;
   private $revisionIDs;
+  private $needChangesets = false;
+  private $needArcanistProjects = false;
 
   public function withIDs(array $ids) {
     $this->ids = $ids;
@@ -13,6 +15,16 @@ final class DifferentialDiffQuery
 
   public function withRevisionIDs(array $revision_ids) {
     $this->revisionIDs = $revision_ids;
+    return $this;
+  }
+
+  public function needChangesets($bool) {
+    $this->needChangesets = $bool;
+    return $this;
+  }
+
+  public function needArcanistProjects($bool) {
+    $this->needArcanistProjects = $bool;
     return $this;
   }
 
@@ -29,6 +41,79 @@ final class DifferentialDiffQuery
       $this->buildLimitClause($conn_r));
 
     return $table->loadAllFromArray($data);
+  }
+
+  public function willFilterPage(array $diffs) {
+    $revision_ids = array_filter(mpull($diffs, 'getRevisionID'));
+
+    $revisions = array();
+    if ($revision_ids) {
+      $revisions = id(new DifferentialRevisionQuery())
+        ->setViewer($this->getViewer())
+        ->withIDs($revision_ids)
+        ->execute();
+    }
+
+    foreach ($diffs as $key => $diff) {
+      if (!$diff->getRevisionID()) {
+        $diff->attachRevision(null);
+        continue;
+      }
+
+      $revision = idx($revisions, $diff->getRevisionID());
+      if ($revision) {
+        $diff->attachRevision($revision);
+        continue;
+      }
+
+      unset($diffs[$key]);
+    }
+
+
+    if ($this->needChangesets) {
+      $this->loadChangesets($diffs);
+    }
+
+    if ($this->needArcanistProjects) {
+      $this->loadArcanistProjects($diffs);
+    }
+
+    return $diffs;
+  }
+
+  private function loadChangesets(array $diffs) {
+    foreach ($diffs as $diff) {
+      $diff->attachChangesets(
+        $diff->loadRelatives(new DifferentialChangeset(), 'diffID'));
+      foreach ($diff->getChangesets() as $changeset) {
+        $changeset->attachHunks(
+          $changeset->loadRelatives(new DifferentialHunk(), 'changesetID'));
+      }
+    }
+    return $diffs;
+  }
+
+  private function loadArcanistProjects(array $diffs) {
+    $phids = array_filter(mpull($diffs, 'getArcanistProjectPHID'));
+    $projects = array();
+    $project_map = array();
+    if ($phids) {
+      $projects = id(new PhabricatorRepositoryArcanistProject())
+        ->loadAllWhere(
+          'phid IN (%Ls)',
+          $phids);
+      $project_map = mpull($projects, null, 'getPHID');
+    }
+
+    foreach ($diffs as $diff) {
+      $project = null;
+      if ($diff->getArcanistProjectPHID()) {
+        $project = idx($project_map, $diff->getArcanistProjectPHID());
+      }
+      $diff->attachArcanistProject($project);
+    }
+
+    return $diffs;
   }
 
   private function buildWhereClause(AphrontDatabaseConnection $conn_r) {

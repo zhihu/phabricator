@@ -29,11 +29,16 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   protected $name;
   protected $callsign;
   protected $uuid;
+  protected $viewPolicy = PhabricatorPolicies::POLICY_USER;
+  protected $editPolicy = PhabricatorPolicies::POLICY_ADMIN;
 
   protected $versionControlSystem;
   protected $details = array();
 
   private $sshKeyfile;
+
+  private $commitCount = self::ATTACHABLE;
+  private $mostRecentCommit = self::ATTACHABLE;
 
   public function getConfiguration() {
     return array(
@@ -69,6 +74,25 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   public function setDetail($key, $value) {
     $this->details[$key] = $value;
     return $this;
+  }
+
+  public function attachCommitCount($count) {
+    $this->commitCount = $count;
+    return $this;
+  }
+
+  public function getCommitCount() {
+    return $this->assertAttached($this->commitCount);
+  }
+
+  public function attachMostRecentCommit(
+    PhabricatorRepositoryCommit $commit = null) {
+    $this->mostRecentCommit = $commit;
+    return $this;
+  }
+
+  public function getMostRecentCommit() {
+    return $this->assertAttached($this->mostRecentCommit);
   }
 
   public function getDiffusionBrowseURIForPath(
@@ -427,22 +451,6 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     return 'r'.$this->getCallsign().$short_identifier;
   }
 
-  public static function loadAllByPHIDOrCallsign(array $names) {
-    $repositories = array();
-    foreach ($names as $name) {
-      $repo = id(new PhabricatorRepository())->loadOneWhere(
-        'phid = %s OR callsign = %s',
-        $name,
-        $name);
-      if (!$repo) {
-        throw new Exception(
-          "No repository with PHID or callsign '{$name}' exists!");
-      }
-      $repositories[$repo->getID()] = $repo;
-    }
-    return $repositories;
-  }
-
 /* -(  Repository URI Management  )------------------------------------------ */
 
 
@@ -670,58 +678,6 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   }
 
 
-  /**
-   * Link external bug tracking system if defined.
-   *
-   * @param string Plain text.
-   * @param string Commit identifier.
-   * @return string Remarkup
-   */
-  public function linkBugtraq($message, $revision = null) {
-    $bugtraq_url = PhabricatorEnv::getEnvConfig('bugtraq.url');
-    list($bugtraq_re, $id_re) =
-      PhabricatorEnv::getEnvConfig('bugtraq.logregex') +
-      array('', '');
-
-    switch ($this->getVersionControlSystem()) {
-      case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:
-        // TODO: Get bugtraq:logregex and bugtraq:url from SVN properties.
-        break;
-    }
-
-    if (!$bugtraq_url || $bugtraq_re == '') {
-      return $message;
-    }
-
-    $matches = null;
-    $flags = PREG_SET_ORDER | PREG_OFFSET_CAPTURE;
-    preg_match_all('('.$bugtraq_re.')', $message, $matches, $flags);
-    foreach ($matches as $match) {
-      list($all, $all_offset) = array_shift($match);
-
-      if ($id_re != '') {
-        // Match substrings with bug IDs
-        preg_match_all('('.$id_re.')', $all, $match, PREG_OFFSET_CAPTURE);
-        list(, $match) = $match;
-      } else {
-        $all_offset = 0;
-      }
-
-      $match = array_reverse($match);
-      foreach ($match as $val) {
-        list($s, $offset) = $val;
-        $message = substr_replace(
-          $message,
-          '[[ '.str_replace('%BUGID%', $s, $bugtraq_url).' | '.$s.' ]]',
-          $offset + $all_offset,
-          strlen($s));
-      }
-    }
-
-    return $message;
-  }
-
-
 /* -(  PhabricatorPolicyInterface  )----------------------------------------- */
 
 
@@ -735,15 +691,20 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   public function getPolicy($capability) {
     switch ($capability) {
       case PhabricatorPolicyCapability::CAN_VIEW:
-        return PhabricatorPolicies::POLICY_USER;
+        return $this->getViewPolicy();
       case PhabricatorPolicyCapability::CAN_EDIT:
-        return PhabricatorPolicies::POLICY_ADMIN;
+        return $this->getEditPolicy();
     }
   }
 
   public function hasAutomaticCapability($capability, PhabricatorUser $user) {
     return false;
   }
+
+  public function describeAutomaticCapability($capability) {
+    return null;
+  }
+
 
 
 /* -(  PhabricatorMarkupInterface  )----------------------------------------- */

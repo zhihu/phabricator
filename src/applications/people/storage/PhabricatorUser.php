@@ -750,6 +750,8 @@ EOBODY;
     $src_phid = $this->getProfileImagePHID();
 
     if ($src_phid) {
+      // TODO: (T603) Can we get rid of this entirely and move it to
+      // PeopleQuery with attach/attachable?
       $file = id(new PhabricatorFile())->loadOneWhere('phid = %s', $src_phid);
       if ($file) {
         $this->profileImage = $file->getBestURI();
@@ -836,6 +838,15 @@ EOBODY;
 
   public function hasAutomaticCapability($capability, PhabricatorUser $viewer) {
     return $this->getPHID() && ($viewer->getPHID() === $this->getPHID());
+  }
+
+  public function describeAutomaticCapability($capability) {
+    switch ($capability) {
+      case PhabricatorPolicyCapability::CAN_EDIT:
+        return pht('Only you can edit your information.');
+      default:
+        return null;
+    }
   }
 
 

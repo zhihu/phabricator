@@ -27,8 +27,12 @@ final class PhabricatorFileInfoController extends PhabricatorFileController {
       ->withObjectPHIDs(array($phid))
       ->execute();
 
-    $this->loadHandles(array($file->getAuthorPHID()));
-    $header = id(new PhabricatorHeaderView())
+    $handle_phids = array_merge(
+      array($file->getAuthorPHID()),
+      $file->getObjectPHIDs());
+
+    $this->loadHandles($handle_phids);
+    $header = id(new PHUIHeaderView())
       ->setHeader($file->getName());
 
     $ttl = $file->getTTL();
@@ -49,12 +53,15 @@ final class PhabricatorFileInfoController extends PhabricatorFileController {
         ->setName('F'.$file->getID())
         ->setHref($this->getApplicationURI("/info/{$phid}/")));
 
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
+
     return $this->buildApplicationPage(
       array(
         $crumbs,
-        $header,
-        $actions,
-        $properties,
+        $object_box,
         $timeline
       ),
       array(
@@ -88,7 +95,7 @@ final class PhabricatorFileInfoController extends PhabricatorFileController {
 
     $is_serious = PhabricatorEnv::getEnvConfig('phabricator.serious-business');
 
-    $add_comment_header = id(new PhabricatorHeaderView())
+    $add_comment_header = id(new PHUIHeaderView())
       ->setHeader(
         $is_serious
           ? pht('Add Comment')
@@ -107,10 +114,14 @@ final class PhabricatorFileInfoController extends PhabricatorFileController {
       ->setAction($this->getApplicationURI('/comment/'.$file->getID().'/'))
       ->setSubmitButtonName($submit_button_name);
 
+    $comment_box = id(new PHUIObjectBoxView())
+      ->setFlush(true)
+      ->setHeader($add_comment_header)
+      ->appendChild($add_comment_form);
+
     return array(
       $timeline,
-      $add_comment_header,
-      $add_comment_form);
+      $comment_box);
   }
 
   private function buildActionView(PhabricatorFile $file) {
@@ -200,6 +211,15 @@ final class PhabricatorFileInfoController extends PhabricatorFileController {
       }
     }
 
+    $phids = $file->getObjectPHIDs();
+    if ($phids) {
+      $view->addSectionHeader(pht('Attached'));
+      $view->addProperty(
+        pht('Attached To'),
+        $this->renderHandlesForPHIDs($phids));
+    }
+
+
     if ($file->isViewableImage()) {
 
       $image = phutil_tag(
@@ -217,6 +237,20 @@ final class PhabricatorFileInfoController extends PhabricatorFileController {
         $image);
 
       $view->addImageContent($linked_image);
+    } else if ($file->isAudio()) {
+      $audio = phutil_tag(
+        'audio',
+        array(
+          'controls' => 'controls',
+          'class' => 'phabricator-property-list-audio',
+        ),
+        phutil_tag(
+          'source',
+          array(
+            'src' => $file->getViewURI(),
+            'type' => $file->getMimeType(),
+          )));
+      $view->addImageContent($audio);
     }
 
     return $view;

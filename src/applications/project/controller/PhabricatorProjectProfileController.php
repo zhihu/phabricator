@@ -59,7 +59,7 @@ final class PhabricatorProjectProfileController
         $tasks,
         $content);
 
-    $header = id(new PhabricatorHeaderView())
+    $header = id(new PHUIHeaderView())
       ->setHeader($project->getName())
       ->setSubheader(phutil_utf8_shorten($profile->getBlurb(), 1024))
       ->setImage($picture);
@@ -72,12 +72,15 @@ final class PhabricatorProjectProfileController
       id(new PhabricatorCrumbView())
         ->setName($project->getName()));
 
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
+
     return $this->buildApplicationPage(
       array(
         $crumbs,
-        $header,
-        $actions,
-        $properties,
+        $object_box,
         $content,
       ),
       array(
@@ -154,13 +157,12 @@ final class PhabricatorProjectProfileController
     $user = $this->getRequest()->getUser();
 
     $query = id(new ManiphestTaskQuery())
+      ->setViewer($user)
       ->withAnyProjects(array($project->getPHID()))
       ->withStatus(ManiphestTaskQuery::STATUS_OPEN)
       ->setOrderBy(ManiphestTaskQuery::ORDER_PRIORITY)
-      ->setLimit(10)
-      ->setCalculateRows(true);
+      ->setLimit(10);
     $tasks = $query->execute();
-    $count = $query->getRowCount();
 
     $phids = mpull($tasks, 'getOwnerPHID');
     $phids = array_merge(
@@ -174,26 +176,13 @@ final class PhabricatorProjectProfileController
     $task_list->setTasks($tasks);
     $task_list->setHandles($handles);
 
-    $open = number_format($count);
+    $list = id(new PHUIBoxView())
+      ->addPadding(PHUI::PADDING_LARGE)
+      ->appendChild($task_list);
 
-    $more_link = phutil_tag(
-      'a',
-      array(
-        'href' => '/maniphest/view/all/?projects='.$project->getPHID(),
-      ),
-      pht("View All Open Tasks \xC2\xBB"));
-
-    $content = hsprintf(
-      '<div class="phabricator-profile-info-group profile-wrap-responsive">
-        <h1 class="phabricator-profile-info-header">%s</h1>'.
-        '<div class="phabricator-profile-info-pane">'.
-          '%s'.
-          '<div class="phabricator-profile-info-pane-more-link">%s</div>'.
-        '</div>
-      </div>',
-      pht('Open Tasks (%s)', $open),
-      $task_list,
-      $more_link);
+    $content = id(new PHUIObjectBoxView())
+      ->setHeaderText(pht('Open Tasks'))
+      ->appendChild($list);
 
     return $content;
   }

@@ -15,7 +15,7 @@ final class PhabricatorPolicyQuery extends PhabricatorQuery {
     return $this;
   }
 
-  public static function renderPolicyDescriptions(
+  public static function loadPolicies(
     PhabricatorUser $viewer,
     PhabricatorPolicyInterface $object) {
 
@@ -31,7 +31,7 @@ final class PhabricatorPolicyQuery extends PhabricatorQuery {
       }
 
       if (isset($global[$policy])) {
-        $results[$capability] = $global[$policy]->renderDescription();
+        $results[$capability] = $global[$policy];
         continue;
       }
 
@@ -44,10 +44,24 @@ final class PhabricatorPolicyQuery extends PhabricatorQuery {
           ->execute();
       }
 
-      $results[$capability] = $policies[$policy]->renderDescription();
+      $results[$capability] = $policies[$policy];
     }
 
     return $results;
+  }
+
+  public static function renderPolicyDescriptions(
+    PhabricatorUser $viewer,
+    PhabricatorPolicyInterface $object,
+    $icon = false) {
+
+    $policies = self::loadPolicies($viewer, $object);
+
+    foreach ($policies as $capability => $policy) {
+      $policies[$capability] = $policy->renderDescription($icon);
+    }
+
+    return $policies;
   }
 
   public function execute() {
@@ -100,9 +114,10 @@ final class PhabricatorPolicyQuery extends PhabricatorQuery {
     $other_policies = array_diff_key($other_policies, $results);
 
     if ($other_policies) {
-      $handles = id(new PhabricatorObjectHandleData($other_policies))
+      $handles = id(new PhabricatorHandleQuery())
         ->setViewer($this->viewer)
-        ->loadHandles();
+        ->withPHIDs($other_policies)
+        ->execute();
       foreach ($other_policies as $phid) {
         $results[$phid] = PhabricatorPolicy::newFromPolicyAndHandle(
           $phid,

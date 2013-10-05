@@ -128,6 +128,7 @@ final class DifferentialManiphestTasksFieldSpecification
       return array();
     }
 
+    // TODO: T603 Get a viewer here so we can issue the right query.
 
     $task_ids = $matches[1];
     $tasks = id(new ManiphestTask())
@@ -163,9 +164,10 @@ final class DifferentialManiphestTasksFieldSpecification
       return null;
     }
 
-    $handles = id(new PhabricatorObjectHandleData($this->maniphestTasks))
+    $handles = id(new PhabricatorHandleQuery())
       ->setViewer($this->getUser())
-      ->loadHandles();
+      ->withPHIDs($this->maniphestTasks)
+      ->execute();
     $body = array();
     $body[] = 'MANIPHEST TASKS';
     foreach ($handles as $handle) {

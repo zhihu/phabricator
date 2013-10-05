@@ -42,12 +42,19 @@ final class PhamePostViewController extends PhameController {
         ->setHref($this->getApplicationURI('post/view/'.$post->getID().'/')));
 
     $nav->appendChild($crumbs);
-    $nav->appendChild(
-      id(new PhabricatorHeaderView())
-        ->setHeader($post->getTitle()));
+
+    $header = id(new PHUIHeaderView())
+        ->setHeader($post->getTitle())
+        ->setUser($user)
+        ->setPolicyObject($post);
+
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
 
     if ($post->isDraft()) {
-      $nav->appendChild(
+      $object_box->appendChild(
         id(new AphrontErrorView())
           ->setSeverity(AphrontErrorView::SEVERITY_NOTICE)
           ->setTitle(pht('Draft Post'))
@@ -57,7 +64,7 @@ final class PhamePostViewController extends PhameController {
     }
 
     if (!$post->getBlog()) {
-      $nav->appendChild(
+      $object_box->appendChild(
         id(new AphrontErrorView())
           ->setSeverity(AphrontErrorView::SEVERITY_WARNING)
           ->setTitle(pht('Not On A Blog'))
@@ -68,8 +75,7 @@ final class PhamePostViewController extends PhameController {
 
     $nav->appendChild(
       array(
-        $actions,
-        $properties,
+        $object_box,
       ));
 
     return $this->buildApplicationPage(
@@ -167,10 +173,6 @@ final class PhamePostViewController extends PhameController {
       ->setUser($user)
       ->setObject($post);
 
-    $descriptions = PhabricatorPolicyQuery::renderPolicyDescriptions(
-      $user,
-      $post);
-
     $properties->addProperty(
       pht('Blog'),
       $post->getBlogPHID()
@@ -180,10 +182,6 @@ final class PhamePostViewController extends PhameController {
     $properties->addProperty(
       pht('Blogger'),
       $this->getHandle($post->getBloggerPHID())->renderLink());
-
-    $properties->addProperty(
-      pht('Visible To'),
-      $descriptions[PhabricatorPolicyCapability::CAN_VIEW]);
 
     $properties->addProperty(
       pht('Published'),

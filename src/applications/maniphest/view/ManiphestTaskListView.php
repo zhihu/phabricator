@@ -40,14 +40,7 @@ final class ManiphestTaskListView extends ManiphestView {
     $list->setFlush(true);
 
     $status_map = ManiphestTaskStatus::getTaskStatusMap();
-    $color_map = array(
-      ManiphestTaskPriority::PRIORITY_UNBREAK_NOW => 'indigo',
-      ManiphestTaskPriority::PRIORITY_TRIAGE => 'violet',
-      ManiphestTaskPriority::PRIORITY_HIGH => 'red',
-      ManiphestTaskPriority::PRIORITY_NORMAL => 'orange',
-      ManiphestTaskPriority::PRIORITY_LOW => 'yellow',
-      ManiphestTaskPriority::PRIORITY_WISH => 'sky',
-    );
+    $color_map = ManiphestTaskPriority::getColorMap();
 
     if ($this->showBatchControls) {
       Javelin::initBehavior('maniphest-list-editor');
@@ -60,8 +53,11 @@ final class ManiphestTaskListView extends ManiphestView {
       $item->setHref('/T'.$task->getID());
 
       if ($task->getOwnerPHID()) {
-        $owner = $handles[$task->getOwnerPHID()];
-        $item->addByline(pht('Assigned: %s', $owner->renderLink()));
+        $owner = idx($handles, $task->getOwnerPHID());
+        // TODO: This should be guaranteed, see T3817.
+        if ($owner) {
+          $item->addByline(pht('Assigned: %s', $owner->renderLink()));
+        }
       }
 
       $status = $task->getStatus();

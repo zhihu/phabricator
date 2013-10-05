@@ -12,8 +12,54 @@ final class PhabricatorManiphestConfigOptions
   }
 
   public function getOptions() {
+
+    $priority_defaults = array(
+      100 => array(
+        'name'  => pht('Unbreak Now!'),
+        'short' => pht('Unbreak!'),
+        'color' => 'indigo',
+      ),
+      90 => array(
+        'name' => pht('Needs Triage'),
+        'short' => pht('Triage'),
+        'color' => 'violet',
+      ),
+      80 => array(
+        'name' => pht('High'),
+        'short' => pht('High'),
+        'color' => 'red',
+      ),
+      50 => array(
+        'name' => pht('Normal'),
+        'short' => pht('Normal'),
+        'color' => 'orange',
+      ),
+      25 => array(
+        'name' => pht('Low'),
+        'short' => pht('Low'),
+        'color' => 'yellow',
+      ),
+      0 => array(
+        'name' => pht('Wishlist'),
+        'short' => pht('Wish'),
+        'color' => 'sky',
+      ),
+    );
+
+    // This is intentionally blank for now, until we can move more Maniphest
+    // logic to custom fields.
+    $default_fields = array();
+
+    foreach ($default_fields as $key => $enabled) {
+      $default_fields[$key] = array(
+        'disabled' => !$enabled,
+      );
+    }
+
+    $custom_field_type = 'custom:PhabricatorCustomFieldConfigOptionType';
+
     return array(
-      $this->newOption('maniphest.custom-fields', 'wild', array())
+      $this->newOption('maniphest.custom-field-definitions', 'wild', array())
         ->setSummary(pht("Custom Maniphest fields."))
         ->setDescription(
           pht(
@@ -21,21 +67,31 @@ final class PhabricatorManiphestConfigOptions
             "adding custom fields to Maniphest, see 'Maniphest User Guide: ".
             "Adding Custom Fields'."))
         ->addExample(
-          '{"mycompany:estimated-hours": {"label": "Estimated Hours", '.
+          '{"mycompany:estimated-hours": {"name": "Estimated Hours", '.
           '"type": "int", "caption": "Estimated number of hours this will '.
-          'take.", "required": false}}',
+          'take."}}',
           pht('Valid Setting')),
-      $this->newOption(
-        'maniphest.custom-task-extensions-class',
-        'class',
-        'ManiphestDefaultTaskExtensions')
-        ->setBaseClass('ManiphestTaskExtensions')
-        ->setSummary(pht("Class which drives custom field construction."))
+      $this->newOption('maniphest.fields', $custom_field_type, $default_fields)
+        ->setCustomData(id(new ManiphestTask())->getCustomFieldBaseClass())
+        ->setDescription(pht("Select and reorder task fields.")),
+      $this->newOption('maniphest.priorities', 'wild', $priority_defaults)
+        ->setSummary(pht("Configure Maniphest priority names."))
         ->setDescription(
           pht(
-            "Class which drives custom field construction. See 'Maniphest ".
-            "User Guide: Adding Custom Fields' in the documentation for more ".
-            "information.")),
+            'Allows you to edit or override the default priorities available '.
+            'in Maniphest, like "High", "Normal" and "Low". The configuration '.
+            'should contain a map of priority constants to priority '.
+            'specifications (see defaults below for examples).'.
+            "\n\n".
+            'The keys you can define for a priority are:'.
+            "\n\n".
+            '  - `name` Name of the priority.'."\n".
+            '  - `short` Alternate shorter name, used in UIs where there is '.
+            '    not much space available.'."\n".
+            '  - `color` A color for this priority, like "red" or "blue".'.
+            "\n\n".
+            'You can choose which priority is the default for newly created '.
+            'tasks with `maniphest.default-priority`.')),
       $this->newOption('maniphest.default-priority', 'int', 90)
         ->setSummary(pht("Default task priority for create flows."))
         ->setDescription(
@@ -109,6 +165,27 @@ final class PhabricatorManiphestConfigOptions
             'create a task, even if the sender is not a system user. The '.
             'original email address will be stored in an `From Email` field '.
             'on the task.')),
+      $this->newOption(
+        'maniphest.priorities.unbreak-now',
+        'int',
+        100)
+        ->setSummary(pht('Priority used to populate "Unbreak Now" on home.'))
+        ->setDescription(
+          pht(
+            'Temporary setting. If set, this priority is used to populate the '.
+            '"Unbreak Now" panel on the home page. You should adjust this if '.
+            'you adjust priorities using `maniphest.priorities`.')),
+      $this->newOption(
+        'maniphest.priorities.needs-triage',
+        'int',
+        90)
+        ->setSummary(pht('Priority used to populate "Needs Triage" on home.'))
+        ->setDescription(
+          pht(
+            'Temporary setting. If set, this priority is used to populate the '.
+            '"Needs Triage" panel on the home page. You should adjust this if '.
+            'you adjust priorities using `maniphest.priorities`.')),
+
     );
   }
 

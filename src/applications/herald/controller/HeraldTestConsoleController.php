@@ -20,38 +20,20 @@ final class HeraldTestConsoleController extends HeraldController {
       }
 
       if (!$errors) {
-        $matches = null;
-        $object = null;
-        if (preg_match('/^D(\d+)$/', $object_name, $matches)) {
-          $object = id(new DifferentialRevision())->load($matches[1]);
-          if (!$object) {
-            $e_name = pht('Invalid');
-            $errors[] = pht('No Differential Revision with that ID exists.');
-          }
-        } else if (preg_match('/^r([A-Z]+)(\w+)$/', $object_name, $matches)) {
-          $repo = id(new PhabricatorRepository())->loadOneWhere(
-            'callsign = %s',
-            $matches[1]);
-          if (!$repo) {
-            $e_name = pht('Invalid');
-            $errors[] = pht('There is no repository with the callsign: %s.',
-              $matches[1]);
-          }
-          $commit = id(new PhabricatorRepositoryCommit())->loadOneWhere(
-            'repositoryID = %d AND commitIdentifier = %s',
-            $repo->getID(),
-            $matches[2]);
-          if (!$commit) {
-            $e_name = pht('Invalid');
-            $errors[] = pht('There is no commit with that identifier.');
-          }
-          $object = $commit;
-        } else {
+        $object = id(new PhabricatorObjectQuery())
+          ->setViewer($user)
+          ->withNames(array($object_name))
+          ->executeOne();
+
+        if (!$object) {
           $e_name = pht('Invalid');
-          $errors[] = pht('This object name is not recognized.');
+          $errors[] = pht('No object exists with that name.');
         }
 
         if (!$errors) {
+
+          // TODO: Let the adapters claim objects instead.
+
           if ($object instanceof DifferentialRevision) {
             $adapter = HeraldDifferentialRevisionAdapter::newLegacyAdapter(
               $object,
@@ -61,9 +43,15 @@ final class HeraldTestConsoleController extends HeraldController {
               'commitID = %d',
               $object->getID());
             $adapter = HeraldCommitAdapter::newLegacyAdapter(
-              $repo,
+              $object->getRepository(),
               $object,
               $data);
+          } else if ($object instanceof ManiphestTask) {
+            $adapter = id(new HeraldManiphestTaskAdapter())
+              ->setTask($object);
+          } else if ($object instanceof PholioMock) {
+            $adapter = id(new HeraldPholioMockAdapter())
+              ->setMock($object);
           } else {
             throw new Exception("Can not build adapter for object!");
           }
@@ -98,10 +86,10 @@ final class HeraldTestConsoleController extends HeraldController {
       $error_view = null;
     }
 
-    $text = pht('Enter an object to test rules '.
-        'for, like a Diffusion commit (e.g., rX123) or a '.
-        'Differential revision (e.g., D123). You will be shown the '.
-        'results of a dry run on the object.');
+    $text = pht(
+      'Enter an object to test rules for, like a Diffusion commit (e.g., '.
+      'rX123) or a Differential revision (e.g., D123). You will be shown '.
+      'the results of a dry run on the object.');
 
     $form = id(new AphrontFormView())
       ->setUser($user)
@@ -117,13 +105,10 @@ final class HeraldTestConsoleController extends HeraldController {
         id(new AphrontFormSubmitControl())
           ->setValue(pht('Test Rules')));
 
-    $nav = $this->buildSideNavView();
-    $nav->selectFilter('test');
-    $nav->appendChild(
-      array(
-        $error_view,
-        $form,
-      ));
+    $box = id(new PHUIObjectBoxView())
+      ->setHeaderText(pht('Herald Test Console'))
+      ->setFormError($error_view)
+      ->setForm($form);
 
     $crumbs = id($this->buildApplicationCrumbs())
       ->addCrumb(
@@ -133,10 +118,9 @@ final class HeraldTestConsoleController extends HeraldController {
       ->addCrumb(
         id(new PhabricatorCrumbView())
           ->setName(pht('Test Console')));
-    $nav->setCrumbs($crumbs);
 
     return $this->buildApplicationPage(
-      $nav,
+      $box,
       array(
         'title' => pht('Test Console'),
         'device' => true,

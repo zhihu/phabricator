@@ -98,7 +98,7 @@ final class ReleephBranchViewController extends ReleephProjectController
 
     $id = $branch->getID();
 
-    $header = id(new PhabricatorHeaderView())
+    $header = id(new PHUIHeaderView())
       ->setHeader($branch->getDisplayName());
 
     if (!$branch->getIsActive()) {
@@ -168,11 +168,10 @@ final class ReleephBranchViewController extends ReleephProjectController
       pht('Branch'),
       $branch->getName());
 
-    return array(
-      $header,
-      $actions,
-      $properties,
-    );
+    return id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
   }
 
 }

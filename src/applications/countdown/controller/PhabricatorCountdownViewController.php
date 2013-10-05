@@ -41,17 +41,20 @@ final class PhabricatorCountdownViewController
         id(new PhabricatorCrumbView())
           ->setName("C{$id}"));
 
-    $header = id(new PhabricatorHeaderView())
+    $header = id(new PHUIHeaderView())
       ->setHeader($title);
 
     $actions = $this->buildActionListView($countdown);
     $properties = $this->buildPropertyListView($countdown);
 
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
+
     $content = array(
       $crumbs,
-      $header,
-      $actions,
-      $properties,
+      $object_box,
       $countdown_view,
     );
 

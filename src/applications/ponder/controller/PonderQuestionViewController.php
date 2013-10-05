@@ -44,11 +44,16 @@ final class PonderQuestionViewController extends PonderController {
         ->setActionURI("/ponder/answer/add/");
     }
 
-    $header = id(new PhabricatorHeaderView())
+    $header = id(new PHUIHeaderView())
       ->setHeader($question->getTitle());
 
     $actions = $this->buildActionListView($question);
     $properties = $this->buildPropertyListView($question);
+
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
 
     $crumbs = $this->buildApplicationCrumbs($this->buildSideNavView());
     $crumbs->setActionList($actions);
@@ -60,9 +65,7 @@ final class PonderQuestionViewController extends PonderController {
     return $this->buildApplicationPage(
       array(
         $crumbs,
-        $header,
-        $actions,
-        $properties,
+        $object_box,
         $question_xactions,
         $answers,
         $answer_add_panel
@@ -208,11 +211,16 @@ final class PonderQuestionViewController extends PonderController {
       ->setAction($this->getApplicationURI("/question/comment/{$id}/"))
       ->setSubmitButtonName(pht('Comment'));
 
+    $object_box = id(new PHUIObjectBoxView())
+      ->setFlush(true)
+      ->setHeaderText(pht('Question Comment'))
+      ->appendChild($add_comment);
+
     return $this->wrapComments(
       count($xactions),
       array(
         $timeline,
-        $add_comment,
+        $object_box,
       ));
   }
 
@@ -251,13 +259,20 @@ final class PonderQuestionViewController extends PonderController {
 
       $out[] = phutil_tag('br');
       $out[] = phutil_tag('br');
-      $out[] = id(new PhabricatorHeaderView())
-        ->setHeader($this->getHandle($author_phid)->getFullName())
-        ->setImage($this->getHandle($author_phid)->getImageURI());
+      $out[] = id(new PhabricatorAnchorView())
+        ->setAnchorName("A$id");
+      $header = id(new PHUIHeaderView())
+        ->setHeader($this->getHandle($author_phid)->getFullName());
 
-      $out[] = $this->buildAnswerActions($answer);
-      $out[] = $this->buildAnswerProperties($answer);
+      $actions = $this->buildAnswerActions($answer);
+      $properties = $this->buildAnswerProperties($answer);
 
+      $object_box = id(new PHUIObjectBoxView())
+        ->setHeader($header)
+        ->setActionList($actions)
+        ->setPropertyList($properties);
+
+      $out[] = $object_box;
       $details = array();
 
       $details[] = id(new PhabricatorApplicationTransactionView())
@@ -266,12 +281,19 @@ final class PonderQuestionViewController extends PonderController {
         ->setTransactions($xactions)
         ->setMarkupEngine($engine);
 
-      $details[] = id(new PhabricatorApplicationTransactionCommentView())
+      $form = id(new PhabricatorApplicationTransactionCommentView())
         ->setUser($viewer)
         ->setObjectPHID($answer->getPHID())
         ->setShowPreview(false)
         ->setAction($this->getApplicationURI("/answer/comment/{$id}/"))
         ->setSubmitButtonName(pht('Comment'));
+
+      $comment_box = id(new PHUIObjectBoxView())
+        ->setFlush(true)
+        ->setHeaderText(pht('Answer Comment'))
+        ->appendChild($form);
+
+      $details[] = $comment_box;
 
       $out[] = $this->wrapComments(
         count($xactions),

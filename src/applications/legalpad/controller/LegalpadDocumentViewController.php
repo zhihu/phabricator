@@ -61,8 +61,10 @@ final class LegalpadDocumentViewController extends LegalpadController {
 
     $title = $document_body->getTitle();
 
-    $header = id(new PhabricatorHeaderView())
-      ->setHeader($title);
+    $header = id(new PHUIHeaderView())
+      ->setHeader($title)
+      ->setUser($user)
+      ->setPolicyObject($document);
 
     $actions = $this->buildActionView($document);
     $properties = $this->buildPropertyView($document, $engine);
@@ -84,11 +86,14 @@ final class LegalpadDocumentViewController extends LegalpadController {
         ->setName('L'.$document->getID())
         ->setHref($this->getApplicationURI('view/'.$document->getID())));
 
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
+
     $content = array(
       $crumbs,
-      $header,
-      $actions,
-      $properties,
+      $object_box,
       $this->buildDocument($engine, $document_body),
       $xaction_view,
       $add_comment,
@@ -174,14 +179,6 @@ final class LegalpadDocumentViewController extends LegalpadController {
       pht('Contributors'),
       $contributor_view);
 
-    $descriptions = PhabricatorPolicyQuery::renderPolicyDescriptions(
-      $user,
-      $document);
-
-    $properties->addProperty(
-      pht('Visible To'),
-      $descriptions[PhabricatorPolicyCapability::CAN_VIEW]);
-
     $properties->invokeWillRenderEvent();
 
     return $properties;
@@ -200,7 +197,7 @@ final class LegalpadDocumentViewController extends LegalpadController {
       ? pht('Add Comment')
       : pht('Debate Legislation');
 
-    $header = id(new PhabricatorHeaderView())
+    $header = id(new PHUIHeaderView())
       ->setHeader($title);
 
     $button_name = $is_serious
@@ -216,10 +213,11 @@ final class LegalpadDocumentViewController extends LegalpadController {
       ->setAction($this->getApplicationURI('/comment/'.$document->getID().'/'))
       ->setRequestURI($this->getRequest()->getRequestURI());
 
-    return array(
-      $header,
-      $form,
-    );
+    return id(new PHUIObjectBoxView())
+      ->setFlush(true)
+      ->setHeader($header)
+      ->appendChild($form);
+
   }
 
 }

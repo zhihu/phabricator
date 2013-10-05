@@ -22,6 +22,11 @@ final class DifferentialRevisionEditController extends DifferentialController {
         ->withIDs(array($this->id))
         ->needRelationships(true)
         ->needReviewerStatus(true)
+        ->requireCapabilities(
+          array(
+            PhabricatorPolicyCapability::CAN_VIEW,
+            PhabricatorPolicyCapability::CAN_EDIT,
+          ))
         ->executeOne();
       if (!$revision) {
         return new Aphront404Response();
@@ -67,34 +72,14 @@ final class DifferentialRevisionEditController extends DifferentialController {
         $is_new = !$revision->getID();
         $user = $request->getUser();
 
-        $event = new PhabricatorEvent(
-          PhabricatorEventType::TYPE_DIFFERENTIAL_WILLEDITREVISION,
-            array(
-              'revision'      => $revision,
-              'new'           => $is_new,
-            ));
-
-        $event->setUser($user);
-        $event->setAphrontRequest($request);
-        PhutilEventEngine::dispatchEvent($event);
-
         $editor = new DifferentialRevisionEditor($revision);
         $editor->setActor($request->getUser());
         if ($diff) {
           $editor->addDiff($diff, $request->getStr('comments'));
         }
         $editor->setAuxiliaryFields($aux_fields);
+        $editor->setAphrontRequestForEventDispatch($request);
         $editor->save();
-
-        $event = new PhabricatorEvent(
-          PhabricatorEventType::TYPE_DIFFERENTIAL_DIDEDITREVISION,
-            array(
-              'revision'      => $revision,
-              'new'           => $is_new,
-            ));
-        $event->setUser($user);
-        $event->setAphrontRequest($request);
-        PhutilEventEngine::dispatchEvent($event);
 
         return id(new AphrontRedirectResponse())
           ->setURI('/D'.$revision->getID());
@@ -184,7 +169,7 @@ final class DifferentialRevisionEditController extends DifferentialController {
       $title = pht('Create New Differential Revision');
     }
 
-    $form_box = id(new PHUIFormBoxView())
+    $form_box = id(new PHUIObjectBoxView())
       ->setHeaderText($title)
       ->setFormError($error_view)
       ->setForm($form);

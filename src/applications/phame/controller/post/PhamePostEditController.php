@@ -94,9 +94,10 @@ final class PhamePostEditController
       }
     }
 
-    $handle = PhabricatorObjectHandleData::loadOneHandle(
-      $post->getBlogPHID(),
-      $user);
+    $handle = id(new PhabricatorHandleQuery())
+      ->setViewer($user)
+      ->withPHIDs(array($post->getBlogPHID()))
+      ->executeOne();
 
     $form = id(new AphrontFormView())
       ->setUser($user)
@@ -173,7 +174,7 @@ final class PhamePostEditController
       $error_view = null;
     }
 
-    $form_box = id(new PHUIFormBoxView())
+    $form_box = id(new PHUIObjectBoxView())
       ->setHeaderText($page_title)
       ->setFormError($error_view)
       ->setForm($form);

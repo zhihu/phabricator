@@ -12,21 +12,24 @@
   padding: 4px 0;
   float: right;
   margin-top: 0px;
-  margin-right: 1%;
   width: 20%;
   font-size: 12px;
 }
 
-.device-desktop .phabricator-header-shell + .phabricator-action-list-view {
+.device-desktop .phui-header-shell + .phabricator-action-list-view {
   margin-top: -33px;
 }
 
-.device-desktop .phabricator-header-shell.phabricator-header-has-image +
+.device-desktop .phui-header-shell.phui-header-tall + .phabricator-action-list-view {
+  margin-top: -55px;
+}
+
+.device-desktop .phui-header-shell.phui-header-has-image +
   .phabricator-action-list-view {
   margin-top: -53px;
 }
 
-.device .phabricator-header-shell + .phabricator-action-list-view {
+.device .phui-header-shell + .phabricator-action-list-view {
   margin-top: -1px;
 }
 
@@ -75,7 +78,7 @@
 
 .phabricator-action-view button.phabricator-action-view-item,
 .phabricator-action-view-item {
-  padding: 1px 0 1px 34px;
+  padding: 1px 0 1px 28px;
   line-height: 20px;
   display: block;
   font-size: 12px;
@@ -88,12 +91,12 @@
   height: 14px;
   position: absolute;
   top: 5px;
-  left: 13px;
+  left: 8px;
 }
 
 .device-desktop .phabricator-action-view:hover .phabricator-action-view-item {
   text-decoration: none;
-  background-color: #3875d7;
+  background-color: {$blue};
   color: #ffffff;
 }
 

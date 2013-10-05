@@ -123,12 +123,23 @@ final class PhabricatorAuthRegisterController
     $e_realname = strlen($value_realname) ? null : true;
     $e_email = strlen($value_email) ? null : true;
     $e_password = true;
+    $e_captcha = true;
 
     $min_len = PhabricatorEnv::getEnvConfig('account.minimum-password-length');
     $min_len = (int)$min_len;
 
     if ($request->isFormPost() || !$can_edit_anything) {
       $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
+
+      if ($must_set_password) {
+        $e_captcha = pht('Again');
+
+        $captcha_ok = AphrontFormRecaptchaControl::processCaptcha($request);
+        if (!$captcha_ok) {
+          $errors[] = pht("Captcha response is incorrect, try again.");
+          $e_captcha = pht('Invalid');
+        }
+      }
 
       if ($can_edit_username) {
         $value_username = $request->getStr('username');
@@ -328,6 +339,13 @@ final class PhabricatorAuthRegisterController
           ->setError($e_realname));
     }
 
+    if ($must_set_password) {
+      $form->appendChild(
+        id(new AphrontFormRecaptchaControl())
+          ->setLabel(pht('Captcha'))
+          ->setError($e_captcha));
+    }
+
     $submit = id(new AphrontFormSubmitControl());
 
     if ($is_setup) {
@@ -371,12 +389,16 @@ final class PhabricatorAuthRegisterController
             'other authentication mechanisms (like LDAP or OAuth) later on.'));
     }
 
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeaderText($title)
+      ->setForm($form)
+      ->setFormError($error_view);
+
     return $this->buildApplicationPage(
       array(
         $crumbs,
         $welcome_view,
-        $error_view,
-        $form,
+        $object_box,
       ),
       array(
         'title' => $title,

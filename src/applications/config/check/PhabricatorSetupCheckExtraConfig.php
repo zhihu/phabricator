@@ -146,6 +146,15 @@ final class PhabricatorSetupCheckExtraConfig extends PhabricatorSetupCheck {
         pht(
           'External loaders have been replaced. Extend `PhabricatorPHIDType` '.
           'to implement new PHID and handle types.'),
+      'maniphest.custom-task-extensions-class' =>
+        pht(
+          'Maniphest fields are now loaded automatically. You can configure '.
+          'them with `maniphest.fields`.'),
+      'maniphest.custom-fields' =>
+        pht(
+          'Maniphest fields are now defined in '.
+          '`maniphest.custom-field-definitions`. Existing definitions have '.
+          'been migrated.'),
     );
 
     return $ancient_config;

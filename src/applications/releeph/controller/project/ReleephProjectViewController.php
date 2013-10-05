@@ -155,7 +155,7 @@ final class ReleephProjectViewController extends ReleephProjectController
 
     $id = $project->getID();
 
-    $header = id(new PhabricatorHeaderView())
+    $header = id(new PHUIHeaderView())
       ->setHeader($project->getName());
 
     if (!$project->getIsActive()) {
@@ -236,12 +236,10 @@ final class ReleephProjectViewController extends ReleephProjectController
         $this->renderHandlesForPHIDs($pushers));
     }
 
-    return array(
-      $header,
-      $actions,
-      $properties,
-    );
-
+    return id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
   }
 
 }

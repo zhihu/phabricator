@@ -130,7 +130,7 @@ final class PhabricatorObjectHandle
    * completely loaded (e.g., the type or data for the PHID could not be
    * identified or located).
    *
-   * Basically, @{class:PhabricatorObjectHandleData} gives you back a handle for
+   * Basically, @{class:PhabricatorHandleQuery} gives you back a handle for
    * any PHID you give it, but it gives you a complete handle only for valid
    * PHIDs.
    *
@@ -234,6 +234,10 @@ final class PhabricatorObjectHandle
     // NOTE: Handles are always visible, they just don't get populated with
     // data if the user can't see the underlying object.
     return true;
+  }
+
+  public function describeAutomaticCapability($capability) {
+    return null;
   }
 
 }

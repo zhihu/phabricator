@@ -929,14 +929,6 @@ return array(
 
 // -- Maniphest ------------------------------------------------------------- //
 
-  // Array of custom fields for Maniphest tasks. For details on adding custom
-  // fields to Maniphest, see "Maniphest User Guide: Adding Custom Fields".
-  'maniphest.custom-fields' => array(),
-
-  // Class which drives custom field construction. See "Maniphest User Guide:
-  // Adding Custom Fields" in the documentation for more information.
-  'maniphest.custom-task-extensions-class' => 'ManiphestDefaultTaskExtensions',
-
   // What should the default task priority be in create flows?
   // See the constants in @{class:ManiphestTaskPriority} for valid values.
   // Defaults to "needs triage".

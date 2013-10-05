@@ -63,6 +63,8 @@ $package_spec = array(
     'javelin-behavior-phabricator-reveal-content',
     'phabricator-hovercard',
     'javelin-behavior-phabricator-hovercards',
+    'javelin-color',
+    'javelin-fx',
   ),
   'core.pkg.css' => array(
     'phabricator-core-css',
@@ -91,12 +93,13 @@ $package_spec = array(
     'sprite-gradient-css',
     'sprite-menu-css',
     'sprite-apps-large-css',
+    'sprite-status-css',
 
     'phabricator-main-menu-view',
     'phabricator-notification-css',
     'phabricator-notification-menu-css',
     'lightbox-attachment-css',
-    'phabricator-header-view-css',
+    'phui-header-view-css',
     'phabricator-filetree-view-css',
     'phabricator-nav-view-css',
     'phabricator-side-menu-view-css',
@@ -111,6 +114,7 @@ $package_spec = array(
     'phabricator-action-list-view-css',
     'phabricator-property-list-view-css',
     'phabricator-tag-view-css',
+    'phui-list-view-css',
   ),
   'differential.pkg.css' => array(
     'differential-core-view-css',
@@ -161,7 +165,6 @@ $package_spec = array(
   ),
   'maniphest.pkg.css' => array(
     'maniphest-task-summary-css',
-    'maniphest-transaction-detail-css',
     'phabricator-project-tag-css',
   ),
   'maniphest.pkg.js' => array(

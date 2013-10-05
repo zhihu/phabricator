@@ -8,6 +8,10 @@ final class HeraldPholioMockAdapter extends HeraldAdapter {
   private $mock;
   private $ccPHIDs = array();
 
+  public function getAdapterApplicationClass() {
+    return 'PhabricatorApplicationPholio';
+  }
+
   public function setMock(PholioMock $mock) {
     $this->mock = $mock;
     return $this;
@@ -29,12 +33,14 @@ final class HeraldPholioMockAdapter extends HeraldAdapter {
   }
 
   public function getFields() {
-    return array(
-      self::FIELD_TITLE,
-      self::FIELD_BODY,
-      self::FIELD_AUTHOR,
-      self::FIELD_CC,
-    );
+    return array_merge(
+      array(
+        self::FIELD_TITLE,
+        self::FIELD_BODY,
+        self::FIELD_AUTHOR,
+        self::FIELD_CC,
+      ),
+      parent::getFields());
   }
 
   public function getActions($rule_type) {

@@ -28,10 +28,6 @@ final class ManiphestReportController extends ManiphestController {
       return id(new AphrontRedirectResponse())->setURI($uri);
     }
 
-
-    $base_nav = $this->buildBaseSideNav();
-    $base_nav->selectFilter('report', 'report');
-
     $nav = new AphrontSideNavFilterView();
     $nav->setBaseURI(new PhutilURI('/maniphest/report/'));
     $nav->addLabel(pht('Open Tasks'));
@@ -63,7 +59,7 @@ final class ManiphestReportController extends ManiphestController {
           id(new PhabricatorCrumbView())
             ->setName(pht('Reports'))));
 
-    return $this->buildStandardPageResponse(
+    return $this->buildApplicationPage(
       $nav,
       array(
         'title' => pht('Maniphest Reports'),
@@ -90,7 +86,7 @@ final class ManiphestReportController extends ManiphestController {
     if ($project_phid) {
       $joins = qsprintf(
         $conn,
-        'JOIN %T t ON x.taskID = t.id
+        'JOIN %T t ON x.objectPHID = t.phid
           JOIN %T p ON p.taskPHID = t.phid AND p.projectPHID = %s',
         id(new ManiphestTask())->getTableName(),
         id(new ManiphestTaskProject())->getTableName(),
@@ -104,7 +100,7 @@ final class ManiphestReportController extends ManiphestController {
         ORDER BY x.dateCreated ASC',
       $table->getTableName(),
       $joins,
-      ManiphestTransactionType::TYPE_STATUS);
+      ManiphestTransaction::TYPE_STATUS);
 
     $stats = array();
     $day_buckets = array();
@@ -386,6 +382,7 @@ final class ManiphestReportController extends ManiphestController {
 
 
     $query = id(new ManiphestTaskQuery())
+      ->setViewer($user)
       ->withStatus(ManiphestTaskQuery::STATUS_OPEN);
 
     $project_phid = $request->getStr('project');
@@ -414,13 +411,8 @@ final class ManiphestReportController extends ManiphestController {
         $leftover_closed = idx($result_closed, '', array());
         unset($result_closed['']);
 
-        $base_link = '/maniphest/?users=';
-        $leftover_name = phutil_tag(
-          'a',
-          array(
-            'href' => $base_link.ManiphestTaskOwner::OWNER_UP_FOR_GRABS,
-          ),
-          phutil_tag('em', array(), pht('(Up For Grabs)')));
+        $base_link = '/maniphest/?assigned=';
+        $leftover_name = phutil_tag('em', array(), pht('(Up For Grabs)'));
         $col_header = pht('User');
         $header = pht('Open Tasks by User and Priority (%s)', $date);
         break;
@@ -451,13 +443,8 @@ final class ManiphestReportController extends ManiphestController {
           }
         }
 
-        $base_link = '/maniphest/view/all/?projects=';
-        $leftover_name = phutil_tag(
-          'a',
-          array(
-            'href' => $base_link.ManiphestTaskOwner::PROJECT_NO_PROJECT,
-          ),
-          phutil_tag('em', array(), pht('(No Project)')));
+        $base_link = '/maniphest/?allProjects[]=';
+        $leftover_name = phutil_tag('em', array(), pht('(No Project)'));
         $col_header = pht('Project');
         $header = pht('Open Tasks by Project and Priority (%s)', $date);
         break;
@@ -519,7 +506,9 @@ final class ManiphestReportController extends ManiphestController {
 
       $normal_or_better = array();
       foreach ($taskv as $id => $task) {
-        if ($task->getPriority() < ManiphestTaskPriority::PRIORITY_NORMAL) {
+        // TODO: This is sort of a hard-code for the default "normal" status.
+        // When reports are more powerful, this should be made more general.
+        if ($task->getPriority() < 50) {
           continue;
         }
         $normal_or_better[$id] = $task;
@@ -533,7 +522,7 @@ final class ManiphestReportController extends ManiphestController {
         $row[] = phutil_tag(
           'a',
           array(
-            'href' => '/maniphest/view/custom/?s=oc&tasks='.$task_ids,
+            'href' => '/maniphest/?ids='.$task_ids,
             'target' => '_blank',
           ),
           number_format(count($closed)));
@@ -573,7 +562,7 @@ final class ManiphestReportController extends ManiphestController {
 
     $cname = array($col_header);
     $cclass = array('pri right wide');
-    $pri_map = ManiphestTaskPriority::getTaskBriefPriorityMap();
+    $pri_map = ManiphestTaskPriority::getShortNameMap();
     foreach ($pri_map as $pri => $label) {
       $cname[] = $label;
       $cclass[] = 'n';
@@ -668,7 +657,7 @@ final class ManiphestReportController extends ManiphestController {
 
     $tasks = queryfx_all(
       $conn_r,
-      'SELECT t.* FROM %T t JOIN %T x ON x.taskID = t.id
+      'SELECT t.* FROM %T t JOIN %T x ON x.objectPHID = t.phid
         WHERE t.status != 0
         AND x.oldValue IN (null, %s, %s)
         AND x.newValue NOT IN (%s, %s)

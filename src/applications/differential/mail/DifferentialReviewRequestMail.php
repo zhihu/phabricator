@@ -87,7 +87,10 @@ abstract class DifferentialReviewRequestMail extends DifferentialMail {
       $revision = $this->getRevision();
       $revision_id = $revision->getID();
 
-      $diffs = $revision->loadDiffs();
+      $diffs = id(new DifferentialDiffQuery())
+        ->setViewer($this->getActor())
+        ->withRevisionIDs(array($revision_id))
+        ->execute();
       $diff_number = count($diffs);
 
       $attachments[] = new PhabricatorMetaMTAAttachment(
@@ -100,44 +103,17 @@ abstract class DifferentialReviewRequestMail extends DifferentialMail {
     return $attachments;
   }
 
-  public function loadFileByPHID($phid) {
-    $file = id(new PhabricatorFile())->loadOneWhere(
-      'phid = %s',
-      $phid);
-    if (!$file) {
-      return null;
-    }
-    return $file->loadFileData();
-  }
-
   private function buildPatch() {
-    $diff = new DifferentialDiff();
+    $renderer = new DifferentialRawDiffRenderer();
+    $renderer->setChangesets($this->getChangesets());
+    $renderer->setFormat(
+      PhabricatorEnv::getEnvConfig('metamta.differential.patch-format'));
 
-    $diff->attachChangesets($this->getChangesets());
-    // TODO: We could batch this to improve performance.
-    foreach ($diff->getChangesets() as $changeset) {
-      $changeset->attachHunks($changeset->loadHunks());
-    }
-    $diff_dict = $diff->getDiffDict();
-
-    $changes = array();
-    foreach ($diff_dict['changes'] as $changedict) {
-      $changes[] = ArcanistDiffChange::newFromDictionary($changedict);
-    }
-    $bundle = ArcanistBundle::newFromChanges($changes);
-
-    $bundle->setLoadFileDataCallback(array($this, 'loadFileByPHID'));
-
-    $format = PhabricatorEnv::getEnvConfig('metamta.differential.patch-format');
-    switch ($format) {
-      case 'git':
-        return $bundle->toGitPatch();
-        break;
-      case 'unified':
-      default:
-        return $bundle->toUnifiedDiff();
-        break;
-    }
+    // TODO: It would be nice to have a real viewer here eventually, but
+    // in the meantime anyone we're sending mail to can certainly see the
+    // patch.
+    $renderer->setViewer(PhabricatorUser::getOmnipotentUser());
+    return $renderer->buildPatch();
   }
 
   protected function getMailTags() {

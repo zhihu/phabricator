@@ -2,6 +2,10 @@
 
 final class DiffusionRepositoryController extends DiffusionController {
 
+  public function shouldAllowPublic() {
+    return true;
+  }
+
   public function processRequest() {
     $drequest = $this->diffusionRequest;
 
@@ -136,8 +140,12 @@ final class DiffusionRepositoryController extends DiffusionController {
   private function buildPropertiesTable(PhabricatorRepository $repository) {
     $user = $this->getRequest()->getUser();
 
-    $header = id(new PhabricatorHeaderView())
-      ->setHeader($repository->getName());
+    $header = id(new PHUIHeaderView())
+      ->setHeader($repository->getName())
+      ->setUser($user)
+      ->setPolicyObject($repository);
+
+    $actions = $this->buildActionList($repository);
 
     $view = id(new PhabricatorPropertyListView())
       ->setUser($user);
@@ -166,7 +174,11 @@ final class DiffusionRepositoryController extends DiffusionController {
       $view->addTextContent($description);
     }
 
-    return array($header, $view);
+    return id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($view);
+
   }
 
   private function buildBranchListTable(DiffusionRequest $drequest) {
@@ -234,7 +246,11 @@ final class DiffusionRepositoryController extends DiffusionController {
       $tags = DiffusionRepositoryTag::newFromConduit(
         $this->callConduitWithDiffusionRequest(
           'diffusion.tagsquery',
-          array('limit' => $tag_limit + 1)));
+          array(
+            // On the home page, we want to find tags on any branch.
+            'commit' => null,
+            'limit' => $tag_limit + 1,
+          )));
     } catch (ConduitException $e) {
       if ($e->getMessage() != 'ERR-UNSUPPORTED-VCS') {
         throw $e;
@@ -267,6 +283,7 @@ final class DiffusionRepositoryController extends DiffusionController {
 
     $panel = new AphrontPanelView();
     $panel->setHeader(pht('Tags'));
+    $panel->setNoBackground(true);
 
     if ($more_tags) {
       $panel->setCaption(pht('Showing the %d most recent tags.', $tag_limit));
@@ -286,6 +303,33 @@ final class DiffusionRepositoryController extends DiffusionController {
     $panel->appendChild($view);
 
     return $panel;
+  }
+
+  private function buildActionList(PhabricatorRepository $repository) {
+    $viewer = $this->getRequest()->getUser();
+
+    $view_uri = $this->getApplicationURI($repository->getCallsign().'/');
+    $edit_uri = $this->getApplicationURI($repository->getCallsign().'/edit/');
+
+    $view = id(new PhabricatorActionListView())
+      ->setUser($viewer)
+      ->setObject($repository)
+      ->setObjectURI($view_uri);
+
+    $can_edit = PhabricatorPolicyFilter::hasCapability(
+      $viewer,
+      $repository,
+      PhabricatorPolicyCapability::CAN_EDIT);
+
+    $view->addAction(
+      id(new PhabricatorActionView())
+        ->setName(pht('Edit Repository'))
+        ->setIcon('edit')
+        ->setHref($edit_uri)
+        ->setWorkflow(!$can_edit)
+        ->setDisabled(!$can_edit));
+
+    return $view;
   }
 
 }

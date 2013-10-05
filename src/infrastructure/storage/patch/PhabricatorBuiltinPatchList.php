@@ -1572,6 +1572,86 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
         'name' =>
           $this->getPatchPath('20130820.file-mailkey-populate.php'),
       ),
+      '20130912.maniphest.1.touch.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130912.maniphest.1.touch.sql'),
+      ),
+      '20130912.maniphest.2.created.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130912.maniphest.2.created.sql'),
+      ),
+      '20130912.maniphest.3.nameindex.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130912.maniphest.3.nameindex.sql'),
+      ),
+      '20130912.maniphest.4.fillindex.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130912.maniphest.4.fillindex.php'),
+      ),
+      '20130913.maniphest.1.migratesearch.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130913.maniphest.1.migratesearch.php'),
+      ),
+      '20130914.usercustom.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130914.usercustom.sql'),
+      ),
+      '20130915.maniphestcustom.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130915.maniphestcustom.sql'),
+      ),
+      '20130915.maniphestmigrate.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130915.maniphestmigrate.php'),
+      ),
+      '20130919.mfieldconf.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130919.mfieldconf.php'),
+      ),
+      '20130920.repokeyspolicy.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130920.repokeyspolicy.sql'),
+      ),
+      '20130921.mtransactions.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130921.mtransactions.sql'),
+      ),
+      '20130921.xmigratemaniphest.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130921.xmigratemaniphest.php'),
+      ),
+      '20130923.mrename.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130923.mrename.sql'),
+      ),
+      '20130924.mdraftkey.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130924.mdraftkey.sql'),
+      ),
+      '20130925.mpolicy.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130925.mpolicy.sql'),
+      ),
+      '20130925.xpolicy.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130925.xpolicy.sql'),
+      ),
+      '20130926.dcustom.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130926.dcustom.sql'),
+      ),
+      '20130926.dinkeys.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130926.dinkeys.sql'),
+      ),
+      '20130927.audiomacro.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130927.audiomacro.sql'),
+      ),
+      '20130929.filepolicy.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130929.filepolicy.sql'),
+      ),
     );
   }
 }

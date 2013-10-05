@@ -12,10 +12,11 @@ final class ConduitAPI_differential_createcomment_Method
 
   public function defineParamTypes() {
     return array(
-      'revision_id' => 'required revisionid',
-      'message'     => 'optional string',
-      'action'      => 'optional string',
-      'silent'      => 'optional bool',
+      'revision_id'    => 'required revisionid',
+      'message'        => 'optional string',
+      'action'         => 'optional string',
+      'silent'         => 'optional bool',
+      'attach_inlines' => 'optional bool',
     );
   }
 
@@ -30,8 +31,10 @@ final class ConduitAPI_differential_createcomment_Method
   }
 
   protected function execute(ConduitAPIRequest $request) {
-    $revision = id(new DifferentialRevision())->load(
-      $request->getValue('revision_id'));
+    $revision = id(new DifferentialRevisionQuery())
+      ->setViewer($request->getUser())
+      ->withIDs(array($request->getValue('revision_id')))
+      ->executeOne();
     if (!$revision) {
       throw new ConduitException('ERR_BAD_REVISION');
     }
@@ -52,6 +55,7 @@ final class ConduitAPI_differential_createcomment_Method
     $editor->setContentSource($content_source);
     $editor->setMessage($request->getValue('message'));
     $editor->setNoEmail($request->getValue('silent'));
+    $editor->setAttachInlineComments($request->getValue('attach_inlines'));
     $editor->save();
 
     return array(

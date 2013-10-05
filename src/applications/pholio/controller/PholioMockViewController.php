@@ -67,8 +67,10 @@ final class PholioMockViewController extends PholioController {
 
     $title = $mock->getName();
 
-    $header = id(new PhabricatorHeaderView())
-      ->setHeader($title);
+    $header = id(new PHUIHeaderView())
+      ->setHeader($title)
+      ->setUser($user)
+      ->setPolicyObject($mock);
 
     $actions = $this->buildActionView($mock);
     $properties = $this->buildPropertyView($mock, $engine);
@@ -101,12 +103,15 @@ final class PholioMockViewController extends PholioController {
         ->setName('M'.$mock->getID())
         ->setHref('/M'.$mock->getID()));
 
+    $object_box = id(new PHUIObjectBoxView())
+      ->setHeader($header)
+      ->setActionList($actions)
+      ->setPropertyList($properties);
+
     $content = array(
       $crumbs,
       $image_status,
-      $header,
-      $actions,
-      $properties,
+      $object_box,
       $output->render(),
       $xaction_view,
       $add_comment,
@@ -208,14 +213,6 @@ final class PholioMockViewController extends PholioController {
       pht('Created'),
       phabricator_datetime($mock->getDateCreated(), $user));
 
-    $descriptions = PhabricatorPolicyQuery::renderPolicyDescriptions(
-      $user,
-      $mock);
-
-    $properties->addProperty(
-      pht('Visible To'),
-      $descriptions[PhabricatorPolicyCapability::CAN_VIEW]);
-
     if ($this->getManiphestTaskPHIDs()) {
       $properties->addProperty(
         pht('Maniphest Tasks'),
@@ -241,7 +238,7 @@ final class PholioMockViewController extends PholioController {
       ? pht('Add Comment')
       : pht('History Beckons');
 
-    $header = id(new PhabricatorHeaderView())
+    $header = id(new PHUIHeaderView())
       ->setHeader($title);
 
     $button_name = $is_serious
@@ -257,10 +254,10 @@ final class PholioMockViewController extends PholioController {
       ->setAction($this->getApplicationURI('/comment/'.$mock->getID().'/'))
       ->setRequestURI($this->getRequest()->getRequestURI());
 
-    return array(
-      $header,
-      $form,
-    );
+    return id(new PHUIObjectBoxView())
+      ->setFlush(true)
+      ->setHeader($header)
+      ->appendChild($form);
   }
 
 }

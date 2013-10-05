@@ -15,6 +15,10 @@
   margin: 0 8px 16px;
 }
 
+a.diviner-atom-signature-name {
+  color: {$violet};
+}
+
 .diviner-table-header {
   padding: 4px 16px;
   background-color: {$greybackground};
@@ -65,6 +69,14 @@
   padding: 0 8px 16px 0;
 }
 
+body .diviner-document-section .phui-header-view {
+  width: 100%;
+}
+
+.phabricator-property-list-view + .diviner-document-section {
+  margin-top: -1px;
+}
+
 .diviner-message-not-documented {
   color: {$lightgreytext};
   font-style: italic;
@@ -104,7 +116,46 @@
  * Fix excessive padding between method headers and method documentation for
  * methods with no inherited context.
  */
-.diviner-document-section .phabricator-header-shell + .phabricator-remarkup {
+.diviner-document-section .phui-header-shell + .phabricator-remarkup {
   padding-top: 0;
 }
 
+.diviner-list li {
+  line-height: 18px;
+  padding-bottom: 4px;
+}
+
+/* - Book Index ----------------------------------------------------------------
+
+  How big lists of book indexes get displayed
+
+*/
+
+.diviner-book-item {
+  display: block;
+  padding: 4px 16px;
+  margin: 0 -16px;
+}
+
+.diviner-book-item:hover {
+  text-decoration: none;
+}
+
+.device-desktop .diviner-book-item:hover {
+  background-color: {$lightgreybackground};
+}
+
+.diviner-book-item-title {
+  font-weight: bold;
+}
+
+.diviner-book-item-type {
+  color: {$lightgreytext};
+  padding-left: 8px
+}
+
+.diviner-book-item-subtitle {
+  display: block;
+  line-height: 18px;
+  color: {$lightbluetext};
+}

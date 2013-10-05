@@ -3,25 +3,29 @@
  */
 
 .phabricator-timeline-view {
-  background: #eeedf0;
+  padding: 0 16px;
 }
 
-.phabricator-timeline-event-view {
-  border-width: 0 0 0 3px;
+.device-phone .phabricator-timeline-view {
+  padding: 0;
+}
+
+.phabricator-timeline-group {
+  border-width: 0 3px;
   border-style: solid;
   border-color: #c0c5d1;
-
 }
 
 .device-desktop .phabricator-timeline-event-view {
-  margin-left: 80px;
-  margin-right: 12px;
+  margin-left: 70px;
   position: relative;
 }
 
 .device-desktop .phabricator-timeline-spacer {
   min-height: 20px;
-  border-right-width: 0;
+  border-width: 0 0 0 3px;
+  border-style: solid;
+  border-color: #c0c5d1;
 }
 
 .device-desktop .phabricator-timeline-major-event,
@@ -43,8 +47,8 @@
 }
 
 .phabricator-timeline-title {
-  line-height: 28px;
-  min-height: 28px;
+  line-height: 18px;
+  min-height: 18px;
   position: relative;
 }
 
@@ -64,7 +68,6 @@
 }
 
 .phabricator-timeline-image {
-  background: #c0c5d1;
   background-repeat: no-repeat;
   position: absolute;
 }
@@ -85,12 +88,13 @@
 
 .phabricator-timeline-major-event .phabricator-timeline-title {
   background: {$lightgreybackground};
-  min-height: 29px;
+  min-height: 18px;
 }
 
 .phabricator-timeline-title {
-  padding: 0 5px;
+  padding: 5px;
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .phabricator-timeline-title-with-icon {
@@ -99,22 +103,18 @@
 
 .phabricator-timeline-major-event .phabricator-timeline-content
   .phabricator-timeline-core-content {
-  padding: 10px 15px;
+  padding: 12px;
 }
 
 .phabricator-timeline-core-content {
   overflow-x: auto;
 }
 
-
 .device .phabricator-timeline-event-view {
   min-height: 23px;
   position: relative;
   margin-left: 3px;
   margin-right: 3px;
-
-  border-right-width: 3px;
-  border-right-style: solid;
 }
 
 .device .phabricator-timeline-image {
@@ -131,13 +131,13 @@
   width: 30px;
   height: 30px;
   background-color: #c0c5d1;
-  top: 0;
+  top: -1px;
   left: -3px;
 }
 
 .phabricator-timeline-icon {
   position: absolute;
-  left: 8px;
+  left: 9px;
   top: 8px;
   height: 14px;
   width: 14px;
@@ -199,43 +199,43 @@
   border-color: #333;
 }
 
-.phabricator-timeline-red .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-red {
   background-color: {$red};
 }
 
-.phabricator-timeline-orange .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-orange {
   background-color: {$orange};
 }
 
-.phabricator-timeline-yellow .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-yellow {
   background-color: {$yellow};
 }
 
-.phabricator-timeline-green .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-green {
   background-color: {$green};
 }
 
-.phabricator-timeline-sky .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-sky {
   background-color: {$sky};
 }
 
-.phabricator-timeline-blue .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-blue {
   background-color: {$blue};
 }
 
-.phabricator-timeline-indigo .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-indigo {
   background-color: {$indigo};
 }
 
-.phabricator-timeline-violet .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-violet {
   background-color: {$violet};
 }
 
-.phabricator-timeline-grey .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-grey {
   background-color: #888;
 }
 
-.phabricator-timeline-black .phabricator-timeline-icon-fill {
+.phabricator-timeline-icon-fill-black {
   background-color: #333;
 }
 

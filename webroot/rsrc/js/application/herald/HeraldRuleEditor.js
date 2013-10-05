@@ -163,6 +163,11 @@ JX.install('HeraldRuleEditor', {
       JX.DOM.setContent(condition_cell, condition_select);
 
       this._onconditionchange(r);
+
+      var condition_name = this._config.conditions[row_id][1];
+      if (condition_name == 'unconditionally') {
+        JX.DOM.hide(condition_select);
+      }
     },
     _onconditionchange : function(r) {
       var target = JX.DOM.find(r, 'select', 'condition-select');
@@ -224,6 +229,12 @@ JX.install('HeraldRuleEditor', {
           input = '';
           get_fn = JX.bag;
           set_fn = JX.bag;
+          break;
+        case 'contentsource':
+          input = this._renderSelect(this._config.template.contentSources);
+          get_fn = function() { return input.value; };
+          set_fn = function(v) { input.value = v; };
+          set_fn(this._config.template.defaultSource);
           break;
         case 'flagcolor':
           input = this._renderSelect(this._config.template.colors);

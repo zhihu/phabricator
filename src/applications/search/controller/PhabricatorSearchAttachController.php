@@ -26,16 +26,18 @@ final class PhabricatorSearchAttachController
     $request = $this->getRequest();
     $user = $request->getUser();
 
-    $handle_data = new PhabricatorObjectHandleData(array($this->phid));
-    $handle_data->setViewer($user);
-    $handles = $handle_data->loadHandles();
-    $handle = $handles[$this->phid];
+    $handle = id(New PhabricatorHandleQuery())
+      ->setViewer($user)
+      ->withPHIDs(array($this->phid))
+      ->executeOne();
 
     $object_type = $handle->getType();
     $attach_type = $this->type;
 
-    $objects = $handle_data->loadObjects();
-    $object = idx($objects, $this->phid);
+    $object = id(new PhabricatorObjectQuery())
+      ->setViewer($user)
+      ->withPHIDs(array($this->phid))
+      ->executeOne();
 
     if (!$object) {
       return new Aphront404Response();
@@ -147,16 +149,20 @@ final class PhabricatorSearchAttachController
       return $response;
     }
 
-    $targets = id(new ManiphestTask())->loadAllWhere(
-      'phid in (%Ls) ORDER BY id ASC',
-      array_keys($phids));
+    $targets = id(new ManiphestTaskQuery())
+      ->setViewer($user)
+      ->withPHIDs(array_keys($phids))
+      ->execute();
 
     if (empty($targets)) {
       return $response;
     }
 
-    $editor = new ManiphestTransactionEditor();
-    $editor->setActor($user);
+    $editor = id(new ManiphestTransactionEditorPro())
+      ->setActor($user)
+      ->setContentSourceFromRequest($this->getRequest())
+      ->setContinueOnNoEffect(true)
+      ->setContinueOnMissingFields(true);
 
     $task_names = array();
 
@@ -171,12 +177,21 @@ final class PhabricatorSearchAttachController
         $target->getOwnerPHID());
 
       $close_task = id(new ManiphestTransaction())
-        ->setAuthorPHID($user->getPHID())
-        ->setTransactionType(ManiphestTransactionType::TYPE_STATUS)
-        ->setNewValue(ManiphestTaskStatus::STATUS_CLOSED_DUPLICATE)
-        ->setComments("\xE2\x9C\x98 Merged into {$merge_into_name}.");
+        ->setTransactionType(ManiphestTransaction::TYPE_STATUS)
+        ->setNewValue(ManiphestTaskStatus::STATUS_CLOSED_DUPLICATE);
 
-      $editor->applyTransactions($target, array($close_task));
+      $merge_comment = id(new ManiphestTransaction())
+        ->setTransactionType(PhabricatorTransactions::TYPE_COMMENT)
+        ->attachComment(
+          id(new ManiphestTransactionComment())
+            ->setContent("\xE2\x9C\x98 Merged into {$merge_into_name}."));
+
+      $editor->applyTransactions(
+        $target,
+        array(
+          $close_task,
+          $merge_comment,
+        ));
 
       $task_names[] = 'T'.$target->getID();
     }
@@ -187,11 +202,16 @@ final class PhabricatorSearchAttachController
     $task_names = implode(', ', $task_names);
 
     $add_ccs = id(new ManiphestTransaction())
-      ->setAuthorPHID($user->getPHID())
-      ->setTransactionType(ManiphestTransactionType::TYPE_CCS)
-      ->setNewValue($all_ccs)
-      ->setComments("\xE2\x97\x80 Merged tasks: {$task_names}.");
-    $editor->applyTransactions($task, array($add_ccs));
+      ->setTransactionType(ManiphestTransaction::TYPE_CCS)
+      ->setNewValue($all_ccs);
+
+    $merged_comment = id(new ManiphestTransaction())
+      ->setTransactionType(PhabricatorTransactions::TYPE_COMMENT)
+      ->attachComment(
+        id(new ManiphestTransactionComment())
+          ->setContent("\xE2\x97\x80 Merged tasks: {$task_names}."));
+
+    $editor->applyTransactions($task, array($add_ccs, $merged_comment));
 
     return $response;
   }

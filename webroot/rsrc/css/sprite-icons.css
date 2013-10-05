@@ -13,7 +13,7 @@ only screen and (min-device-pixel-ratio: 1.5),
 only screen and (-webkit-min-device-pixel-ratio: 1.5) {
   .sprite-icons {
     background-image: url(/rsrc/image/sprite-icons-X2.png);
-    background-size: 210px 225px;
+    background-size: 225px 225px;
   }
 }
 
@@ -75,171 +75,187 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
 }
 
 .icons-edit {
-  background-position: 0px -15px;
+  background-position: -210px 0px;
 }
 
 .icons-enable {
-  background-position: -15px -15px;
+  background-position: 0px -15px;
 }
 
 .icons-file {
-  background-position: -30px -15px;
+  background-position: -15px -15px;
 }
 
 .icons-flag-0 {
-  background-position: -45px -15px;
+  background-position: -30px -15px;
 }
 
 .icons-flag-1 {
-  background-position: -60px -15px;
+  background-position: -45px -15px;
 }
 
 .icons-flag-2 {
-  background-position: -75px -15px;
+  background-position: -60px -15px;
 }
 
 .icons-flag-3 {
-  background-position: -90px -15px;
+  background-position: -75px -15px;
 }
 
 .icons-flag-4 {
-  background-position: -105px -15px;
+  background-position: -90px -15px;
 }
 
 .icons-flag-5 {
-  background-position: -120px -15px;
+  background-position: -105px -15px;
 }
 
 .icons-flag-6 {
-  background-position: -135px -15px;
+  background-position: -120px -15px;
 }
 
 .icons-flag-7 {
-  background-position: -150px -15px;
+  background-position: -135px -15px;
 }
 
 .icons-flag-ghost {
-  background-position: -165px -15px;
+  background-position: -150px -15px;
 }
 
 .icons-flag {
-  background-position: -180px -15px;
+  background-position: -165px -15px;
 }
 
 .icons-folder-open {
-  background-position: -195px -15px;
+  background-position: -180px -15px;
 }
 
 .icons-fork {
-  background-position: 0px -30px;
+  background-position: -195px -15px;
 }
 
 .icons-herald {
-  background-position: -15px -30px;
+  background-position: -210px -15px;
 }
 
 .icons-highlight {
-  background-position: -30px -30px;
+  background-position: 0px -30px;
 }
 
 .icons-history {
-  background-position: -45px -30px;
+  background-position: -15px -30px;
 }
 
 .icons-home {
-  background-position: -60px -30px;
+  background-position: -30px -30px;
 }
 
 .icons-image {
-  background-position: -75px -30px;
+  background-position: -45px -30px;
 }
 
 .icons-like {
-  background-position: -90px -30px;
+  background-position: -60px -30px;
 }
 
 .icons-link {
-  background-position: -105px -30px;
+  background-position: -75px -30px;
 }
 
 .icons-lint-info {
-  background-position: -120px -30px;
+  background-position: -90px -30px;
 }
 
 .icons-lint-ok {
-  background-position: -135px -30px;
+  background-position: -105px -30px;
 }
 
 .icons-lint-warning {
-  background-position: -150px -30px;
+  background-position: -120px -30px;
 }
 
 .icons-lock {
-  background-position: -165px -30px;
+  background-position: -135px -30px;
 }
 
 .icons-love {
-  background-position: -180px -30px;
+  background-position: -150px -30px;
+}
+
+.icons-lower-priority {
+  background-position: -165px -30px;
 }
 
 .icons-merge {
-  background-position: -195px -30px;
+  background-position: -180px -30px;
 }
 
 .icons-message {
-  background-position: 0px -45px;
+  background-position: -195px -30px;
 }
 
 .icons-meta-mta {
-  background-position: -15px -45px;
+  background-position: -210px -30px;
 }
 
 .icons-move {
-  background-position: -30px -45px;
+  background-position: 0px -45px;
 }
 
 .icons-new {
-  background-position: -45px -45px;
+  background-position: -15px -45px;
 }
 
 .icons-none {
-  background-position: -60px -45px;
+  background-position: -30px -45px;
+}
+
+.icons-normal-priority {
+  background-position: -45px -45px;
 }
 
 .icons-perflab {
-  background-position: -75px -45px;
+  background-position: -60px -45px;
 }
 
 .icons-preview {
+  background-position: -75px -45px;
+}
+
+.icons-project {
   background-position: -90px -45px;
 }
 
-.icons-refresh {
+.icons-raise-priority {
   background-position: -105px -45px;
 }
 
-.icons-remove {
+.icons-refresh {
   background-position: -120px -45px;
 }
 
-.icons-search {
+.icons-remove {
   background-position: -135px -45px;
 }
 
-.icons-start-sandcastle {
+.icons-search {
   background-position: -150px -45px;
 }
 
-.icons-tag {
+.icons-start-sandcastle {
   background-position: -165px -45px;
 }
 
-.icons-transcript {
+.icons-tag {
   background-position: -180px -45px;
 }
 
-.icons-undo {
+.icons-transcript {
   background-position: -195px -45px;
+}
+
+.icons-undo {
+  background-position: -210px -45px;
 }
 
 .icons-unlock {
@@ -258,44 +274,48 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
   background-position: -45px -60px;
 }
 
-.icons-warning {
+.icons-user {
   background-position: -60px -60px;
 }
 
-.icons-world {
+.icons-warning {
   background-position: -75px -60px;
 }
 
-.icons-action-menu-grey {
+.icons-world {
   background-position: -90px -60px;
 }
 
-.icons-arrow_left-grey {
+.icons-action-menu-grey {
   background-position: -105px -60px;
 }
 
-.icons-arrow_right-grey {
+.icons-arrow_left-grey {
   background-position: -120px -60px;
 }
 
-.icons-attach-grey {
+.icons-arrow_right-grey {
   background-position: -135px -60px;
 }
 
-.icons-blame-grey {
+.icons-attach-grey {
   background-position: -150px -60px;
 }
 
-.icons-check-grey {
+.icons-blame-grey {
   background-position: -165px -60px;
 }
 
-.icons-comment-grey {
+.icons-check-grey {
   background-position: -180px -60px;
 }
 
-.icons-computer-grey {
+.icons-comment-grey {
   background-position: -195px -60px;
+}
+
+.icons-computer-grey {
+  background-position: -210px -60px;
 }
 
 .icons-create-grey {
@@ -430,390 +450,430 @@ only screen and (-webkit-min-device-pixel-ratio: 1.5) {
   background-position: -60px -105px;
 }
 
-.icons-merge-grey {
+.icons-lower-priority-grey {
   background-position: -75px -105px;
 }
 
-.icons-message-grey {
+.icons-merge-grey {
   background-position: -90px -105px;
 }
 
-.icons-meta-mta-grey {
+.icons-message-grey {
   background-position: -105px -105px;
 }
 
-.icons-move-grey {
+.icons-meta-mta-grey {
   background-position: -120px -105px;
 }
 
-.icons-new-grey {
+.icons-move-grey {
   background-position: -135px -105px;
 }
 
-.icons-none-grey {
+.icons-new-grey {
   background-position: -150px -105px;
 }
 
-.icons-perflab-grey {
+.icons-none-grey {
   background-position: -165px -105px;
 }
 
-.icons-preview-grey {
+.icons-normal-priority-grey {
   background-position: -180px -105px;
 }
 
-.icons-refresh-grey {
+.icons-perflab-grey {
   background-position: -195px -105px;
 }
 
-.icons-remove-grey {
+.icons-preview-grey {
   background-position: 0px -120px;
 }
 
-.icons-search-grey {
+.icons-project-grey {
   background-position: -15px -120px;
 }
 
-.icons-start-sandcastle-grey {
+.icons-raise-priority-grey {
   background-position: -30px -120px;
 }
 
-.icons-tag-grey {
+.icons-refresh-grey {
   background-position: -45px -120px;
 }
 
-.icons-transcript-grey {
+.icons-remove-grey {
   background-position: -60px -120px;
 }
 
-.icons-undo-grey {
+.icons-search-grey {
   background-position: -75px -120px;
 }
 
-.icons-unlock-grey {
+.icons-start-sandcastle-grey {
   background-position: -90px -120px;
 }
 
-.icons-unmerge-grey {
+.icons-tag-grey {
   background-position: -105px -120px;
 }
 
-.icons-unpublish-grey {
+.icons-transcript-grey {
   background-position: -120px -120px;
 }
 
-.icons-upload-grey {
+.icons-undo-grey {
   background-position: -135px -120px;
 }
 
-.icons-warning-grey {
+.icons-unlock-grey {
   background-position: -150px -120px;
 }
 
-.icons-world-grey {
+.icons-unmerge-grey {
   background-position: -165px -120px;
 }
 
-.icons-action-menu-white, .device-desktop .phabricator-action-view:hover .icons-action-menu, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-action-menu {
+.icons-unpublish-grey {
   background-position: -180px -120px;
 }
 
-.icons-arrow_left-white, .device-desktop .phabricator-action-view:hover .icons-arrow_left, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-arrow_left {
+.icons-upload-grey {
   background-position: -195px -120px;
 }
 
-.icons-arrow_right-white, .device-desktop .phabricator-action-view:hover .icons-arrow_right, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-arrow_right {
+.icons-user-grey {
   background-position: 0px -135px;
 }
 
-.icons-attach-white, .device-desktop .phabricator-action-view:hover .icons-attach, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-attach {
+.icons-warning-grey {
   background-position: -15px -135px;
 }
 
-.icons-blame-white, .device-desktop .phabricator-action-view:hover .icons-blame, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-blame {
+.icons-world-grey {
   background-position: -30px -135px;
 }
 
-.icons-check-white, .device-desktop .phabricator-action-view:hover .icons-check, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-check {
+.icons-action-menu-white, .device-desktop .phabricator-action-view:hover .icons-action-menu, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-action-menu {
   background-position: -45px -135px;
 }
 
-.icons-comment-white, .device-desktop .phabricator-action-view:hover .icons-comment, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-comment {
+.icons-arrow_left-white, .device-desktop .phabricator-action-view:hover .icons-arrow_left, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-arrow_left {
   background-position: -60px -135px;
 }
 
-.icons-computer-white, .device-desktop .phabricator-action-view:hover .icons-computer, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-computer {
+.icons-arrow_right-white, .device-desktop .phabricator-action-view:hover .icons-arrow_right, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-arrow_right {
   background-position: -75px -135px;
 }
 
-.icons-create-white, .device-desktop .phabricator-action-view:hover .icons-create, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-create {
+.icons-attach-white, .device-desktop .phabricator-action-view:hover .icons-attach, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-attach {
   background-position: -90px -135px;
 }
 
-.icons-delete-white, .device-desktop .phabricator-action-view:hover .icons-delete, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-delete {
+.icons-blame-white, .device-desktop .phabricator-action-view:hover .icons-blame, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-blame {
   background-position: -105px -135px;
 }
 
-.icons-disable-white, .device-desktop .phabricator-action-view:hover .icons-disable, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-disable {
+.icons-check-white, .device-desktop .phabricator-action-view:hover .icons-check, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-check {
   background-position: -120px -135px;
 }
 
-.icons-dislike-white, .device-desktop .phabricator-action-view:hover .icons-dislike, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-dislike {
+.icons-comment-white, .device-desktop .phabricator-action-view:hover .icons-comment, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-comment {
   background-position: -135px -135px;
 }
 
-.icons-download-alt-white, .device-desktop .phabricator-action-view:hover .icons-download-alt, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-download-alt {
+.icons-computer-white, .device-desktop .phabricator-action-view:hover .icons-computer, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-computer {
   background-position: -150px -135px;
 }
 
-.icons-download-white, .device-desktop .phabricator-action-view:hover .icons-download, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-download {
+.icons-create-white, .device-desktop .phabricator-action-view:hover .icons-create, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-create {
   background-position: -165px -135px;
 }
 
-.icons-edit-white, .device-desktop .phabricator-action-view:hover .icons-edit, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-edit {
+.icons-delete-white, .device-desktop .phabricator-action-view:hover .icons-delete, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-delete {
   background-position: -180px -135px;
 }
 
-.icons-enable-white, .device-desktop .phabricator-action-view:hover .icons-enable, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-enable {
+.icons-disable-white, .device-desktop .phabricator-action-view:hover .icons-disable, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-disable {
   background-position: -195px -135px;
 }
 
-.icons-file-white, .device-desktop .phabricator-action-view:hover .icons-file, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-file {
+.icons-dislike-white, .device-desktop .phabricator-action-view:hover .icons-dislike, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-dislike {
   background-position: 0px -150px;
 }
 
-.icons-flag-0-white, .device-desktop .phabricator-action-view:hover .icons-flag-0, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-0 {
+.icons-download-alt-white, .device-desktop .phabricator-action-view:hover .icons-download-alt, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-download-alt {
   background-position: -15px -150px;
 }
 
-.icons-flag-1-white, .device-desktop .phabricator-action-view:hover .icons-flag-1, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-1 {
+.icons-download-white, .device-desktop .phabricator-action-view:hover .icons-download, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-download {
   background-position: -30px -150px;
 }
 
-.icons-flag-2-white, .device-desktop .phabricator-action-view:hover .icons-flag-2, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-2 {
+.icons-edit-white, .device-desktop .phabricator-action-view:hover .icons-edit, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-edit {
   background-position: -45px -150px;
 }
 
-.icons-flag-3-white, .device-desktop .phabricator-action-view:hover .icons-flag-3, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-3 {
+.icons-enable-white, .device-desktop .phabricator-action-view:hover .icons-enable, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-enable {
   background-position: -60px -150px;
 }
 
-.icons-flag-4-white, .device-desktop .phabricator-action-view:hover .icons-flag-4, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-4 {
+.icons-file-white, .device-desktop .phabricator-action-view:hover .icons-file, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-file {
   background-position: -75px -150px;
 }
 
-.icons-flag-5-white, .device-desktop .phabricator-action-view:hover .icons-flag-5, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-5 {
+.icons-flag-0-white, .device-desktop .phabricator-action-view:hover .icons-flag-0, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-0 {
   background-position: -90px -150px;
 }
 
-.icons-flag-6-white, .device-desktop .phabricator-action-view:hover .icons-flag-6, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-6 {
+.icons-flag-1-white, .device-desktop .phabricator-action-view:hover .icons-flag-1, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-1 {
   background-position: -105px -150px;
 }
 
-.icons-flag-7-white, .device-desktop .phabricator-action-view:hover .icons-flag-7, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-7 {
+.icons-flag-2-white, .device-desktop .phabricator-action-view:hover .icons-flag-2, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-2 {
   background-position: -120px -150px;
 }
 
-.icons-flag-ghost-white, .device-desktop .phabricator-action-view:hover .icons-flag-ghost, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-ghost {
+.icons-flag-3-white, .device-desktop .phabricator-action-view:hover .icons-flag-3, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-3 {
   background-position: -135px -150px;
 }
 
-.icons-flag-white, .device-desktop .phabricator-action-view:hover .icons-flag, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag {
+.icons-flag-4-white, .device-desktop .phabricator-action-view:hover .icons-flag-4, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-4 {
   background-position: -150px -150px;
 }
 
-.icons-folder-open-white, .device-desktop .phabricator-action-view:hover .icons-folder-open, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-folder-open {
+.icons-flag-5-white, .device-desktop .phabricator-action-view:hover .icons-flag-5, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-5 {
   background-position: -165px -150px;
 }
 
-.icons-fork-white, .device-desktop .phabricator-action-view:hover .icons-fork, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-fork {
+.icons-flag-6-white, .device-desktop .phabricator-action-view:hover .icons-flag-6, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-6 {
   background-position: -180px -150px;
 }
 
-.icons-herald-white, .device-desktop .phabricator-action-view:hover .icons-herald, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-herald {
+.icons-flag-7-white, .device-desktop .phabricator-action-view:hover .icons-flag-7, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-7 {
   background-position: -195px -150px;
 }
 
-.icons-highlight-white, .device-desktop .phabricator-action-view:hover .icons-highlight, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-highlight {
+.icons-flag-ghost-white, .device-desktop .phabricator-action-view:hover .icons-flag-ghost, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag-ghost {
   background-position: 0px -165px;
 }
 
-.icons-history-white, .device-desktop .phabricator-action-view:hover .icons-history, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-history {
+.icons-flag-white, .device-desktop .phabricator-action-view:hover .icons-flag, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-flag {
   background-position: -15px -165px;
 }
 
-.icons-home-white, .device-desktop .phabricator-action-view:hover .icons-home, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-home {
+.icons-folder-open-white, .device-desktop .phabricator-action-view:hover .icons-folder-open, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-folder-open {
   background-position: -30px -165px;
 }
 
-.icons-image-white, .device-desktop .phabricator-action-view:hover .icons-image, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-image {
+.icons-fork-white, .device-desktop .phabricator-action-view:hover .icons-fork, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-fork {
   background-position: -45px -165px;
 }
 
-.icons-like-white, .device-desktop .phabricator-action-view:hover .icons-like, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-like {
+.icons-herald-white, .device-desktop .phabricator-action-view:hover .icons-herald, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-herald {
   background-position: -60px -165px;
 }
 
-.icons-link-white, .device-desktop .phabricator-action-view:hover .icons-link, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-link {
+.icons-highlight-white, .device-desktop .phabricator-action-view:hover .icons-highlight, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-highlight {
   background-position: -75px -165px;
 }
 
-.icons-lint-info-white, .device-desktop .phabricator-action-view:hover .icons-lint-info, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-lint-info {
+.icons-history-white, .device-desktop .phabricator-action-view:hover .icons-history, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-history {
   background-position: -90px -165px;
 }
 
-.icons-lint-ok-white, .device-desktop .phabricator-action-view:hover .icons-lint-ok, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-lint-ok {
+.icons-home-white, .device-desktop .phabricator-action-view:hover .icons-home, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-home {
   background-position: -105px -165px;
 }
 
-.icons-lint-warning-white, .device-desktop .phabricator-action-view:hover .icons-lint-warning, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-lint-warning {
+.icons-image-white, .device-desktop .phabricator-action-view:hover .icons-image, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-image {
   background-position: -120px -165px;
 }
 
-.icons-lock-white, .device-desktop .phabricator-action-view:hover .icons-lock, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-lock {
+.icons-like-white, .device-desktop .phabricator-action-view:hover .icons-like, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-like {
   background-position: -135px -165px;
 }
 
-.icons-love-white, .device-desktop .phabricator-action-view:hover .icons-love, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-love {
+.icons-link-white, .device-desktop .phabricator-action-view:hover .icons-link, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-link {
   background-position: -150px -165px;
 }
 
-.icons-merge-white, .device-desktop .phabricator-action-view:hover .icons-merge, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-merge {
+.icons-lint-info-white, .device-desktop .phabricator-action-view:hover .icons-lint-info, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-lint-info {
   background-position: -165px -165px;
 }
 
-.icons-message-white, .device-desktop .phabricator-action-view:hover .icons-message, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-message {
+.icons-lint-ok-white, .device-desktop .phabricator-action-view:hover .icons-lint-ok, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-lint-ok {
   background-position: -180px -165px;
 }
 
-.icons-meta-mta-white, .device-desktop .phabricator-action-view:hover .icons-meta-mta, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-meta-mta {
+.icons-lint-warning-white, .device-desktop .phabricator-action-view:hover .icons-lint-warning, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-lint-warning {
   background-position: -195px -165px;
 }
 
-.icons-move-white, .device-desktop .phabricator-action-view:hover .icons-move, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-move {
+.icons-lock-white, .device-desktop .phabricator-action-view:hover .icons-lock, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-lock {
   background-position: 0px -180px;
 }
 
-.icons-new-white, .device-desktop .phabricator-action-view:hover .icons-new, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-new {
+.icons-love-white, .device-desktop .phabricator-action-view:hover .icons-love, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-love {
   background-position: -15px -180px;
 }
 
-.icons-none-white, .device-desktop .phabricator-action-view:hover .icons-none, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-none {
+.icons-lower-priority-white, .device-desktop .phabricator-action-view:hover .icons-lower-priority, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-lower-priority {
   background-position: -30px -180px;
 }
 
-.icons-perflab-white, .device-desktop .phabricator-action-view:hover .icons-perflab, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-perflab {
+.icons-merge-white, .device-desktop .phabricator-action-view:hover .icons-merge, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-merge {
   background-position: -45px -180px;
 }
 
-.icons-preview-white, .device-desktop .phabricator-action-view:hover .icons-preview, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-preview {
+.icons-message-white, .device-desktop .phabricator-action-view:hover .icons-message, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-message {
   background-position: -60px -180px;
 }
 
-.icons-refresh-white, .device-desktop .phabricator-action-view:hover .icons-refresh, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-refresh {
+.icons-meta-mta-white, .device-desktop .phabricator-action-view:hover .icons-meta-mta, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-meta-mta {
   background-position: -75px -180px;
 }
 
-.icons-remove-white, .device-desktop .phabricator-action-view:hover .icons-remove, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-remove {
+.icons-move-white, .device-desktop .phabricator-action-view:hover .icons-move, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-move {
   background-position: -90px -180px;
 }
 
-.icons-search-white, .device-desktop .phabricator-action-view:hover .icons-search, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-search {
+.icons-new-white, .device-desktop .phabricator-action-view:hover .icons-new, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-new {
   background-position: -105px -180px;
 }
 
-.icons-start-sandcastle-white, .device-desktop .phabricator-action-view:hover .icons-start-sandcastle, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-start-sandcastle {
+.icons-none-white, .device-desktop .phabricator-action-view:hover .icons-none, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-none {
   background-position: -120px -180px;
 }
 
-.icons-tag-white, .device-desktop .phabricator-action-view:hover .icons-tag, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-tag {
+.icons-normal-priority-white, .device-desktop .phabricator-action-view:hover .icons-normal-priority, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-normal-priority {
   background-position: -135px -180px;
 }
 
-.icons-transcript-white, .device-desktop .phabricator-action-view:hover .icons-transcript, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-transcript {
+.icons-perflab-white, .device-desktop .phabricator-action-view:hover .icons-perflab, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-perflab {
   background-position: -150px -180px;
 }
 
-.icons-undo-white, .device-desktop .phabricator-action-view:hover .icons-undo, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-undo {
+.icons-preview-white, .device-desktop .phabricator-action-view:hover .icons-preview, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-preview {
   background-position: -165px -180px;
 }
 
-.icons-unlock-white, .device-desktop .phabricator-action-view:hover .icons-unlock, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-unlock {
+.icons-project-white, .device-desktop .phabricator-action-view:hover .icons-project, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-project {
   background-position: -180px -180px;
 }
 
-.icons-unmerge-white, .device-desktop .phabricator-action-view:hover .icons-unmerge, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-unmerge {
+.icons-raise-priority-white, .device-desktop .phabricator-action-view:hover .icons-raise-priority, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-raise-priority {
   background-position: -195px -180px;
 }
 
-.icons-unpublish-white, .device-desktop .phabricator-action-view:hover .icons-unpublish, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-unpublish {
+.icons-refresh-white, .device-desktop .phabricator-action-view:hover .icons-refresh, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-refresh {
   background-position: 0px -195px;
 }
 
-.icons-upload-white, .device-desktop .phabricator-action-view:hover .icons-upload, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-upload {
+.icons-remove-white, .device-desktop .phabricator-action-view:hover .icons-remove, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-remove {
   background-position: -15px -195px;
 }
 
-.icons-warning-white, .device-desktop .phabricator-action-view:hover .icons-warning, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-warning {
+.icons-search-white, .device-desktop .phabricator-action-view:hover .icons-search, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-search {
   background-position: -30px -195px;
 }
 
-.icons-world-white, .device-desktop .phabricator-action-view:hover .icons-world, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-world {
+.icons-start-sandcastle-white, .device-desktop .phabricator-action-view:hover .icons-start-sandcastle, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-start-sandcastle {
   background-position: -45px -195px;
 }
 
-.remarkup-assist-b {
+.icons-tag-white, .device-desktop .phabricator-action-view:hover .icons-tag, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-tag {
   background-position: -60px -195px;
 }
 
-.remarkup-assist-code {
+.icons-transcript-white, .device-desktop .phabricator-action-view:hover .icons-transcript, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-transcript {
   background-position: -75px -195px;
 }
 
-.remarkup-assist-fullscreen {
+.icons-undo-white, .device-desktop .phabricator-action-view:hover .icons-undo, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-undo {
   background-position: -90px -195px;
 }
 
-.remarkup-control-fullscreen-mode .remarkup-assist-fullscreen {
+.icons-unlock-white, .device-desktop .phabricator-action-view:hover .icons-unlock, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-unlock {
   background-position: -105px -195px;
 }
 
-.remarkup-assist-help {
+.icons-unmerge-white, .device-desktop .phabricator-action-view:hover .icons-unmerge, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-unmerge {
   background-position: -120px -195px;
 }
 
-.remarkup-assist-i {
+.icons-unpublish-white, .device-desktop .phabricator-action-view:hover .icons-unpublish, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-unpublish {
   background-position: -135px -195px;
 }
 
-.remarkup-assist-image {
+.icons-upload-white, .device-desktop .phabricator-action-view:hover .icons-upload, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-upload {
   background-position: -150px -195px;
 }
 
-.remarkup-assist-larger {
+.icons-user-white, .device-desktop .phabricator-action-view:hover .icons-user, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-user {
   background-position: -165px -195px;
 }
 
-.remarkup-assist-meme {
+.icons-warning-white, .device-desktop .phabricator-action-view:hover .icons-warning, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-warning {
   background-position: -180px -195px;
 }
 
-.remarkup-assist-ol {
+.icons-world-white, .device-desktop .phabricator-action-view:hover .icons-world, .device-desktop .phui-list-sidenav .phui-list-item-href:hover .icons-world {
   background-position: -195px -195px;
 }
 
-.remarkup-assist-table {
+.remarkup-assist-b {
   background-position: 0px -210px;
 }
 
-.remarkup-assist-tag {
+.remarkup-assist-code {
   background-position: -15px -210px;
 }
 
-.remarkup-assist-tt {
+.remarkup-assist-fullscreen {
   background-position: -30px -210px;
 }
 
-.remarkup-assist-ul {
+.remarkup-control-fullscreen-mode .remarkup-assist-fullscreen {
   background-position: -45px -210px;
+}
+
+.remarkup-assist-help {
+  background-position: -60px -210px;
+}
+
+.remarkup-assist-i {
+  background-position: -75px -210px;
+}
+
+.remarkup-assist-image {
+  background-position: -90px -210px;
+}
+
+.remarkup-assist-larger {
+  background-position: -105px -210px;
+}
+
+.remarkup-assist-meme {
+  background-position: -120px -210px;
+}
+
+.remarkup-assist-ol {
+  background-position: -135px -210px;
+}
+
+.remarkup-assist-table {
+  background-position: -150px -210px;
+}
+
+.remarkup-assist-tag {
+  background-position: -165px -210px;
+}
+
+.remarkup-assist-tt {
+  background-position: -180px -210px;
+}
+
+.remarkup-assist-ul {
+  background-position: -195px -210px;
 }

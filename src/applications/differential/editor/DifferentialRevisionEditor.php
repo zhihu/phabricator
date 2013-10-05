@@ -17,9 +17,22 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
 
   private $auxiliaryFields = array();
   private $contentSource;
+  private $isCreate;
+  private $aphrontRequestForEventDispatch;
+
+
+  public function setAphrontRequestForEventDispatch(AphrontRequest $request) {
+    $this->aphrontRequestForEventDispatch = $request;
+    return $this;
+  }
+
+  public function getAphrontRequestForEventDispatch() {
+    return $this->aphrontRequestForEventDispatch;
+  }
 
   public function __construct(DifferentialRevision $revision) {
     $this->revision = $revision;
+    $this->isCreate = !($revision->getID());
   }
 
   public static function newRevisionFromConduitWithDiff(
@@ -113,6 +126,16 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     }
     $this->diff = $diff;
     $this->comments = $comments;
+
+    $repository = id(new DifferentialRepositoryLookup())
+      ->setViewer($this->getActor())
+      ->setDiff($diff)
+      ->lookupRepository();
+
+    if ($repository) {
+      $this->getRevision()->setRepositoryPHID($repository->getPHID());
+    }
+
     return $this;
   }
 
@@ -344,9 +367,10 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
 
     $phids = array($this->getActorPHID());
 
-    $handles = id(new PhabricatorObjectHandleData($phids))
+    $handles = id(new PhabricatorHandleQuery())
       ->setViewer($this->getActor())
-      ->loadHandles();
+      ->withPHIDs($phids)
+      ->execute();
     $actor_handle = $handles[$this->getActorPHID()];
 
     $changesets = null;
@@ -843,12 +867,36 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     foreach ($this->auxiliaryFields as $aux_field) {
       $aux_field->willWriteRevision($this);
     }
+
+    $this->dispatchEvent(
+      PhabricatorEventType::TYPE_DIFFERENTIAL_WILLEDITREVISION);
   }
 
   private function didWriteRevision() {
     foreach ($this->auxiliaryFields as $aux_field) {
       $aux_field->didWriteRevision($this);
     }
+
+    $this->dispatchEvent(
+      PhabricatorEventType::TYPE_DIFFERENTIAL_DIDEDITREVISION);
+  }
+
+  private function dispatchEvent($type) {
+    $event = new PhabricatorEvent(
+      $type,
+      array(
+        'revision'      => $this->revision,
+        'new'           => $this->isCreate,
+      ));
+
+    $event->setUser($this->getActor());
+
+    $request = $this->getAphrontRequestForEventDispatch();
+    if ($request) {
+      $event->setAphrontRequest($request);
+    }
+
+    PhutilEventEngine::dispatchEvent($event);
   }
 
   /**

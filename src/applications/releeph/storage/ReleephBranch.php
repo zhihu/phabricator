@@ -130,9 +130,10 @@ final class ReleephBranch extends ReleephDAO
         $phids_to_phetch[] = $rr->loadRequestCommitDiffPHID();
       }
     }
-    $handles = id(new PhabricatorObjectHandleData($phids_to_phetch))
+    $handles = id(new PhabricatorHandleQuery())
       ->setViewer($user)
-      ->loadHandles();
+      ->withPHIDs($phids_to_phetch)
+      ->execute();
     return $handles;
   }
 
@@ -187,5 +188,10 @@ final class ReleephBranch extends ReleephDAO
   public function hasAutomaticCapability($capability, PhabricatorUser $viewer) {
     return $this->getProject()->hasAutomaticCapability($capability, $viewer);
   }
+
+  public function describeAutomaticCapability($capability) {
+    return null;
+  }
+
 
 }
