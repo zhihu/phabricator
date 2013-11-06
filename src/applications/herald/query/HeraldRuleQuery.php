@@ -8,6 +8,7 @@ final class HeraldRuleQuery
   private $authorPHIDs;
   private $ruleTypes;
   private $contentTypes;
+  private $disabled;
 
   private $needConditionsAndActions;
   private $needAppliedToPHIDs;
@@ -40,6 +41,11 @@ final class HeraldRuleQuery
 
   public function withExecutableRules($executable) {
     $this->executable = $executable;
+    return $this;
+  }
+
+  public function withDisabled($disabled) {
+    $this->disabled = $disabled;
     return $this;
   }
 
@@ -82,6 +88,7 @@ final class HeraldRuleQuery
     $types = HeraldAdapter::getEnabledAdapterMap($this->getViewer());
     foreach ($rules as $key => $rule) {
       if (empty($types[$rule->getContentType()])) {
+        $this->didRejectResult($rule);
         unset($rules[$key]);
       }
     }
@@ -171,6 +178,13 @@ final class HeraldRuleQuery
         $this->contentTypes);
     }
 
+    if ($this->disabled !== null) {
+      $where[] = qsprintf(
+        $conn_r,
+        'rule.isDisabled = %d',
+        (int)$this->disabled);
+    }
+
     $where[] = $this->buildPagingClause($conn_r);
 
     return $this->formatWhereClause($where);
@@ -211,7 +225,13 @@ final class HeraldRuleQuery
       }
 
       $rule->attachValidAuthor(true);
+      $rule->attachAuthor($users[$author_phid]);
     }
+  }
+
+
+  public function getQueryApplicationClass() {
+    return 'PhabricatorApplicationHerald';
   }
 
 }

@@ -92,6 +92,15 @@ final class PhabricatorRepositoryPullLocalDaemon
       shuffle($repositories);
       $repositories = mpull($repositories, null, 'getID');
 
+      // If any repositories have the NEEDS_UPDATE flag set, pull them
+      // as soon as possible.
+      $type_need_update = PhabricatorRepositoryStatusMessage::TYPE_NEEDS_UPDATE;
+      $need_update_messages = id(new PhabricatorRepositoryStatusMessage())
+        ->loadAllWhere('statusType = %s', $type_need_update);
+      foreach ($need_update_messages as $message) {
+        $retry_after[$message->getRepositoryID()] = time();
+      }
+
       // If any repositories were deleted, remove them from the retry timer map
       // so we don't end up with a retry timer that never gets updated and
       // causes us to sleep for the minimum amount of time.
@@ -128,15 +137,30 @@ final class PhabricatorRepositoryPullLocalDaemon
 
           if (!$no_discovery) {
             // TODO: It would be nice to discover only if we pulled something,
-            // but this isn't totally trivial.
+            // but this isn't totally trivial. It's slightly more complicated
+            // with hosted repositories, too.
 
             $lock_name = get_class($this).':'.$callsign;
             $lock = PhabricatorGlobalLock::newLock($lock_name);
             $lock->lock();
 
+            $repository->writeStatusMessage(
+              PhabricatorRepositoryStatusMessage::TYPE_NEEDS_UPDATE,
+              null);
+
             try {
               $this->discoverRepository($repository);
+              $repository->writeStatusMessage(
+                PhabricatorRepositoryStatusMessage::TYPE_FETCH,
+                PhabricatorRepositoryStatusMessage::CODE_OKAY);
             } catch (Exception $ex) {
+              $repository->writeStatusMessage(
+                PhabricatorRepositoryStatusMessage::TYPE_FETCH,
+                PhabricatorRepositoryStatusMessage::CODE_ERROR,
+                array(
+                  'message' => pht(
+                    'Error updating working copy: %s', $ex->getMessage()),
+                ));
               $lock->unlock();
               throw $ex;
             }
@@ -200,28 +224,41 @@ final class PhabricatorRepositoryPullLocalDaemon
 
   public function discoverRepository(PhabricatorRepository $repository) {
     $vcs = $repository->getVersionControlSystem();
+
+    $result = null;
+    $refs = null;
     switch ($vcs) {
       case PhabricatorRepositoryType::REPOSITORY_TYPE_GIT:
-        return $this->executeGitDiscover($repository);
+        $result = $this->executeGitDiscover($repository);
+        break;
       case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:
         $refs = $this->getDiscoveryEngine($repository)
           ->discoverCommits();
         break;
       case PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL:
-        return $this->executeHgDiscover($repository);
+        $result = $this->executeHgDiscover($repository);
+        break;
       default:
         throw new Exception("Unknown VCS '{$vcs}'!");
     }
 
-    foreach ($refs as $ref) {
-      $this->recordCommit(
-        $repository,
-        $ref->getIdentifier(),
-        $ref->getEpoch(),
-        $ref->getBranch());
+    if ($refs !== null) {
+      foreach ($refs as $ref) {
+        $this->recordCommit(
+          $repository,
+          $ref->getIdentifier(),
+          $ref->getEpoch(),
+          $ref->getBranch());
+      }
     }
 
-    return (bool)count($refs);
+    $this->checkIfRepositoryIsFullyImported($repository);
+
+    if ($refs !== null) {
+      return (bool)count($refs);
+    } else {
+      return $result;
+    }
   }
 
   private function getDiscoveryEngine(PhabricatorRepository $repository) {
@@ -455,7 +492,40 @@ final class PhabricatorRepositoryPullLocalDaemon
     return $repository->getID().':'.$commit_identifier;
   }
 
+  private function checkIfRepositoryIsFullyImported(
+    PhabricatorRepository $repository) {
 
+    // Check if the repository has the "Importing" flag set. We want to clear
+    // the flag if we can.
+    $importing = $repository->getDetail('importing');
+    if (!$importing) {
+      // This repository isn't marked as "Importing", so we're done.
+      return;
+    }
+
+    // Look for any commit which hasn't imported.
+    $unparsed_commit = queryfx_one(
+      $repository->establishConnection('r'),
+      'SELECT * FROM %T WHERE repositoryID = %d AND importStatus != %d
+        LIMIT 1',
+      id(new PhabricatorRepositoryCommit())->getTableName(),
+      $repository->getID(),
+      PhabricatorRepositoryCommit::IMPORTED_ALL);
+    if ($unparsed_commit) {
+      // We found a commit which still needs to import, so we can't clear the
+      // flag.
+      return;
+    }
+
+    // Clear the "importing" flag.
+    $repository->openTransaction();
+      $repository->beginReadLocking();
+        $repository = $repository->reload();
+        $repository->setDetail('importing', false);
+        $repository->save();
+      $repository->endReadLocking();
+    $repository->saveTransaction();
+  }
 
 /* -(  Git Implementation  )------------------------------------------------- */
 
@@ -466,26 +536,34 @@ final class PhabricatorRepositoryPullLocalDaemon
   private function executeGitDiscover(
     PhabricatorRepository $repository) {
 
-    list($remotes) = $repository->execxLocalCommand(
-      'remote show -n origin');
+    if (!$repository->isHosted()) {
+      list($remotes) = $repository->execxLocalCommand(
+        'remote show -n origin');
 
-    $matches = null;
-    if (!preg_match('/^\s*Fetch URL:\s*(.*?)\s*$/m', $remotes, $matches)) {
-      throw new Exception(
-        "Expected 'Fetch URL' in 'git remote show -n origin'.");
+      $matches = null;
+      if (!preg_match('/^\s*Fetch URL:\s*(.*?)\s*$/m', $remotes, $matches)) {
+        throw new Exception(
+          "Expected 'Fetch URL' in 'git remote show -n origin'.");
+      }
+
+      self::executeGitVerifySameOrigin(
+        $matches[1],
+        $repository->getRemoteURI(),
+        $repository->getLocalPath());
     }
 
-    self::executeGitVerifySameOrigin(
-      $matches[1],
-      $repository->getRemoteURI(),
-      $repository->getLocalPath());
+    $refs = id(new DiffusionLowLevelGitRefQuery())
+      ->setRepository($repository)
+      ->withIsOriginBranch(true)
+      ->execute();
 
-    list($stdout) = $repository->execxLocalCommand(
-      'branch -r --verbose --no-abbrev');
+    $branches = mpull($refs, 'getCommitIdentifier', 'getShortName');
 
-    $branches = DiffusionGitBranch::parseRemoteBranchOutput(
-      $stdout,
-      $only_this_remote = DiffusionBranchInformation::DEFAULT_GIT_REMOTE);
+    if (!$branches) {
+      // This repository has no branches at all, so we don't need to do
+      // anything. Generally, this means the repository is empty.
+      return;
+    }
 
     $callsign = $repository->getCallsign();
 
@@ -665,13 +743,14 @@ final class PhabricatorRepositoryPullLocalDaemon
 
 
   private function executeHgDiscover(PhabricatorRepository $repository) {
-    // NOTE: "--debug" gives us 40-character hashes.
-    list($stdout) = $repository->execxLocalCommand('--debug branches');
 
-    $branches = ArcanistMercurialParser::parseMercurialBranches($stdout);
+    $branches = id(new DiffusionLowLevelMercurialBranchesQuery())
+      ->setRepository($repository)
+      ->execute();
+    $branches = mpull($branches, 'getHeadCommitIdentifier', 'getName');
+
     $got_something = false;
-    foreach ($branches as $name => $branch) {
-      $commit = $branch['rev'];
+    foreach ($branches as $name => $commit) {
       if ($this->isKnownCommit($repository, $commit)) {
         continue;
       } else {

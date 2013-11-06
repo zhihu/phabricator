@@ -40,10 +40,8 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     DifferentialDiff $diff,
     PhabricatorUser $actor) {
 
-    $revision = new DifferentialRevision();
+    $revision = DifferentialRevision::initializeNewRevision($actor);
     $revision->setPHID($revision->generatePHID());
-    $revision->setAuthorPHID($actor->getPHID());
-    $revision->setStatus(ArcanistDifferentialRevisionStatus::NEEDS_REVIEW);
 
     $editor = new DifferentialRevisionEditor($revision);
     $editor->setActor($actor);
@@ -168,9 +166,6 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     $revision = $this->getRevision();
 
     $is_new = $this->isNewRevision();
-    if ($is_new) {
-      $this->initializeNewRevision($revision);
-    }
 
     $revision->loadRelationships();
 
@@ -272,15 +267,18 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
         $xscript_header);
 
       $sub = array(
-        'rev' => array(),
+        'rev' => $adapter->getReviewersAddedByHerald(),
         'ccs' => $adapter->getCCsAddedByHerald(),
       );
       $rem_ccs = $adapter->getCCsRemovedByHerald();
+      $blocking_reviewers = array_keys(
+        $adapter->getBlockingReviewersAddedByHerald());
     } else {
       $sub = array(
         'rev' => array(),
         'ccs' => array(),
       );
+      $blocking_reviewers = array();
     }
 
     // Remove any CCs which are prevented by Herald rules.
@@ -306,12 +304,15 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
       $stable[$key] = array_diff_key($old[$key], $add[$key] + $rem[$key]);
     }
 
+    // Prevent Herald rules from adding a revision's owner as a reviewer.
+    unset($add['rev'][$revision->getAuthorPHID()]);
+
     self::updateReviewers(
       $revision,
       $this->getActor(),
       array_keys($add['rev']),
       array_keys($rem['rev']),
-      $this->getActorPHID());
+      $blocking_reviewers);
 
     // We want to attribute new CCs to a "reasonPHID", representing the reason
     // they were added. This is either a user (if some user explicitly CCs
@@ -375,6 +376,8 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
 
     $changesets = null;
     $comment = null;
+    $old_status = $revision->getStatus();
+
     if ($diff) {
       $changesets = $diff->loadChangesets();
       // TODO: This should probably be in DifferentialFeedbackEditor?
@@ -422,6 +425,17 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     }
 
     $revision->save();
+
+    // If the actor just deleted all the blocking/rejected reviewers, we may
+    // be able to put the revision into "accepted".
+    switch ($revision->getStatus()) {
+      case ArcanistDifferentialRevisionStatus::NEEDS_REVISION:
+      case ArcanistDifferentialRevisionStatus::NEEDS_REVIEW:
+        $revision = self::updateAcceptedStatus(
+          $this->getActor(),
+          $revision);
+        break;
+    }
 
     $this->didWriteRevision();
 
@@ -599,37 +613,39 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     DifferentialRevision $revision,
     PhabricatorUser $actor,
     array $add_phids,
-    array $remove_phids) {
+    array $remove_phids,
+    array $blocking_phids = array()) {
 
     $reviewers = $revision->getReviewers();
-
-    // This is here until the new way proves stable enough
-    // See https://secure.phabricator.com/T1279
-    self::alterReviewers(
-      $revision,
-      $reviewers,
-      $remove_phids,
-      $add_phids,
-      $actor->getPHID());
 
     $editor = id(new PhabricatorEdgeEditor())
       ->setActor($actor);
 
-    $options = array(
-      'data' => array(
-        'status' => DifferentialReviewerStatus::STATUS_ADDED
-      )
-    );
-
     $reviewer_phids_map = array_fill_keys($reviewers, true);
 
+    $blocking_phids = array_fuse($blocking_phids);
     foreach ($add_phids as $phid) {
 
       // Adding an already existing edge again would have cause memory loss
       // That is, the previous state for that reviewer would be lost
       if (isset($reviewer_phids_map[$phid])) {
+        // TODO: If we're writing a blocking edge, we should overwrite an
+        // existing weaker edge (like "added" or "commented"), just not a
+        // stronger existing edge.
         continue;
       }
+
+      if (isset($blocking_phids[$phid])) {
+        $status = DifferentialReviewerStatus::STATUS_BLOCKING;
+      } else {
+        $status = DifferentialReviewerStatus::STATUS_ADDED;
+      }
+
+      $options = array(
+        'data' => array(
+          'status' => $status,
+        )
+      );
 
       $editor->addEdge(
         $revision->getPHID(),
@@ -654,18 +670,6 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     $reviewer_phid,
     $status) {
 
-    $reviewers = $revision->getReviewers();
-    if (!in_array($reviewer_phid, $reviewers)) {
-      // This is here until the new way proves stable enough
-      // See https://secure.phabricator.com/T1279
-      self::alterReviewers(
-        $revision,
-        $reviewers,
-        array(),
-        array($reviewer_phid),
-        $actor->getPHID());
-    }
-
     $options = array(
       'data' => array(
         'status' => $status
@@ -685,25 +689,6 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
         $reviewer_phid,
         $options)
       ->save();
-  }
-
-  /**
-   * @deprecated
-   */
-  private static function alterReviewers(
-    DifferentialRevision $revision,
-    array $stable_phids,
-    array $rem_phids,
-    array $add_phids,
-    $reason_phid) {
-
-    return self::alterRelationships(
-      $revision,
-      $stable_phids,
-      $rem_phids,
-      $add_phids,
-      $reason_phid,
-      DifferentialRevision::RELATION_REVIEWER);
   }
 
   private static function alterRelationships(
@@ -798,10 +783,9 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
 
 
   private function createComment() {
-    $revision_id = $this->revision->getID();
     $comment = id(new DifferentialComment())
       ->setAuthorPHID($this->getActorPHID())
-      ->setRevisionID($revision_id)
+      ->setRevision($this->revision)
       ->setContent($this->getComments())
       ->setAction(DifferentialAction::ACTION_UPDATE)
       ->setMetadata(
@@ -1071,26 +1055,53 @@ final class DifferentialRevisionEditor extends PhabricatorEditor {
     }
   }
 
-  private function initializeNewRevision(DifferentialRevision $revision) {
-    // These fields aren't nullable; set them to sensible defaults if they
-    // haven't been configured. We're just doing this so we can generate an
-    // ID for the revision if we don't have one already.
-    $revision->setLineCount(0);
-    if ($revision->getStatus() === null) {
-      $revision->setStatus(ArcanistDifferentialRevisionStatus::NEEDS_REVIEW);
+  /**
+   * Try to move a revision to "accepted". We look for:
+   *
+   *   - at least one accepting reviewer who is a user; and
+   *   - no rejects; and
+   *   - no blocking reviewers.
+   */
+  public static function updateAcceptedStatus(
+    PhabricatorUser $viewer,
+    DifferentialRevision $revision) {
+
+    $revision = id(new DifferentialRevisionQuery())
+      ->setViewer($viewer)
+      ->withIDs(array($revision->getID()))
+      ->needRelationships(true)
+      ->needReviewerStatus(true)
+      ->needReviewerAuthority(true)
+      ->executeOne();
+
+    $has_user_accept = false;
+    foreach ($revision->getReviewerStatus() as $reviewer) {
+      $status = $reviewer->getStatus();
+      if ($status == DifferentialReviewerStatus::STATUS_BLOCKING) {
+        // We have a blocking reviewer, so just leave the revision in its
+        // existing state.
+        return $revision;
+      }
+
+      if ($status == DifferentialReviewerStatus::STATUS_REJECTED) {
+        // We have a rejecting reviewer, so leave the revisoin as is.
+        return $revision;
+      }
+
+      if ($reviewer->isUser()) {
+        if ($status == DifferentialReviewerStatus::STATUS_ACCEPTED) {
+          $has_user_accept = true;
+        }
+      }
     }
-    if ($revision->getTitle() === null) {
-      $revision->setTitle('Untitled Revision');
+
+    if ($has_user_accept) {
+      $revision
+        ->setStatus(ArcanistDifferentialRevisionStatus::ACCEPTED)
+        ->save();
     }
-    if ($revision->getAuthorPHID() === null) {
-      $revision->setAuthorPHID($this->getActorPHID());
-    }
-    if ($revision->getSummary() === null) {
-      $revision->setSummary('');
-    }
-    if ($revision->getTestPlan() === null) {
-      $revision->setTestPlan('');
-    }
+
+    return $revision;
   }
 
 }

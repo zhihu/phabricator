@@ -30,8 +30,9 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
 
   public function getEventListeners() {
     return array(
-      new DifferentialPeopleMenuEventListener(),
+      new DifferentialActionMenuEventListener(),
       new DifferentialHovercardEventListener(),
+      new DifferentialLandingActionMenuEventListener(),
     );
   }
 
@@ -48,6 +49,8 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
         'changeset/' => 'DifferentialChangesetViewController',
         'revision/edit/(?:(?P<id>[1-9]\d*)/)?'
           => 'DifferentialRevisionEditController',
+        'revision/land/(?:(?P<id>[1-9]\d*))/(?P<strategy>[^/]+)/'
+          => 'DifferentialRevisionLandController',
         'comment/' => array(
           'preview/(?P<id>[1-9]\d*)/' => 'DifferentialCommentPreviewController',
           'save/' => 'DifferentialCommentSaveController',
@@ -116,6 +119,15 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
       ->setCount($waiting);
 
     return $status;
+  }
+
+  protected function getCustomCapabilities() {
+    return array(
+      DifferentialCapabilityDefaultView::CAPABILITY => array(
+        'caption' => pht(
+          'Default view policy for newly created revisions.')
+      ),
+    );
   }
 
 }

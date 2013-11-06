@@ -67,7 +67,7 @@ final class LegalpadDocumentViewController extends LegalpadController {
       ->setPolicyObject($document);
 
     $actions = $this->buildActionView($document);
-    $properties = $this->buildPropertyView($document, $engine);
+    $properties = $this->buildPropertyView($document, $engine, $actions);
 
     $comment_form_id = celerity_generate_unique_node_id();
 
@@ -88,13 +88,12 @@ final class LegalpadDocumentViewController extends LegalpadController {
 
     $object_box = id(new PHUIObjectBoxView())
       ->setHeader($header)
-      ->setActionList($actions)
-      ->setPropertyList($properties);
+      ->addPropertyList($properties)
+      ->addPropertyList($this->buildDocument($engine, $document_body));
 
     $content = array(
       $crumbs,
       $object_box,
-      $this->buildDocument($engine, $document_body),
       $xaction_view,
       $add_comment,
     );
@@ -112,14 +111,12 @@ final class LegalpadDocumentViewController extends LegalpadController {
     PhabricatorMarkupEngine
     $engine, LegalpadDocumentBody $body) {
 
-    require_celerity_resource('legalpad-documentbody-css');
-
-    return phutil_tag(
-      'div',
-      array(
-        'class' => 'legalpad-documentbody'
-      ),
+    $view = new PHUIPropertyListView();
+    $view->addSectionHeader(pht('Document'));
+    $view->addTextContent(
       $engine->getOutput($body, LegalpadDocumentBody::MARKUP_FIELD_TEXT));
+
+    return $view;
 
   }
 
@@ -149,13 +146,15 @@ final class LegalpadDocumentViewController extends LegalpadController {
 
   private function buildPropertyView(
     LegalpadDocument $document,
-    PhabricatorMarkupEngine $engine) {
+    PhabricatorMarkupEngine $engine,
+    PhabricatorActionListView $actions) {
 
     $user = $this->getRequest()->getUser();
 
-    $properties = id(new PhabricatorPropertyListView())
+    $properties = id(new PHUIPropertyListView())
       ->setUser($user)
-      ->setObject($document);
+      ->setObject($document)
+      ->setActionList($actions);
 
     $properties->addProperty(
       pht('Last Updated'),

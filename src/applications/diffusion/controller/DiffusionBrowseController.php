@@ -120,11 +120,15 @@ abstract class DiffusionBrowseController extends DiffusionController {
     return $view;
   }
 
-  protected function buildPropertyView(DiffusionRequest $drequest) {
+  protected function buildPropertyView(
+    DiffusionRequest $drequest,
+    PhabricatorActionListView $actions) {
+
     $viewer = $this->getRequest()->getUser();
 
-    $view = id(new PhabricatorPropertyListView())
-      ->setUser($viewer);
+    $view = id(new PHUIPropertyListView())
+      ->setUser($viewer)
+      ->setActionList($actions);
 
     $stable_commit = $drequest->getStableCommitName();
     $callsign = $drequest->getRepository()->getCallsign();
@@ -142,13 +146,25 @@ abstract class DiffusionBrowseController extends DiffusionController {
         ),
         $drequest->getRepository()->formatCommitName($stable_commit)));
 
-    if ($drequest->getTagContent()) {
-      $view->addProperty(
-        pht('Tag'),
-        $drequest->getSymbolicCommit());
+    if ($drequest->getCommitType() == 'tag') {
+      $symbolic = $drequest->getSymbolicCommit();
+      $view->addProperty(pht('Tag'), $symbolic);
 
-      $view->addSectionHeader(pht('Tag Content'));
-      $view->addTextContent($this->markupText($drequest->getTagContent()));
+      $tags = $this->callConduitWithDiffusionRequest(
+        'diffusion.tagsquery',
+        array(
+          'names' => array($symbolic),
+          'needMessages' => true,
+        ));
+      $tags = DiffusionRepositoryTag::newFromConduit($tags);
+
+      $tags = mpull($tags, null, 'getName');
+      $tag = idx($tags, $symbolic);
+
+      if ($tag && strlen($tag->getMessage())) {
+        $view->addSectionHeader(pht('Tag Content'));
+        $view->addTextContent($this->markupText($tag->getMessage()));
+      }
     }
 
     return $view;

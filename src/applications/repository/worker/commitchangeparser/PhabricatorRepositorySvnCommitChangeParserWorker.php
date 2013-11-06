@@ -3,7 +3,7 @@
 final class PhabricatorRepositorySvnCommitChangeParserWorker
   extends PhabricatorRepositoryCommitChangeParserWorker {
 
-  protected function parseCommit(
+  protected function parseCommitChanges(
     PhabricatorRepository $repository,
     PhabricatorRepositoryCommit $commit) {
 
@@ -26,15 +26,6 @@ final class PhabricatorRepositorySvnCommitChangeParserWorker
 
     $uri = $repository->getDetail('remote-uri');
     $svn_commit = $commit->getCommitIdentifier();
-
-    $callsign = $repository->getCallsign();
-    $full_name = 'r'.$callsign.$svn_commit;
-    echo "Parsing {$full_name}...\n";
-
-    if ($this->isBadCommit($full_name)) {
-      echo "This commit is marked bad!\n";
-      return;
-    }
 
     // Pull the top-level path changes out of "svn log". This is pretty
     // straightforward; just parse the XML log.
@@ -73,6 +64,7 @@ final class PhabricatorRepositorySvnCommitChangeParserWorker
           $deleted_paths[$path] = $raw_info;
           break;
         case 'A':
+        case 'R':
           $add_paths[$path] = $raw_info;
           break;
       }
@@ -367,8 +359,6 @@ final class PhabricatorRepositorySvnCommitChangeParserWorker
 
     $this->writeChanges($repository, $commit, $effects, $path_map, $commit_map);
     $this->writeBrowse($repository, $commit, $effects, $path_map);
-
-    $this->finishParse();
   }
 
   private function writeChanges(

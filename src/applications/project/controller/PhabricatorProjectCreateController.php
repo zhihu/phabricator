@@ -9,8 +9,12 @@ final class PhabricatorProjectCreateController
     $request = $this->getRequest();
     $user = $request->getUser();
 
+    $this->requireApplicationCapability(
+      ProjectCapabilityCreateProjects::CAPABILITY);
+
     $project = new PhabricatorProject();
     $project->setAuthorPHID($user->getPHID());
+    $project->attachMemberPHIDs(array());
     $profile = new PhabricatorProjectProfile();
 
     $e_name = true;
@@ -22,13 +26,13 @@ final class PhabricatorProjectCreateController
 
         $xaction = new PhabricatorProjectTransaction();
         $xaction->setTransactionType(
-          PhabricatorProjectTransactionType::TYPE_NAME);
+          PhabricatorProjectTransaction::TYPE_NAME);
         $xaction->setNewValue($request->getStr('name'));
         $xactions[] = $xaction;
 
         $xaction = new PhabricatorProjectTransaction();
         $xaction->setTransactionType(
-          PhabricatorProjectTransactionType::TYPE_MEMBERS);
+          PhabricatorProjectTransaction::TYPE_MEMBERS);
         $xaction->setNewValue(array($user->getPHID()));
         $xactions[] = $xaction;
 

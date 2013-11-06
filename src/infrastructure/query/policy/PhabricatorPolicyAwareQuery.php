@@ -33,6 +33,9 @@ abstract class PhabricatorPolicyAwareQuery extends PhabricatorOffsetPagedQuery {
   private $parentQuery;
   private $rawResultLimit;
   private $capabilities;
+  private $workspace = array();
+  private $policyFilteredPHIDs = array();
+  private $canUseApplication;
 
 
 /* -(  Query Configuration  )------------------------------------------------ */
@@ -211,9 +214,13 @@ abstract class PhabricatorPolicyAwareQuery extends PhabricatorOffsetPagedQuery {
         $this->rawResultLimit = 0;
       }
 
-      try {
-        $page = $this->loadPage();
-      } catch (PhabricatorEmptyQueryException $ex) {
+      if ($this->canViewerUseQueryApplication()) {
+        try {
+          $page = $this->loadPage();
+        } catch (PhabricatorEmptyQueryException $ex) {
+          $page = array();
+        }
+      } else {
         $page = array();
       }
 
@@ -227,6 +234,22 @@ abstract class PhabricatorPolicyAwareQuery extends PhabricatorOffsetPagedQuery {
         $visible = $maybe_visible;
       } else {
         $visible = $filter->apply($maybe_visible);
+
+        $policy_filtered = array();
+        foreach ($maybe_visible as $key => $object) {
+          if (empty($visible[$key])) {
+            $phid = $object->getPHID();
+            if ($phid) {
+              $policy_filtered[$phid] = $phid;
+            }
+          }
+        }
+        $this->addPolicyFilteredPHIDs($policy_filtered);
+      }
+
+      if ($visible) {
+        $this->putObjectsInWorkspace($this->getWorkspaceMapForPage($visible));
+        $visible = $this->didFilterPage($visible);
       }
 
       $removed = array();
@@ -299,6 +322,130 @@ abstract class PhabricatorPolicyAwareQuery extends PhabricatorOffsetPagedQuery {
       PhabricatorPolicyCapability::CAN_VIEW);
   }
 
+  public function addPolicyFilteredPHIDs(array $phids) {
+    $this->policyFilteredPHIDs += $phids;
+    if ($this->getParentQuery()) {
+      $this->getParentQuery()->addPolicyFilteredPHIDs($phids);
+    }
+    return $this;
+  }
+
+  /**
+   * Return a map of all object PHIDs which were loaded in the query but
+   * filtered out by policy constraints. This allows a caller to distinguish
+   * between objects which do not exist (or, at least, were filtered at the
+   * content level) and objects which exist but aren't visible.
+   *
+   * @return map<phid, phid> Map of object PHIDs which were filtered
+   *   by policies.
+   * @task exec
+   */
+  public function getPolicyFilteredPHIDs() {
+    return $this->policyFilteredPHIDs;
+  }
+
+
+/* -(  Query Workspace  )---------------------------------------------------- */
+
+
+  /**
+   * Put a map of objects into the query workspace. Many queries perform
+   * subqueries, which can eventually end up loading the same objects more than
+   * once (often to perform policy checks).
+   *
+   * For example, loading a user may load the user's profile image, which might
+   * load the user object again in order to verify that the viewer has
+   * permission to see the file.
+   *
+   * The "query workspace" allows queries to load objects from elsewhere in a
+   * query block instead of refetching them.
+   *
+   * When using the query workspace, it's important to obey two rules:
+   *
+   * **Never put objects into the workspace which the viewer may not be able
+   * to see**. You need to apply all policy filtering //before// putting
+   * objects in the workspace. Otherwise, subqueries may read the objects and
+   * use them to permit access to content the user shouldn't be able to view.
+   *
+   * **Fully enrich objects pulled from the workspace.** After pulling objects
+   * from the workspace, you still need to load and attach any additional
+   * content the query requests. Otherwise, a query might return objects without
+   * requested content.
+   *
+   * Generally, you do not need to update the workspace yourself: it is
+   * automatically populated as a side effect of objects surviving policy
+   * filtering.
+   *
+   * @param map<phid, PhabricatorPolicyInterface> Objects to add to the query
+   *   workspace.
+   * @return this
+   * @task workspace
+   */
+  public function putObjectsInWorkspace(array $objects) {
+    assert_instances_of($objects, 'PhabricatorPolicyInterface');
+
+    $viewer_phid = $this->getViewer()->getPHID();
+
+    // The workspace is scoped per viewer to prevent accidental contamination.
+    if (empty($this->workspace[$viewer_phid])) {
+      $this->workspace[$viewer_phid] = array();
+    }
+
+    $this->workspace[$viewer_phid] += $objects;
+
+    return $this;
+  }
+
+
+  /**
+   * Retrieve objects from the query workspace. For more discussion about the
+   * workspace mechanism, see @{method:putObjectsInWorkspace}. This method
+   * searches both the current query's workspace and the workspaces of parent
+   * queries.
+   *
+   * @param list<phid> List of PHIDs to retreive.
+   * @return this
+   * @task workspace
+   */
+  public function getObjectsFromWorkspace(array $phids) {
+    $viewer_phid = $this->getViewer()->getPHID();
+
+    $results = array();
+    foreach ($phids as $key => $phid) {
+      if (isset($this->workspace[$viewer_phid][$phid])) {
+        $results[$phid] = $this->workspace[$viewer_phid][$phid];
+        unset($phids[$key]);
+      }
+    }
+
+    if ($phids && $this->getParentQuery()) {
+      $results += $this->getParentQuery()->getObjectsFromWorkspace($phids);
+    }
+
+    return $results;
+  }
+
+
+  /**
+   * Convert a result page to a `<phid, PhabricatorPolicyInterface>` map.
+   *
+   * @param list<PhabricatorPolicyInterface> Objects.
+   * @return map<phid, PhabricatorPolicyInterface> Map of objects which can
+   *   be put into the workspace.
+   * @task workspace
+   */
+  protected function getWorkspaceMapForPage(array $results) {
+    $map = array();
+    foreach ($results as $result) {
+      $phid = $result->getPHID();
+      if ($phid !== null) {
+        $map[$phid] = $result;
+      }
+    }
+
+    return $map;
+  }
+
 
 /* -(  Policy Query Implementation  )---------------------------------------- */
 
@@ -353,7 +500,13 @@ abstract class PhabricatorPolicyAwareQuery extends PhabricatorOffsetPagedQuery {
   /**
    * Hook for applying a page filter prior to the privacy filter. This allows
    * you to drop some items from the result set without creating problems with
-   * pagination or cursor updates.
+   * pagination or cursor updates. You can also load and attach data which is
+   * required to perform policy filtering.
+   *
+   * Generally, you should load non-policy data and perform non-policy filtering
+   * later, in @{method:didFilterPage}. Strictly fewer objects will make it that
+   * far (so the program will load less data) and subqueries from that context
+   * can use the query workspace to further reduce query load.
    *
    * This method will only be called if data is available. Implementations
    * do not need to handle the case of no results specially.
@@ -363,6 +516,29 @@ abstract class PhabricatorPolicyAwareQuery extends PhabricatorOffsetPagedQuery {
    * @task policyimpl
    */
   protected function willFilterPage(array $page) {
+    return $page;
+  }
+
+  /**
+   * Hook for performing additional non-policy loading or filtering after an
+   * object has satisfied all policy checks. Generally, this means loading and
+   * attaching related data.
+   *
+   * Subqueries executed during this phase can use the query workspace, which
+   * may improve performance or make circular policies resolvable. Data which
+   * is not necessary for policy filtering should generally be loaded here.
+   *
+   * This callback can still filter objects (for example, if attachable data
+   * is discovered to not exist), but should not do so for policy reasons.
+   *
+   * This method will only be called if data is available. Implementations do
+   * not need to handle the case of no results specially.
+   *
+   * @param list<wild> Results from @{method:willFilterPage()}.
+   * @return list<PhabricatorPolicyInterface> Objects after additional
+   *   non-policy processing.
+   */
+  protected function didFilterPage(array $page) {
     return $page;
   }
 
@@ -408,6 +584,45 @@ abstract class PhabricatorPolicyAwareQuery extends PhabricatorOffsetPagedQuery {
    */
   protected function shouldDisablePolicyFiltering() {
     return false;
+  }
+
+
+  /**
+   * If this query belongs to an application, return the application class name
+   * here. This will prevent the query from returning results if the viewer can
+   * not access the application.
+   *
+   * If this query does not belong to an application, return `null`.
+   *
+   * @return string|null Application class name.
+   */
+  abstract public function getQueryApplicationClass();
+
+
+  /**
+   * Determine if the viewer has permission to use this query's application.
+   * For queries which aren't part of an application, this method always returns
+   * true.
+   *
+   * @return bool True if the viewer has application-level permission to
+   *   execute the query.
+   */
+  public function canViewerUseQueryApplication() {
+    if ($this->canUseApplication === null) {
+      $class = $this->getQueryApplicationClass();
+      if (!$class) {
+        $this->canUseApplication = true;
+      } else {
+        $result = id(new PhabricatorApplicationQuery())
+          ->setViewer($this->getViewer())
+          ->withClasses(array($class))
+          ->execute();
+
+        $this->canUseApplication = (bool)$result;
+      }
+    }
+
+    return $this->canUseApplication;
   }
 
 }

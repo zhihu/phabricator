@@ -161,6 +161,11 @@ class AphrontDefaultApplicationConfiguration
         // Possibly we should add a header here like "you need to login to see
         // the thing you are trying to look at".
         $login_controller = new PhabricatorAuthStartController($request);
+
+        $auth_app_class = 'PhabricatorApplicationAuth';
+        $auth_app = PhabricatorApplication::getByClass($auth_app_class);
+        $login_controller->setCurrentApplication($auth_app);
+
         return $login_controller->processRequest();
       }
 
@@ -172,22 +177,25 @@ class AphrontDefaultApplicationConfiguration
         $list = phutil_tag('ul', array(), $list);
       }
 
-      $content = phutil_tag(
-        'div',
-        array(
-          'class' => 'aphront-policy-exception',
-        ),
-        array(
-          $ex->getMessage(),
-          $list,
-        ));
+      $content = array(
+        phutil_tag(
+          'div',
+          array(
+            'class' => 'aphront-policy-rejection',
+          ),
+          $ex->getRejection()),
+        phutil_tag(
+          'div',
+          array(
+            'class' => 'aphront-capability-details',
+          ),
+          pht('Users with the "%s" capability:', $ex->getCapabilityName())),
+        $list,
+      );
 
       $dialog = new AphrontDialogView();
       $dialog
-        ->setTitle(
-            $is_serious
-              ? 'Access Denied'
-              : "You Shall Not Pass")
+        ->setTitle($ex->getTitle())
         ->setClass('aphront-access-dialog')
         ->setUser($user)
         ->appendChild($content);
@@ -214,6 +222,7 @@ class AphrontDefaultApplicationConfiguration
 
       $response = new AphrontWebpageResponse();
       $response->setContent($view->render());
+      $response->setHTTPResponseCode(500);
 
       return $response;
     }
@@ -260,6 +269,7 @@ class AphrontDefaultApplicationConfiguration
 
     $response = new AphrontDialogResponse();
     $response->setDialog($dialog);
+    $response->setHTTPResponseCode(500);
 
     return $response;
   }

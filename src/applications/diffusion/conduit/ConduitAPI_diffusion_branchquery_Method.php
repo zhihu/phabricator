@@ -27,36 +27,31 @@ final class ConduitAPI_diffusion_branchquery_Method
     $limit = $request->getValue('limit');
     $offset = $request->getValue('offset');
 
-    // We need to add 1 in case we pick up HEAD.
-    $count = $offset + $limit + 1;
-
-    list($stdout) = $repository->execxLocalCommand(
-      'for-each-ref %C --sort=-creatordate --format=%s refs/remotes',
-      $count ? '--count='.(int)$count : null,
-      '%(refname:short) %(objectname)');
-
-    $branch_list = DiffusionGitBranch::parseRemoteBranchOutput(
-      $stdout,
-      $only_this_remote = DiffusionBranchInformation::DEFAULT_GIT_REMOTE);
+    $refs = id(new DiffusionLowLevelGitRefQuery())
+      ->setRepository($repository)
+      ->withIsOriginBranch(true)
+      ->execute();
 
     $branches = array();
-    foreach ($branch_list as $name => $head) {
-      if (!$repository->shouldTrackBranch($name)) {
+    foreach ($refs as $ref) {
+      $branch = id(new DiffusionBranchInformation())
+        ->setName($ref->getShortName())
+        ->setHeadCommitIdentifier($ref->getCommitIdentifier());
+
+      if (!$repository->shouldTrackBranch($branch->getName())) {
         continue;
       }
 
-      $branch = new DiffusionBranchInformation();
-      $branch->setName($name);
-      $branch->setHeadCommitIdentifier($head);
       $branches[] = $branch->toDictionary();
     }
+
+    // NOTE: We can't apply the offset or limit until here, because we may have
+    // filtered untrackable branches out of the result set.
 
     if ($offset) {
       $branches = array_slice($branches, $offset);
     }
 
-    // We might have too many even after offset slicing, if there was no HEAD
-    // for some reason.
     if ($limit) {
       $branches = array_slice($branches, 0, $limit);
     }
@@ -70,17 +65,9 @@ final class ConduitAPI_diffusion_branchquery_Method
     $offset = $request->getValue('offset');
     $limit = $request->getValue('limit');
 
-    list($stdout) = $repository->execxLocalCommand(
-      '--debug branches');
-    $branch_info = ArcanistMercurialParser::parseMercurialBranches($stdout);
-
-    $branches = array();
-    foreach ($branch_info as $name => $info) {
-      $branch = new DiffusionBranchInformation();
-      $branch->setName($name);
-      $branch->setHeadCommitIdentifier($info['rev']);
-      $branches[] = $branch->toDictionary();
-    }
+    $branches = id(new DiffusionLowLevelMercurialBranchesQuery())
+      ->setRepository($repository)
+      ->execute();
 
     if ($offset) {
       $branches = array_slice($branches, $offset);
@@ -90,6 +77,6 @@ final class ConduitAPI_diffusion_branchquery_Method
       $branches = array_slice($branches, 0, $limit);
     }
 
-    return $branches;
+    return mpull($branches, 'toDictionary');
   }
 }

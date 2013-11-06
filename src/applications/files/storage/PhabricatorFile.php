@@ -7,6 +7,7 @@ final class PhabricatorFile extends PhabricatorFileDAO
   implements
     PhabricatorTokenReceiverInterface,
     PhabricatorSubscribableInterface,
+    PhabricatorFlaggableInterface,
     PhabricatorPolicyInterface {
 
   const STORAGE_FORMAT_RAW  = 'raw';
@@ -14,7 +15,6 @@ final class PhabricatorFile extends PhabricatorFileDAO
   const METADATA_IMAGE_WIDTH  = 'width';
   const METADATA_IMAGE_HEIGHT = 'height';
 
-  protected $phid;
   protected $name;
   protected $mimeType;
   protected $byteSize;
@@ -726,22 +726,6 @@ final class PhabricatorFile extends PhabricatorFileDAO
     return $this;
   }
 
-  public static function getMetadataName($metadata) {
-    switch ($metadata) {
-      case self::METADATA_IMAGE_WIDTH:
-        $name = pht('Width');
-        break;
-      case self::METADATA_IMAGE_HEIGHT:
-        $name = pht('Height');
-        break;
-      default:
-        $name = ucfirst($metadata);
-        break;
-    }
-
-    return $name;
-  }
-
 
   /**
    * Load (or build) the {@class:PhabricatorFile} objects for builtin file
@@ -765,8 +749,10 @@ final class PhabricatorFile extends PhabricatorFileDAO
       );
     }
 
+    // NOTE: Anyone is allowed to access builtin files.
+
     $files = id(new PhabricatorFileQuery())
-      ->setViewer($user)
+      ->setViewer(PhabricatorUser::getOmnipotentUser())
       ->withTransforms($specs)
       ->execute();
 
@@ -858,6 +844,25 @@ final class PhabricatorFile extends PhabricatorFileDAO
       return null;
     }
     return idx($this->metadata, self::METADATA_IMAGE_WIDTH);
+  }
+
+  /**
+   * Write the policy edge between this file and some object.
+   *
+   * @param PhabricatorUser Acting user.
+   * @param phid Object PHID to attach to.
+   * @return this
+   */
+  public function attachToObject(PhabricatorUser $actor, $phid) {
+    $edge_type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_FILE;
+
+    id(new PhabricatorEdgeEditor())
+      ->setActor($actor)
+      ->setSuppressEvents(true)
+      ->addEdge($phid, $edge_type, $this->getPHID())
+      ->save();
+
+    return $this;
   }
 
 

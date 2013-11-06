@@ -204,6 +204,10 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
         'type' => 'db',
         'name' => 'legalpad',
       ),
+      'db.policy' => array(
+        'type' => 'db',
+        'name' => 'policy',
+      ),
       '0000.legacy.sql' => array(
         'type'    => 'sql',
         'name'    => $this->getPatchPath('0000.legacy.sql'),
@@ -1651,6 +1655,74 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
       '20130929.filepolicy.sql' => array(
         'type' => 'sql',
         'name' => $this->getPatchPath('20130929.filepolicy.sql'),
+      ),
+      '20131004.dxedgekey.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131004.dxedgekey.sql'),
+      ),
+      '20131004.dxreviewers.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20131004.dxreviewers.php'),
+      ),
+      '20131006.hdisable.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131006.hdisable.sql'),
+      ),
+      '20131010.pstorage.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131010.pstorage.sql'),
+      ),
+      '20131015.cpolicy.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131015.cpolicy.sql'),
+      ),
+      '20130915.maniphestqdrop.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20130915.maniphestqdrop.sql'),
+      ),
+      '20130926.dinline.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20130926.dinline.php'),
+      ),
+      '20131020.pcustom.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131020.pcustom.sql'),
+      ),
+      '20131020.col1.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131020.col1.sql'),
+      ),
+      '20131020.pxaction.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131020.pxaction.sql'),
+      ),
+      '20131020.pxactionmig.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20131020.pxactionmig.php'),
+      ),
+      '20131020.harbormaster.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131020.harbormaster.sql'),
+      ),
+      '20131025.repopush.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131025.repopush.sql'),
+      ),
+      '20131026.commitstatus.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131026.commitstatus.sql'),
+      ),
+      '20131030.repostatusmessage.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131030.repostatusmessage.sql'),
+      ),
+      '20131031.vcspassword.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131031.vcspassword.sql'),
+      ),
+      '20131105.buildstep.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131105.buildstep.sql'),
       ),
     );
   }

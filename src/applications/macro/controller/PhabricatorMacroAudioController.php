@@ -10,6 +10,10 @@ final class PhabricatorMacroAudioController
   }
 
   public function processRequest() {
+
+    $this->requireApplicationCapability(
+      PhabricatorMacroCapabilityManage::CAPABILITY);
+
     $request = $this->getRequest();
     $viewer = $request->getUser();
 
@@ -18,7 +22,6 @@ final class PhabricatorMacroAudioController
       ->requireCapabilities(
         array(
           PhabricatorPolicyCapability::CAN_VIEW,
-          PhabricatorPolicyCapability::CAN_EDIT,
         ))
       ->withIDs(array($this->id))
       ->executeOne();

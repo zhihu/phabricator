@@ -22,7 +22,6 @@ final class PhabricatorCountdownViewController
       ->setViewer($user)
       ->withIDs(array($this->id))
       ->executeOne();
-
     if (!$countdown) {
       return new Aphront404Response();
     }
@@ -42,15 +41,16 @@ final class PhabricatorCountdownViewController
           ->setName("C{$id}"));
 
     $header = id(new PHUIHeaderView())
-      ->setHeader($title);
+      ->setHeader($title)
+      ->setUser($user)
+      ->setPolicyObject($countdown);
 
     $actions = $this->buildActionListView($countdown);
-    $properties = $this->buildPropertyListView($countdown);
+    $properties = $this->buildPropertyListView($countdown, $actions);
 
     $object_box = id(new PHUIObjectBoxView())
       ->setHeader($header)
-      ->setActionList($actions)
-      ->setPropertyList($properties);
+      ->addPropertyList($properties);
 
     $content = array(
       $crumbs,
@@ -99,14 +99,18 @@ final class PhabricatorCountdownViewController
     return $view;
   }
 
-  private function buildPropertyListView(PhabricatorCountdown $countdown) {
+  private function buildPropertyListView(
+    PhabricatorCountdown $countdown,
+    PhabricatorActionListView $actions) {
+
     $request = $this->getRequest();
     $viewer = $request->getUser();
 
     $this->loadHandles(array($countdown->getAuthorPHID()));
 
-    $view = id(new PhabricatorPropertyListView())
-      ->setUser($viewer);
+    $view = id(new PHUIPropertyListView())
+      ->setUser($viewer)
+      ->setActionList($actions);
 
     $view->addProperty(
       pht('Author'),

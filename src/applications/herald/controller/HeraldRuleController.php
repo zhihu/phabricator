@@ -47,14 +47,11 @@ final class HeraldRuleController extends HeraldController {
       $rule->setRuleType($rule_type);
 
       $cancel_uri = $this->getApplicationURI();
-
-      $this->requireApplicationCapability(
-        PhabricatorApplicationHerald::CAN_CREATE_RULE);
     }
 
     if ($rule->getRuleType() == HeraldRuleTypeConfig::RULE_TYPE_GLOBAL) {
       $this->requireApplicationCapability(
-        PhabricatorApplicationHerald::CAN_CREATE_GLOBAL_RULE);
+        HeraldCapabilityManageGlobalRules::CAPABILITY);
     }
 
     $adapter = HeraldAdapter::getAdapterForContentType($rule->getContentType());
@@ -509,10 +506,11 @@ final class HeraldRuleController extends HeraldController {
     return array(
       'source' => array(
         'email'       => '/typeahead/common/mailable/',
-        'user'        => '/typeahead/common/users/',
+        'user'        => '/typeahead/common/accounts/',
         'repository'  => '/typeahead/common/repositories/',
         'package'     => '/typeahead/common/packages/',
         'project'     => '/typeahead/common/projects/',
+        'userorproject' => '/typeahead/common/accountsorprojects/',
       ),
       'markup' => $template,
     );

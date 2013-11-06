@@ -79,12 +79,62 @@ final class ConduitCall {
   }
 
   public function execute() {
-    if (!$this->getUser()) {
-      if ($this->shouldRequireAuthentication()) {
-        throw new ConduitException("ERR-INVALID-AUTH");
-      }
+    $profiler = PhutilServiceProfiler::getInstance();
+    $call_id = $profiler->beginServiceCall(
+      array(
+        'type' => 'conduit',
+        'method' => $this->method,
+      ));
+
+    try {
+      $result = $this->executeMethod();
+    } catch (Exception $ex) {
+      $profiler->endServiceCall($call_id, array());
+      throw $ex;
+    }
+
+    $profiler->endServiceCall($call_id, array());
+    return $result;
+  }
+
+  private function executeMethod() {
+    $user = $this->getUser();
+    if (!$user) {
+      $user = new PhabricatorUser();
+    }
+
+    $this->request->setUser($user);
+
+    if (!$this->shouldRequireAuthentication()) {
+      // No auth requirement here.
     } else {
-      $this->request->setUser($this->getUser());
+
+      $allow_public = $this->handler->shouldAllowPublic() &&
+                      PhabricatorEnv::getEnvConfig('policy.allow-public');
+      if (!$allow_public) {
+        if (!$user->isLoggedIn() && !$user->isOmnipotent()) {
+          // TODO: As per below, this should get centralized and cleaned up.
+          throw new ConduitException("ERR-INVALID-AUTH");
+        }
+      }
+
+      // TODO: This would be slightly cleaner by just using a Query, but the
+      // Conduit auth workflow requires the Call and User be built separately.
+      // Just do it this way for the moment.
+      $application = $this->handler->getApplication();
+      if ($application) {
+        $can_view = PhabricatorPolicyFilter::hasCapability(
+          $user,
+          $application,
+          PhabricatorPolicyCapability::CAN_VIEW);
+
+        if (!$can_view) {
+          throw new ConduitException(
+            pht(
+              "You do not have access to the application which provides this ".
+              "API method."));
+        }
+      }
     }
 
     if (!$this->shouldForceLocal() && $this->servers) {

@@ -33,7 +33,7 @@ body .phui-header-shell.phui-bleed-header
   border-top-width: 0;
 }
 
-.phabricator-property-list-view + .diviner-document-section {
+.phui-property-list-view + .diviner-document-section {
   margin-top: -1px;
 }
 
@@ -41,6 +41,16 @@ body .phui-header-shell.phui-bleed-header
   padding: 16px;
   font-size: 15px;
   color: {$darkbluetext};
+}
+
+.phui-header-view a {
+  color: {$darkbluetext};
+}
+
+.phui-header-divider {
+  margin: 0 4px;
+  font-weight: normal;
+  color: {$lightbluetext};
 }
 
 body.device-phone .phui-header-view {

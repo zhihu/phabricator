@@ -4,11 +4,11 @@ final class PhabricatorFileImageMacro extends PhabricatorFileDAO
   implements
     PhabricatorSubscribableInterface,
     PhabricatorApplicationTransactionInterface,
+    PhabricatorFlaggableInterface,
     PhabricatorPolicyInterface {
 
   protected $authorPHID;
   protected $filePHID;
-  protected $phid;
   protected $name;
   protected $isDisabled = 0;
   protected $audioPHID;
@@ -65,12 +65,11 @@ final class PhabricatorFileImageMacro extends PhabricatorFileDAO
   public function getCapabilities() {
     return array(
       PhabricatorPolicyCapability::CAN_VIEW,
-      PhabricatorPolicyCapability::CAN_EDIT,
     );
   }
 
   public function getPolicy($capability) {
-    return PhabricatorPolicies::POLICY_USER;
+    return PhabricatorPolicies::getMostOpenPolicy();
   }
 
   public function hasAutomaticCapability($capability, PhabricatorUser $viewer) {

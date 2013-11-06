@@ -621,6 +621,26 @@
       "rule" : ".apps-paste-white-large",
       "hash" : "94cf3ee0f2b15b82ad8f62cb9399ecad"
     },
+    "apps-pebkac-blue-large"          : {
+      "name" : "apps-pebkac-blue-large",
+      "rule" : ".apps-pebkac-blue-large, .phabricator-crumb-view:hover .apps-pebkac-dark-large",
+      "hash" : "7a1010119d4589609f364c603cd03d1b"
+    },
+    "apps-pebkac-dark-large"          : {
+      "name" : "apps-pebkac-dark-large",
+      "rule" : ".apps-pebkac-dark-large",
+      "hash" : "617142b451eec10fe60246eec52a99d0"
+    },
+    "apps-pebkac-light-large"         : {
+      "name" : "apps-pebkac-light-large",
+      "rule" : ".apps-pebkac-light-large",
+      "hash" : "2319b657d0fe3df60b234e8961c4869e"
+    },
+    "apps-pebkac-white-large"         : {
+      "name" : "apps-pebkac-white-large",
+      "rule" : ".apps-pebkac-white-large",
+      "hash" : "25eb13ac78cf507b6ec66016cd477cfe"
+    },
     "apps-people-blue-large"          : {
       "name" : "apps-people-blue-large",
       "rule" : ".apps-people-blue-large, .phabricator-crumb-view:hover .apps-people-dark-large",
@@ -940,6 +960,26 @@
       "name" : "apps-repositories-white-large",
       "rule" : ".apps-repositories-white-large",
       "hash" : "e249fe8d4137e4b357c88ee237535632"
+    },
+    "apps-search-blue-large"          : {
+      "name" : "apps-search-blue-large",
+      "rule" : ".apps-search-blue-large, .phabricator-crumb-view:hover .apps-search-dark-large",
+      "hash" : "92d4f29ba421c9511c24587ddef9610c"
+    },
+    "apps-search-dark-large"          : {
+      "name" : "apps-search-dark-large",
+      "rule" : ".apps-search-dark-large",
+      "hash" : "c734624259fdbc5bd2f9a5660cea1ea9"
+    },
+    "apps-search-light-large"         : {
+      "name" : "apps-search-light-large",
+      "rule" : ".apps-search-light-large",
+      "hash" : "69e3b578e40caa14ec814b624bd596fe"
+    },
+    "apps-search-white-large"         : {
+      "name" : "apps-search-white-large",
+      "rule" : ".apps-search-white-large",
+      "hash" : "0e1f6f3142848d8a4b679aac36caa7b8"
     },
     "apps-settings-blue-large"        : {
       "name" : "apps-settings-blue-large",

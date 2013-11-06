@@ -460,6 +460,12 @@ abstract class PhabricatorApplicationTransactionEditor
       return array();
     }
 
+    // Now that we've merged, filtered, and combined transactions, check for
+    // required capabilities.
+    foreach ($xactions as $xaction) {
+      $this->requireCapabilities($object, $xaction);
+    }
+
     $xactions = $this->sortTransactions($xactions);
 
     if ($is_preview) {
@@ -696,20 +702,24 @@ abstract class PhabricatorApplicationTransactionEditor
       $actor,
       $object,
       PhabricatorPolicyCapability::CAN_VIEW);
+  }
 
-    // TODO: This should be "$object", not "$xaction", but probably breaks a
-    // lot of stuff if fixed -- you don't need to be able to edit in order to
-    // comment. Instead, transactions should specify the capabilities they
-    // require.
+  protected function requireCapabilities(
+    PhabricatorLiskDAO $object,
+    PhabricatorApplicationTransaction $xaction) {
 
-    /*
+    switch ($xaction->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_EDIT_POLICY:
+        // You must have the edit capability to alter the edit policy of an
+        // object. For other default transaction types, we don't enforce
+        // anything for the moment.
 
-    PhabricatorPolicyFilter::requireCapability(
-      $actor,
-      $xaction,
-      PhabricatorPolicyCapability::CAN_EDIT);
-
-    */
+        PhabricatorPolicyFilter::requireCapability(
+          $this->requireActor(),
+          $object,
+          PhabricatorPolicyCapability::CAN_EDIT);
+        break;
+    }
   }
 
   private function buildMentionTransaction(
@@ -1575,13 +1585,20 @@ abstract class PhabricatorApplicationTransactionEditor
     }
     $blocks = array_mergev($blocks);
 
-    if (!$blocks) {
-      return array();
+
+    $phids = array();
+    if ($blocks) {
+      $phids[] = PhabricatorMarkupEngine::extractFilePHIDsFromEmbeddedFiles(
+        $blocks);
     }
 
-    $phids = PhabricatorMarkupEngine::extractFilePHIDsFromEmbeddedFiles(
-      $blocks);
+    foreach ($xactions as $xaction) {
+      $phids[] = $this->extractFilePHIDsFromCustomTransaction(
+        $object,
+        $xaction);
+    }
 
+    $phids = array_unique(array_filter(array_mergev($phids)));
     if (!$phids) {
       return array();
     }
@@ -1596,6 +1613,15 @@ abstract class PhabricatorApplicationTransactionEditor
       ->execute();
 
     return mpull($files, 'getPHID');
+  }
+
+  /**
+   * @task files
+   */
+  protected function extractFilePHIDsFromCustomTransaction(
+    PhabricatorLiskDAO $object,
+    PhabricatorApplicationTransaction $xaction) {
+    return array();
   }
 
 

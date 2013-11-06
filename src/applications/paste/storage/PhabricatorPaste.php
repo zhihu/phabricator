@@ -1,15 +1,12 @@
 <?php
 
-/**
- * @group paste
- */
 final class PhabricatorPaste extends PhabricatorPasteDAO
   implements
     PhabricatorSubscribableInterface,
     PhabricatorTokenReceiverInterface,
+    PhabricatorFlaggableInterface,
     PhabricatorPolicyInterface {
 
-  protected $phid;
   protected $title;
   protected $authorPHID;
   protected $filePHID;
@@ -20,6 +17,20 @@ final class PhabricatorPaste extends PhabricatorPasteDAO
 
   private $content = self::ATTACHABLE;
   private $rawContent = self::ATTACHABLE;
+
+  public static function initializeNewPaste(PhabricatorUser $actor) {
+    $app = id(new PhabricatorApplicationQuery())
+      ->setViewer($actor)
+      ->withClasses(array('PhabricatorApplicationPaste'))
+      ->executeOne();
+
+    $view_policy = $app->getPolicy(PasteCapabilityDefaultView::CAPABILITY);
+
+    return id(new PhabricatorPaste())
+      ->setTitle('')
+      ->setAuthorPHID($actor->getPHID())
+      ->setViewPolicy($view_policy);
+  }
 
   public function getURI() {
     return '/P'.$this->getID();
@@ -41,29 +52,6 @@ final class PhabricatorPaste extends PhabricatorPasteDAO
       $this->setMailKey(Filesystem::readRandomCharacters(20));
     }
     return parent::save();
-  }
-
-  public function getCapabilities() {
-    return array(
-      PhabricatorPolicyCapability::CAN_VIEW,
-      PhabricatorPolicyCapability::CAN_EDIT,
-    );
-  }
-
-  public function getPolicy($capability) {
-    if ($capability == PhabricatorPolicyCapability::CAN_VIEW) {
-      return $this->viewPolicy;
-    }
-    return PhabricatorPolicies::POLICY_NOONE;
-  }
-
-  public function hasAutomaticCapability($capability, PhabricatorUser $user) {
-    return ($user->getPHID() == $this->getAuthorPHID());
-  }
-
-  public function describeAutomaticCapability($capability) {
-    return pht(
-      'The author of a paste can always view and edit it.');
   }
 
   public function getFullName() {
@@ -92,7 +80,7 @@ final class PhabricatorPaste extends PhabricatorPasteDAO
     return $this;
   }
 
-/* -(  PhabricatorSubscribableInterface Implementation  )-------------------- */
+/* -(  PhabricatorSubscribableInterface  )----------------------------------- */
 
 
   public function isAutomaticallySubscribed($phid) {
@@ -107,5 +95,32 @@ final class PhabricatorPaste extends PhabricatorPasteDAO
       $this->getAuthorPHID(),
     );
   }
+
+
+/* -(  PhabricatorPolicyInterface  )----------------------------------------- */
+
+
+  public function getCapabilities() {
+    return array(
+      PhabricatorPolicyCapability::CAN_VIEW,
+      PhabricatorPolicyCapability::CAN_EDIT,
+    );
+  }
+
+  public function getPolicy($capability) {
+    if ($capability == PhabricatorPolicyCapability::CAN_VIEW) {
+      return $this->viewPolicy;
+    }
+    return PhabricatorPolicies::POLICY_NOONE;
+  }
+
+  public function hasAutomaticCapability($capability, PhabricatorUser $user) {
+    return ($user->getPHID() == $this->getAuthorPHID());
+  }
+
+  public function describeAutomaticCapability($capability) {
+    return pht('The author of a paste can always view and edit it.');
+  }
+
 
 }

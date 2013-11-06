@@ -65,6 +65,31 @@ final class PHUIHeaderView extends AphrontView {
     return $this;
   }
 
+  public function setStatus($icon, $color, $name) {
+    $header_class = 'phui-header-status';
+
+    if ($color) {
+      $icon = $icon.'-'.$color;
+      $header_class = $header_class.'-'.$color;
+    }
+
+    $img = id(new PHUIIconView())
+      ->setSpriteSheet(PHUIIconView::SPRITE_STATUS)
+      ->setSpriteIcon($icon);
+
+    $tag = phutil_tag(
+      'span',
+      array(
+        'class' => "{$header_class} plr",
+      ),
+      array(
+        $img,
+        $name,
+      ));
+
+    return $this->addProperty(self::PROPERTY_STATUS, $tag);
+  }
+
   public function render() {
     require_celerity_resource('phui-header-view-css');
 
@@ -199,7 +224,7 @@ final class PHUIHeaderView extends AphrontView {
         'href' => '/policy/explain/'.$phid.'/'.$view_capability.'/',
         'sigil' => 'workflow',
       ),
-      $policy->getName());
+      $policy->getShortName());
 
     return array($icon, $link);
   }

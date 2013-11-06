@@ -300,6 +300,23 @@ abstract class PhabricatorBaseEnglishTranslation
         ),
       ),
 
+      '%s changed project(s) of %s, added %d: %s; removed %d: %s' =>
+        '%s changed projects of %s, added: %4$s; removed: %6$s',
+
+      '%s added %d project(s) to %s: %s' => array(
+        array(
+          '%s added a project to %3$s: %4$s',
+          '%s added projects to %3$s: %4$s',
+        ),
+      ),
+
+      '%s removed %d project(s) from %s: %s' => array(
+        array(
+          '%s removed a project from %3$s: %4$s',
+          '%s removed projects from %3$s: %4$s',
+        ),
+      ),
+
       '%s edited voting user(s), added %d: %s; removed %d: %s.' =>
         '%s edited voting users, added: %3$s; removed: %5$s',
 
@@ -775,6 +792,23 @@ abstract class PhabricatorBaseEnglishTranslation
 
       '%s edited commit(s), added %d: %s; removed %d: %s.' =>
         '%s edited commits, added %3$s; removed %5$s.',
+
+      '%s changed project member(s), added %d: %s; removed %d: %s' =>
+        '%s changed project members, added %3$s; removed %5$s',
+
+      '%s added %d project member(s): %s' => array(
+        array(
+          '%s added a member: %3$s',
+          '%s added members: %3$s',
+        ),
+      ),
+
+      '%s removed %d project member(s): %s' => array(
+        array(
+          '%s removed a member: %3$s',
+          '%s removed members: %3$s',
+        ),
+      ),
 
     );
   }

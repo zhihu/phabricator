@@ -42,9 +42,20 @@ final class PhabricatorApplicationProject extends PhabricatorApplication {
           => 'PhabricatorProjectMembersEditController',
         'view/(?P<id>[1-9]\d*)/(?:(?P<page>\w+)/)?'
           => 'PhabricatorProjectProfileController',
+        'picture/(?P<id>[1-9]\d*)/' =>
+          'PhabricatorProjectProfilePictureController',
         'create/' => 'PhabricatorProjectCreateController',
+        'board/(?P<id>[1-9]\d*)/' => 'PhabricatorProjectBoardController',
         'update/(?P<id>[1-9]\d*)/(?P<action>[^/]+)/'
           => 'PhabricatorProjectUpdateController',
+        'history/(?P<id>[1-9]\d*)/' => 'PhabricatorProjectHistoryController',
+      ),
+    );
+  }
+
+  protected function getCustomCapabilities() {
+    return array(
+      ProjectCapabilityCreateProjects::CAPABILITY => array(
       ),
     );
   }

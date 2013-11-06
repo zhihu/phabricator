@@ -107,4 +107,14 @@ final class PhabricatorNotificationQuery
     return $this->formatWhereClause($where);
   }
 
+  protected function getPagingValue($item) {
+    return $item->getChronologicalKey();
+  }
+
+
+  public function getQueryApplicationClass() {
+    // TODO: No actual "Notification" app yet, but there probably should be.
+    return null;
+  }
+
 }

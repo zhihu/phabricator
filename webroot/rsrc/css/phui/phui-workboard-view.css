@@ -9,10 +9,19 @@
 .phui-workboard-view-shadow {
   padding: 8px;
   min-height: 120px;
-  overflow-x: scroll;
+  overflow-x: auto;
   border-radius: 5px;
   background: rgba(150,150,150,.1);
   box-shadow: inset 0 0 5px rgba(0,0,0,.5);
+}
+
+.phui-workboard-view-shadow::-webkit-scrollbar {
+  height: 12px;
+}
+
+.phui-workboard-view-shadow::-webkit-scrollbar-thumb {
+  background: {$lightbluetext};
+  border-radius: 10px;
 }
 
 .phui-workboard-action-list {

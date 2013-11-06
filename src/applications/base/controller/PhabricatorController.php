@@ -24,7 +24,7 @@ abstract class PhabricatorController extends AphrontController {
     return PhabricatorUserEmail::isEmailVerificationRequired();
   }
 
-  final public function willBeginExecution() {
+  public function willBeginExecution() {
 
     $request = $this->getRequest();
     if ($request->getUser()) {
@@ -249,9 +249,10 @@ abstract class PhabricatorController extends AphrontController {
         $view->appendChild(hsprintf(
           '<div style="padding: 2em 0;">%s</div>',
           $response->buildResponseString()));
-        $response = new AphrontWebpageResponse();
-        $response->setContent($view->render());
-        return $response;
+        $page_response = new AphrontWebpageResponse();
+        $page_response->setContent($view->render());
+        $page_response->setHTTPResponseCode($response->getHTTPResponseCode());
+        return $page_response;
       } else {
         $response->getDialog()->setIsStandalone(true);
 
@@ -319,7 +320,7 @@ abstract class PhabricatorController extends AphrontController {
 
     return implode_selected_handle_links($style_map[$style],
       $this->getLoadedHandles(),
-      $phids);
+      array_filter($phids));
   }
 
   protected function buildApplicationMenu() {
@@ -364,9 +365,46 @@ abstract class PhabricatorController extends AphrontController {
       $capability);
   }
 
-  protected function explainApplicationCapability($capability, $message) {
-    // TODO: Render a link to get more information.
-    return $message;
+  protected function explainApplicationCapability(
+    $capability,
+    $positive_message,
+    $negative_message) {
+
+    $can_act = $this->hasApplicationCapability($capability);
+    if ($can_act) {
+      $message = $positive_message;
+      $icon_name = 'enable-grey';
+    } else {
+      $message = $negative_message;
+      $icon_name = 'lock';
+    }
+
+    $icon = id(new PHUIIconView())
+      ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
+      ->setSpriteIcon($icon_name);
+
+    require_celerity_resource('policy-css');
+
+    $phid = $this->getCurrentApplication()->getPHID();
+    $explain_uri = "/policy/explain/{$phid}/{$capability}/";
+
+    $message = phutil_tag(
+      'div',
+      array(
+        'class' => 'policy-capability-explanation',
+      ),
+      array(
+        $icon,
+        javelin_tag(
+          'a',
+          array(
+            'href' => $explain_uri,
+            'sigil' => 'workflow',
+          ),
+          $message),
+      ));
+
+    return array($can_act, $message);
   }
 
 }

@@ -107,10 +107,10 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
       $show_color,
       $binary_uri);
 
+    $properties = $this->buildPropertyView($drequest, $action_list);
     $object_box = id(new PHUIObjectBoxView())
       ->setHeader($this->buildHeaderView($drequest))
-      ->setActionList($action_list)
-      ->setPropertyList($this->buildPropertyView($drequest));
+      ->addPropertyList($properties);
 
     $content = array();
     $content[] = $object_box;
@@ -297,10 +297,13 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
       $corpus = phutil_tag(
         'div',
         array(
-          'style' => 'padding: 0 2em;',
           'id' => $id,
         ),
         $corpus_table);
+
+      $corpus = id(new PHUIObjectBoxView())
+        ->setHeaderText('File Contents')
+        ->appendChild($corpus);
 
       Javelin::initBehavior('load-blame', array('id' => $id));
     }
@@ -545,27 +548,41 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
       ++$line_number;
     }
 
+    $request = $this->getRequest();
+    $viewer = $request->getUser();
+
     $commits = array_filter(ipull($display, 'commit'));
     if ($commits) {
-      $commits = id(new PhabricatorAuditCommitQuery())
-        ->withIdentifiers($drequest->getRepository()->getID(), $commits)
-        ->needCommitData(true)
+      $commits = id(new DiffusionCommitQuery())
+        ->setViewer($viewer)
+        ->withRepositoryIDs(array($drequest->getRepository()->getID()))
+        ->withIdentifiers($commits)
         ->execute();
       $commits = mpull($commits, null, 'getCommitIdentifier');
     }
-
-    $request = $this->getRequest();
-    $user = $request->getUser();
 
     $revision_ids = id(new DifferentialRevision())
       ->loadIDsByCommitPHIDs(mpull($commits, 'getPHID'));
     $revisions = array();
     if ($revision_ids) {
       $revisions = id(new DifferentialRevisionQuery())
-        ->setViewer($user)
+        ->setViewer($viewer)
         ->withIDs($revision_ids)
         ->execute();
     }
+
+    $phids = array();
+    foreach ($commits as $commit) {
+      if ($commit->getAuthorPHID()) {
+        $phids[] = $commit->getAuthorPHID();
+      }
+    }
+    foreach ($revisions as $revision) {
+      if ($revision->getAuthorPHID()) {
+        $phids[] = $revision->getAuthorPHID();
+      }
+    }
+    $handles = $this->loadViewerHandles($phids);
 
     Javelin::initBehavior('phabricator-oncopy', array());
 
@@ -573,7 +590,7 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
     $inlines = array();
     if ($this->getRequest()->getStr('lint') !== null && $this->lintMessages) {
       $engine = new PhabricatorMarkupEngine();
-      $engine->setViewer($user);
+      $engine->setViewer($viewer);
 
       foreach ($this->lintMessages as $message) {
         $inline = id(new PhabricatorAuditInlineComment())
@@ -621,14 +638,14 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
         if (idx($line, 'commit')) {
           $commit = $line['commit'];
 
-          $summary = 'Unknown';
           if (idx($commits, $commit)) {
-            $summary = $commits[$commit]->getCommitData()->getSummary();
+            $tooltip = $this->renderCommitTooltip(
+              $commits[$commit],
+              $handles,
+              $line['author']);
+          } else {
+            $tooltip = null;
           }
-
-          $tooltip = phabricator_date(
-            $line['epoch'],
-            $user)." \xC2\xB7 ".$summary;
 
           Javelin::initBehavior('phabricator-tooltips', array());
           require_celerity_resource('aphront-tooltip-css');
@@ -657,26 +674,21 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
 
           if ($revision_id) {
             $revision = idx($revisions, $revision_id);
-            if (!$revision) {
-              $tooltip = pht('(Invalid revision)');
-            } else {
-              $tooltip =
-                phabricator_date($revision->getDateModified(), $user).
-                " \xC2\xB7 ".
-                $revision->getTitle();
-            }
-            $revision_link = javelin_tag(
-              'a',
-              array(
-                'href' => '/D'.$revision_id,
-                'sigil' => 'has-tooltip',
-                'meta'  => array(
-                  'tip'   => $tooltip,
-                  'align' => 'E',
-                  'size'  => 600,
+            if ($revision) {
+              $tooltip = $this->renderRevisionTooltip($revision, $handles);
+              $revision_link = javelin_tag(
+                'a',
+                array(
+                  'href' => '/D'.$revision->getID(),
+                  'sigil' => 'has-tooltip',
+                  'meta'  => array(
+                    'tip'   => $tooltip,
+                    'align' => 'E',
+                    'size'  => 600,
+                  ),
                 ),
-              ),
-              'D'.$revision_id);
+                'D'.$revision->getID());
+            }
           }
 
           $uri = $line_href->alter('before', $commit);
@@ -698,39 +710,29 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
           'th',
           array(
             'class' => 'diffusion-blame-link',
-            'style' => $style,
           ),
           $before_link);
 
-        $blame[] = phutil_tag(
-          'th',
-          array(
-            'class' => 'diffusion-rev-link',
-            'style' => $style,
-          ),
-          $commit_link);
+        $object_links = array();
+        $object_links[] = $commit_link;
+        if ($revision_link) {
+          $object_links[] = phutil_tag('span', array(), '/');
+          $object_links[] = $revision_link;
+        }
 
         $blame[] = phutil_tag(
           'th',
           array(
             'class' => 'diffusion-rev-link',
-            'style' => $style,
           ),
-          $revision_link);
-
-        $blame[] = phutil_tag(
-          'th',
-          array(
-            'class' => 'diffusion-author-link',
-            'style' => $style,
-          ),
-          idx($line, 'author'));
+          $object_links);
       }
 
       $line_link = phutil_tag(
         'a',
         array(
           'href' => $line_href,
+          'style' => $style,
         ),
         $line['line']);
 
@@ -822,21 +824,22 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
   }
 
   private function buildImageCorpus($file_uri) {
-    $properties = new PhabricatorPropertyListView();
+    $properties = new PHUIPropertyListView();
 
-    $properties->addProperty(
-      pht('Image'),
+    $properties->addImageContent(
       phutil_tag(
         'img',
         array(
           'src' => $file_uri,
         )));
 
-    return $properties;
+    return id(new PHUIObjectBoxView())
+      ->setHeaderText(pht('Image'))
+      ->addPropertyList($properties);
   }
 
   private function buildBinaryCorpus($file_uri, $data) {
-    $properties = new PhabricatorPropertyListView();
+    $properties = new PHUIPropertyListView();
 
     $size = strlen($data);
     $properties->addTextContent(
@@ -971,6 +974,38 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
         'commit' => $commit));
 
     return head($parents);
+  }
+
+  private function renderRevisionTooltip(
+    DifferentialRevision $revision,
+    array $handles) {
+    $viewer = $this->getRequest()->getUser();
+
+    $date = phabricator_date($revision->getDateModified(), $viewer);
+    $id = $revision->getID();
+    $title = $revision->getTitle();
+    $header = "D{$id} {$title}";
+
+    $author = $handles[$revision->getAuthorPHID()]->getName();
+
+    return "{$header}\n{$date} \xC2\xB7 {$author}";
+  }
+
+  private function renderCommitTooltip(
+    PhabricatorRepositoryCommit $commit,
+    array $handles,
+    $author) {
+
+    $viewer = $this->getRequest()->getUser();
+
+    $date = phabricator_date($commit->getEpoch(), $viewer);
+    $summary = trim($commit->getSummary());
+
+    if ($commit->getAuthorPHID()) {
+      $author = $handles[$commit->getAuthorPHID()]->getName();
+    }
+
+    return "{$summary}\n{$date} \xC2\xB7 {$author}";
   }
 
 }

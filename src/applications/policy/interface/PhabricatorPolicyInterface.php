@@ -1,6 +1,6 @@
 <?php
 
-interface PhabricatorPolicyInterface {
+interface PhabricatorPolicyInterface extends PhabricatorPHIDInterface {
 
   public function getCapabilities();
   public function getPolicy($capability);

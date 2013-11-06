@@ -312,24 +312,62 @@ final class CeleritySpriteGenerator {
   }
 
   public function buildTokenSheet() {
-    $tokens = $this->getDirectoryList('tokens_1x');
-
+    $icons = $this->getDirectoryList('tokens_1x');
+    $scales = array(
+      '1x' => 1,
+      '2x' => 2,
+    );
     $template = id(new PhutilSprite())
       ->setSourceSize(16, 16);
 
     $sprites = array();
-    foreach ($tokens as $token) {
-      $path = $this->getPath('tokens_1x/'.$token.'.png');
-
+    $prefix = 'tokens_';
+    foreach ($icons as $icon) {
       $sprite = id(clone $template)
-        ->setName('tokens-'.$token)
-        ->setTargetCSS('.tokens-'.$token)
-        ->setSourceFile($path, 1);
+        ->setName('tokens-'.$icon)
+        ->setTargetCSS('.tokens-'.$icon);
 
+      foreach ($scales as $scale_key => $scale) {
+        $path = $this->getPath($prefix.$scale_key.'/'.$icon.'.png');
+        $sprite->setSourceFile($path, $scale);
+      }
       $sprites[] = $sprite;
     }
 
-    $sheet = $this->buildSheet('tokens', false);
+    $sheet = $this->buildSheet('tokens', true);
+    $sheet->setScales($scales);
+    foreach ($sprites as $sprite) {
+      $sheet->addSprite($sprite);
+    }
+
+    return $sheet;
+  }
+
+  public function buildProjectsSheet() {
+    $icons = $this->getDirectoryList('projects_1x');
+    $scales = array(
+      '1x' => 1,
+      '2x' => 2,
+    );
+    $template = id(new PhutilSprite())
+      ->setSourceSize(50, 50);
+
+    $sprites = array();
+    $prefix = 'projects-';
+    foreach ($icons as $icon) {
+      $sprite = id(clone $template)
+        ->setName($prefix.$icon)
+        ->setTargetCSS('.'.$prefix.$icon);
+
+      foreach ($scales as $scale_key => $scale) {
+        $path = $this->getPath('projects_'.$scale_key.'/'.$icon.'.png');
+        $sprite->setSourceFile($path, $scale);
+      }
+      $sprites[] = $sprite;
+    }
+
+    $sheet = $this->buildSheet('projects', true);
+    $sheet->setScales($scales);
     foreach ($sprites as $sprite) {
       $sheet->addSprite($sprite);
     }
@@ -488,10 +526,27 @@ final class CeleritySpriteGenerator {
 
     $sprites = array();
     $prefix = 'status_';
+    $extra_css = array(
+      'policy-custom-white' =>
+        ', .dropdown-menu-item:hover .status-policy-custom',
+      'policy-all-white' =>
+        ', .dropdown-menu-item:hover .status-policy-all',
+      'policy-unknown-white' =>
+        ', .dropdown-menu-item:hover .status-policy-unknown',
+      'policy-admin-white' =>
+        ', .dropdown-menu-item:hover .status-policy-admin',
+      'policy-public-white' =>
+        ', .dropdown-menu-item:hover .status-policy-public',
+      'policy-project-white' =>
+        ', .dropdown-menu-item:hover .status-policy-project',
+      'policy-noone-white' =>
+        ', .dropdown-menu-item:hover .status-policy-noone',
+    );
+
     foreach ($icons as $icon) {
       $sprite = id(clone $template)
         ->setName('status-'.$icon)
-        ->setTargetCSS('.status-'.$icon);
+        ->setTargetCSS('.status-'.$icon.idx($extra_css, $icon));
 
       foreach ($scales as $scale_key => $scale) {
         $path = $this->getPath($prefix.$scale_key.'/'.$icon.'.png');

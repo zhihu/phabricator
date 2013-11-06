@@ -7,6 +7,7 @@ final class PhabricatorProjectQuery
   private $phids;
   private $memberPHIDs;
   private $slugs;
+  private $names;
 
   private $status       = 'status-any';
   const STATUS_ANY      = 'status-any';
@@ -16,6 +17,7 @@ final class PhabricatorProjectQuery
   const STATUS_ARCHIVED = 'status-archived';
 
   private $needMembers;
+  private $needProfiles;
 
   public function withIDs(array $ids) {
     $this->ids = $ids;
@@ -42,8 +44,18 @@ final class PhabricatorProjectQuery
     return $this;
   }
 
+  public function withNames(array $names) {
+    $this->names = $names;
+    return $this;
+  }
+
   public function needMembers($need_members) {
     $this->needMembers = $need_members;
+    return $this;
+  }
+
+  public function needProfiles($need_profiles) {
+    $this->needProfiles = $need_profiles;
     return $this;
   }
 
@@ -113,6 +125,56 @@ final class PhabricatorProjectQuery
     return $projects;
   }
 
+  protected function didFilterPage(array $projects) {
+    if ($this->needProfiles) {
+      $profiles = id(new PhabricatorProjectProfile())->loadAllWhere(
+        'projectPHID IN (%Ls)',
+        mpull($projects, 'getPHID'));
+      $profiles = mpull($profiles, null, 'getProjectPHID');
+
+      $default = null;
+
+      if ($profiles) {
+        $file_phids = mpull($profiles, 'getProfileImagePHID');
+        $files = id(new PhabricatorFileQuery())
+          ->setParentQuery($this)
+          ->setViewer($this->getViewer())
+          ->withPHIDs($file_phids)
+          ->execute();
+        $files = mpull($files, null, 'getPHID');
+        foreach ($profiles as $profile) {
+          $file = idx($files, $profile->getProfileImagePHID());
+          if (!$file) {
+            if (!$default) {
+              $default = PhabricatorFile::loadBuiltin(
+                $this->getViewer(),
+                'project.png');
+            }
+            $file = $default;
+          }
+          $profile->attachProfileImageFile($file);
+        }
+      }
+
+      foreach ($projects as $project) {
+        $profile = idx($profiles, $project->getPHID());
+        if (!$profile) {
+          if (!$default) {
+            $default = PhabricatorFile::loadBuiltin(
+              $this->getViewer(),
+              'project.png');
+          }
+          $profile = id(new PhabricatorProjectProfile())
+            ->setProjectPHID($project->getPHID())
+            ->attachProfileImageFile($default);
+        }
+        $project->attachProfile($profile);
+      }
+    }
+
+    return $projects;
+  }
+
   private function buildWhereClause($conn_r) {
     $where = array();
 
@@ -168,6 +230,13 @@ final class PhabricatorProjectQuery
         $this->slugs);
     }
 
+    if ($this->names) {
+      $where[] = qsprintf(
+        $conn_r,
+        'name IN (%Ls)',
+        $this->names);
+    }
+
     $where[] = $this->buildPagingClause($conn_r);
 
     return $this->formatWhereClause($where);
@@ -202,6 +271,11 @@ final class PhabricatorProjectQuery
     }
 
     return implode(' ', $joins);
+  }
+
+
+  public function getQueryApplicationClass() {
+    return 'PhabricatorApplicationProject';
   }
 
 }

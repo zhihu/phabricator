@@ -35,7 +35,7 @@ final class PhabricatorApplicationManiphest extends PhabricatorApplication {
   public function getEventListeners() {
     return array(
       new ManiphestNameIndexEventListener(),
-      new ManiphestPeopleMenuEventListener(),
+      new ManiphestActionMenuEventListener(),
       new ManiphestHovercardEventListener(),
     );
   }
@@ -67,7 +67,7 @@ final class PhabricatorApplicationManiphest extends PhabricatorApplication {
         'export/(?P<key>[^/]+)/' => 'ManiphestExportController',
         'subpriority/' => 'ManiphestSubpriorityController',
         'subscribe/(?P<action>add|rem)/(?P<id>[1-9]\d*)/'
-        => 'ManiphestSubscribeController',
+          => 'ManiphestSubscribeController',
       ),
     );
   }
@@ -88,6 +88,31 @@ final class PhabricatorApplicationManiphest extends PhabricatorApplication {
       ->setCount($count);
 
     return $status;
+  }
+
+  protected function getCustomCapabilities() {
+    return array(
+      ManiphestCapabilityDefaultView::CAPABILITY => array(
+        'caption' => pht(
+          'Default view policy for newly created tasks.'),
+      ),
+      ManiphestCapabilityDefaultEdit::CAPABILITY => array(
+        'caption' => pht(
+          'Default edit policy for newly created tasks.'),
+      ),
+      ManiphestCapabilityEditStatus::CAPABILITY => array(
+      ),
+      ManiphestCapabilityEditAssign::CAPABILITY => array(
+      ),
+      ManiphestCapabilityEditPolicies::CAPABILITY => array(
+      ),
+      ManiphestCapabilityEditPriority::CAPABILITY => array(
+      ),
+      ManiphestCapabilityEditProjects::CAPABILITY => array(
+      ),
+      ManiphestCapabilityBulkEdit::CAPABILITY => array(
+      ),
+    );
   }
 
 }

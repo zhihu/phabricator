@@ -162,13 +162,19 @@ final class PhrictionDocumentController
     $header = id(new PHUIHeaderView())
       ->setHeader($page_title);
 
+    $prop_list = null;
+    if ($properties) {
+      $prop_list = new PHUIPropertyGroupView();
+      $prop_list->addPropertyList($properties);
+    }
+
     $page_content = id(new PHUIDocumentView())
       ->setOffset(true)
       ->setHeader($header)
       ->appendChild(
         array(
           $actions,
-          $properties,
+          $prop_list,
           $move_notice,
           $core_content,
         ));
@@ -202,7 +208,7 @@ final class PhrictionDocumentController
     $slug) {
 
     $viewer = $this->getRequest()->getUser();
-    $view = id(new PhabricatorPropertyListView())
+    $view = id(new PHUIPropertyListView())
       ->setUser($viewer)
       ->setObject($document);
 

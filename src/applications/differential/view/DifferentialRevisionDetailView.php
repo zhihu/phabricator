@@ -68,7 +68,7 @@ final class DifferentialRevisionDetailView extends AphrontView {
       $actions->addAction($obj);
     }
 
-    $properties = id(new PhabricatorPropertyListView())
+    $properties = id(new PHUIPropertyListView())
       ->setUser($user)
       ->setObject($revision);
 
@@ -110,11 +110,39 @@ final class DifferentialRevisionDetailView extends AphrontView {
       }
     }
     $properties->setHasKeyboardShortcuts(true);
+    $properties->setActionList($actions);
+
+    $properties->invokeWillRenderEvent();
+
+    if (strlen($revision->getSummary())) {
+      $properties->addSectionHeader(
+        pht('Summary'),
+        PHUIPropertyListView::ICON_SUMMARY);
+      $properties->addTextContent(
+        PhabricatorMarkupEngine::renderOneObject(
+          id(new PhabricatorMarkupOneOff())
+            ->setPreserveLinebreaks(true)
+            ->setContent($revision->getSummary()),
+          'default',
+          $user));
+    }
+
+    if (strlen($revision->getTestPlan())) {
+      $properties->addSectionHeader(
+        pht('Test Plan'),
+        PHUIPropertyListView::ICON_TESTPLAN);
+      $properties->addTextContent(
+        PhabricatorMarkupEngine::renderOneObject(
+          id(new PhabricatorMarkupOneOff())
+            ->setPreserveLinebreaks(true)
+            ->setContent($revision->getTestPlan()),
+          'default',
+          $user));
+    }
 
     $object_box = id(new PHUIObjectBoxView())
       ->setHeader($header)
-      ->setActionList($actions)
-      ->setPropertyList($properties);
+      ->addPropertyList($properties);
 
     return $object_box;
   }

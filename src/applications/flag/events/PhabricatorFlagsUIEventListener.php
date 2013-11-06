@@ -1,6 +1,6 @@
 <?php
 
-final class PhabricatorFlagsUIEventListener extends PhutilEventListener {
+final class PhabricatorFlagsUIEventListener extends PhabricatorEventListener {
 
   public function register() {
     $this->listen(PhabricatorEventType::TYPE_UI_DIDRENDERACTIONS);
@@ -24,11 +24,12 @@ final class PhabricatorFlagsUIEventListener extends PhutilEventListener {
       return;
     }
 
-    if (($object instanceof PhabricatorUser)) {
-      // Although there's no real reason not to let you flag users, it also
-      // makes less conceptual sense than flaging other types of objects. For
-      // now, don't allow it.
+    if (!($object instanceof PhabricatorFlaggableInterface)) {
       return;
+    }
+
+    if (!$this->canUseApplication($event->getUser())) {
+      return null;
     }
 
     $flag = PhabricatorFlagQuery::loadUserFlag($user, $object->getPHID());
@@ -45,7 +46,7 @@ final class PhabricatorFlagsUIEventListener extends PhutilEventListener {
         ->setWorkflow(true)
         ->setHref('/flag/edit/'.$object->getPHID().'/')
         ->setName(pht('Flag For Later'))
-        ->setIcon('flag-ghost');
+        ->setIcon('flag');
 
       if (!$user->isLoggedIn()) {
         $flag_action->setDisabled(true);

@@ -1,32 +1,214 @@
 <?php
 
-final class DiffusionRepositoryCreateController extends DiffusionController {
+final class DiffusionRepositoryCreateController
+  extends DiffusionRepositoryEditController {
+
+  private $edit;
+  private $repository;
+
+  public function willProcessRequest(array $data) {
+    parent::willProcessRequest($data);
+    $this->edit = $data['edit'];
+  }
 
   public function processRequest() {
     $request = $this->getRequest();
     $viewer = $request->getUser();
 
+    // NOTE: We can end up here via either "Create Repository", or via
+    // "Import Repository", or via "Edit Remote". In the latter case, we show
+    // only a few of the pages.
+
+    $repository = null;
+    switch ($this->edit) {
+      case 'remote':
+        $repository = $this->getDiffusionRequest()->getRepository();
+
+        // Make sure we have CAN_EDIT.
+        PhabricatorPolicyFilter::requireCapability(
+          $viewer,
+          $repository,
+          PhabricatorPolicyCapability::CAN_EDIT);
+
+        $this->setRepository($repository);
+
+        $cancel_uri = $this->getRepositoryControllerURI($repository, 'edit/');
+        break;
+      case 'import':
+      case 'create':
+        $this->requireApplicationCapability(
+          DiffusionCapabilityCreateRepositories::CAPABILITY);
+
+        $cancel_uri = $this->getApplicationURI('new/');
+        break;
+      default:
+        throw new Exception("Invalid edit operation!");
+    }
+
     $form = id(new PHUIPagedFormView())
       ->setUser($viewer)
-      ->addPage('vcs', $this->buildVCSPage())
-      ->addPage('name', $this->buildNamePage())
-      ->addPage('auth', $this->buildAuthPage())
-      ->addPage('done', $this->buildDonePage());
+      ->setCancelURI($cancel_uri);
+
+    switch ($this->edit) {
+      case 'remote':
+        $title = pht('Edit Remote');
+        $form
+          ->addPage('remote-uri', $this->buildRemoteURIPage())
+          ->addPage('auth', $this->buildAuthPage());
+        break;
+      case 'create':
+        $title = pht('Create Repository');
+        $form
+          ->addPage('vcs', $this->buildVCSPage())
+          ->addPage('name', $this->buildNamePage())
+          ->addPage('done', $this->buildDonePage());
+        break;
+      case 'import':
+        $title = pht('Import Repository');
+        $form
+          ->addPage('vcs', $this->buildVCSPage())
+          ->addPage('name', $this->buildNamePage())
+          ->addPage('remote-uri', $this->buildRemoteURIPage())
+          ->addPage('auth', $this->buildAuthPage())
+          ->addPage('done', $this->buildDonePage());
+        break;
+    }
 
     if ($request->isFormPost()) {
       $form->readFromRequest($request);
       if ($form->isComplete()) {
-        // TODO: This exception is heartwarming but should probably take more
-        // substantive actions.
-        throw new Exception("GOOD JOB AT FORM");
+
+        $is_create = ($this->edit === 'import' || $this->edit === 'create');
+        $is_auth = ($this->edit == 'import' || $this->edit == 'remote');
+        $is_init = ($this->edit == 'create');
+
+        if ($is_create) {
+          $repository = PhabricatorRepository::initializeNewRepository(
+            $viewer);
+        }
+
+        $template = id(new PhabricatorRepositoryTransaction());
+
+        $type_name = PhabricatorRepositoryTransaction::TYPE_NAME;
+        $type_vcs = PhabricatorRepositoryTransaction::TYPE_VCS;
+        $type_activate = PhabricatorRepositoryTransaction::TYPE_ACTIVATE;
+        $type_local_path = PhabricatorRepositoryTransaction::TYPE_LOCAL_PATH;
+        $type_remote_uri = PhabricatorRepositoryTransaction::TYPE_REMOTE_URI;
+        $type_ssh_login = PhabricatorRepositoryTransaction::TYPE_SSH_LOGIN;
+        $type_ssh_key = PhabricatorRepositoryTransaction::TYPE_SSH_KEY;
+        $type_ssh_keyfile = PhabricatorRepositoryTransaction::TYPE_SSH_KEYFILE;
+        $type_http_login = PhabricatorRepositoryTransaction::TYPE_HTTP_LOGIN;
+        $type_http_pass = PhabricatorRepositoryTransaction::TYPE_HTTP_PASS;
+        $type_hosting = PhabricatorRepositoryTransaction::TYPE_HOSTING;
+
+        $xactions = array();
+
+        // If we're creating a new repository, set all this core stuff.
+        if ($is_create) {
+          $callsign = $form->getPage('name')
+            ->getControl('callsign')->getValue();
+
+          // We must set this to a unique value to save the repository
+          // initially, and it's immutable, so we don't bother using
+          // transactions to apply this change.
+          $repository->setCallsign($callsign);
+
+          // Put the repository in "Importing" mode until we finish
+          // parsing it.
+          $repository->setDetail('importing', true);
+
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_name)
+            ->setNewValue(
+              $form->getPage('name')->getControl('name')->getValue());
+
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_vcs)
+            ->setNewValue(
+              $form->getPage('vcs')->getControl('vcs')->getValue());
+
+          $activate = $form->getPage('done')
+            ->getControl('activate')->getValue();
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_activate)
+            ->setNewValue(
+              ($activate == 'start'));
+
+          $default_local_path = PhabricatorEnv::getEnvConfig(
+            'repository.default-local-path');
+
+          $default_local_path = rtrim($default_local_path, '/');
+          $default_local_path = $default_local_path.'/'.$callsign.'/';
+
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_local_path)
+            ->setNewValue($default_local_path);
+        }
+
+        if ($is_init) {
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_hosting)
+            ->setNewValue(true);
+        }
+
+        if ($is_auth) {
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_remote_uri)
+            ->setNewValue(
+              $form->getPage('remote-uri')->getControl('remoteURI')
+                ->getValue());
+
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_ssh_login)
+            ->setNewValue(
+              $form->getPage('auth')->getControl('ssh-login')->getValue());
+
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_ssh_key)
+            ->setNewValue(
+              $form->getPage('auth')->getControl('ssh-key')->getValue());
+
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_ssh_keyfile)
+            ->setNewValue(
+              $form->getPage('auth')->getControl('ssh-keyfile')->getValue());
+
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_http_login)
+            ->setNewValue(
+              $form->getPage('auth')->getControl('http-login')->getValue());
+
+          $xactions[] = id(clone $template)
+            ->setTransactionType($type_http_pass)
+            ->setNewValue(
+              $form->getPage('auth')->getControl('http-pass')->getValue());
+        }
+
+        id(new PhabricatorRepositoryEditor())
+          ->setContinueOnNoEffect(true)
+          ->setContentSourceFromRequest($request)
+          ->setActor($viewer)
+          ->applyTransactions($repository, $xactions);
+
+        $repo_uri = $this->getRepositoryControllerURI($repository, 'edit/');
+        return id(new AphrontRedirectResponse())->setURI($repo_uri);
       }
     } else {
-      $form->readFromObject(null);
+      $dict = array();
+      if ($repository) {
+        $dict = array(
+          'remoteURI' => $repository->getRemoteURI(),
+          'ssh-login' => $repository->getDetail('ssh-login'),
+          'ssh-key' => $repository->getDetail('ssh-key'),
+          'ssh-keyfile' => $repository->getDetail('ssh-keyfile'),
+          'http-login' => $repository->getDetail('http-login'),
+          'http-pass' => $repository->getDetail('http-pass'),
+        );
+      }
+      $form->readFromObject($dict);
     }
 
-    $title = pht('Import Repository');
-
-    $crumbs = $this->buildCrumbs();
+    $crumbs = $this->buildApplicationCrumbs();
     $crumbs->addCrumb(
       id(new PhabricatorCrumbView())
         ->setName($title));
@@ -47,46 +229,63 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
 
 
   private function buildVCSPage() {
+
+    $is_import = ($this->edit == 'import');
+
+    if ($is_import) {
+      $git_str = pht(
+        'Import a Git repository (for example, a repository hosted '.
+        'on GitHub).');
+      $hg_str = pht(
+        'Import a Mercurial repository (for example, a repository '.
+        'hosted on Bitbucket).');
+      $svn_str = pht('Import a Subversion repository.');
+    } else {
+      $git_str = pht('Create a new, empty Git repository.');
+      $hg_str = pht('Create a new, empty Mercurial repository.');
+      $svn_str = pht('Create a new, empty Subversion repository.');
+    }
+
+    $control = id(new AphrontFormRadioButtonControl())
+      ->setName('vcs')
+      ->setLabel(pht('Type'))
+      ->addButton(
+        PhabricatorRepositoryType::REPOSITORY_TYPE_GIT,
+        pht('Git'),
+        $git_str)
+      ->addButton(
+        PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL,
+        pht('Mercurial'),
+        $hg_str)
+      ->addButton(
+        PhabricatorRepositoryType::REPOSITORY_TYPE_SVN,
+        pht('Subversion'),
+        $svn_str);
+
+    if ($is_import) {
+      $control->addButton(
+        PhabricatorRepositoryType::REPOSITORY_TYPE_PERFORCE,
+        pht('Perforce'),
+        pht(
+          'Perforce is not directly supported, but you can import '.
+          'a Perforce repository as a Git repository using %s.',
+          phutil_tag(
+            'a',
+            array(
+              'href' =>
+                'http://www.perforce.com/product/components/git-fusion',
+              'target' => '_blank',
+            ),
+            pht('Perforce Git Fusion'))),
+        'disabled',
+        $disabled = true);
+    }
+
     return id(new PHUIFormPageView())
       ->setPageName(pht('Repository Type'))
       ->setUser($this->getRequest()->getUser())
       ->setValidateFormPageCallback(array($this, 'validateVCSPage'))
-      ->addControl(
-        id(new AphrontFormRadioButtonControl())
-          ->setName('vcs')
-          ->setLabel(pht('Type'))
-          ->addButton(
-            PhabricatorRepositoryType::REPOSITORY_TYPE_GIT,
-            pht('Git'),
-            pht(
-              'Import a Git repository (for example, a repository hosted '.
-              'on GitHub).'))
-          ->addButton(
-            PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL,
-            pht('Mercurial'),
-            pht(
-              'Import a Mercurial repository (for example, a repository '.
-              'hosted on Bitbucket).'))
-          ->addButton(
-            PhabricatorRepositoryType::REPOSITORY_TYPE_SVN,
-            pht('Subversion'),
-            pht('Import a Subversion repository.'))
-          ->addButton(
-            PhabricatorRepositoryType::REPOSITORY_TYPE_PERFORCE,
-            pht('Perforce'),
-            pht(
-              'Perforce is not directly supported, but you can import '.
-              'a Perforce repository as a Git repository using %s.',
-              phutil_tag(
-                'a',
-                array(
-                  'href' =>
-                    'http://www.perforce.com/product/components/git-fusion',
-                  'target' => '_blank',
-                ),
-                pht('Perforce Git Fusion'))),
-            'disabled',
-            $disabled = true));
+      ->addControl($control);
   }
 
   public function validateVCSPage(PHUIFormPageView $page) {
@@ -120,7 +319,6 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
       ->setUser($this->getRequest()->getUser())
       ->setPageName(pht('Repository Name and Location'))
       ->setValidateFormPageCallback(array($this, 'validateNamePage'))
-      ->setAdjustFormPageCallback(array($this, 'adjustNamePage'))
       ->addRemarkupInstructions(
         pht(
           '**Choose a human-readable name for this repository**, like '.
@@ -145,20 +343,81 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
         id(new AphrontFormTextControl())
           ->setName('callsign')
           ->setLabel(pht('Callsign'))
-          ->setCaption(pht('Short UPPERCASE identifier.')))
+          ->setCaption(pht('Short UPPERCASE identifier.')));
+  }
+
+  public function validateNamePage(PHUIFormPageView $page) {
+    $c_name = $page->getControl('name');
+    $v_name = $c_name->getValue();
+    if (!strlen($v_name)) {
+      $c_name->setError(pht('Required'));
+      $page->addPageError(
+        pht('You must choose a name for this repository.'));
+    }
+
+    $c_call = $page->getControl('callsign');
+    $v_call = $c_call->getValue();
+    if (!strlen($v_call)) {
+      $c_call->setError(pht('Required'));
+      $page->addPageError(
+        pht('You must choose a callsign for this repository.'));
+    } else if (!preg_match('/^[A-Z]+$/', $v_call)) {
+      $c_call->setError(pht('Invalid'));
+      $page->addPageError(
+        pht('The callsign must contain only UPPERCASE letters.'));
+    } else {
+      $exists = false;
+      try {
+        $repo = id(new PhabricatorRepositoryQuery())
+          ->setViewer($this->getRequest()->getUser())
+          ->withCallsigns(array($v_call))
+          ->executeOne();
+        $exists = (bool)$repo;
+      } catch (PhabricatorPolicyException $ex) {
+        $exists = true;
+      }
+      if ($exists) {
+        $c_call->setError(pht('Not Unique'));
+        $page->addPageError(
+          pht(
+            'Another repository already uses that callsign. You must choose '.
+            'a unique callsign.'));
+      }
+    }
+
+    return $c_name->isValid() &&
+           $c_call->isValid();
+  }
+
+
+/* -(  Page: Remote URI  )--------------------------------------------------- */
+
+
+  private function buildRemoteURIPage() {
+    return id(new PHUIFormPageView())
+      ->setUser($this->getRequest()->getUser())
+      ->setPageName(pht('Repository Remote URI'))
+      ->setValidateFormPageCallback(array($this, 'validateRemoteURIPage'))
+      ->setAdjustFormPageCallback(array($this, 'adjustRemoteURIPage'))
       ->addControl(
         id(new AphrontFormTextControl())
           ->setName('remoteURI'));
   }
 
-  public function adjustNamePage(PHUIFormPageView $page) {
+  public function adjustRemoteURIPage(PHUIFormPageView $page) {
     $form = $page->getForm();
 
     $is_git = false;
     $is_svn = false;
     $is_mercurial = false;
 
-    switch ($form->getPage('vcs')->getControl('vcs')->getValue()) {
+    if ($this->getRepository()) {
+      $vcs = $this->getRepository()->getVersionControlSystem();
+    } else {
+      $vcs = $form->getPage('vcs')->getControl('vcs')->getValue();
+    }
+
+    switch ($vcs) {
       case PhabricatorRepositoryType::REPOSITORY_TYPE_GIT:
         $is_git = true;
         break;
@@ -220,45 +479,7 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
     $page->getControl('remoteURI')->setLabel($uri_label);
   }
 
-  public function validateNamePage(PHUIFormPageView $page) {
-    $c_name = $page->getControl('name');
-    $v_name = $c_name->getValue();
-    if (!strlen($v_name)) {
-      $c_name->setError(pht('Required'));
-      $page->addPageError(
-        pht('You must choose a name for this repository.'));
-    }
-
-    $c_call = $page->getControl('callsign');
-    $v_call = $c_call->getValue();
-    if (!strlen($v_call)) {
-      $c_call->setError(pht('Required'));
-      $page->addPageError(
-        pht('You must choose a callsign for this repository.'));
-    } else if (!preg_match('/^[A-Z]+$/', $v_call)) {
-      $c_call->setError(pht('Invalid'));
-      $page->addPageError(
-        pht('The callsign must contain only UPPERCASE letters.'));
-    } else {
-      $exists = false;
-      try {
-        $repo = id(new PhabricatorRepositoryQuery())
-          ->setViewer($this->getRequest()->getUser())
-          ->withCallsigns(array($v_call))
-          ->executeOne();
-        $exists = (bool)$repo;
-      } catch (PhabricatorPolicyException $ex) {
-        $exists = true;
-      }
-      if ($exists) {
-        $c_call->setError(pht('Not Unique'));
-        $page->addPageError(
-          pht(
-            'Another repository already uses that callsign. You must choose '.
-            'a unique callsign.'));
-      }
-    }
-
+  public function validateRemoteURIPage(PHUIFormPageView $page) {
     $c_remote = $page->getControl('remoteURI');
     $v_remote = $c_remote->getValue();
 
@@ -277,6 +498,21 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
               "URIs using the 'file://' protocol should have three slashes ".
               "(e.g., 'file:///absolute/path/to/file'). You only have two. ".
               "Add another one."));
+        }
+      }
+
+      // Catch confusion between Git/SCP-style URIs and normal URIs. See T3619
+      // for discussion. This is usually a user adding "ssh://" to an implicit
+      // SSH Git URI.
+      if ($proto == 'ssh') {
+        if (preg_match('(^[^:@]+://[^/:]+:[^\d])', $v_remote)) {
+          $c_remote->setError(pht('Invalid'));
+          $page->addPageError(
+            pht(
+              "The Remote URI is not formatted correctly. Remote URIs ".
+              "with an explicit protocol should be in the form ".
+              "'proto://domain/path', not 'proto://domain:/path'. ".
+              "The ':/path' syntax is only valid in SCP-style URIs."));
         }
       }
 
@@ -301,9 +537,7 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
       }
     }
 
-    return $c_name->isValid() &&
-           $c_call->isValid() &&
-           $c_remote->isValid();
+    return $c_remote->isValid();
   }
 
 
@@ -346,8 +580,17 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
 
   public function adjustAuthPage($page) {
     $form = $page->getForm();
-    $remote_uri = $form->getPage('name')->getControl('remoteURI')->getValue();
-    $vcs = $form->getPage('vcs')->getControl('vcs')->getValue();
+
+    $remote_uri = $form->getPage('remote-uri')
+      ->getControl('remoteURI')
+      ->getValue();
+
+    if ($this->getRepository()) {
+      $vcs = $this->getRepository()->getVersionControlSystem();
+    } else {
+      $vcs = $form->getPage('vcs')->getControl('vcs')->getValue();
+    }
+
     $proto = $this->getRemoteURIProtocol($remote_uri);
     $remote_user = $this->getRemoteURIUser($remote_uri);
 
@@ -465,6 +708,32 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
 
 
   private function buildDonePage() {
+
+    $is_create = ($this->edit == 'create');
+    if ($is_create) {
+      $now_label = pht('Create Repository Now');
+      $now_caption = pht(
+        'Create the repository right away. This will create the repository '.
+        'using default settings.');
+
+      $wait_label = pht('Configure More Options First');
+      $wait_caption = pht(
+        'Configure more options before creating the repository. '.
+        'This will let you fine-tune settings. You can create the repository '.
+        'whenever you are ready.');
+    } else {
+      $now_label = pht('Start Import Now');
+      $now_caption = pht(
+        'Start importing the repository right away. This will import '.
+        'the entire repository using default settings.');
+
+      $wait_label = pht('Configure More Options First');
+      $wait_caption = pht(
+        'Configure more options before beginning the repository '.
+        'import. This will let you fine-tune settings. You can '.
+        'start the import whenever you are ready.');
+    }
+
     return id(new PHUIFormPageView())
       ->setPageName(pht('Repository Ready!'))
       ->setValidateFormPageCallback(array($this, 'validateDonePage'))
@@ -475,17 +744,12 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
           ->setLabel(pht('Start Now'))
           ->addButton(
             'start',
-            pht('Start Import Now'),
-            pht(
-              'Start importing the repository right away. This will import '.
-              'the entire repository using default settings.'))
+            $now_label,
+            $now_caption)
           ->addButton(
             'wait',
-            pht('Configure More Options First'),
-            pht(
-              'Configure more options before beginning the repository '.
-              'import. This will let you fine-tune settings.. You can '.
-              'start the import whenever you are ready.')));
+            $wait_label,
+            $wait_caption));
   }
 
   public function validateDonePage(PHUIFormPageView $page) {
@@ -540,5 +804,15 @@ final class DiffusionRepositoryCreateController extends DiffusionController {
   private function isUsernamePasswordProtocol($proto) {
     return ($proto == 'http' || $proto == 'https' || $proto == 'svn');
   }
+
+  private function setRepository(PhabricatorRepository $repository) {
+    $this->repository = $repository;
+    return $this;
+  }
+
+  private function getRepository() {
+    return $this->repository;
+  }
+
 
 }

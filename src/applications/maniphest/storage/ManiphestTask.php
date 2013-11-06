@@ -1,19 +1,16 @@
 <?php
 
-/**
- * @group maniphest
- */
 final class ManiphestTask extends ManiphestDAO
   implements
     PhabricatorMarkupInterface,
     PhabricatorPolicyInterface,
     PhabricatorTokenReceiverInterface,
+    PhabricatorFlaggableInterface,
     PhrequentTrackableInterface,
     PhabricatorCustomFieldInterface {
 
   const MARKUP_FIELD_DESCRIPTION = 'markup:desc';
 
-  protected $phid;
   protected $authorPHID;
   protected $ownerPHID;
   protected $ccPHIDs = array();
@@ -23,7 +20,7 @@ final class ManiphestTask extends ManiphestDAO
   protected $subpriority = 0;
 
   protected $title = '';
-  protected $originalTitle;
+  protected $originalTitle = '';
   protected $description = '';
   protected $originalEmailSource;
   protected $mailKey;
@@ -39,6 +36,22 @@ final class ManiphestTask extends ManiphestDAO
 
   private $groupByProjectPHID = self::ATTACHABLE;
   private $customFields = self::ATTACHABLE;
+
+  public static function initializeNewTask(PhabricatorUser $actor) {
+    $app = id(new PhabricatorApplicationQuery())
+      ->setViewer($actor)
+      ->withClasses(array('PhabricatorApplicationManiphest'))
+      ->executeOne();
+
+    $view_policy = $app->getPolicy(ManiphestCapabilityDefaultView::CAPABILITY);
+    $edit_policy = $app->getPolicy(ManiphestCapabilityDefaultEdit::CAPABILITY);
+
+    return id(new ManiphestTask())
+      ->setPriority(ManiphestTaskPriority::getDefaultPriority())
+      ->setAuthorPHID($actor->getPHID())
+      ->setViewPolicy($view_policy)
+      ->setEditPolicy($edit_policy);
+  }
 
   public function getConfiguration() {
     return array(

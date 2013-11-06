@@ -6,6 +6,7 @@
 final class PhabricatorRepository extends PhabricatorRepositoryDAO
   implements
     PhabricatorPolicyInterface,
+    PhabricatorFlaggableInterface,
     PhabricatorMarkupInterface {
 
   /**
@@ -25,12 +26,16 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   const TABLE_BADCOMMIT = 'repository_badcommit';
   const TABLE_LINTMESSAGE = 'repository_lintmessage';
 
-  protected $phid;
+  const SERVE_OFF = 'off';
+  const SERVE_READONLY = 'readonly';
+  const SERVE_READWRITE = 'readwrite';
+
   protected $name;
   protected $callsign;
   protected $uuid;
-  protected $viewPolicy = PhabricatorPolicies::POLICY_USER;
-  protected $editPolicy = PhabricatorPolicies::POLICY_ADMIN;
+  protected $viewPolicy;
+  protected $editPolicy;
+  protected $pushPolicy;
 
   protected $versionControlSystem;
   protected $details = array();
@@ -39,6 +44,22 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
   private $commitCount = self::ATTACHABLE;
   private $mostRecentCommit = self::ATTACHABLE;
+
+  public static function initializeNewRepository(PhabricatorUser $actor) {
+    $app = id(new PhabricatorApplicationQuery())
+      ->setViewer($actor)
+      ->withClasses(array('PhabricatorApplicationDiffusion'))
+      ->executeOne();
+
+    $view_policy = $app->getPolicy(DiffusionCapabilityDefaultView::CAPABILITY);
+    $edit_policy = $app->getPolicy(DiffusionCapabilityDefaultEdit::CAPABILITY);
+    $push_policy = $app->getPolicy(DiffusionCapabilityDefaultPush::CAPABILITY);
+
+    return id(new PhabricatorRepository())
+      ->setViewPolicy($view_policy)
+      ->setEditPolicy($edit_policy)
+      ->setPushPolicy($push_policy);
+  }
 
   public function getConfiguration() {
     return array(
@@ -69,6 +90,20 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
   public function getDetail($key, $default = null) {
     return idx($this->details, $key, $default);
+  }
+
+  public function getHumanReadableDetail($key, $default = null) {
+    $value = $this->getDetail($key, $default);
+
+    switch ($key) {
+      case 'branch-filter':
+      case 'close-commits-filter':
+        $value = array_keys($value);
+        $value = implode(', ', $value);
+        break;
+    }
+
+    return $value;
   }
 
   public function setDetail($key, $value) {
@@ -126,8 +161,16 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
       throw new Exception("Not a subversion repository!");
     }
 
-    $uri = $this->getDetail('remote-uri');
+    if ($this->isHosted()) {
+      $uri = 'file://'.$this->getLocalPath();
+    } else {
+      $uri = $this->getDetail('remote-uri');
+    }
+
     $subpath = $this->getDetail('svn-subpath');
+    if ($subpath) {
+      $subpath = '/'.ltrim($subpath, '/');
+    }
 
     return $uri.$subpath;
   }
@@ -157,24 +200,32 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   }
 
   public function execLocalCommand($pattern /* , $arg, ... */) {
+    $this->assertLocalExists();
+
     $args = func_get_args();
     $args = $this->formatLocalCommand($args);
     return call_user_func_array('exec_manual', $args);
   }
 
   public function execxLocalCommand($pattern /* , $arg, ... */) {
+    $this->assertLocalExists();
+
     $args = func_get_args();
     $args = $this->formatLocalCommand($args);
     return call_user_func_array('execx', $args);
   }
 
   public function getLocalCommandFuture($pattern /* , $arg, ... */) {
+    $this->assertLocalExists();
+
     $args = func_get_args();
     $args = $this->formatLocalCommand($args);
     return newv('ExecFuture', $args);
   }
 
   public function passthruLocalCommand($pattern /* , $arg, ... */) {
+    $this->assertLocalExists();
+
     $args = func_get_args();
     $args = $this->formatLocalCommand($args);
     return call_user_func_array('phutil_passthru', $args);
@@ -398,6 +449,10 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   }
 
   public function shouldAutocloseBranch($branch) {
+    if ($this->isImporting()) {
+      return false;
+    }
+
     if ($this->getDetail('disable-autoclose', false)) {
       return false;
     }
@@ -449,6 +504,10 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     }
 
     return 'r'.$this->getCallsign().$short_identifier;
+  }
+
+  public function isImporting() {
+    return (bool)$this->getDetail('importing', false);
   }
 
 /* -(  Repository URI Management  )------------------------------------------ */
@@ -558,6 +617,10 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
    * @task uri
    */
   private function shouldUseSSH() {
+    if ($this->isHosted()) {
+      return false;
+    }
+
     $protocol = $this->getRemoteProtocol();
     if ($this->isSSHProtocol($protocol)) {
       return (bool)$this->getSSHKeyfile();
@@ -575,6 +638,10 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
    * @task uri
    */
   private function shouldUseHTTP() {
+    if ($this->isHosted()) {
+      return false;
+    }
+
     $protocol = $this->getRemoteProtocol();
     if ($protocol == 'http' || $protocol == 'https') {
       return (bool)$this->getDetail('http-login');
@@ -592,6 +659,10 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
    * @task uri
    */
   private function shouldUseSVNProtocol() {
+    if ($this->isHosted()) {
+      return false;
+    }
+
     $protocol = $this->getRemoteProtocol();
     if ($protocol == 'svn') {
       return (bool)$this->getDetail('http-login');
@@ -677,6 +748,142 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     return ($vcs == PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL);
   }
 
+  public function isHosted() {
+    return (bool)$this->getDetail('hosting-enabled', false);
+  }
+
+  public function setHosted($enabled) {
+    return $this->setDetail('hosting-enabled', $enabled);
+  }
+
+  public function getServeOverHTTP() {
+    $serve = $this->getDetail('serve-over-http', self::SERVE_OFF);
+    return $this->normalizeServeConfigSetting($serve);
+  }
+
+  public function setServeOverHTTP($mode) {
+    return $this->setDetail('serve-over-http', $mode);
+  }
+
+  public function getServeOverSSH() {
+    $serve = $this->getDetail('serve-over-ssh', self::SERVE_OFF);
+    return $this->normalizeServeConfigSetting($serve);
+  }
+
+  public function setServeOverSSH($mode) {
+    return $this->setDetail('serve-over-ssh', $mode);
+  }
+
+  public static function getProtocolAvailabilityName($constant) {
+    switch ($constant) {
+      case self::SERVE_OFF:
+        return pht('Off');
+      case self::SERVE_READONLY:
+        return pht('Read Only');
+      case self::SERVE_READWRITE:
+        return pht('Read/Write');
+      default:
+        return pht('Unknown');
+    }
+  }
+
+  private function normalizeServeConfigSetting($value) {
+    switch ($value) {
+      case self::SERVE_OFF:
+      case self::SERVE_READONLY:
+        return $value;
+      case self::SERVE_READWRITE:
+        if ($this->isHosted()) {
+          return self::SERVE_READWRITE;
+        } else {
+          return self::SERVE_READONLY;
+        }
+      default:
+        return self::SERVE_OFF;
+    }
+  }
+
+
+  /**
+   * Raise more useful errors when there are basic filesystem problems.
+   */
+  private function assertLocalExists() {
+    if (!$this->usesLocalWorkingCopy()) {
+      return;
+    }
+
+    $local = $this->getLocalPath();
+    Filesystem::assertExists($local);
+    Filesystem::assertIsDirectory($local);
+    Filesystem::assertReadable($local);
+  }
+
+  /**
+   * Determine if the working copy is bare or not. In Git, this corresponds
+   * to `--bare`. In Mercurial, `--noupdate`.
+   */
+  public function isWorkingCopyBare() {
+    switch ($this->getVersionControlSystem()) {
+      case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:
+      case PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL:
+        return false;
+      case PhabricatorRepositoryType::REPOSITORY_TYPE_GIT:
+        $local = $this->getLocalPath();
+        if (Filesystem::pathExists($local.'/.git')) {
+          return false;
+        } else {
+          return true;
+        }
+    }
+  }
+
+  public function usesLocalWorkingCopy() {
+    switch ($this->getVersionControlSystem()) {
+      case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:
+        return $this->isHosted();
+      case PhabricatorRepositoryType::REPOSITORY_TYPE_GIT:
+      case PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL:
+        return true;
+    }
+  }
+
+  public function writeStatusMessage(
+    $status_type,
+    $status_code,
+    array $parameters = array()) {
+
+    $table = new PhabricatorRepositoryStatusMessage();
+    $conn_w = $table->establishConnection('w');
+    $table_name = $table->getTableName();
+
+    if ($status_code === null) {
+      queryfx(
+        $conn_w,
+        'DELETE FROM %T WHERE repositoryID = %d AND statusType = %s',
+        $table_name,
+        $this->getID(),
+        $status_type);
+    } else {
+      queryfx(
+        $conn_w,
+        'INSERT INTO %T
+          (repositoryID, statusType, statusCode, parameters, epoch)
+          VALUES (%d, %s, %s, %s, %d)
+          ON DUPLICATE KEY UPDATE
+            statusCode = VALUES(statusCode),
+            parameters = VALUES(parameters),
+            epoch = VALUES(epoch)',
+        $table_name,
+        $this->getID(),
+        $status_type,
+        $status_code,
+        json_encode($parameters),
+        time());
+    }
+
+    return $this;
+  }
+
 
 /* -(  PhabricatorPolicyInterface  )----------------------------------------- */
 
@@ -685,6 +892,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     return array(
       PhabricatorPolicyCapability::CAN_VIEW,
       PhabricatorPolicyCapability::CAN_EDIT,
+      DiffusionCapabilityPush::CAPABILITY,
     );
   }
 
@@ -694,6 +902,8 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
         return $this->getViewPolicy();
       case PhabricatorPolicyCapability::CAN_EDIT:
         return $this->getEditPolicy();
+      case DiffusionCapabilityPush::CAPABILITY:
+        return $this->getPushPolicy();
     }
   }
 

@@ -515,10 +515,6 @@ return array(
   // address will be stored in an 'From Email' field on the task.
   'metamta.maniphest.default-public-author' => null,
 
-  // You can disable the Herald hints in email if users prefer smaller messages.
-  // These are the links under the headers "MANAGE HERALD RULES" and
-  // "WHY DID I GET THIS EMAIL?". If you set this to true, they will not appear
-  // in any mail. Users can still navigate to the links via the web interface.
   'metamta.herald.show-hints' => true,
 
   // You can disable the hints under "REPLY HANDLER ACTIONS" if users prefer
@@ -562,13 +558,6 @@ return array(
   // Maximum number of simultaneous Conduit sessions each user is permitted
   // to have.
   'auth.sessions.conduit'       => 5,
-
-  // Set this true to enable the Settings -> SSH Public Keys panel, which will
-  // allow users to associated SSH public keys with their accounts. This is only
-  // really useful if you're setting up services over SSH and want to use
-  // Phabricator for authentication; in most situations you can leave this
-  // disabled.
-  'auth.sshkeys.enabled'        => false,
 
   // If true, email addresses must be verified (by clicking a link in an
   // email) before a user can login. By default, verification is optional
@@ -830,14 +819,6 @@ return array(
 // -- Differential ---------------------------------------------------------- //
 
   'differential.revision-custom-detail-renderer'  => null,
-
-  // Array for custom remarkup rules. The array should have a list of
-  // class names of classes that extend PhutilRemarkupRule
-  'differential.custom-remarkup-rules' => null,
-
-  // Array for custom remarkup block rules. The array should have a list of
-  // class names of classes that extend PhutilRemarkupEngineBlockRule
-  'differential.custom-remarkup-block-rules' => null,
 
   // List of file regexps where whitespace is meaningful and should not
   // use 'ignore-all' by default

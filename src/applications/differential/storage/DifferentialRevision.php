@@ -4,22 +4,22 @@ final class DifferentialRevision extends DifferentialDAO
   implements
     PhabricatorTokenReceiverInterface,
     PhabricatorPolicyInterface,
+    PhabricatorFlaggableInterface,
     PhrequentTrackableInterface {
 
-  protected $title;
+  protected $title = '';
   protected $originalTitle;
   protected $status;
 
-  protected $summary;
-  protected $testPlan;
+  protected $summary = '';
+  protected $testPlan = '';
 
-  protected $phid;
   protected $authorPHID;
   protected $lastReviewerPHID;
 
   protected $dateCommitted;
 
-  protected $lineCount;
+  protected $lineCount = 0;
   protected $attached = array();
 
   protected $mailKey;
@@ -43,6 +43,22 @@ final class DifferentialRevision extends DifferentialDAO
 
   const RELATION_REVIEWER     = 'revw';
   const RELATION_SUBSCRIBED   = 'subd';
+
+  public static function initializeNewRevision(PhabricatorUser $actor) {
+    $app = id(new PhabricatorApplicationQuery())
+      ->setViewer($actor)
+      ->withClasses(array('PhabricatorApplicationDifferential'))
+      ->executeOne();
+
+    $view_policy = $app->getPolicy(
+      DifferentialCapabilityDefaultView::CAPABILITY);
+
+    return id(new DifferentialRevision())
+      ->setViewPolicy($view_policy)
+      ->setAuthorPHID($actor->getPHID())
+      ->attachRelationships(array())
+      ->setStatus(ArcanistDifferentialRevisionStatus::NEEDS_REVIEW);
+  }
 
   public function getConfiguration() {
     return array(
@@ -223,11 +239,30 @@ final class DifferentialRevision extends DifferentialDAO
       return;
     }
 
+    // Read "subscribed" and "unsubscribed" data out of the old relationship
+    // table.
     $data = queryfx_all(
       $this->establishConnection('r'),
-      'SELECT * FROM %T WHERE revisionID = %d ORDER BY sequence',
+      'SELECT * FROM %T WHERE revisionID = %d
+        AND relation != %s ORDER BY sequence',
       self::RELATIONSHIP_TABLE,
-      $this->getID());
+      $this->getID(),
+      self::RELATION_REVIEWER);
+
+    // Read "reviewer" data out of the new table.
+    $reviewer_phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
+      $this->getPHID(),
+      PhabricatorEdgeConfig::TYPE_DREV_HAS_REVIEWER);
+    $reviewer_phids = array_reverse($reviewer_phids);
+
+    foreach ($reviewer_phids as $phid) {
+      $data[] = array(
+        'relation' => self::RELATION_REVIEWER,
+        'objectPHID' => $phid,
+        'reasonPHID' => null,
+      );
+    }
+
     return $this->attachRelationships($data);
   }
 
@@ -338,11 +373,9 @@ final class DifferentialRevision extends DifferentialDAO
       case PhabricatorPolicyCapability::CAN_VIEW:
         $description[] = pht(
           "A revision's reviewers can always view it.");
-        if ($this->getRepositoryPHID()) {
-          $description[] = pht(
-            'This revision belongs to a repository. Other users must be able '.
-            'to view the repository in order to view this revision.');
-        }
+        $description[] = pht(
+          'If a revision belongs to a repository, other users must be able '.
+          'to view the repository in order to view the revision.');
         break;
     }
 

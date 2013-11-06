@@ -23,6 +23,7 @@ abstract class HeraldAdapter {
   const FIELD_AFFECTED_PACKAGE_OWNER = 'affected-package-owner';
   const FIELD_CONTENT_SOURCE         = 'contentsource';
   const FIELD_ALWAYS                 = 'always';
+  const FIELD_AUTHOR_PROJECTS        = 'authorprojects';
 
   const CONDITION_CONTAINS        = 'contains';
   const CONDITION_NOT_CONTAINS    = '!contains';
@@ -51,6 +52,8 @@ abstract class HeraldAdapter {
   const ACTION_FLAG         = 'flag';
   const ACTION_ASSIGN_TASK  = 'assigntask';
   const ACTION_ADD_PROJECTS = 'addprojects';
+  const ACTION_ADD_REVIEWERS = 'addreviewers';
+  const ACTION_ADD_BLOCKING_REVIEWERS = 'addblockingreviewers';
 
   const VALUE_TEXT            = 'text';
   const VALUE_NONE            = 'none';
@@ -63,6 +66,7 @@ abstract class HeraldAdapter {
   const VALUE_PROJECT         = 'project';
   const VALUE_FLAG_COLOR      = 'flagcolor';
   const VALUE_CONTENT_SOURCE  = 'contentsource';
+  const VALUE_USER_OR_PROJECT = 'userorproject';
 
   private $contentSource;
 
@@ -114,6 +118,7 @@ abstract class HeraldAdapter {
 
   abstract public function getAdapterContentName();
   abstract public function getAdapterApplicationClass();
+  abstract public function getObject();
 
 
 /* -(  Fields  )------------------------------------------------------------- */
@@ -146,6 +151,7 @@ abstract class HeraldAdapter {
         pht("Any affected package's owner"),
       self::FIELD_CONTENT_SOURCE => pht('Content Source'),
       self::FIELD_ALWAYS => pht('Always'),
+      self::FIELD_AUTHOR_PROJECTS => pht("Author's projects"),
     );
   }
 
@@ -163,7 +169,7 @@ abstract class HeraldAdapter {
       self::CONDITION_IS_NOT_ANY      => pht('is not any of'),
       self::CONDITION_INCLUDE_ALL     => pht('include all of'),
       self::CONDITION_INCLUDE_ANY     => pht('include any of'),
-      self::CONDITION_INCLUDE_NONE    => pht('include none of'),
+      self::CONDITION_INCLUDE_NONE    => pht('do not include'),
       self::CONDITION_IS_ME           => pht('is myself'),
       self::CONDITION_IS_NOT_ME       => pht('is not myself'),
       self::CONDITION_REGEXP          => pht('matches regexp'),
@@ -198,6 +204,7 @@ abstract class HeraldAdapter {
       case self::FIELD_TAGS:
       case self::FIELD_REVIEWERS:
       case self::FIELD_CC:
+      case self::FIELD_AUTHOR_PROJECTS:
         return array(
           self::CONDITION_INCLUDE_ALL,
           self::CONDITION_INCLUDE_ANY,
@@ -292,7 +299,7 @@ abstract class HeraldAdapter {
         }
         if (!is_array($condition_value)) {
           throw new HeraldInvalidConditionException(
-            "Expected conditionv value to be an array.");
+            "Expected condition value to be an array.");
         }
 
         $have = array_select_keys(array_fuse($field_value), $condition_value);
@@ -481,6 +488,8 @@ abstract class HeraldAdapter {
           self::ACTION_FLAG         => pht('Mark with flag'),
           self::ACTION_ASSIGN_TASK  => pht('Assign task to'),
           self::ACTION_ADD_PROJECTS => pht('Add projects'),
+          self::ACTION_ADD_REVIEWERS => pht('Add reviewers'),
+          self::ACTION_ADD_BLOCKING_REVIEWERS => pht('Add blocking reviewers'),
         );
       case HeraldRuleTypeConfig::RULE_TYPE_PERSONAL:
         return array(
@@ -490,8 +499,11 @@ abstract class HeraldAdapter {
           self::ACTION_EMAIL        => pht('Send me an email'),
           self::ACTION_AUDIT        => pht('Trigger an Audit by me'),
           self::ACTION_FLAG         => pht('Mark with flag'),
-          self::ACTION_ASSIGN_TASK  => pht('Assign task to me.'),
+          self::ACTION_ASSIGN_TASK  => pht('Assign task to me'),
           self::ACTION_ADD_PROJECTS => pht('Add projects'),
+          self::ACTION_ADD_REVIEWERS => pht('Add me as a reviewer'),
+          self::ACTION_ADD_BLOCKING_REVIEWERS =>
+            pht('Add me as a blocking reviewer'),
         );
       default:
         throw new Exception("Unknown rule type '{$rule_type}'!");
@@ -517,6 +529,8 @@ abstract class HeraldAdapter {
         case self::ACTION_REMOVE_CC:
         case self::ACTION_AUDIT:
         case self::ACTION_ASSIGN_TASK:
+        case self::ACTION_ADD_REVIEWERS:
+        case self::ACTION_ADD_BLOCKING_REVIEWERS:
           // For personal rules, force these actions to target the rule owner.
           $target = array($author_phid);
           break;
@@ -582,6 +596,8 @@ abstract class HeraldAdapter {
             return self::VALUE_TAG;
           case self::FIELD_AFFECTED_PACKAGE:
             return self::VALUE_OWNERS_PACKAGE;
+          case self::FIELD_AUTHOR_PROJECTS:
+            return self::VALUE_PROJECT;
           default:
             return self::VALUE_USER;
         }
@@ -611,6 +627,8 @@ abstract class HeraldAdapter {
         case self::ACTION_NOTHING:
         case self::ACTION_AUDIT:
         case self::ACTION_ASSIGN_TASK:
+        case self::ACTION_ADD_REVIEWERS:
+        case self::ACTION_ADD_BLOCKING_REVIEWERS:
           return self::VALUE_NONE;
         case self::ACTION_FLAG:
           return self::VALUE_FLAG_COLOR;
@@ -634,6 +652,9 @@ abstract class HeraldAdapter {
           return self::VALUE_FLAG_COLOR;
         case self::ACTION_ASSIGN_TASK:
           return self::VALUE_USER;
+        case self::ACTION_ADD_REVIEWERS:
+        case self::ACTION_ADD_BLOCKING_REVIEWERS:
+          return self::VALUE_USER_OR_PROJECT;
         default:
           throw new Exception("Unknown or invalid action '{$action}'.");
       }
@@ -751,7 +772,10 @@ abstract class HeraldAdapter {
     }
     $out[] = null;
 
-    if ($rule->getRepetitionPolicy() == HeraldRepetitionPolicyConfig::EVERY) {
+    $integer_code_for_every = HeraldRepetitionPolicyConfig::toInt(
+      HeraldRepetitionPolicyConfig::EVERY);
+
+    if ($rule->getRepetitionPolicy() == $integer_code_for_every) {
       $out[] = pht('Take these actions every time this rule matches:');
     } else {
       $out[] = pht('Take these actions the first time this rule matches:');

@@ -43,7 +43,9 @@ final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
       '/diffusion/' => array(
         '(?:query/(?P<queryKey>[^/]+)/)?'
           => 'DiffusionRepositoryListController',
-        'create/' => 'DiffusionRepositoryCreateController',
+        'new/' => 'DiffusionRepositoryNewController',
+        '(?P<edit>create)/' => 'DiffusionRepositoryCreateController',
+        '(?P<edit>import)/' => 'DiffusionRepositoryCreateController',
         '(?P<callsign>[A-Z]+)/' => array(
           '' => 'DiffusionRepositoryController',
 
@@ -64,13 +66,28 @@ final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
           'commit/(?P<commit>[a-z0-9]+)/edit/'
             => 'DiffusionCommitEditController',
           'edit/' => array(
-            '' => 'DiffusionRepositoryEditController',
+            '' => 'DiffusionRepositoryEditMainController',
             'basic/' => 'DiffusionRepositoryEditBasicController',
             'encoding/' => 'DiffusionRepositoryEditEncodingController',
             'activate/' => 'DiffusionRepositoryEditActivateController',
             'policy/' => 'DiffusionRepositoryEditPolicyController',
+            'branches/' => 'DiffusionRepositoryEditBranchesController',
+            'subversion/' => 'DiffusionRepositoryEditSubversionController',
+            'actions/' => 'DiffusionRepositoryEditActionsController',
+            '(?P<edit>remote)/' => 'DiffusionRepositoryCreateController',
+            'local/' => 'DiffusionRepositoryEditLocalController',
+            'delete/' => 'DiffusionRepositoryEditDeleteController',
+            'hosting/' => 'DiffusionRepositoryEditHostingController',
+            '(?P<serve>serve)/' => 'DiffusionRepositoryEditHostingController',
           ),
         ),
+
+        // NOTE: This must come after the rule above; it just gives us a
+        // catch-all for serving repositories over HTTP. We must accept
+        // requests without the trailing "/" because SVN commands don't
+        // necessarily include it.
+        '(?P<callsign>[A-Z]+)(/|$).*' => 'DiffusionRepositoryDefaultController',
+
         'inline/' => array(
           'edit/(?P<phid>[^/]+)/'    => 'DiffusionInlineCommentController',
           'preview/(?P<phid>[^/]+)/' =>
@@ -95,6 +112,21 @@ final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
 
   public function getApplicationOrder() {
     return 0.120;
+  }
+
+  protected function getCustomCapabilities() {
+    return array(
+      DiffusionCapabilityDefaultView::CAPABILITY => array(
+      ),
+      DiffusionCapabilityDefaultEdit::CAPABILITY => array(
+        'default' => PhabricatorPolicies::POLICY_ADMIN,
+      ),
+      DiffusionCapabilityDefaultPush::CAPABILITY => array(
+      ),
+      DiffusionCapabilityCreateRepositories::CAPABILITY => array(
+        'default' => PhabricatorPolicies::POLICY_ADMIN,
+      ),
+    );
   }
 
 }

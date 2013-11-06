@@ -7,10 +7,9 @@ final class PhrictionDocument extends PhrictionDAO
   implements
     PhabricatorPolicyInterface,
     PhabricatorSubscribableInterface,
+    PhabricatorFlaggableInterface,
     PhabricatorTokenReceiverInterface {
 
-  protected $id;
-  protected $phid;
   protected $slug;
   protected $depth;
   protected $contentID;

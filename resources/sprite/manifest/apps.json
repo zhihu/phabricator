@@ -311,6 +311,16 @@
       "rule" : ".apps-paste-white",
       "hash" : "ed5ec1ee39cc2a01f568f91c72141bfb"
     },
+    "apps-pebkac-dark"          : {
+      "name" : "apps-pebkac-dark",
+      "rule" : ".apps-pebkac-dark",
+      "hash" : "4adb4a8f0a8c5bc5462bb806ceafc63f"
+    },
+    "apps-pebkac-white"         : {
+      "name" : "apps-pebkac-white",
+      "rule" : ".apps-pebkac-white",
+      "hash" : "35438c7a295df21aa2fa4771a5c3c986"
+    },
     "apps-people-dark"          : {
       "name" : "apps-people-dark",
       "rule" : ".apps-people-dark",
@@ -470,6 +480,16 @@
       "name" : "apps-repositories-white",
       "rule" : ".apps-repositories-white",
       "hash" : "848bb97c36e927353a097f2e7312841d"
+    },
+    "apps-search-dark"          : {
+      "name" : "apps-search-dark",
+      "rule" : ".apps-search-dark",
+      "hash" : "c1e382d74a101b4dc40a8a498fb301e1"
+    },
+    "apps-search-white"         : {
+      "name" : "apps-search-white",
+      "rule" : ".apps-search-white",
+      "hash" : "97fed01d5d3295baa51cab8e2e6721ab"
     },
     "apps-settings-dark"        : {
       "name" : "apps-settings-dark",

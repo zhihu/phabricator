@@ -5,9 +5,13 @@
  * @{class:PhabricatorRepository} objects. Used by
  * @{class:PhabricatorRepositoryPullLocalDaemon}.
  *
+ * This class also covers initial working copy setup through `git clone`,
+ * `git init`, `hg clone`, `hg init`, or `svnadmin create`.
+ *
  * @task pull     Pulling Working Copies
  * @task git      Pulling Git Working Copies
  * @task hg       Pulling Mercurial Working Copies
+ * @task svn      Pulling Subversion Working Copies
  * @task internal Internals
  */
 final class PhabricatorRepositoryPullEngine
@@ -22,17 +26,24 @@ final class PhabricatorRepositoryPullEngine
 
     $is_hg = false;
     $is_git = false;
+    $is_svn = false;
 
     $vcs = $repository->getVersionControlSystem();
     $callsign = $repository->getCallsign();
+
     switch ($vcs) {
       case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:
-        // We never pull a local copy of Subversion repositories.
-        $this->log(
-          "Repository '%s' is a Subversion repository, which does not require ".
-          "a local working copy to be pulled.",
-          $callsign);
-        return;
+        // We never pull a local copy of non-hosted Subversion repositories.
+        if (!$repository->isHosted()) {
+          $this->skipPull(
+            pht(
+              "Repository '%s' is a non-hosted Subversion repository, which ".
+              "does not require a local working copy to be pulled.",
+              $callsign));
+          return;
+        }
+        $is_svn = true;
+        break;
       case PhabricatorRepositoryType::REPOSITORY_TYPE_GIT:
         $is_git = true;
         break;
@@ -40,42 +51,99 @@ final class PhabricatorRepositoryPullEngine
         $is_hg = true;
         break;
       default:
-        throw new Exception("Unsupported VCS '{$vcs}'!");
+        $this->abortPull(pht('Unknown VCS "%s"!', $vcs));
     }
 
     $callsign = $repository->getCallsign();
     $local_path = $repository->getLocalPath();
     if ($local_path === null) {
-      throw new Exception(
-        "No local path is configured for repository '{$callsign}'.");
+      $this->abortPull(
+        pht(
+          "No local path is configured for repository '%s'.",
+          $callsign));
     }
 
-    $dirname = dirname($local_path);
-    if (!Filesystem::pathExists($dirname)) {
-      Filesystem::createDirectory($dirname, 0755, $recursive = true);
+    try {
+      $dirname = dirname($local_path);
+      if (!Filesystem::pathExists($dirname)) {
+        Filesystem::createDirectory($dirname, 0755, $recursive = true);
+      }
+
+      if (!Filesystem::pathExists($local_path)) {
+        $this->logPull(
+          pht(
+            "Creating a new working copy for repository '%s'.",
+            $callsign));
+        if ($is_git) {
+          $this->executeGitCreate();
+        } else if ($is_hg) {
+          $this->executeMercurialCreate();
+        } else {
+          $this->executeSubversionCreate();
+        }
+      } else {
+        if ($repository->isHosted()) {
+          $this->logPull(
+            pht(
+              "Repository '%s' is hosted, so Phabricator does not pull ".
+              "updates for it.",
+              $callsign));
+        } else {
+          $this->logPull(
+            pht(
+              "Updating the working copy for repository '%s'.",
+              $callsign));
+          if ($is_git) {
+            $this->executeGitUpdate();
+          } else {
+            $this->executeMercurialUpdate();
+          }
+        }
+      }
+    } catch (Exception $ex) {
+      $this->abortPull(
+        pht('Pull of "%s" failed: %s', $callsign, $ex->getMessage()),
+        $ex);
     }
 
-    if (!Filesystem::pathExists($local_path)) {
-      $this->log(
-        "Creating a new working copy for repository '%s'.",
-        $callsign);
-      if ($is_git) {
-        $this->executeGitCreate();
-      } else {
-        $this->executeMercurialCreate();
-      }
-    } else {
-      $this->log(
-        "Updating the working copy for repository '%s'.",
-        $callsign);
-      if ($is_git) {
-        $this->executeGitUpdate();
-      } else {
-        $this->executeMercurialUpdate();
-      }
-    }
+    $this->donePull();
 
     return $this;
+  }
+
+  private function skipPull($message) {
+    $this->log('%s', $message);
+    $this->donePull();
+  }
+
+  private function abortPull($message, Exception $ex = null) {
+    $code_error = PhabricatorRepositoryStatusMessage::CODE_ERROR;
+    $this->updateRepositoryInitStatus($code_error, $message);
+    if ($ex) {
+      throw $ex;
+    } else {
+      throw new Exception($message);
+    }
+  }
+
+  private function logPull($message) {
+    $code_working = PhabricatorRepositoryStatusMessage::CODE_WORKING;
+    $this->updateRepositoryInitStatus($code_working, $message);
+    $this->log('%s', $message);
+  }
+
+  private function donePull() {
+    $code_okay = PhabricatorRepositoryStatusMessage::CODE_OKAY;
+    $this->updateRepositoryInitStatus($code_okay);
+  }
+
+  private function updateRepositoryInitStatus($code, $message = null) {
+    $this->getRepository()->writeStatusMessage(
+      PhabricatorRepositoryStatusMessage::TYPE_INIT,
+      $code,
+      array(
+        'message' => $message
+      ));
   }
 
 
@@ -88,10 +156,18 @@ final class PhabricatorRepositoryPullEngine
   private function executeGitCreate() {
     $repository = $this->getRepository();
 
-    $repository->execxRemoteCommand(
-      'clone --origin origin %s %s',
-      $repository->getRemoteURI(),
-      rtrim($repository->getLocalPath(), '/'));
+    $path = rtrim($repository->getLocalPath(), '/');
+
+    if ($repository->isHosted()) {
+      $repository->execxRemoteCommand(
+        'init --bare -- %s',
+        $path);
+    } else {
+      $repository->execxRemoteCommand(
+        'clone --bare -- %s %s',
+        $repository->getRemoteURI(),
+        $path);
+    }
   }
 
 
@@ -139,12 +215,11 @@ final class PhabricatorRepositoryPullEngine
       $repo_path = rtrim($stdout, "\n");
 
       if (empty($repo_path)) {
-        $err = true;
-        $message =
-          "Expected to find a git repository at '{$path}', but ".
-          "there was no result from `git rev-parse --show-toplevel`. ".
-          "Something is misconfigured or broken. The git repository ".
-          "may be inside a '.git/' directory.";
+        // This can mean one of two things: we're in a bare repository, or
+        // we're inside a git repository inside another git repository. Since
+        // the first is dramatically more likely now that we perform bare
+        // clones and I don't have a great way to test for the latter, assume
+        // we're OK.
       } else if (!Filesystem::pathsAreEquivalent($repo_path, $path)) {
         $err = true;
         $message =
@@ -168,7 +243,16 @@ final class PhabricatorRepositoryPullEngine
     $retry = false;
     do {
       // This is a local command, but needs credentials.
-      $future = $repository->getRemoteCommandFuture('fetch --all --prune');
+      if ($repository->isWorkingCopyBare()) {
+        // For bare working copies, we need this magic incantation.
+        $future = $repository->getRemoteCommandFuture(
+          'fetch origin %s --prune',
+          '+refs/heads/*:refs/heads/*');
+      } else {
+        $future = $repository->getRemoteCommandFuture(
+          'fetch --all --prune');
+      }
+
       $future->setCWD($path);
       list($err, $stdout, $stderr) = $future->resolve();
 
@@ -204,10 +288,18 @@ final class PhabricatorRepositoryPullEngine
   private function executeMercurialCreate() {
     $repository = $this->getRepository();
 
-    $repository->execxRemoteCommand(
-      'clone %s %s',
-      $repository->getRemoteURI(),
-      rtrim($repository->getLocalPath(), '/'));
+    $path = rtrim($repository->getLocalPath(), '/');
+
+    if ($repository->isHosted()) {
+      $repository->execxRemoteCommand(
+        'init -- %s',
+        $path);
+    } else {
+      $repository->execxRemoteCommand(
+        'clone -- %s %s',
+        $repository->getRemoteURI(),
+        $path);
+    }
   }
 
 
@@ -249,6 +341,20 @@ final class PhabricatorRepositoryPullEngine
         throw $ex;
       }
     }
+  }
+
+
+/* -(  Pulling Subversion Working Copies  )---------------------------------- */
+
+
+  /**
+   * @task svn
+   */
+  private function executeSubversionCreate() {
+    $repository = $this->getRepository();
+
+    $path = rtrim($repository->getLocalPath(), '/');
+    execx('svnadmin create -- %s', $path);
   }
 
 

@@ -15,6 +15,7 @@ final class PhabricatorApplicationPolicy extends PhabricatorApplication {
       '/policy/' => array(
         'explain/(?P<phid>[^/]+)/(?P<capability>[^/]+)/'
           => 'PhabricatorPolicyExplainController',
+        'edit/(?:(?P<phid>[^/]+)/)?' => 'PhabricatorPolicyEditController',
       ),
     );
   }

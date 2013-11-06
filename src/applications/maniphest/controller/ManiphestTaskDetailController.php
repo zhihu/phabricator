@@ -165,6 +165,27 @@ final class ManiphestTaskDetailController extends ManiphestController {
       ManiphestTransaction::TYPE_PROJECTS   => pht('Associate Projects'),
     );
 
+    // Remove actions the user doesn't have permission to take.
+
+    $requires = array(
+      ManiphestTransaction::TYPE_OWNER =>
+        ManiphestCapabilityEditAssign::CAPABILITY,
+      ManiphestTransaction::TYPE_PRIORITY =>
+        ManiphestCapabilityEditPriority::CAPABILITY,
+      ManiphestTransaction::TYPE_PROJECTS =>
+        ManiphestCapabilityEditProjects::CAPABILITY,
+      ManiphestTransaction::TYPE_STATUS =>
+        ManiphestCapabilityEditStatus::CAPABILITY,
+    );
+
+    foreach ($transaction_types as $type => $name) {
+      if (isset($requires[$type])) {
+        if (!$this->hasApplicationCapability($requires[$type])) {
+          unset($transaction_types[$type]);
+        }
+      }
+    }
+
     if ($task->getStatus() == ManiphestTaskStatus::STATUS_OPEN) {
       $resolution_types = array_select_keys(
         $resolution_types,
@@ -352,7 +373,9 @@ final class ManiphestTaskDetailController extends ManiphestController {
       ->setActionList($actions);
 
     $header = $this->buildHeaderView($task);
-    $properties = $this->buildPropertyView($task, $field_list, $edges, $engine);
+    $properties = $this->buildPropertyView(
+      $task, $field_list, $edges, $actions);
+    $description = $this->buildDescriptionView($task, $engine);
 
     if (!$user->isLoggedIn()) {
       // TODO: Eventually, everything should run through this. For now, we're
@@ -365,8 +388,11 @@ final class ManiphestTaskDetailController extends ManiphestController {
 
     $object_box = id(new PHUIObjectBoxView())
       ->setHeader($header)
-      ->setActionList($actions)
-      ->setPropertyList($properties);
+      ->addPropertyList($properties);
+
+    if ($description) {
+      $object_box->addPropertyList($description);
+    }
 
     $comment_box = id(new PHUIObjectBoxView())
       ->setFlush(true)
@@ -457,7 +483,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
         ->setWorkflow(true)
         ->setIcon('merge')
         ->setDisabled(!$can_edit)
-        ->setWorkflow(!$can_edit));
+        ->setWorkflow(true));
 
     $view->addAction(
       id(new PhabricatorActionView())
@@ -474,28 +500,6 @@ final class ManiphestTaskDetailController extends ManiphestController {
         ->setDisabled(!$can_edit)
         ->setWorkflow(true));
 
-    $view->addAction(
-      id(new PhabricatorActionView())
-        ->setName(pht('Edit Differential Revisions'))
-        ->setHref("/search/attach/{$phid}/DREV/")
-        ->setWorkflow(true)
-        ->setIcon('attach')
-        ->setDisabled(!$can_edit)
-        ->setWorkflow(true));
-
-    $pholio_app =
-      PhabricatorApplication::getByClass('PhabricatorApplicationPholio');
-    if ($pholio_app->isInstalled()) {
-      $view->addAction(
-        id(new PhabricatorActionView())
-        ->setName(pht('Edit Pholio Mocks'))
-        ->setHref("/search/attach/{$phid}/MOCK/edge/")
-        ->setWorkflow(true)
-        ->setIcon('attach')
-        ->setDisabled(!$can_edit)
-        ->setWorkflow(true));
-    }
-
     return $view;
   }
 
@@ -503,13 +507,14 @@ final class ManiphestTaskDetailController extends ManiphestController {
     ManiphestTask $task,
     PhabricatorCustomFieldList $field_list,
     array $edges,
-    PhabricatorMarkupEngine $engine) {
+    PhabricatorActionListView $actions) {
 
     $viewer = $this->getRequest()->getUser();
 
-    $view = id(new PhabricatorPropertyListView())
+    $view = id(new PHUIPropertyListView())
       ->setUser($viewer)
-      ->setObject($task);
+      ->setObject($task)
+      ->setActionList($actions);
 
     $view->addProperty(
       pht('Assigned To'),
@@ -633,9 +638,20 @@ final class ManiphestTaskDetailController extends ManiphestController {
 
     $view->invokeWillRenderEvent();
 
+    return $view;
+  }
+
+  private function buildDescriptionView(
+    ManiphestTask $task,
+    PhabricatorMarkupEngine $engine) {
+
+    $section = null;
     if (strlen($task->getDescription())) {
-      $view->addSectionHeader(pht('Description'));
-      $view->addTextContent(
+      $section = new PHUIPropertyListView();
+      $section->addSectionHeader(
+        pht('Description'),
+        PHUIPropertyListView::ICON_SUMMARY);
+      $section->addTextContent(
         phutil_tag(
           'div',
           array(
@@ -644,7 +660,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
           $engine->getOutput($task, ManiphestTask::MARKUP_FIELD_DESCRIPTION)));
     }
 
-    return $view;
+    return $section;
   }
 
 }

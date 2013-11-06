@@ -21,18 +21,14 @@ final class DiffusionLintController extends DiffusionController {
     $owners = array();
     if (!$drequest) {
       if (!$request->getArr('owner')) {
-        if ($user->isLoggedIn()) {
-          $owners[$user->getPHID()] = $user->getFullName();
-        }
+        $owners = array($user->getPHID());
       } else {
-        $phids = $request->getArr('owner');
-        $phid = reset($phids);
-        $handles = $this->loadViewerHandles(array($phid));
-        $owners[$phid] = $handles[$phid]->getFullName();
+        $owners = array(head($request->getArr('owner')));
       }
+      $owner_handles = $this->loadViewerHandles($owners);
     }
 
-    $codes = $this->loadLintCodes(array_keys($owners));
+    $codes = $this->loadLintCodes($owners);
 
     if ($codes && !$drequest) {
       // TODO: Build some real Query classes for this stuff.
@@ -125,7 +121,7 @@ final class DiffusionLintController extends DiffusionController {
             ->setLimit(1)
             ->setName('owner')
             ->setLabel(pht('Owner'))
-            ->setValue($owners))
+            ->setValue($owner_handles))
         ->appendChild(
           id(new AphrontFormSubmitControl())
             ->setValue('Filter'));
@@ -164,12 +160,12 @@ final class DiffusionLintController extends DiffusionController {
       $properties = $this->buildPropertyView(
         $drequest,
         $branch,
-        $total);
+        $total,
+        $actions);
 
       $object_box = id(new PHUIObjectBoxView())
         ->setHeader($header)
-        ->setActionList($actions)
-        ->setPropertyList($properties);
+        ->addPropertyList($properties);
     } else {
       $object_box = null;
     }
@@ -320,12 +316,14 @@ final class DiffusionLintController extends DiffusionController {
   protected function buildPropertyView(
     DiffusionRequest $drequest,
     PhabricatorRepositoryBranch $branch,
-    $total) {
+    $total,
+    PhabricatorActionListView $actions) {
 
     $viewer = $this->getRequest()->getUser();
 
-    $view = id(new PhabricatorPropertyListView())
-      ->setUser($viewer);
+    $view = id(new PHUIPropertyListView())
+      ->setUser($viewer)
+      ->setActions($actions);
 
     $callsign = $drequest->getRepository()->getCallsign();
     $lint_commit = $branch->getLintCommit();
