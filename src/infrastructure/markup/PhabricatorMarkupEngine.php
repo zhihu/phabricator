@@ -202,13 +202,16 @@ final class PhabricatorMarkupEngine {
     PhabricatorMarkupInterface $object,
     $field) {
 
-    $custom = array_merge(
-      self::loadCustomInlineRules(),
-      self::loadCustomBlockRules());
+    static $custom;
+    if ($custom === null) {
+      $custom = array_merge(
+        self::loadCustomInlineRules(),
+        self::loadCustomBlockRules());
 
-    $custom = mpull($custom, 'getRuleVersion', null);
-    ksort($custom);
-    $custom = PhabricatorHash::digestForIndex(serialize($custom));
+      $custom = mpull($custom, 'getRuleVersion', null);
+      ksort($custom);
+      $custom = PhabricatorHash::digestForIndex(serialize($custom));
+    }
 
     return $object->getMarkupFieldKey($field).'@'.$this->version.'@'.$custom;
   }
@@ -239,7 +242,9 @@ final class PhabricatorMarkupEngine {
     }
 
     foreach ($objects as $key => $info) {
-      if (isset($blocks[$key])) {
+      // False check in case MySQL doesn't support unicode characters
+      // in the string (T1191), resulting in unserialize returning false.
+      if (isset($blocks[$key]) && $blocks[$key]->getCacheData() !== false) {
         // If we already have a preprocessing cache, we don't need to rebuild
         // it.
         continue;
@@ -363,6 +368,10 @@ final class PhabricatorMarkupEngine {
     switch ($ruleset) {
       case 'default':
         $engine = self::newMarkupEngine(array());
+        break;
+      case 'nolinebreaks':
+        $engine = self::newMarkupEngine(array());
+        $engine->setConfig('preserve-linebreaks', false);
         break;
       case 'diviner':
         $engine = self::newMarkupEngine(array());

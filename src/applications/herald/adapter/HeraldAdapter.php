@@ -24,6 +24,7 @@ abstract class HeraldAdapter {
   const FIELD_CONTENT_SOURCE         = 'contentsource';
   const FIELD_ALWAYS                 = 'always';
   const FIELD_AUTHOR_PROJECTS        = 'authorprojects';
+  const FIELD_PROJECTS               = 'projects';
 
   const CONDITION_CONTAINS        = 'contains';
   const CONDITION_NOT_CONTAINS    = '!contains';
@@ -54,6 +55,7 @@ abstract class HeraldAdapter {
   const ACTION_ADD_PROJECTS = 'addprojects';
   const ACTION_ADD_REVIEWERS = 'addreviewers';
   const ACTION_ADD_BLOCKING_REVIEWERS = 'addblockingreviewers';
+  const ACTION_APPLY_BUILD_PLANS = 'applybuildplans';
 
   const VALUE_TEXT            = 'text';
   const VALUE_NONE            = 'none';
@@ -67,6 +69,7 @@ abstract class HeraldAdapter {
   const VALUE_FLAG_COLOR      = 'flagcolor';
   const VALUE_CONTENT_SOURCE  = 'contentsource';
   const VALUE_USER_OR_PROJECT = 'userorproject';
+  const VALUE_BUILD_PLAN      = 'buildplan';
 
   private $contentSource;
 
@@ -152,6 +155,7 @@ abstract class HeraldAdapter {
       self::FIELD_CONTENT_SOURCE => pht('Content Source'),
       self::FIELD_ALWAYS => pht('Always'),
       self::FIELD_AUTHOR_PROJECTS => pht("Author's projects"),
+      self::FIELD_PROJECTS => pht("Projects"),
     );
   }
 
@@ -195,20 +199,31 @@ abstract class HeraldAdapter {
         );
       case self::FIELD_AUTHOR:
       case self::FIELD_COMMITTER:
-      case self::FIELD_REPOSITORY:
       case self::FIELD_REVIEWER:
         return array(
           self::CONDITION_IS_ANY,
           self::CONDITION_IS_NOT_ANY,
         );
+      case self::FIELD_REPOSITORY:
+        return array(
+          self::CONDITION_IS_ANY,
+          self::CONDITION_IS_NOT_ANY,
+          self::CONDITION_EXISTS,
+          self::CONDITION_NOT_EXISTS,
+        );
       case self::FIELD_TAGS:
       case self::FIELD_REVIEWERS:
       case self::FIELD_CC:
       case self::FIELD_AUTHOR_PROJECTS:
+      case self::FIELD_PROJECTS:
+      case self::FIELD_AFFECTED_PACKAGE:
+      case self::FIELD_AFFECTED_PACKAGE_OWNER:
         return array(
           self::CONDITION_INCLUDE_ALL,
           self::CONDITION_INCLUDE_ANY,
           self::CONDITION_INCLUDE_NONE,
+          self::CONDITION_EXISTS,
+          self::CONDITION_NOT_EXISTS,
         );
       case self::FIELD_DIFF_FILE:
         return array(
@@ -227,12 +242,6 @@ abstract class HeraldAdapter {
         return array(
           self::CONDITION_RULE,
           self::CONDITION_NOT_RULE,
-        );
-      case self::FIELD_AFFECTED_PACKAGE:
-      case self::FIELD_AFFECTED_PACKAGE_OWNER:
-        return array(
-          self::CONDITION_INCLUDE_ANY,
-          self::CONDITION_INCLUDE_NONE,
         );
       case self::FIELD_CONTENT_SOURCE:
         return array(
@@ -490,6 +499,7 @@ abstract class HeraldAdapter {
           self::ACTION_ADD_PROJECTS => pht('Add projects'),
           self::ACTION_ADD_REVIEWERS => pht('Add reviewers'),
           self::ACTION_ADD_BLOCKING_REVIEWERS => pht('Add blocking reviewers'),
+          self::ACTION_APPLY_BUILD_PLANS => pht('Apply build plans'),
         );
       case HeraldRuleTypeConfig::RULE_TYPE_PERSONAL:
         return array(
@@ -597,7 +607,10 @@ abstract class HeraldAdapter {
           case self::FIELD_AFFECTED_PACKAGE:
             return self::VALUE_OWNERS_PACKAGE;
           case self::FIELD_AUTHOR_PROJECTS:
+          case self::FIELD_PROJECTS:
             return self::VALUE_PROJECT;
+          case self::FIELD_REVIEWERS:
+            return self::VALUE_USER_OR_PROJECT;
           default:
             return self::VALUE_USER;
         }
@@ -655,6 +668,8 @@ abstract class HeraldAdapter {
         case self::ACTION_ADD_REVIEWERS:
         case self::ACTION_ADD_BLOCKING_REVIEWERS:
           return self::VALUE_USER_OR_PROJECT;
+        case self::ACTION_APPLY_BUILD_PLANS:
+          return self::VALUE_BUILD_PLAN;
         default:
           throw new Exception("Unknown or invalid action '{$action}'.");
       }

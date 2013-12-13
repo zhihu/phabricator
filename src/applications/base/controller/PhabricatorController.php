@@ -74,10 +74,15 @@ abstract class PhabricatorController extends AphrontController {
       }
     }
 
-    if ($user->getIsDisabled() && $this->shouldRequireEnabledUser()) {
-      $disabled_user_controller = new PhabricatorDisabledUserController(
-        $request);
-      return $this->delegateToController($disabled_user_controller);
+    if ($this->shouldRequireEnabledUser()) {
+      if ($user->isLoggedIn() && !$user->getIsApproved()) {
+        $controller = new PhabricatorAuthNeedsApprovalController($request);
+        return $this->delegateToController($controller);
+      }
+      if ($user->getIsDisabled()) {
+        $controller = new PhabricatorDisabledUserController($request);
+        return $this->delegateToController($controller);
+      }
     }
 
     $event = new PhabricatorEvent(
@@ -114,12 +119,7 @@ abstract class PhabricatorController extends AphrontController {
 
       if ($user->isLoggedIn()) {
         if ($this->shouldRequireEmailVerification()) {
-          $email = $user->loadPrimaryEmail();
-          if (!$email) {
-            throw new Exception(
-              "No primary email address associated with this account!");
-          }
-          if (!$email->getIsVerified()) {
+          if (!$user->getIsEmailVerified()) {
             $controller = new PhabricatorMustVerifyEmailController($request);
             $this->setCurrentApplication($auth_application);
             return $this->delegateToController($controller);
@@ -246,8 +246,9 @@ abstract class PhabricatorController extends AphrontController {
         $view = new PhabricatorStandardPageView();
         $view->setRequest($request);
         $view->setController($this);
-        $view->appendChild(hsprintf(
-          '<div style="padding: 2em 0;">%s</div>',
+        $view->appendChild(phutil_tag(
+          'div',
+          array('style' => 'padding: 2em 0;'),
           $response->buildResponseString()));
         $page_response = new AphrontWebpageResponse();
         $page_response->setContent($view->render());

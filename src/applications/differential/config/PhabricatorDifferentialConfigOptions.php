@@ -96,18 +96,6 @@ final class PhabricatorDifferentialConfigOptions
             'sketchy and implies the revision may not actually be receiving '.
             'thorough review. You can enable "!accept" by setting this '.
             'option to true.')),
-      $this->newOption('differential.anonymous-access', 'bool', false)
-        ->setBoolOptions(
-          array(
-            pht('Allow guests to view revisions'),
-            pht('Require authentication to view revisions'),
-          ))
-        ->setSummary(pht('Anonymous access to Differential revisions.'))
-        ->setDescription(
-          pht(
-            "If you set this to true, users won't need to login to view ".
-            "Differential revisions. Anonymous users will have read-only ".
-            "access and won't be able to interact with the revisions.")),
       $this->newOption('differential.generated-paths', 'list<regex>', array())
         ->setSummary(pht("File regexps to treat as automatically generated."))
         ->setDescription(
@@ -158,6 +146,26 @@ final class PhabricatorDifferentialConfigOptions
               "is accidentally closed or if a developer changes his or her ".
               "mind after closing a revision.  If it is false, reopening ".
               "is not allowed.")),
+      $this->newOption('differential.close-on-accept', 'bool', false)
+        ->setBoolOptions(
+          array(
+            pht('Treat Accepted Revisions as "Closed"'),
+            pht('Treat Accepted Revisions as "Open"'),
+          ))
+        ->setSummary(pht('Allows "Accepted" to act as a closed status.'))
+        ->setDescription(
+          pht(
+            'Normally, Differential revisions remain on the dashboard when '.
+            'they are "Accepted", and the author then commits the changes '.
+            'to "Close" the revision and move it off the dashboard.'.
+            "\n\n".
+            'If you have an unusual workflow where Differential is used for '.
+            'post-commit review (normally called "Audit", elsewhere in '.
+            'Phabricator), you can set this flag to treat the "Accepted" '.
+            'state as a "Closed" state and end the review workflow early.'.
+            "\n\n".
+            'This sort of workflow is very unusual. Very few installs should '.
+            'need to change this option.')),
       $this->newOption('differential.days-fresh', 'int', 1)
         ->setSummary(
           pht(

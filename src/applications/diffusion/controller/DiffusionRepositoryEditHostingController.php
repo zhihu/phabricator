@@ -92,15 +92,18 @@ final class DiffusionRepositoryEditHostingController
             'Users will not be able to push commits to this repository.'))
         ->setValue($v_hosting);
 
+    $doc_href = PhabricatorEnv::getDoclink(
+      'article/Diffusion_User_Guide_Repository_Hosting.html');
+
     $form = id(new AphrontFormView())
       ->setUser($user)
       ->appendRemarkupInstructions(
         pht(
-          'NOTE: Hosting is extremely new and barely works! Use it at '.
-          'your own risk.'.
-          "\n\n".
           'Phabricator can host repositories, or it can track repositories '.
-          'hosted elsewhere (like on GitHub or Bitbucket).'))
+          'hosted elsewhere (like on GitHub or Bitbucket). For information '.
+          'on configuring hosting, see [[ %s | Diffusion User Guide: '.
+          'Repository Hosting]]',
+          $doc_href))
       ->appendChild($hosted_control)
       ->appendChild(
         id(new AphrontFormSubmitControl())
@@ -126,6 +129,9 @@ final class DiffusionRepositoryEditHostingController
     $request = $this->getRequest();
     $user = $request->getUser();
 
+    $type = $repository->getVersionControlSystem();
+    $is_svn = ($type == PhabricatorRepositoryType::REPOSITORY_TYPE_SVN);
+
     $v_http_mode = $repository->getDetail(
       'serve-over-http',
       PhabricatorRepository::SERVE_OFF);
@@ -146,9 +152,11 @@ final class DiffusionRepositoryEditHostingController
       $type_http = PhabricatorRepositoryTransaction::TYPE_PROTOCOL_HTTP;
       $type_ssh = PhabricatorRepositoryTransaction::TYPE_PROTOCOL_SSH;
 
-      $xactions[] = id(clone $template)
-        ->setTransactionType($type_http)
-        ->setNewValue($v_http_mode);
+      if (!$is_svn) {
+        $xactions[] = id(clone $template)
+          ->setTransactionType($type_http)
+          ->setNewValue($v_http_mode);
+      }
 
       $xactions[] = id(clone $template)
         ->setTransactionType($type_ssh)
@@ -231,6 +239,18 @@ final class DiffusionRepositoryEditHostingController
           PhabricatorRepository::getProtocolAvailabilityName(
             PhabricatorRepository::SERVE_READWRITE),
           $rw_message);
+
+    if ($is_svn) {
+      $http_control = id(new AphrontFormMarkupControl())
+        ->setLabel(pht('HTTP'))
+        ->setValue(
+          phutil_tag(
+            'em',
+            array(),
+            pht(
+              'Phabricator does not currently support HTTP access to '.
+              'Subversion repositories.')));
+    }
 
     $form = id(new AphrontFormView())
       ->setUser($user)

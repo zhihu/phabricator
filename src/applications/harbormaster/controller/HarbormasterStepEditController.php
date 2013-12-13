@@ -63,6 +63,11 @@ final class HarbormasterStepEditController
     $form = id(new AphrontFormView())
       ->setUser($viewer);
 
+    $instructions = $implementation->getSettingRemarkupInstructions();
+    if ($instructions !== null) {
+      $form->appendRemarkupInstructions($instructions);
+    }
+
     // We need to render out all of the fields for the settings that
     // the implementation has.
     foreach ($implementation->getSettingDefinitions() as $name => $opt) {
@@ -85,6 +90,23 @@ final class HarbormasterStepEditController
             ->setLabel($this->getReadableName($name, $opt))
             ->setName($name)
             ->setValue($value);
+          break;
+        case BuildStepImplementation::SETTING_TYPE_ARTIFACT:
+          $filter = $opt['artifact_type'];
+          $available_artifacts =
+            BuildStepImplementation::loadAvailableArtifacts(
+              $plan,
+              $step,
+              $filter);
+          $options = array();
+          foreach ($available_artifacts as $key => $type) {
+            $options[$key] = $key;
+          }
+          $control = id(new AphrontFormSelectControl())
+            ->setLabel($this->getReadableName($name, $opt))
+            ->setName($name)
+            ->setValue($value)
+            ->setOptions($options);
           break;
         default:
           throw new Exception("Unable to render field with unknown type.");
@@ -140,6 +162,7 @@ final class HarbormasterStepEditController
   public function getValueFromRequest(AphrontRequest $request, $name, $type) {
     switch ($type) {
       case BuildStepImplementation::SETTING_TYPE_STRING:
+      case BuildStepImplementation::SETTING_TYPE_ARTIFACT:
         return $request->getStr($name);
         break;
       case BuildStepImplementation::SETTING_TYPE_INTEGER:

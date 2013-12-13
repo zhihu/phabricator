@@ -81,9 +81,20 @@ final class PhabricatorSettingsPanelSSHKeys
 
         if (!$errors) {
           list($type, $body, $comment) = $parts;
-          if (!preg_match('/^ssh-dsa|ssh-rsa$/', $type)) {
+
+          $recognized_keys = array(
+            'ssh-dsa',
+            'ssh-dss',
+            'ssh-rsa',
+            'ecdsa-sha2-nistp256',
+            'ecdsa-sha2-nistp384',
+            'ecdsa-sha2-nistp521',
+          );
+
+          if (!in_array($type, $recognized_keys)) {
             $e_key = pht('Invalid');
-            $errors[] = pht('Public key should be "ssh-dsa" or "ssh-rsa".');
+            $type_list = implode(', ', $recognized_keys);
+            $errors[] = pht('Public key should be one of: %s', $type_list);
           } else {
             $key->setKeyType($type);
             $key->setKeyBody($body);
@@ -152,16 +163,12 @@ final class PhabricatorSettingsPanelSSHKeys
           ->addCancelButton($this->getPanelURI())
           ->setValue($save));
 
-    $header_title = new PHUIHeaderView();
-    $header_title->setHeader($header);
+    $form_box = id(new PHUIObjectBoxView())
+      ->setHeaderText($header)
+      ->setFormError($error_view)
+      ->setForm($form);
 
-    return id(new AphrontNullView())
-      ->appendChild(
-        array(
-          $error_view,
-          $header_title,
-          $form,
-        ));
+    return $form_box;
   }
 
   private function renderKeyListView(AphrontRequest $request) {

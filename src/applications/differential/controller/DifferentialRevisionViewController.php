@@ -4,13 +4,6 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
   private $revisionID;
 
-  public function shouldRequireLogin() {
-    if ($this->allowsAnonymousAccess()) {
-      return false;
-    }
-    return parent::shouldRequireLogin();
-  }
-
   public function shouldAllowPublic() {
     return true;
   }
@@ -870,43 +863,12 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
     $viewer = $this->getRequest()->getUser();
 
-    $engine = new PhabricatorDifferenceEngine();
-    $generated_changesets = array();
     foreach ($changesets as $changeset) {
       $changeset->attachHunks($changeset->loadHunks());
-      $right = $changeset->makeNewFile();
-      $choice = $changeset;
-      $vs = idx($vs_map, $changeset->getID());
-      if ($vs == -1) {
-        $left = $right;
-        $right = $changeset->makeOldFile();
-      } else if ($vs) {
-        $choice = $vs_changeset = $vs_changesets[$vs];
-        $vs_changeset->attachHunks($vs_changeset->loadHunks());
-        $left = $vs_changeset->makeNewFile();
-      } else {
-        $left = $changeset->makeOldFile();
-      }
-
-      $synthetic = $engine->generateChangesetFromFileContent(
-        $left,
-        $right);
-
-      if (!$synthetic->getAffectedLineCount()) {
-        $filetype = $choice->getFileType();
-        if ($filetype == DifferentialChangeType::FILE_TEXT ||
-            $filetype == DifferentialChangeType::FILE_SYMLINK) {
-          continue;
-        }
-      }
-
-      $choice->attachHunks($synthetic->getHunks());
-
-      $generated_changesets[] = $choice;
     }
 
     $diff = new DifferentialDiff();
-    $diff->attachChangesets($generated_changesets);
+    $diff->attachChangesets($changesets);
     $raw_changes = $diff->buildChangesList();
     $changes = array();
     foreach ($raw_changes as $changedict) {

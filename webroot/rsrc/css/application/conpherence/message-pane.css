@@ -135,6 +135,9 @@
   margin: 5px 15px;
   min-height: auto;
 }
+.device-phone .conpherence-message-pane .date-marker {
+  margin: 5px 0;
+}
 .conpherence-message-pane .date-marker .date {
   position: relative;
   top: -8px;

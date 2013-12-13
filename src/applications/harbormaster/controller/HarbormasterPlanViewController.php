@@ -74,6 +74,8 @@ final class HarbormasterPlanViewController
     $request = $this->getRequest();
     $viewer = $request->getUser();
 
+    $list_id = celerity_generate_unique_node_id();
+
     $steps = id(new HarbormasterBuildStepQuery())
       ->setViewer($viewer)
       ->withBuildPlanPHIDs(array($plan->getPHID()))
@@ -84,9 +86,40 @@ final class HarbormasterPlanViewController
 
     $i = 1;
     $step_list = id(new PHUIObjectItemListView())
-      ->setUser($viewer);
+      ->setUser($viewer)
+      ->setID($list_id);
+    Javelin::initBehavior(
+      'harbormaster-reorder-steps',
+      array(
+        'listID' => $list_id,
+        'orderURI' => '/harbormaster/plan/order/'.$plan->getID().'/',
+      ));
     foreach ($steps as $step) {
-      $implementation = $step->getStepImplementation();
+      $implementation = null;
+      try {
+        $implementation = $step->getStepImplementation();
+      } catch (Exception $ex) {
+        // We can't initialize the implementation.  This might be because
+        // it's been renamed or no longer exists.
+        $item = id(new PHUIObjectItemView())
+          ->setObjectName("Step ".$i++)
+          ->setHeader(pht('Unknown Implementation'))
+          ->setBarColor('red')
+          ->addAttribute(pht(
+            'This step has an invalid implementation (%s).',
+            $step->getClassName()))
+          ->addAction(
+            id(new PHUIListItemView())
+              ->setIcon('delete')
+              ->addSigil('harbormaster-build-step-delete')
+              ->setWorkflow(true)
+              ->setRenderNameAsTooltip(true)
+              ->setName(pht("Delete"))
+              ->setHref(
+                $this->getApplicationURI("step/delete/".$step->getID()."/")));
+        $step_list->addItem($item);
+        continue;
+      }
       $item = id(new PHUIObjectItemView())
         ->setObjectName("Step ".$i++)
         ->setHeader($implementation->getName());
@@ -112,6 +145,12 @@ final class HarbormasterPlanViewController
               ->setName(pht("Delete"))
               ->setHref(
                 $this->getApplicationURI("step/delete/".$step->getID()."/")));
+        $item->setGrippable(true);
+        $item->addSigil('build-step');
+        $item->setMetadata(
+          array(
+            'stepID' => $step->getID(),
+          ));
       }
 
       $step_list->addItem($item);

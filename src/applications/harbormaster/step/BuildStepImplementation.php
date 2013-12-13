@@ -7,6 +7,7 @@ abstract class BuildStepImplementation {
   const SETTING_TYPE_STRING = 'string';
   const SETTING_TYPE_INTEGER = 'integer';
   const SETTING_TYPE_BOOLEAN = 'boolean';
+  const SETTING_TYPE_ARTIFACT = 'artifact';
 
   public static function getImplementations() {
     $symbols = id(new PhutilSymbolLoader())
@@ -36,9 +37,11 @@ abstract class BuildStepImplementation {
   }
 
   /**
-   * Run the build step against the specified build.
+   * Run the build target against the specified build.
    */
-  abstract public function execute(HarbormasterBuild $build);
+  abstract public function execute(
+    HarbormasterBuild $build,
+    HarbormasterBuildTarget $build_target);
 
   /**
    * Gets the settings for this build step.
@@ -50,18 +53,19 @@ abstract class BuildStepImplementation {
   /**
    * Validate the current settings of this build step.
    */
-  public function validate() {
+  public function validateSettings() {
     return true;
   }
 
   /**
-   * Loads the settings for this build step implementation from the build step.
+   * Loads the settings for this build step implementation from a build
+   * step or target.
    */
-  public final function loadSettings(HarbormasterBuildStep $build_step) {
+  public final function loadSettings($build_object) {
     $this->settings = array();
     $this->validateSettingDefinitions();
     foreach ($this->getSettingDefinitions() as $name => $opt) {
-      $this->settings[$name] = $build_step->getDetail($name);
+      $this->settings[$name] = $build_object->getDetail($name);
     }
     return $this->settings;
   }
@@ -84,5 +88,76 @@ abstract class BuildStepImplementation {
    */
   public function getSettingDefinitions() {
     return array();
+  }
+
+  /**
+   * Return relevant setting instructions as Remarkup.
+   */
+  public function getSettingRemarkupInstructions() {
+    return null;
+  }
+
+  /**
+   * Return the name of artifacts produced by this command.
+   *
+   * Something like:
+   *
+   *   return array(
+   *     'some_name_input_by_user' => 'host');
+   *
+   * Future steps will calculate all available artifact mappings
+   * before them and filter on the type.
+   *
+   * @return array The mappings of artifact names to their types.
+   */
+  public function getArtifactMappings() {
+    return array();
+  }
+
+  /**
+   * Returns a list of all artifacts made available by previous build steps.
+   */
+  public static function loadAvailableArtifacts(
+    HarbormasterBuildPlan $build_plan,
+    HarbormasterBuildStep $current_build_step,
+    $artifact_type) {
+
+    $build_steps = $build_plan->loadOrderedBuildSteps();
+
+    return self::getAvailableArtifacts(
+      $build_plan,
+      $build_steps,
+      $current_build_step,
+      $artifact_type);
+  }
+
+  /**
+   * Returns a list of all artifacts made available by previous build steps.
+   */
+  public static function getAvailableArtifacts(
+    HarbormasterBuildPlan $build_plan,
+    array $build_steps,
+    HarbormasterBuildStep $current_build_step,
+    $artifact_type) {
+
+    $previous_implementations = array();
+    foreach ($build_steps as $build_step) {
+      if ($build_step->getPHID() === $current_build_step->getPHID()) {
+        break;
+      }
+      $previous_implementations[] = $build_step->getStepImplementation();
+    }
+
+    $artifact_arrays = mpull($previous_implementations, 'getArtifactMappings');
+    $artifacts = array();
+    foreach ($artifact_arrays as $array) {
+      foreach ($array as $name => $type) {
+        if ($type !== $artifact_type && $artifact_type !== null) {
+          continue;
+        }
+        $artifacts[$name] = $type;
+      }
+    }
+    return $artifacts;
   }
 }

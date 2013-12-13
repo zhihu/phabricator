@@ -403,8 +403,10 @@ final class DiffusionCommitController extends DiffusionController {
     array $audit_requests) {
 
     assert_instances_of($parents, 'PhabricatorRepositoryCommit');
-    $user = $this->getRequest()->getUser();
+    $viewer = $this->getRequest()->getUser();
     $commit_phid = $commit->getPHID();
+    $drequest = $this->getDiffusionRequest();
+    $repository = $drequest->getRepository();
 
     $edge_query = id(new PhabricatorEdgeQuery())
       ->withSourcePHIDs(array($commit_phid))
@@ -437,6 +439,29 @@ final class DiffusionCommitController extends DiffusionController {
     if ($parents) {
       foreach ($parents as $parent) {
         $phids[] = $parent->getPHID();
+      }
+    }
+
+    // NOTE: We should never normally have more than a single push log, but
+    // it can occur naturally if a commit is pushed, then the branch it was
+    // on is deleted, then the commit is pushed again (or through other similar
+    // chains of events). This should be rare, but does not indicate a bug
+    // or data issue.
+
+    // NOTE: We never query push logs in SVN because the commiter is always
+    // the pusher and the commit time is always the push time; the push log
+    // is redundant and we save a query by skipping it.
+
+    $push_logs = array();
+    if ($repository->isHosted() && !$repository->isSVN()) {
+      $push_logs = id(new PhabricatorRepositoryPushLogQuery())
+        ->setViewer($viewer)
+        ->withRepositoryPHIDs(array($repository->getPHID()))
+        ->withNewRefs(array($commit->getCommitIdentifier()))
+        ->withRefTypes(array(PhabricatorRepositoryPushLog::REFTYPE_COMMIT))
+        ->execute();
+      foreach ($push_logs as $log) {
+        $phids[] = $log->getPusherPHID();
       }
     }
 
@@ -494,28 +519,58 @@ final class DiffusionCommitController extends DiffusionController {
       }
     }
 
-    $props['Committed'] = phabricator_datetime($commit->getEpoch(), $user);
-
     $author_phid = $data->getCommitDetail('authorPHID');
-    if ($data->getCommitDetail('authorPHID')) {
-      $props['Author'] = $handles[$author_phid]->renderLink();
-    } else {
-      $props['Author'] = $data->getAuthorName();
+    $author_name = $data->getAuthorName();
+
+    if (!$repository->isSVN()) {
+      $authored_info = id(new PHUIStatusItemView());
+      // TODO: In Git, a distinct authorship date is available. When present,
+      // we should show it here.
+
+      if ($author_phid) {
+        $authored_info->setTarget($handles[$author_phid]->renderLink());
+      } else if (strlen($author_name)) {
+        $authored_info->setTarget($author_name);
+      }
+
+      $props['Authored'] = id(new PHUIStatusListView())
+        ->addItem($authored_info);
+    }
+
+    $committed_info = id(new PHUIStatusItemView())
+      ->setNote(phabricator_datetime($commit->getEpoch(), $viewer));
+
+    $committer_phid = $data->getCommitDetail('committerPHID');
+    $committer_name = $data->getCommitDetail('committer');
+    if ($committer_phid) {
+      $committed_info->setTarget($handles[$committer_phid]->renderLink());
+    } else if (strlen($committer_name)) {
+      $committed_info->setTarget($committer_name);
+    } else if ($author_phid) {
+      $committed_info->setTarget($handles[$author_phid]->renderLink());
+    } else if (strlen($author_name)) {
+      $committed_info->setTarget($author_name);
+    }
+
+    $props['Committed'] = id(new PHUIStatusListView())
+      ->addItem($committed_info);
+
+    if ($push_logs) {
+      $pushed_list = new PHUIStatusListView();
+
+      foreach ($push_logs as $push_log) {
+        $pushed_item = id(new PHUIStatusItemView())
+          ->setTarget($handles[$push_log->getPusherPHID()]->renderLink())
+          ->setNote(phabricator_datetime($push_log->getEpoch(), $viewer));
+        $pushed_list->addItem($pushed_item);
+      }
+
+      $props['Pushed'] = $pushed_list;
     }
 
     $reviewer_phid = $data->getCommitDetail('reviewerPHID');
     if ($reviewer_phid) {
       $props['Reviewer'] = $handles[$reviewer_phid]->renderLink();
-    }
-
-    $committer = $data->getCommitDetail('committer');
-    if ($committer) {
-      $committer_phid = $data->getCommitDetail('committerPHID');
-      if ($data->getCommitDetail('committerPHID')) {
-        $props['Committer'] = $handles[$committer_phid]->renderLink();
-      } else {
-        $props['Committer'] = $committer;
-      }
     }
 
     if ($revision_phid) {
@@ -530,8 +585,6 @@ final class DiffusionCommitController extends DiffusionController {
       $props['Parents'] = phutil_implode_html(" \xC2\xB7 ", $parent_links);
     }
 
-    $request = $this->getDiffusionRequest();
-
     $props['Branches'] = phutil_tag(
       'span',
       array(
@@ -545,7 +598,7 @@ final class DiffusionCommitController extends DiffusionController {
       ),
       pht('Unknown'));
 
-    $callsign = $request->getRepository()->getCallsign();
+    $callsign = $repository->getCallsign();
     $root = '/diffusion/'.$callsign.'/commit/'.$commit->getCommitIdentifier();
     Javelin::initBehavior(
       'diffusion-commit-branches',
@@ -554,7 +607,7 @@ final class DiffusionCommitController extends DiffusionController {
         $root.'/tags/' => 'commit-tags',
       ));
 
-    $refs = $this->buildRefs($request);
+    $refs = $this->buildRefs($drequest);
     if ($refs) {
       $props['References'] = $refs;
     }
@@ -744,20 +797,25 @@ final class DiffusionCommitController extends DiffusionController {
       'inlineuri'  => '/diffusion/inline/preview/'.$commit->getPHID().'/',
     ));
 
-    $preview_panel = hsprintf(
-      '<div class="aphront-panel-preview aphront-panel-flush">
-        <div id="audit-preview">
-          <div class="aphront-panel-preview-loading-text">
-            Loading preview...
-          </div>
-        </div>
-        <div id="inline-comment-preview">
-        </div>
-      </div>');
+    $loading = phutil_tag_div(
+      'aphront-panel-preview-loading-text',
+      pht('Loading preview...'));
+
+    $preview_panel = phutil_tag_div(
+      'aphront-panel-preview aphront-panel-flush',
+      array(
+        phutil_tag('div', array('id' => 'audit-preview'), $loading),
+        phutil_tag('div', array('id' => 'inline-comment-preview'))
+      ));
 
     // TODO: This is pretty awkward, unify the CSS between Diffusion and
     // Differential better.
     require_celerity_resource('differential-core-view-css');
+
+    $anchor = id(new PhabricatorAnchorView())
+      ->setAnchorName('comment')
+      ->setNavigationMarker(true)
+      ->render();
 
     $comment_box = id(new PHUIObjectBoxView())
       ->setHeader($header)
@@ -768,14 +826,9 @@ final class DiffusionCommitController extends DiffusionController {
       array(
         'id' => $pane_id,
       ),
-      hsprintf(
-        '<div class="differential-add-comment-panel">%s%s%s</div>',
-        id(new PhabricatorAnchorView())
-          ->setAnchorName('comment')
-          ->setNavigationMarker(true)
-          ->render(),
-        $comment_box,
-        $preview_panel));
+      phutil_tag_div(
+        'differential-add-comment-panel',
+        array($anchor, $comment_box, $preview_panel)));
   }
 
   /**

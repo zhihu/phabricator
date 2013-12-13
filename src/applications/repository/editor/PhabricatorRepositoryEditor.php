@@ -29,6 +29,8 @@ final class PhabricatorRepositoryEditor
     $types[] = PhabricatorRepositoryTransaction::TYPE_PROTOCOL_HTTP;
     $types[] = PhabricatorRepositoryTransaction::TYPE_PROTOCOL_SSH;
     $types[] = PhabricatorRepositoryTransaction::TYPE_PUSH_POLICY;
+    $types[] = PhabricatorRepositoryTransaction::TYPE_CREDENTIAL;
+    $types[] = PhabricatorRepositoryTransaction::TYPE_DANGEROUS;
 
     $types[] = PhabricatorTransactions::TYPE_VIEW_POLICY;
     $types[] = PhabricatorTransactions::TYPE_EDIT_POLICY;
@@ -67,16 +69,6 @@ final class PhabricatorRepositoryEditor
         return (int)!$object->getDetail('disable-autoclose');
       case PhabricatorRepositoryTransaction::TYPE_REMOTE_URI:
         return $object->getDetail('remote-uri');
-      case PhabricatorRepositoryTransaction::TYPE_SSH_LOGIN:
-        return $object->getDetail('ssh-login');
-      case PhabricatorRepositoryTransaction::TYPE_SSH_KEY:
-        return $object->getDetail('ssh-key');
-      case PhabricatorRepositoryTransaction::TYPE_SSH_KEYFILE:
-        return $object->getDetail('ssh-keyfile');
-      case PhabricatorRepositoryTransaction::TYPE_HTTP_LOGIN:
-        return $object->getDetail('http-login');
-      case PhabricatorRepositoryTransaction::TYPE_HTTP_PASS:
-        return $object->getDetail('http-pass');
       case PhabricatorRepositoryTransaction::TYPE_LOCAL_PATH:
         return $object->getDetail('local-path');
       case PhabricatorRepositoryTransaction::TYPE_HOSTING:
@@ -87,6 +79,10 @@ final class PhabricatorRepositoryEditor
         return $object->getServeOverSSH();
       case PhabricatorRepositoryTransaction::TYPE_PUSH_POLICY:
         return $object->getPushPolicy();
+      case PhabricatorRepositoryTransaction::TYPE_CREDENTIAL:
+        return $object->getCredentialPHID();
+      case PhabricatorRepositoryTransaction::TYPE_DANGEROUS:
+        return $object->shouldAllowDangerousChanges();
     }
   }
 
@@ -116,6 +112,8 @@ final class PhabricatorRepositoryEditor
       case PhabricatorRepositoryTransaction::TYPE_PROTOCOL_HTTP:
       case PhabricatorRepositoryTransaction::TYPE_PROTOCOL_SSH:
       case PhabricatorRepositoryTransaction::TYPE_PUSH_POLICY:
+      case PhabricatorRepositoryTransaction::TYPE_CREDENTIAL:
+      case PhabricatorRepositoryTransaction::TYPE_DANGEROUS:
         return $xaction->getNewValue();
       case PhabricatorRepositoryTransaction::TYPE_NOTIFY:
       case PhabricatorRepositoryTransaction::TYPE_AUTOCLOSE:
@@ -168,21 +166,6 @@ final class PhabricatorRepositoryEditor
       case PhabricatorRepositoryTransaction::TYPE_REMOTE_URI:
         $object->setDetail('remote-uri', $xaction->getNewValue());
         break;
-      case PhabricatorRepositoryTransaction::TYPE_SSH_LOGIN:
-        $object->setDetail('ssh-login', $xaction->getNewValue());
-        break;
-      case PhabricatorRepositoryTransaction::TYPE_SSH_KEY:
-        $object->setDetail('ssh-key', $xaction->getNewValue());
-        break;
-      case PhabricatorRepositoryTransaction::TYPE_SSH_KEYFILE:
-        $object->setDetail('ssh-keyfile', $xaction->getNewValue());
-        break;
-      case PhabricatorRepositoryTransaction::TYPE_HTTP_LOGIN:
-        $object->setDetail('http-login', $xaction->getNewValue());
-        break;
-      case PhabricatorRepositoryTransaction::TYPE_HTTP_PASS:
-        $object->setDetail('http-pass', $xaction->getNewValue());
-        break;
       case PhabricatorRepositoryTransaction::TYPE_LOCAL_PATH:
         $object->setDetail('local-path', $xaction->getNewValue());
         break;
@@ -194,6 +177,11 @@ final class PhabricatorRepositoryEditor
         return $object->setServeOverSSH($xaction->getNewValue());
       case PhabricatorRepositoryTransaction::TYPE_PUSH_POLICY:
         return $object->setPushPolicy($xaction->getNewValue());
+      case PhabricatorRepositoryTransaction::TYPE_CREDENTIAL:
+        return $object->setCredentialPHID($xaction->getNewValue());
+      case PhabricatorRepositoryTransaction::TYPE_DANGEROUS:
+        $object->setDetail('allow-dangerous-changes', $xaction->getNewValue());
+        return;
       case PhabricatorRepositoryTransaction::TYPE_ENCODING:
         // Make sure the encoding is valid by converting to UTF-8. This tests
         // that the user has mbstring installed, and also that they didn't type
@@ -221,7 +209,32 @@ final class PhabricatorRepositoryEditor
   protected function applyCustomExternalTransaction(
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
-    return;
+
+    switch ($xaction->getTransactionType()) {
+      case PhabricatorRepositoryTransaction::TYPE_CREDENTIAL:
+        // Adjust the object <-> credential edge for this repository.
+
+        $old_phid = $xaction->getOldValue();
+        $new_phid = $xaction->getNewValue();
+
+        $editor = id(new PhabricatorEdgeEditor())
+          ->setActor($this->requireActor());
+
+        $edge_type = PhabricatorEdgeConfig::TYPE_OBJECT_USES_CREDENTIAL;
+        $src_phid = $object->getPHID();
+
+        if ($old_phid) {
+          $editor->removeEdge($src_phid, $edge_type, $old_phid);
+        }
+
+        if ($new_phid) {
+          $editor->addEdge($src_phid, $edge_type, $new_phid);
+        }
+
+        $editor->save();
+        break;
+    }
+
   }
 
   protected function mergeTransactions(
@@ -278,6 +291,8 @@ final class PhabricatorRepositoryEditor
       case PhabricatorRepositoryTransaction::TYPE_PROTOCOL_HTTP:
       case PhabricatorRepositoryTransaction::TYPE_PROTOCOL_SSH:
       case PhabricatorRepositoryTransaction::TYPE_PUSH_POLICY:
+      case PhabricatorRepositoryTransaction::TYPE_CREDENTIAL:
+      case PhabricatorRepositoryTransaction::TYPE_DANGEROUS:
         PhabricatorPolicyFilter::requireCapability(
           $this->requireActor(),
           $object,

@@ -208,6 +208,18 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
         'type' => 'db',
         'name' => 'policy',
       ),
+      'db.nuance' => array(
+        'type' => 'db',
+        'name' => 'nuance',
+      ),
+      'db.passphrase' => array(
+        'type' => 'db',
+        'name' => 'passphrase',
+      ),
+      'db.phragment' => array(
+        'type' => 'db',
+        'name' => 'phragment',
+      ),
       '0000.legacy.sql' => array(
         'type'    => 'sql',
         'name'    => $this->getPatchPath('0000.legacy.sql'),
@@ -1723,6 +1735,102 @@ final class PhabricatorBuiltinPatchList extends PhabricatorSQLPatchList {
       '20131105.buildstep.sql' => array(
         'type' => 'sql',
         'name' => $this->getPatchPath('20131105.buildstep.sql'),
+      ),
+      '20131106.diffphid.1.col.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131106.diffphid.1.col.sql'),
+      ),
+      '20131106.diffphid.2.mig.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20131106.diffphid.2.mig.php'),
+      ),
+      '20131106.diffphid.3.key.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131106.diffphid.3.key.sql'),
+      ),
+      '20131106.nuance-v0.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131106.nuance-v0.sql'),
+      ),
+      '20131107.buildlog.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131107.buildlog.sql'),
+      ),
+      '20131112.userverified.1.col.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131112.userverified.1.col.sql'),
+      ),
+      '20131112.userverified.2.mig.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20131112.userverified.2.mig.php'),
+      ),
+      '20131118.ownerorder.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20131118.ownerorder.php'),
+      ),
+      '20131119.passphrase.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131119.passphrase.sql'),
+      ),
+      '20131120.nuancesourcetype.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131120.nuancesourcetype.sql'),
+      ),
+      '20131121.passphraseedge.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131121.passphraseedge.sql'),
+      ),
+      '20131121.repocredentials.1.col.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131121.repocredentials.1.col.sql'),
+      ),
+      '20131121.repocredentials.2.mig.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20131121.repocredentials.2.mig.php'),
+      ),
+      '20131122.repomirror.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131122.repomirror.sql'),
+      ),
+      '20131123.drydockblueprintpolicy.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131123.drydockblueprintpolicy.sql'),
+      ),
+      '20131129.drydockresourceblueprint.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131129.drydockresourceblueprint.sql'),
+      ),
+      '20131205.buildtargets.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131205.buildtargets.sql'),
+      ),
+      '20131204.pushlog.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131204.pushlog.sql'),
+      ),
+      '20131205.buildsteporder.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131205.buildsteporder.sql'),
+      ),
+      '20131205.buildstepordermig.php' => array(
+        'type' => 'php',
+        'name' => $this->getPatchPath('20131205.buildstepordermig.php'),
+      ),
+      '20131206.phragment.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131206.phragment.sql'),
+      ),
+      '20131206.phragmentnull.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131206.phragmentnull.sql'),
+      ),
+      '20131208.phragmentsnapshot.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131208.phragmentsnapshot.sql'),
+      ),
+      '20131211.phragmentedges.sql' => array(
+        'type' => 'sql',
+        'name' => $this->getPatchPath('20131211.phragmentedges.sql'),
       ),
     );
   }

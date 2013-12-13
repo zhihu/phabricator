@@ -53,20 +53,13 @@ final class ManiphestTaskListView extends ManiphestView {
       $item->setHref('/T'.$task->getID());
 
       if ($task->getOwnerPHID()) {
-        $owner = idx($handles, $task->getOwnerPHID());
-        // TODO: This should be guaranteed, see T3817.
-        if ($owner) {
-          $item->addByline(pht('Assigned: %s', $owner->renderLink()));
-        }
+        $owner = $handles[$task->getOwnerPHID()];
+        $item->addByline(pht('Assigned: %s', $owner->renderLink()));
       }
 
       $status = $task->getStatus();
       if ($status != ManiphestTaskStatus::STATUS_OPEN) {
-        $item->addFootIcon(
-          ($status == ManiphestTaskStatus::STATUS_CLOSED_RESOLVED)
-            ? 'enable-white'
-            : 'delete-white',
-          idx($status_map, $status, 'Unknown'));
+        $item->setDisabled(true);
       }
 
       $item->setBarColor(idx($color_map, $task->getPriority(), 'grey'));
@@ -107,6 +100,32 @@ final class ManiphestTaskListView extends ManiphestView {
     }
 
     return $list;
+  }
+
+  public static function loadTaskHandles(
+    PhabricatorUser $viewer,
+    array $tasks) {
+    assert_instances_of($tasks, 'ManiphestTask');
+
+    $phids = array();
+    foreach ($tasks as $task) {
+      $assigned_phid = $task->getOwnerPHID();
+      if ($assigned_phid) {
+        $phids[] = $assigned_phid;
+      }
+      foreach ($task->getProjectPHIDs() as $project_phid) {
+        $phids[] = $project_phid;
+      }
+    }
+
+    if (!$phids) {
+      return array();
+    }
+
+    return id(new PhabricatorHandleQuery())
+      ->setViewer($viewer)
+      ->withPHIDs($phids)
+      ->execute();
   }
 
 }

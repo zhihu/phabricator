@@ -36,7 +36,10 @@
 }
 
 .phabricator-notification {
-  padding: 8px 12px;
+  padding: 6px;
+}
+
+.phabricator-notification-menu .phabricator-notification {
   cursor: pointer;
 }
 
@@ -50,10 +53,6 @@
 
 .no-notifications {
   color: {$lightgreytext};
-}
-
-.no-notifications {
-  color: #999999;
 }
 
 .phabricator-notification-list .phabricator-notification-unread,

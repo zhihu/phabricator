@@ -34,12 +34,12 @@
     "apps-authentication-dark"  : {
       "name" : "apps-authentication-dark",
       "rule" : ".apps-authentication-dark",
-      "hash" : "5ae0f7e5d45df5da12ecc447f44bc7d9"
+      "hash" : "8616a1c5aeeeac1ce87376f2f0757439"
     },
     "apps-authentication-white" : {
       "name" : "apps-authentication-white",
       "rule" : ".apps-authentication-white",
-      "hash" : "567b1e8f11974b0817250b933b9dd3de"
+      "hash" : "9478fbaeee9e5cc44c4a5b483645caed"
     },
     "apps-calendar-dark"        : {
       "name" : "apps-calendar-dark",
@@ -291,6 +291,16 @@
       "rule" : ".apps-new-white",
       "hash" : "dc5ce42c7d60e6ba37b07631b3c3280a"
     },
+    "apps-nuance-dark"          : {
+      "name" : "apps-nuance-dark",
+      "rule" : ".apps-nuance-dark",
+      "hash" : "e20c19670e1c9b9d1f9267bf7f017aba"
+    },
+    "apps-nuance-white"         : {
+      "name" : "apps-nuance-white",
+      "rule" : ".apps-nuance-white",
+      "hash" : "368f1241b438492642520a037a1ac294"
+    },
     "apps-owners-dark"          : {
       "name" : "apps-owners-dark",
       "rule" : ".apps-owners-dark",
@@ -301,6 +311,16 @@
       "rule" : ".apps-owners-white",
       "hash" : "7f409576c8ddab7a513313c301c61683"
     },
+    "apps-passphrase-dark"      : {
+      "name" : "apps-passphrase-dark",
+      "rule" : ".apps-passphrase-dark",
+      "hash" : "1ee5fc48415e60795f6f00422f72e170"
+    },
+    "apps-passphrase-white"     : {
+      "name" : "apps-passphrase-white",
+      "rule" : ".apps-passphrase-white",
+      "hash" : "a6dc3274fd093b0545937d6a495b391f"
+    },
     "apps-paste-dark"           : {
       "name" : "apps-paste-dark",
       "rule" : ".apps-paste-dark",
@@ -310,16 +330,6 @@
       "name" : "apps-paste-white",
       "rule" : ".apps-paste-white",
       "hash" : "ed5ec1ee39cc2a01f568f91c72141bfb"
-    },
-    "apps-pebkac-dark"          : {
-      "name" : "apps-pebkac-dark",
-      "rule" : ".apps-pebkac-dark",
-      "hash" : "4adb4a8f0a8c5bc5462bb806ceafc63f"
-    },
-    "apps-pebkac-white"         : {
-      "name" : "apps-pebkac-white",
-      "rule" : ".apps-pebkac-white",
-      "hash" : "35438c7a295df21aa2fa4771a5c3c986"
     },
     "apps-people-dark"          : {
       "name" : "apps-people-dark",

@@ -173,18 +173,19 @@ final class DiffusionRepositoryController extends DiffusionController {
       $serve_ssh = $repository->getServeOverSSH();
       if ($serve_ssh !== $serve_off) {
         $uri = new PhutilURI(PhabricatorEnv::getProductionURI($repo_path));
-        $uri->setProtocol('ssh');
+
+        if ($repository->isSVN()) {
+          $uri->setProtocol('svn+ssh');
+        } else {
+          $uri->setProtocol('ssh');
+        }
 
         $ssh_user = PhabricatorEnv::getEnvConfig('diffusion.ssh-user');
         if ($ssh_user) {
           $uri->setUser($ssh_user);
         }
 
-        // This isn't quite right, but for now it's probably better to drop
-        // the port than sometimes show ":8080", etc. Using most VCS commands
-        // against nonstandard ports is a huge pain so few installs are likely
-        // to configure SSH on a nonstandard port.
-        $uri->setPort(null);
+        $uri->setPort(PhabricatorEnv::getEnvConfig('diffusion.ssh-port'));
 
         $clone_uri = $this->renderCloneURI(
           $uri,
@@ -268,7 +269,7 @@ final class DiffusionRepositoryController extends DiffusionController {
     $commits = id(new DiffusionCommitQuery())
       ->setViewer($viewer)
       ->withIdentifiers(mpull($branches, 'getHeadCommitIdentifier'))
-      ->withRepositoryIDs(array($drequest->getRepository()->getID()))
+      ->withRepository($drequest->getRepository())
       ->execute();
 
     $table = id(new DiffusionBranchTableView())
@@ -332,7 +333,7 @@ final class DiffusionRepositoryController extends DiffusionController {
     $commits = id(new DiffusionCommitQuery())
       ->setViewer($viewer)
       ->withIdentifiers(mpull($tags, 'getCommitIdentifier'))
-      ->withRepositoryIDs(array($drequest->getRepository()->getID()))
+      ->withRepository($drequest->getRepository())
       ->needCommitData(true)
       ->execute();
 
@@ -393,6 +394,18 @@ final class DiffusionRepositoryController extends DiffusionController {
         ->setHref($edit_uri)
         ->setWorkflow(!$can_edit)
         ->setDisabled(!$can_edit));
+
+    if ($repository->isHosted()) {
+      $callsign = $repository->getCallsign();
+      $push_uri = $this->getApplicationURI(
+        'pushlog/?repositories=r'.$callsign);
+
+      $view->addAction(
+        id(new PhabricatorActionView())
+          ->setName(pht('View Push Logs'))
+          ->setIcon('transcript')
+          ->setHref($push_uri));
+    }
 
     return $view;
   }
