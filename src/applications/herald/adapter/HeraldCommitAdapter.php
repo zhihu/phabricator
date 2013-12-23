@@ -6,9 +6,6 @@
 final class HeraldCommitAdapter extends HeraldAdapter {
 
   const FIELD_NEED_AUDIT_FOR_PACKAGE      = 'need-audit-for-package';
-  const FIELD_DIFFERENTIAL_REVISION       = 'differential-revision';
-  const FIELD_DIFFERENTIAL_REVIEWERS      = 'differential-reviewers';
-  const FIELD_DIFFERENTIAL_CCS            = 'differential-ccs';
   const FIELD_REPOSITORY_AUTOCLOSE_BRANCH = 'repository-autoclose-branch';
 
   protected $diff;
@@ -49,9 +46,6 @@ final class HeraldCommitAdapter extends HeraldAdapter {
     return array(
       self::FIELD_NEED_AUDIT_FOR_PACKAGE =>
         pht('Affected packages that need audit'),
-      self::FIELD_DIFFERENTIAL_REVISION => pht('Differential revision'),
-      self::FIELD_DIFFERENTIAL_REVIEWERS => pht('Differential reviewers'),
-      self::FIELD_DIFFERENTIAL_CCS => pht('Differential CCs'),
       self::FIELD_REPOSITORY_AUTOCLOSE_BRANCH => pht('On autoclose branch'),
     ) + parent::getFieldNameMap();
   }
@@ -73,6 +67,7 @@ final class HeraldCommitAdapter extends HeraldAdapter {
         self::FIELD_AFFECTED_PACKAGE_OWNER,
         self::FIELD_NEED_AUDIT_FOR_PACKAGE,
         self::FIELD_DIFFERENTIAL_REVISION,
+        self::FIELD_DIFFERENTIAL_ACCEPTED,
         self::FIELD_DIFFERENTIAL_REVIEWERS,
         self::FIELD_DIFFERENTIAL_CCS,
         self::FIELD_REPOSITORY_AUTOCLOSE_BRANCH,
@@ -82,25 +77,6 @@ final class HeraldCommitAdapter extends HeraldAdapter {
 
   public function getConditionsForField($field) {
     switch ($field) {
-      case self::FIELD_DIFFERENTIAL_REVIEWERS:
-        return array(
-          self::CONDITION_EXISTS,
-          self::CONDITION_NOT_EXISTS,
-          self::CONDITION_INCLUDE_ALL,
-          self::CONDITION_INCLUDE_ANY,
-          self::CONDITION_INCLUDE_NONE,
-        );
-      case self::FIELD_DIFFERENTIAL_CCS:
-        return array(
-          self::CONDITION_INCLUDE_ALL,
-          self::CONDITION_INCLUDE_ANY,
-          self::CONDITION_INCLUDE_NONE,
-        );
-      case self::FIELD_DIFFERENTIAL_REVISION:
-        return array(
-          self::CONDITION_EXISTS,
-          self::CONDITION_NOT_EXISTS,
-        );
       case self::FIELD_NEED_AUDIT_FOR_PACKAGE:
         return array(
           self::CONDITION_INCLUDE_ANY,
@@ -361,6 +337,16 @@ final class HeraldCommitAdapter extends HeraldAdapter {
           return null;
         }
         return $revision->getID();
+      case self::FIELD_DIFFERENTIAL_ACCEPTED:
+        $revision = $this->loadDifferentialRevision();
+        if (!$revision) {
+          return null;
+        }
+        $status_accepted = ArcanistDifferentialRevisionStatus::ACCEPTED;
+        if ($revision->getStatus() != $status_accepted) {
+          return null;
+        }
+        return $revision->getPHID();
       case self::FIELD_DIFFERENTIAL_REVIEWERS:
         $revision = $this->loadDifferentialRevision();
         if (!$revision) {

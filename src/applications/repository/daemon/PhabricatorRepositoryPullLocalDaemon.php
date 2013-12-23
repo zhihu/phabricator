@@ -144,11 +144,10 @@ final class PhabricatorRepositoryPullLocalDaemon
             $lock = PhabricatorGlobalLock::newLock($lock_name);
             $lock->lock();
 
-            $repository->writeStatusMessage(
-              PhabricatorRepositoryStatusMessage::TYPE_NEEDS_UPDATE,
-              null);
-
             try {
+              $repository->writeStatusMessage(
+                PhabricatorRepositoryStatusMessage::TYPE_NEEDS_UPDATE,
+                null);
               $this->discoverRepository($repository);
               $repository->writeStatusMessage(
                 PhabricatorRepositoryStatusMessage::TYPE_FETCH,
@@ -735,8 +734,8 @@ final class PhabricatorRepositoryPullLocalDaemon
             'URI "%s".',
             $expect_remote));
         $repository->execxLocalCommand(
-          'remote add origin %s',
-          $expect_remote);
+          'remote add origin %P',
+          $repository->getRemoteURIEnvelope());
 
         // NOTE: This doesn't fetch the origin (it just creates it), so we won't
         // know about origin branches until the next "pull" happens. That's fine
@@ -751,8 +750,8 @@ final class PhabricatorRepositoryPullLocalDaemon
               $remote_uri,
               $expect_remote));
           $repository->execxLocalCommand(
-            'remote set-url origin %s',
-            $expect_remote);
+            'remote set-url origin %P',
+            $repository->getRemoteURIEnvelope());
         } else {
           // Bad remote and we aren't comfortable repairing it.
           $message = pht(
