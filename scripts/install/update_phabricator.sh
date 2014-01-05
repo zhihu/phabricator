@@ -16,14 +16,14 @@ ROOT=`pwd` # You can hard-code the path here instead.
 ### UPDATE WORKING COPIES ######################################################
 
 cd $ROOT/libphutil
-git pull
+git pull -r
 
 cd $ROOT/arcanist
-git pull
+git pull -r
 
 cd $ROOT/phabricator
 git checkout -- .
-git pull
+git pull -r
 
 
 ### CYCLE WEB SERVER AND DAEMONS ###############################################
@@ -43,7 +43,7 @@ $ROOT/phabricator/bin/phd stop
 # this script to run noninteractively.
 $ROOT/phabricator/bin/storage upgrade
 
-$ROOT/phabricator/scripts/celerity_mapper.php $ROOT/phabricator/webroot
+$ROOT/phabricator/bin/celerity map
 $ROOT/arcanist/bin/arc liberate $ROOT/phabricator/src
 
 # Restart the webserver. As above, this depends on your system and webserver.
