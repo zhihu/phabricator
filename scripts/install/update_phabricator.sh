@@ -44,7 +44,7 @@ $ROOT/phabricator/bin/phd stop
 $ROOT/phabricator/bin/storage upgrade
 
 $ROOT/phabricator/bin/celerity map
-$ROOT/arcanist/bin/arc liberate $ROOT/phabricator/src
+# $ROOT/arcanist/bin/arc liberate $ROOT/phabricator/src
 
 # Restart the webserver. As above, this depends on your system and webserver.
 # NOTE: If you're running php-fpm, restart it here too.
