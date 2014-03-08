@@ -192,7 +192,7 @@ final class PhabricatorTypeaheadCommonDatasourceController
           ->setName($user->getFullName())
           ->setURI('/p/'.$user->getUsername())
           ->setPHID($user->getPHID())
-          ->setPriorityString($user->getUsername())
+          ->setPriorityString($user->getUsername().' '.GetPinyin($user->getRealName()))  // search user by Pinyin
           ->setIcon('policy-all')
           ->setPriorityType('user')
           ->setClosed($closed);
