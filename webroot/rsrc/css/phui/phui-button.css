@@ -177,14 +177,6 @@ button.link:hover {
   border-bottom-color: {$greyborder};
 }
 
-.maniphest-dropdown-menu-frame {
-  width: 130px;
-}
-
-.device-desktop .maniphest-dropdown-menu-frame {
-  position: fixed;
-}
-
 .dropdown-menu-frame .dropdown-menu-item {
   display: block;
   padding: 2px 10px;

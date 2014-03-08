@@ -95,6 +95,21 @@ final class PhabricatorApplicationManiphest extends PhabricatorApplication {
       ->setHref($this->getBaseURI().'task/create/');
     $items[] = $item;
 
+    # Add special Zhihu menu items
+    array_push($items,
+               id(new PHUIListItemView())
+                 ->setName(pht('Report Bugs'))
+                 ->setAppIcon('maniphest-dark')
+                 ->setHref($this->getBaseURI().'task/create/?projects=PHID-PROJ-ng2ucirw6embkz22vruj'),
+               id(new PHUIListItemView())
+                 ->setName(pht('Feature Request'))
+                 ->setAppIcon('maniphest-dark')
+                 ->setHref($this->getBaseURI().'task/create/?projects=PHID-PROJ-jjdydjiyr2275zl7qjvq'),
+               id(new PHUIListItemView())
+                 ->setName(pht('Call SA'))
+                 ->setAppIcon('maniphest-dark')
+                 ->setHref($this->getBaseURI().'task/create/?projects=PHID-PROJ-eipqemisx4qzrejiehbz&description=NOTE:%20%E8%AF%B7%E5%8F%82%E7%85%A7%20%5B%5Bdev/index_it_operations/callsa%20%7C%20%E8%BF%90%E7%BB%B4%E6%97%A5%E5%B8%B8%E9%9C%80%E6%B1%82%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%5D%5D%20%E6%9D%A5%E5%A1%AB%E5%86%99%20task%20%E6%8F%8F%E8%BF%B0'));
+
     return $items;
   }
 

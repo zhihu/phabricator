@@ -11,10 +11,10 @@
 
 JX.install('PhabricatorDropdownMenu', {
 
-  construct : function(node, className) {
+  construct : function(node) {
     this._node = node;
     this._items = [];
-    this._menu = JX.$N('div', { className : 'dropdown-menu-frame ' + (className || '') });
+    this._menu = JX.$N('div', { className : 'dropdown-menu-frame' });
 
     JX.DOM.listen(
       this._node,
