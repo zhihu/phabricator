@@ -8,6 +8,7 @@ final class DifferentialDiff
 
   protected $revisionID;
   protected $authorPHID;
+  protected $repositoryPHID;
 
   protected $sourceMachine;
   protected $sourcePath;
@@ -24,7 +25,6 @@ final class DifferentialDiff
   protected $branch;
   protected $bookmark;
 
-  protected $parentRevisionID;
   protected $arcanistProjectPHID;
   protected $creationMethod;
   protected $repositoryUUID;
@@ -35,6 +35,7 @@ final class DifferentialDiff
   private $changesets = self::ATTACHABLE;
   private $arcanistProject = self::ATTACHABLE;
   private $revision = self::ATTACHABLE;
+  private $properties = array();
 
   public function getConfiguration() {
     return array(
@@ -223,7 +224,6 @@ final class DifferentialDiff
   public function getDiffDict() {
     $dict = array(
       'id' => $this->getID(),
-      'parent' => $this->getParentRevisionID(),
       'revisionID' => $this->getRevisionID(),
       'dateCreated' => $this->getDateCreated(),
       'dateModified' => $this->getDateModified(),
@@ -305,6 +305,15 @@ final class DifferentialDiff
   public function attachRevision(DifferentialRevision $revision = null) {
     $this->revision = $revision;
     return $this;
+  }
+
+  public function attachProperty($key, $value) {
+    $this->properties[$key] = $value;
+    return $this;
+  }
+
+  public function getProperty($key) {
+    return $this->assertAttachedKey($this->properties, $key);
   }
 
 

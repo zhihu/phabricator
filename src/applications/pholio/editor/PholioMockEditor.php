@@ -275,6 +275,8 @@ final class PholioMockEditor extends PhabricatorApplicationTransactionEditor {
       $image->setMockID($object->getID());
       $image->save();
     }
+
+    return $xactions;
   }
 
   protected function mergeTransactions(
@@ -400,7 +402,9 @@ final class PholioMockEditor extends PhabricatorApplicationTransactionEditor {
     return PhabricatorEnv::getEnvConfig('metamta.pholio.subject-prefix');
   }
 
-  protected function supportsFeed() {
+  protected function shouldPublishFeedStory(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
     return true;
   }
 
@@ -408,7 +412,9 @@ final class PholioMockEditor extends PhabricatorApplicationTransactionEditor {
     return true;
   }
 
-  protected function supportsHerald() {
+  protected function shouldApplyHeraldRules(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
     return true;
   }
 
@@ -425,6 +431,8 @@ final class PholioMockEditor extends PhabricatorApplicationTransactionEditor {
     HeraldAdapter $adapter,
     HeraldTranscript $transcript) {
 
+    // TODO: Convert this to be transaction-based.
+
     $cc_phids = $adapter->getCcPHIDs();
     if ($cc_phids) {
       id(new PhabricatorSubscriptionsEditor())
@@ -433,6 +441,8 @@ final class PholioMockEditor extends PhabricatorApplicationTransactionEditor {
         ->subscribeImplicit($cc_phids)
         ->save();
     }
+
+    return array();
   }
 
   protected function sortTransactions(array $xactions) {

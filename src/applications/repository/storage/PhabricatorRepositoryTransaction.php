@@ -23,6 +23,7 @@ final class PhabricatorRepositoryTransaction
   const TYPE_PUSH_POLICY = 'repo:push-policy';
   const TYPE_CREDENTIAL = 'repo:credential';
   const TYPE_DANGEROUS = 'repo:dangerous';
+  const TYPE_CLONE_NAME = 'repo:clone-name';
 
   // TODO: Clean up these legacy transaction types.
   const TYPE_SSH_LOGIN = 'repo:ssh-login';
@@ -349,6 +350,23 @@ final class PhabricatorRepositoryTransaction
             '%s enabled protection against dangerous changes.',
             $this->renderHandleLink($author_phid));
         }
+      case self::TYPE_CLONE_NAME:
+        if (strlen($old) && !strlen($new)) {
+          return pht(
+            '%s removed the clone name of this repository.',
+            $this->renderHandleLink($author_phid));
+        } else if (strlen($new) && !strlen($old)) {
+          return pht(
+            '%s set the clone name of this repository to "%s".',
+            $this->renderHandleLink($author_phid),
+            $new);
+        } else {
+          return pht(
+            '%s changed the clone name of this repository from "%s" to "%s".',
+            $this->renderHandleLink($author_phid),
+            $old,
+            $new);
+        }
     }
 
     return parent::getTitle();
@@ -363,16 +381,10 @@ final class PhabricatorRepositoryTransaction
   }
 
   public function renderChangeDetails(PhabricatorUser $viewer) {
-    $old = $this->getOldValue();
-    $new = $this->getNewValue();
-
-    $view = id(new PhabricatorApplicationTransactionTextDiffDetailView())
-      ->setUser($viewer)
-      ->setOldText($old)
-      ->setNewText($new);
-
-    return $view->render();
+    return $this->renderTextCorpusChangeDetails(
+      $viewer,
+      $this->getOldValue(),
+      $this->getNewValue());
   }
 
 }
-

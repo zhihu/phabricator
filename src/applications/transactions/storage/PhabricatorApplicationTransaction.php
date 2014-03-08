@@ -29,6 +29,34 @@ abstract class PhabricatorApplicationTransaction
   private $renderingTarget = self::TARGET_HTML;
   private $transactionGroup = array();
   private $viewer = self::ATTACHABLE;
+  private $object = self::ATTACHABLE;
+  private $oldValueHasBeenSet = false;
+
+  private $ignoreOnNoEffect;
+
+
+  /**
+   * Flag this transaction as a pure side-effect which should be ignored when
+   * applying transactions if it has no effect, even if transaction application
+   * would normally fail. This both provides users with better error messages
+   * and allows transactions to perform optional side effects.
+   */
+  public function setIgnoreOnNoEffect($ignore) {
+    $this->ignoreOnNoEffect = $ignore;
+    return $this;
+  }
+
+  public function getIgnoreOnNoEffect() {
+    return $this->ignoreOnNoEffect;
+  }
+
+  public function shouldGenerateOldValue() {
+    switch ($this->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_CUSTOMFIELD:
+        return false;
+    }
+    return true;
+  }
 
   abstract public function getApplicationTransactionType();
 
@@ -110,6 +138,49 @@ abstract class PhabricatorApplicationTransaction
     return $this;
   }
 
+  public function attachObject($object) {
+    $this->object = $object;
+    return $this;
+  }
+
+  public function getObject() {
+    return $this->assertAttached($this->object);
+  }
+
+  public function getRemarkupBlocks() {
+    $blocks = array();
+
+    switch ($this->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_CUSTOMFIELD:
+        $field = $this->getTransactionCustomField();
+        if ($field) {
+          $custom_blocks = $field->getApplicationTransactionRemarkupBlocks(
+            $this);
+          foreach ($custom_blocks as $custom_block) {
+            $blocks[] = $custom_block;
+          }
+        }
+        break;
+    }
+
+    if ($this->getComment()) {
+      $blocks[] = $this->getComment()->getContent();
+    }
+
+    return $blocks;
+  }
+
+  public function setOldValue($value) {
+    $this->oldValueHasBeenSet = true;
+    $this->writeField('oldValue', $value);
+    return $this;
+  }
+
+  public function hasOldValue() {
+    return $this->oldValueHasBeenSet;
+  }
+
+
 /* -(  Rendering  )---------------------------------------------------------- */
 
   public function setRenderingTarget($rendering_target) {
@@ -138,6 +209,13 @@ abstract class PhabricatorApplicationTransaction
 
     $phids[] = array($this->getAuthorPHID());
     switch ($this->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_CUSTOMFIELD:
+        $field = $this->getTransactionCustomField();
+        if ($field) {
+          $phids[] = $field->getApplicationTransactionRequiredHandlePHIDs(
+            $this);
+        }
+        break;
       case PhabricatorTransactions::TYPE_SUBSCRIBERS:
         $phids[] = $old;
         $phids[] = $new;
@@ -169,7 +247,11 @@ abstract class PhabricatorApplicationTransaction
   public function getHandle($phid) {
     if (empty($this->handles[$phid])) {
       throw new Exception(
-        "Transaction requires a handle ('{$phid}') it did not load.");
+        pht(
+          'Transaction ("%s") requires a handle ("%s") that it did not '.
+          'load.',
+          $this->getPHID(),
+          $phid));
     }
     return $this->handles[$phid];
   }
@@ -240,6 +322,29 @@ abstract class PhabricatorApplicationTransaction
     return null;
   }
 
+  protected function getTransactionCustomField() {
+    switch ($this->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_CUSTOMFIELD:
+        $key = $this->getMetadataValue('customfield:key');
+        if (!$key) {
+          return null;
+        }
+
+        $field = PhabricatorCustomField::getObjectField(
+          $this->getObject(),
+          PhabricatorCustomField::ROLE_APPLICATIONTRANSACTIONS,
+          $key);
+        if (!$field) {
+          return null;
+        }
+
+        $field->setViewer($this->getViewer());
+        return $field;
+    }
+
+    return null;
+  }
+
   public function shouldHide() {
     switch ($this->getTransactionType()) {
       case PhabricatorTransactions::TYPE_VIEW_POLICY:
@@ -256,8 +361,24 @@ abstract class PhabricatorApplicationTransaction
     return false;
   }
 
-  public function shouldHideForMail() {
+  public function shouldHideForMail(array $xactions) {
     return $this->shouldHide();
+  }
+
+  public function shouldHideForFeed() {
+    return $this->shouldHide();
+  }
+
+  public function getTitleForMail() {
+    return id(clone $this)->setRenderingTarget('text')->getTitle();
+  }
+
+  public function getBodyForMail() {
+    $comment = $this->getComment();
+    if ($comment && strlen($comment->getContent())) {
+      return $comment->getContent();
+    }
+    return null;
   }
 
   public function getNoEffectDescription() {
@@ -376,26 +497,22 @@ abstract class PhabricatorApplicationTransaction
             $this->renderHandleLink($author_phid),
             count($add),
             $this->renderHandleList($add));
-        } else {
+        } else if ($rem) {
           $string = PhabricatorEdgeConfig::getRemoveStringForEdgeType($type);
           return pht(
             $string,
             $this->renderHandleLink($author_phid),
             count($rem),
             $this->renderHandleList($rem));
+        } else {
+          return pht(
+            '%s edited edge metadata.',
+            $this->renderHandleLink($author_phid));
         }
 
       case PhabricatorTransactions::TYPE_CUSTOMFIELD:
-        $key = $this->getMetadataValue('customfield:key');
-        $field = PhabricatorCustomField::getObjectField(
-          // TODO: This is a giant hack, but we currently don't have a way to
-          // get the contextual object and this pathway is only hit by
-          // Maniphest. We should provide a way to get the actual object here.
-          new ManiphestTask(),
-          PhabricatorCustomField::ROLE_APPLICATIONTRANSACTIONS,
-          $key);
+        $field = $this->getTransactionCustomField();
         if ($field) {
-          $field->setViewer($this->getViewer());
           return $field->getApplicationTransactionTitle($this);
         } else {
           return pht(
@@ -453,16 +570,8 @@ abstract class PhabricatorApplicationTransaction
           $this->renderHandleLink($author_phid),
           $this->renderHandleLink($object_phid));
       case PhabricatorTransactions::TYPE_CUSTOMFIELD:
-        $key = $this->getMetadataValue('customfield:key');
-        $field = PhabricatorCustomField::getObjectField(
-          // TODO: This is a giant hack, but we currently don't have a way to
-          // get the contextual object and this pathway is only hit by
-          // Maniphest. We should provide a way to get the actual object here.
-          new ManiphestTask(),
-          PhabricatorCustomField::ROLE_APPLICATIONTRANSACTIONS,
-          $key);
+        $field = $this->getTransactionCustomField();
         if ($field) {
-          $field->setViewer($this->getViewer());
           return $field->getApplicationTransactionTitleForFeed($this, $story);
         } else {
           return pht(
@@ -500,6 +609,19 @@ abstract class PhabricatorApplicationTransaction
     return 1.0;
   }
 
+  public function isCommentTransaction() {
+    if ($this->hasComment()) {
+      return true;
+    }
+
+    switch ($this->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_COMMENT:
+        return true;
+    }
+
+    return false;
+  }
+
   public function getActionName() {
     switch ($this->getTransactionType()) {
       case PhabricatorTransactions::TYPE_COMMENT:
@@ -520,11 +642,43 @@ abstract class PhabricatorApplicationTransaction
   }
 
   public function hasChangeDetails() {
+    switch ($this->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_CUSTOMFIELD:
+        $field = $this->getTransactionCustomField();
+        if ($field) {
+          return $field->getApplicationTransactionHasChangeDetails($this);
+        }
+        break;
+    }
     return false;
   }
 
   public function renderChangeDetails(PhabricatorUser $viewer) {
-    return null;
+    switch ($this->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_CUSTOMFIELD:
+        $field = $this->getTransactionCustomField();
+        if ($field) {
+          return $field->getApplicationTransactionChangeDetails($this, $viewer);
+        }
+        break;
+    }
+
+    return $this->renderTextCorpusChangeDetails();
+  }
+
+  public function renderTextCorpusChangeDetails(
+    PhabricatorUser $viewer,
+    $old,
+    $new) {
+
+    require_celerity_resource('differential-changeset-view-css');
+
+    $view = id(new PhabricatorApplicationTransactionTextDiffDetailView())
+      ->setUser($viewer)
+      ->setOldText($old)
+      ->setNewText($new);
+
+    return $view->render();
   }
 
   public function attachTransactionGroup(array $group) {
@@ -545,8 +699,6 @@ abstract class PhabricatorApplicationTransaction
    * @return bool True to display in a group with the other transactions.
    */
   public function shouldDisplayGroupWith(array $group) {
-    $type_comment = PhabricatorTransactions::TYPE_COMMENT;
-
     $this_source = null;
     if ($this->getContentSource()) {
       $this_source = $this->getContentSource()->getSource();
@@ -564,7 +716,7 @@ abstract class PhabricatorApplicationTransaction
       }
 
       // Don't group anything into a group which already has a comment.
-      if ($xaction->getTransactionType() == $type_comment) {
+      if ($xaction->isCommentTransaction()) {
         return false;
       }
 

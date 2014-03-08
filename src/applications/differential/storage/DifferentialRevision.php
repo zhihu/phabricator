@@ -6,7 +6,9 @@ final class DifferentialRevision extends DifferentialDAO
     PhabricatorPolicyInterface,
     PhabricatorFlaggableInterface,
     PhrequentTrackableInterface,
-    HarbormasterBuildableInterface {
+    HarbormasterBuildableInterface,
+    PhabricatorSubscribableInterface,
+    PhabricatorCustomFieldInterface {
 
   protected $title = '';
   protected $originalTitle;
@@ -17,8 +19,6 @@ final class DifferentialRevision extends DifferentialDAO
 
   protected $authorPHID;
   protected $lastReviewerPHID;
-
-  protected $dateCommitted;
 
   protected $lineCount = 0;
   protected $attached = array();
@@ -38,8 +38,10 @@ final class DifferentialRevision extends DifferentialDAO
   private $repository = self::ATTACHABLE;
 
   private $reviewerStatus = self::ATTACHABLE;
+  private $customFields = self::ATTACHABLE;
+  private $drafts = array();
+  private $flags = array();
 
-  const RELATIONSHIP_TABLE    = 'differential_relationship';
   const TABLE_COMMIT          = 'differential_commit';
 
   const RELATION_REVIEWER     = 'revw';
@@ -69,6 +71,11 @@ final class DifferentialRevision extends DifferentialDAO
         'unsubscribed'  => self::SERIALIZATION_JSON,
       ),
     ) + parent::getConfiguration();
+  }
+
+  public function getMonogram() {
+    $id = $this->getID();
+    return "D{$id}";
   }
 
   public function setTitle($title) {
@@ -158,7 +165,7 @@ final class DifferentialRevision extends DifferentialDAO
       return array();
     }
     return id(new DifferentialCommentQuery())
-      ->withRevisionIDs(array($this->getID()))
+      ->withRevisionPHIDs(array($this->getPHID()))
       ->execute();
   }
 
@@ -190,17 +197,11 @@ final class DifferentialRevision extends DifferentialDAO
       queryfx(
         $conn_w,
         'DELETE FROM %T WHERE revisionID = %d',
-        self::RELATIONSHIP_TABLE,
-        $this->getID());
-
-      queryfx(
-        $conn_w,
-        'DELETE FROM %T WHERE revisionID = %d',
         self::TABLE_COMMIT,
         $this->getID());
 
       $comments = id(new DifferentialCommentQuery())
-        ->withRevisionIDs(array($this->getID()))
+        ->withRevisionPHIDs(array($this->getPHID()))
         ->execute();
       foreach ($comments as $comment) {
         $comment->delete();
@@ -211,13 +212,6 @@ final class DifferentialRevision extends DifferentialDAO
         ->execute();
       foreach ($inlines as $inline) {
         $inline->delete();
-      }
-
-      $fields = id(new DifferentialAuxiliaryField())->loadAllWhere(
-        'revisionPHID = %s',
-        $this->getPHID());
-      foreach ($fields as $field) {
-        $field->delete();
       }
 
       // we have to do paths a little differentally as they do not have
@@ -240,22 +234,24 @@ final class DifferentialRevision extends DifferentialDAO
       return;
     }
 
-    // Read "subscribed" and "unsubscribed" data out of the old relationship
-    // table.
-    $data = queryfx_all(
-      $this->establishConnection('r'),
-      'SELECT * FROM %T WHERE revisionID = %d
-        AND relation != %s ORDER BY sequence',
-      self::RELATIONSHIP_TABLE,
-      $this->getID(),
-      self::RELATION_REVIEWER);
+    $data = array();
 
-    // Read "reviewer" data out of the new table.
+    $subscriber_phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
+      $this->getPHID(),
+      PhabricatorEdgeConfig::TYPE_OBJECT_HAS_SUBSCRIBER);
+    $subscriber_phids = array_reverse($subscriber_phids);
+    foreach ($subscriber_phids as $phid) {
+      $data[] = array(
+        'relation' => self::RELATION_SUBSCRIBED,
+        'objectPHID' => $phid,
+        'reasonPHID' => null,
+      );
+    }
+
     $reviewer_phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
       $this->getPHID(),
       PhabricatorEdgeConfig::TYPE_DREV_HAS_REVIEWER);
     $reviewer_phids = array_reverse($reviewer_phids);
-
     foreach ($reviewer_phids as $phid) {
       $data[] = array(
         'relation' => self::RELATION_REVIEWER,
@@ -288,12 +284,6 @@ final class DifferentialRevision extends DifferentialDAO
 
   public function getRawRelations($relation) {
     return idx($this->relationships, $relation, array());
-  }
-
-  public function loadUnsubscribedPHIDs() {
-    return PhabricatorEdgeQuery::loadDestinationPHIDs(
-      $this->phid,
-      PhabricatorEdgeConfig::TYPE_OBJECT_HAS_UNSUBSCRIBER);
   }
 
   public function getPrimaryReviewer() {
@@ -413,6 +403,26 @@ final class DifferentialRevision extends DifferentialDAO
     return DifferentialRevisionStatus::isClosedStatus($this->getStatus());
   }
 
+  public function getFlag(PhabricatorUser $viewer) {
+    return $this->assertAttachedKey($this->flags, $viewer->getPHID());
+  }
+
+  public function attachFlag(
+    PhabricatorUser $viewer,
+    PhabricatorFlag $flag = null) {
+    $this->flags[$viewer->getPHID()] = $flag;
+    return $this;
+  }
+
+  public function getDrafts(PhabricatorUser $viewer) {
+    return $this->assertAttachedKey($this->drafts, $viewer->getPHID());
+  }
+
+  public function attachDrafts(PhabricatorUser $viewer, array $drafts) {
+    $this->drafts[$viewer->getPHID()] = $drafts;
+    return $this;
+  }
+
 
 /* -(  HarbormasterBuildableInterface  )------------------------------------- */
 
@@ -423,6 +433,104 @@ final class DifferentialRevision extends DifferentialDAO
 
   public function getHarbormasterContainerPHID() {
     return $this->getPHID();
+  }
+
+
+/* -(  PhabricatorSubscribableInterface  )----------------------------------- */
+
+
+  public function isAutomaticallySubscribed($phid) {
+    if ($phid == $this->getAuthorPHID()) {
+      return true;
+    }
+
+    // TODO: This only happens when adding or removing CCs, and is safe from a
+    // policy perspective, but the subscription pathway should have some
+    // opportunity to load this data properly. For now, this is the only case
+    // where implicit subscription is not an intrinsic property of the object.
+    if ($this->reviewerStatus == self::ATTACHABLE) {
+      $reviewers = id(new DifferentialRevisionQuery())
+        ->setViewer(PhabricatorUser::getOmnipotentUser())
+        ->withPHIDs(array($this->getPHID()))
+        ->needReviewerStatus(true)
+        ->executeOne()
+        ->getReviewerStatus();
+    } else {
+      $reviewers = $this->getReviewerStatus();
+    }
+
+    foreach ($reviewers as $reviewer) {
+      if ($reviewer->getReviewerPHID() == $phid) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public function shouldShowSubscribersProperty() {
+    return true;
+  }
+
+  public function shouldAllowSubscription($phid) {
+    return true;
+  }
+
+
+/* -(  PhabricatorCustomFieldInterface  )------------------------------------ */
+
+
+  public function getCustomFieldSpecificationForRole($role) {
+    $fields = array(
+      new DifferentialAuthorField(),
+
+      new DifferentialTitleField(),
+      new DifferentialSummaryField(),
+      new DifferentialTestPlanField(),
+      new DifferentialReviewersField(),
+      new DifferentialProjectReviewersField(),
+      new DifferentialSubscribersField(),
+      new DifferentialRepositoryField(),
+      new DifferentialViewPolicyField(),
+      new DifferentialEditPolicyField(),
+
+      new DifferentialDependsOnField(),
+      new DifferentialDependenciesField(),
+      new DifferentialManiphestTasksField(),
+      new DifferentialCommitsField(),
+
+      new DifferentialJIRAIssuesField(),
+      new DifferentialAsanaRepresentationField(),
+
+      new DifferentialBlameRevisionField(),
+      new DifferentialPathField(),
+      new DifferentialHostField(),
+      new DifferentialRevertPlanField(),
+
+      new DifferentialApplyPatchField(),
+    );
+
+    $result = array();
+    foreach ($fields as $field) {
+      $result[$field->getFieldKey()] = array(
+        'disabled' => $field->shouldDisableByDefault(),
+      );
+    }
+
+    return $result;
+  }
+
+  public function getCustomFieldBaseClass() {
+    return 'DifferentialCustomField';
+  }
+
+  public function getCustomFields() {
+    return $this->assertAttached($this->customFields);
+  }
+
+  public function attachCustomFields(PhabricatorCustomFieldAttachment $fields) {
+    $this->customFields = $fields;
+    return $this;
   }
 
 }

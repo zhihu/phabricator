@@ -112,7 +112,7 @@ return array(
     'phabricator-application-launch-view-css',
     'phabricator-action-list-view-css',
     'phui-property-list-view-css',
-    'phabricator-tag-view-css',
+    'phui-tag-view-css',
     'phui-list-view-css',
   ),
   'differential.pkg.css' => array(
@@ -124,7 +124,6 @@ return array(
     'differential-table-of-contents-css',
     'differential-revision-comment-css',
     'differential-revision-add-comment-css',
-    'differential-revision-comment-list-css',
     'phabricator-object-selector-css',
     'phabricator-content-source-view-css',
     'differential-local-commits-view-css',

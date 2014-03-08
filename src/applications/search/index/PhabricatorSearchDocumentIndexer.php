@@ -37,6 +37,19 @@ abstract class PhabricatorSearchDocumentIndexer {
     try {
       $document = $this->buildAbstractDocumentByPHID($phid);
 
+      $object = $this->loadDocumentByPHID($phid);
+
+      // Automatically rebuild CustomField indexes if the object uses custom
+      // fields.
+      if ($object instanceof PhabricatorCustomFieldInterface) {
+        $this->indexCustomFields($document, $object);
+      }
+
+      // Automatically rebuild subscriber indexes if the object is subscribable.
+      if ($object instanceof PhabricatorSubscribableInterface) {
+        $this->indexSubscribers($document);
+      }
+
       $engine = PhabricatorSearchEngineSelector::newSelector()->newEngine();
       try {
         $engine->reindexAbstractDocument($document);
@@ -104,6 +117,28 @@ abstract class PhabricatorSearchDocumentIndexer {
         PhabricatorSearchField::FIELD_COMMENT,
         $comment->getContent());
     }
+  }
+
+  protected function indexCustomFields(
+    PhabricatorSearchAbstractDocument $document,
+    PhabricatorCustomFieldInterface $object) {
+
+    // Rebuild the ApplicationSearch indexes. These are internal and not part of
+    // the fulltext search, but putting them in this workflow allows users to
+    // use the same tools to rebuild the indexes, which is easy to understand.
+
+    $field_list = PhabricatorCustomField::getObjectFields(
+      $object,
+      PhabricatorCustomField::ROLE_DEFAULT);
+
+    $field_list->setViewer($this->getViewer());
+    $field_list->readFieldsFromStorage($object);
+
+    // Rebuild ApplicationSearch indexes.
+    $field_list->rebuildIndexes($object);
+
+    // Rebuild global search indexes.
+    $field_list->updateAbstractDocument($document);
   }
 
   private function dispatchDidUpdateIndexEvent(

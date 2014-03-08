@@ -17,6 +17,14 @@ final class PhabricatorProjectSearchIndexer
     $doc->setDocumentCreated($project->getDateCreated());
     $doc->setDocumentModified($project->getDateModified());
 
+    $doc->addRelationship(
+      $project->isArchived()
+        ? PhabricatorSearchRelationship::RELATIONSHIP_CLOSED
+        : PhabricatorSearchRelationship::RELATIONSHIP_OPEN,
+      $project->getPHID(),
+      PhabricatorProjectPHIDTypeProject::TYPECONST,
+      time());
+
     // NOTE: This could be more full-featured, but for now we're mostly
     // interested in the side effects of indexing.
 

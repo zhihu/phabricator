@@ -28,6 +28,7 @@ final class DiffusionRepositoryEditBasicController
 
     $v_name = $repository->getName();
     $v_desc = $repository->getDetail('description');
+    $v_clone_name = $repository->getDetail('clone-name');
     $e_name = true;
     $errors = array();
 
@@ -35,6 +36,10 @@ final class DiffusionRepositoryEditBasicController
       $v_name = $request->getStr('name');
       $v_desc = $request->getStr('description');
       $v_projects = $request->getArr('projectPHIDs');
+
+      if ($repository->isHosted()) {
+        $v_clone_name = $request->getStr('cloneName');
+      }
 
       if (!strlen($v_name)) {
         $e_name = pht('Required');
@@ -50,6 +55,7 @@ final class DiffusionRepositoryEditBasicController
         $type_name = PhabricatorRepositoryTransaction::TYPE_NAME;
         $type_desc = PhabricatorRepositoryTransaction::TYPE_DESCRIPTION;
         $type_edge = PhabricatorTransactions::TYPE_EDGE;
+        $type_clone_name = PhabricatorRepositoryTransaction::TYPE_CLONE_NAME;
 
         $xactions[] = id(clone $template)
           ->setTransactionType($type_name)
@@ -58,6 +64,10 @@ final class DiffusionRepositoryEditBasicController
         $xactions[] = id(clone $template)
           ->setTransactionType($type_desc)
           ->setNewValue($v_desc);
+
+        $xactions[] = id(clone $template)
+          ->setTransactionType($type_clone_name)
+          ->setNewValue($v_clone_name);
 
         $xactions[] = id(clone $template)
           ->setTransactionType($type_edge)
@@ -83,14 +93,6 @@ final class DiffusionRepositoryEditBasicController
     $crumbs->addTextCrumb(pht('Edit Basics'));
 
     $title = pht('Edit %s', $repository->getName());
-
-    $error_view = null;
-    if ($errors) {
-      $error_view = id(new AphrontErrorView())
-        ->setTitle(pht('Form Errors'))
-        ->setErrors($errors);
-    }
-
     $project_handles = $this->loadViewerHandles($repository->getProjectPHIDs());
 
     $form = id(new AphrontFormView())
@@ -100,7 +102,22 @@ final class DiffusionRepositoryEditBasicController
           ->setName('name')
           ->setLabel(pht('Name'))
           ->setValue($v_name)
-          ->setError($e_name))
+          ->setError($e_name));
+
+    if ($repository->isHosted()) {
+      $form
+        ->appendChild(
+          id(new AphrontFormTextControl())
+            ->setName('cloneName')
+            ->setLabel(pht('Clone/Checkout As'))
+            ->setValue($v_clone_name)
+            ->setCaption(
+              pht(
+                'Optional directory name to use when cloning or checking out '.
+                'this repository.')));
+    }
+
+    $form
       ->appendChild(
         id(new PhabricatorRemarkupControl())
           ->setName('description')
@@ -122,7 +139,7 @@ final class DiffusionRepositoryEditBasicController
     $object_box = id(new PHUIObjectBoxView())
       ->setHeaderText($title)
       ->setForm($form)
-      ->setFormError($error_view);
+      ->setFormErrors($errors);
 
     return $this->buildApplicationPage(
       array(

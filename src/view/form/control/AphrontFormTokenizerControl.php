@@ -36,7 +36,6 @@ final class AphrontFormTokenizerControl extends AphrontFormControl {
     $values = nonempty($this->getValue(), array());
 
     assert_instances_of($values, 'PhabricatorObjectHandle');
-    $values = mpull($values, 'getFullName', 'getPHID');
 
     if ($this->getID()) {
       $id = $this->getID();
@@ -62,9 +61,9 @@ final class AphrontFormTokenizerControl extends AphrontFormControl {
       Javelin::initBehavior('aphront-basic-tokenizer', array(
         'id'          => $id,
         'src'         => $this->datasource,
-        'value'       => $values,
+        'value'       => mpull($values, 'getFullName', 'getPHID'),
+        'icons'       => mpull($values, 'getTypeIcon', 'getPHID'),
         'limit'       => $this->limit,
-        'ondemand'    => PhabricatorEnv::getEnvConfig('tokenizer.ondemand'),
         'username'    => $username,
         'placeholder' => $this->placeholder,
       ));
@@ -89,8 +88,8 @@ final class AphrontFormTokenizerControl extends AphrontFormControl {
       'usersorprojects' => pht('Type a user or project name...'),
       'searchowner'     => pht('Type a user name...'),
       'accounts'        => pht('Type a user name...'),
-      'mailable'        => pht('Type a user or mailing list...'),
-      'allmailable'     => pht('Type a user or mailing list...'),
+      'mailable'        => pht('Type a user, project, or mailing list...'),
+      'allmailable'     => pht('Type a user, project, or mailing list...'),
       'searchproject'   => pht('Type a project name...'),
       'projects'        => pht('Type a project name...'),
       'repositories'    => pht('Type a repository name...'),

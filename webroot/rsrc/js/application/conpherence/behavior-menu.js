@@ -8,6 +8,7 @@
  *           javelin-behavior-device
  *           javelin-history
  *           javelin-vector
+ *           phabricator-shaped-request
  */
 
 JX.behavior('conpherence-menu', function(config) {
@@ -526,5 +527,29 @@ JX.behavior('conpherence-menu', function(config) {
     'conpherence-menu-scroller',
     handleThreadScrollers
   );
+
+  var onkeydownDraft = function (e) {
+    var form = e.getNode('tag:form');
+    var data = e.getNodeData('tag:form');
+
+    if (!data.preview) {
+      var uri = config.baseURI + 'update/' + _thread.selected + '/';
+      data.preview = new JX.PhabricatorShapedRequest(
+        uri,
+        JX.bag,
+        function () {
+          var data = JX.DOM.convertFormToDictionary(form);
+          data.action = 'draft';
+          return data;
+        });
+    }
+
+    data.preview.trigger();
+  };
+
+  JX.Stratcom.listen(
+    ['keydown'],
+    'conpherence-pontificate',
+    onkeydownDraft);
 
 });

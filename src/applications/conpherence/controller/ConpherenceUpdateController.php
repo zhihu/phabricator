@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group conpherence
- */
 final class ConpherenceUpdateController
   extends ConpherenceController {
 
@@ -39,6 +36,8 @@ final class ConpherenceUpdateController
     $error_view = null;
     $e_file = array();
     $errors = array();
+    $delete_draft = false;
+    $xactions = array();
     if ($request->isFormPost()) {
       $editor = id(new ConpherenceEditor())
         ->setContinueOnNoEffect($request->isContinueRequest())
@@ -46,14 +45,21 @@ final class ConpherenceUpdateController
         ->setActor($user);
 
       switch ($action) {
+        case ConpherenceUpdateActions::DRAFT:
+          $draft = PhabricatorDraft::newFromUserAndKey(
+            $user,
+            $conpherence->getPHID());
+          $draft->setDraft($request->getStr('text'));
+          $draft->replaceOrDelete();
+          return new AphrontAjaxResponse();
         case ConpherenceUpdateActions::MESSAGE:
           $message = $request->getStr('text');
           $xactions = $editor->generateTransactionsFromText(
             $conpherence,
             $message);
+          $delete_draft = true;
           break;
         case ConpherenceUpdateActions::ADD_PERSON:
-          $xactions = array();
           $person_phids = $request->getArr('add_person');
           if (!empty($person_phids)) {
             $xactions[] = id(new ConpherenceTransaction())
@@ -63,7 +69,6 @@ final class ConpherenceUpdateController
           }
           break;
         case ConpherenceUpdateActions::REMOVE_PERSON:
-          $xactions = array();
           if (!$request->isContinueRequest()) {
             // do nothing; we'll display a confirmation dialogue instead
             break;
@@ -89,7 +94,6 @@ final class ConpherenceUpdateController
             ->setContent($result);
           break;
         case ConpherenceUpdateActions::METADATA:
-          $xactions = array();
           $updated = false;
           // all metadata updates are continue requests
           if (!$request->isContinueRequest()) {
@@ -116,6 +120,12 @@ final class ConpherenceUpdateController
       if ($xactions) {
         try {
           $xactions = $editor->applyTransactions($conpherence, $xactions);
+          if ($delete_draft) {
+            $draft = PhabricatorDraft::newFromUserAndKey(
+              $user,
+              $conpherence->getPHID());
+            $draft->delete();
+          }
         } catch (PhabricatorApplicationTransactionNoEffectException $ex) {
           return id(new PhabricatorApplicationTransactionNoEffectResponse())
             ->setCancelURI($this->getApplicationURI($conpherence_id.'/'))

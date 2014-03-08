@@ -299,13 +299,6 @@ return array(
   'metamta.mail-adapter'        =>
     'PhabricatorMailImplementationPHPMailerLiteAdapter',
 
-  // When email is sent, try to hand it off to the MTA immediately instead of
-  // queueing it for delivery by the daemons. If you are running the Phabricator
-  // daemons with "phd start", you should disable this to provide a (sometimes
-  // substantial) performance boost. It's on by default to make setup and
-  // configuration a little easier.
-  'metamta.send-immediately'    => true,
-
   // When email is sent, what format should Phabricator use for user's
   // email addresses? Valid values are:
   //  - 'short' - 'gwashington <gwashington@example.com>'
@@ -550,15 +543,6 @@ return array(
 
 // -- Auth ------------------------------------------------------------------ //
 
-  // Maximum number of simultaneous web sessions each user is permitted to have.
-  // Setting this to "1" will prevent a user from logging in on more than one
-  // browser at the same time.
-  'auth.sessions.web'           => 5,
-
-  // Maximum number of simultaneous Conduit sessions each user is permitted
-  // to have.
-  'auth.sessions.conduit'       => 5,
-
   // If true, email addresses must be verified (by clicking a link in an
   // email) before a user can login. By default, verification is optional
   // unless 'auth.email-domains' is nonempty (see below).
@@ -653,21 +637,6 @@ return array(
     'http'  => true,
     'https' => true,
   ),
-
-  // Tokenizers are UI controls which let the user select other users, email
-  // addresses, project names, etc., by typing the first few letters and having
-  // the control autocomplete from a list. They can load their data in two ways:
-  // either in a big chunk up front, or as the user types. By default, the data
-  // is loaded in a big chunk. This is simpler and performs better for small
-  // datasets. However, if you have a very large number of users or projects,
-  // (in the ballpark of more than a thousand), loading all that data may become
-  // slow enough that it's worthwhile to query on demand instead. This makes
-  // the typeahead slightly less responsive but overall performance will be much
-  // better if you have a ton of stuff. You can figure out which setting is
-  // best for your install by changing this setting and then playing with a
-  // user tokenizer (like the user selectors in Maniphest or Differential) and
-  // seeing which setting loads faster and feels better.
-  'tokenizer.ondemand'          => false,
 
   // By default, Phabricator includes some silly nonsense in the UI, such as
   // a submit button called "Clowncopterize" in Differential and a call to
@@ -817,8 +786,6 @@ return array(
 
 
 // -- Differential ---------------------------------------------------------- //
-
-  'differential.revision-custom-detail-renderer'  => null,
 
   // List of file regexps where whitespace is meaningful and should not
   // use 'ignore-all' by default

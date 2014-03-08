@@ -126,6 +126,12 @@ final class PhabricatorAuthRegisterController
     $can_edit_anything = $profile->getCanEditAnything() || $must_set_password;
     $force_verify = $profile->getShouldVerifyEmail();
 
+    // Automatically verify the administrator's email address during first-time
+    // setup.
+    if ($is_setup) {
+      $force_verify = true;
+    }
+
     $value_username = $default_username;
     $value_realname = $default_realname;
     $value_email = $default_email;
@@ -182,6 +188,14 @@ final class PhabricatorAuthRegisterController
           $errors[] = pht(
             'Password is too short (must be at least %d characters long).',
             $min_len);
+        } else if (
+          PhabricatorCommonPasswords::isCommonPassword($value_password)) {
+
+          $e_password = pht('Very Weak');
+          $errors[] = pht(
+            'Password is pathologically weak. This password is one of the '.
+            'most common passwords in use, and is extremely easy for '.
+            'attackers to guess. You must choose a stronger password.');
         } else {
           $e_password = null;
         }
@@ -192,8 +206,11 @@ final class PhabricatorAuthRegisterController
         if (!strlen($value_email)) {
           $e_email = pht('Required');
           $errors[] = pht('Email is required.');
-        } else if (!PhabricatorUserEmail::isAllowedAddress($value_email)) {
+        } else if (!PhabricatorUserEmail::isValidAddress($value_email)) {
           $e_email = pht('Invalid');
+          $errors[] = PhabricatorUserEmail::describeValidAddresses();
+        } else if (!PhabricatorUserEmail::isAllowedAddress($value_email)) {
+          $e_email = pht('Disallowed');
           $errors[] = PhabricatorUserEmail::describeAllowedAddresses();
         } else {
           $e_email = null;
@@ -302,13 +319,6 @@ final class PhabricatorAuthRegisterController
       }
 
       unset($unguarded);
-    }
-
-    $error_view = null;
-    if ($errors) {
-      $error_view = new AphrontErrorView();
-      $error_view->setTitle(pht('Registration Failed'));
-      $error_view->setErrors($errors);
     }
 
     $form = id(new AphrontFormView())
@@ -424,7 +434,7 @@ final class PhabricatorAuthRegisterController
     $object_box = id(new PHUIObjectBoxView())
       ->setHeaderText($title)
       ->setForm($form)
-      ->setFormError($error_view);
+      ->setFormErrors($errors);
 
     return $this->buildApplicationPage(
       array(

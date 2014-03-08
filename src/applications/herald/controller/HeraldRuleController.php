@@ -118,14 +118,6 @@ final class HeraldRuleController extends HeraldController {
       }
     }
 
-    if ($errors) {
-      $error_view = new AphrontErrorView();
-      $error_view->setTitle(pht('Form Errors'));
-      $error_view->setErrors($errors);
-    } else {
-      $error_view = null;
-    }
-
     $must_match_selector = $this->renderMustMatchSelector($rule);
     $repetition_selector = $this->renderRepetitionSelector($rule, $adapter);
 
@@ -233,7 +225,7 @@ final class HeraldRuleController extends HeraldController {
 
     $form_box = id(new PHUIObjectBoxView())
       ->setHeaderText($title)
-      ->setFormError($error_view)
+      ->setFormErrors($errors)
       ->setForm($form);
 
     $crumbs = $this
@@ -366,14 +358,25 @@ final class HeraldRuleController extends HeraldController {
       foreach ($rule->getConditions() as $condition) {
 
         $value = $condition->getValue();
-        if (is_array($value)) {
-          $value_map = array();
-          foreach ($value as $k => $fbid) {
-            $value_map[$fbid] = $handles[$fbid]->getName();
-          }
-          $value = $value_map;
+        switch ($condition->getFieldName()) {
+          case HeraldAdapter::FIELD_TASK_PRIORITY:
+            $value_map = array();
+            $priority_map = ManiphestTaskPriority::getTaskPriorityMap();
+            foreach ($value as $priority) {
+              $value_map[$priority] = idx($priority_map, $priority);
+            }
+            $value = $value_map;
+            break;
+          default:
+            if (is_array($value)) {
+              $value_map = array();
+              foreach ($value as $k => $fbid) {
+                $value_map[$fbid] = $handles[$fbid]->getName();
+              }
+              $value = $value_map;
+            }
+            break;
         }
-
         $serial_conditions[] = array(
           $condition->getFieldName(),
           $condition->getFieldCondition(),
@@ -411,7 +414,7 @@ final class HeraldRuleController extends HeraldController {
     }
 
     $all_rules = $this->loadRulesThisRuleMayDependUpon($rule);
-    $all_rules = mpull($all_rules, 'getName', 'getID');
+    $all_rules = mpull($all_rules, 'getName', 'getPHID');
     asort($all_rules);
 
     $all_fields = $adapter->getFieldNameMap();
@@ -582,13 +585,14 @@ final class HeraldRuleController extends HeraldController {
 
     return array(
       'source' => array(
-        'email'       => '/typeahead/common/mailable/',
-        'user'        => '/typeahead/common/accounts/',
-        'repository'  => '/typeahead/common/repositories/',
-        'package'     => '/typeahead/common/packages/',
-        'project'     => '/typeahead/common/projects/',
+        'email'         => '/typeahead/common/mailable/',
+        'user'          => '/typeahead/common/accounts/',
+        'repository'    => '/typeahead/common/repositories/',
+        'package'       => '/typeahead/common/packages/',
+        'project'       => '/typeahead/common/projects/',
         'userorproject' => '/typeahead/common/accountsorprojects/',
-        'buildplan'   => '/typeahead/common/buildplans/',
+        'buildplan'     => '/typeahead/common/buildplans/',
+        'taskpriority'  => '/typeahead/common/taskpriority/',
       ),
       'markup' => $template,
     );
@@ -627,6 +631,15 @@ final class HeraldRuleController extends HeraldController {
         ->withContentTypes(array($rule->getContentType()))
         ->withAuthorPHIDs(array($rule->getAuthorPHID()))
         ->execute();
+    }
+
+    // mark disabled rules as disabled since they are not useful as such;
+    // don't filter though to keep edit cases sane / expected
+    foreach ($all_rules as $current_rule) {
+      if ($current_rule->getIsDisabled()) {
+        $current_rule->makeEphemeral();
+        $current_rule->setName($rule->getName(). ' '.pht('(Disabled)'));
+      }
     }
 
     // A rule can not depend upon itself.

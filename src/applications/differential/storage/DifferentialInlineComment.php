@@ -14,7 +14,7 @@ final class DifferentialInlineComment
     $this->proxy = clone $this->proxy;
   }
 
-  public function save() {
+  public function getTransactionCommentForSave() {
     $content_source = PhabricatorContentSource::newForSource(
       PhabricatorContentSource::SOURCE_LEGACY,
       array());
@@ -23,8 +23,21 @@ final class DifferentialInlineComment
       ->setViewPolicy('public')
       ->setEditPolicy($this->getAuthorPHID())
       ->setContentSource($content_source)
-      ->setCommentVersion(1)
-      ->save();
+      ->setCommentVersion(1);
+
+    return $this->proxy;
+  }
+
+  public function openTransaction() {
+    $this->proxy->openTransaction();
+  }
+
+  public function saveTransaction() {
+    $this->proxy->saveTransaction();
+  }
+
+  public function save() {
+    $this->getTransactionCommentForSave()->save();
 
     return $this;
   }
@@ -37,6 +50,10 @@ final class DifferentialInlineComment
 
   public function getID() {
     return $this->proxy->getID();
+  }
+
+  public function getPHID() {
+    return $this->proxy->getPHID();
   }
 
   public static function newFromModernComment(
@@ -74,7 +91,7 @@ final class DifferentialInlineComment
   }
 
   public function isDraft() {
-    return !$this->getCommentID();
+    return !$this->proxy->getTransactionPHID();
   }
 
   public function setChangesetID($id) {
@@ -135,6 +152,10 @@ final class DifferentialInlineComment
     return $this;
   }
 
+  public function getRevisionPHID() {
+    return $this->proxy->getRevisionPHID();
+  }
+
   // Although these are purely transitional, they're also *extra* dumb.
 
   public function setRevisionID($revision_id) {
@@ -161,18 +182,12 @@ final class DifferentialInlineComment
   // the future transaction.
 
   public function setCommentID($id) {
-    $this->proxy->setLegacyCommentID($id);
     $this->proxy->setTransactionPHID(
       PhabricatorPHID::generateNewPHID(
         PhabricatorApplicationTransactionPHIDTypeTransaction::TYPECONST,
         DifferentialPHIDTypeRevision::TYPECONST));
     return $this;
   }
-
-  public function getCommentID() {
-    return $this->proxy->getLegacyCommentID();
-  }
-
 
 /* -(  PhabricatorMarkupInterface Implementation  )-------------------------- */
 
@@ -196,7 +211,7 @@ final class DifferentialInlineComment
 
   public function shouldUseMarkupCache($field) {
     // Only cache submitted comments.
-    return ($this->getID() && $this->getCommentID());
+    return ($this->getID() && !$this->isDraft());
   }
 
 }

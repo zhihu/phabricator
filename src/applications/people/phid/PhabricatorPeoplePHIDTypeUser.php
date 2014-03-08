@@ -12,6 +12,10 @@ final class PhabricatorPeoplePHIDTypeUser extends PhabricatorPHIDType {
     return pht('Phabricator User');
   }
 
+  public function getTypeIcon() {
+    return 'policy-all';
+  }
+
   public function newObject() {
     return new PhabricatorUser();
   }
@@ -46,6 +50,36 @@ final class PhabricatorPeoplePHIDTypeUser extends PhabricatorPHIDType {
       }
     }
 
+  }
+
+  public function canLoadNamedObject($name) {
+    return preg_match('/^@.+/', $name);
+  }
+
+  public function loadNamedObjects(
+    PhabricatorObjectQuery $query,
+    array $names) {
+
+    $id_map = array();
+    foreach ($names as $name) {
+      $id = substr($name, 1);
+      $id_map[$id][] = $name;
+    }
+
+    $objects = id(new PhabricatorPeopleQuery())
+      ->setViewer($query->getViewer())
+      ->withUsernames(array_keys($id_map))
+      ->execute();
+
+    $results = array();
+    foreach ($objects as $id => $object) {
+      $username = $object->getUsername();
+      foreach (idx($id_map, $username, array()) as $name) {
+        $results[$name] = $object;
+      }
+    }
+
+    return $results;
   }
 
 }

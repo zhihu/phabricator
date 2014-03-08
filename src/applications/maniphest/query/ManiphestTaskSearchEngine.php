@@ -22,7 +22,7 @@ final class ManiphestTaskSearchEngine
 
     $saved->setParameter(
       'subscriberPHIDs',
-      $this->readUsersFromRequest($request, 'subscribers'));
+      $this->readPHIDsFromRequest($request, 'subscribers'));
 
     $saved->setParameter('statuses', $request->getArr('statuses'));
     $saved->setParameter('priorities', $request->getArr('priorities'));
@@ -305,7 +305,7 @@ final class ManiphestTaskSearchEngine
           ->setValue($author_handles))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource('/typeahead/common/accounts/')
+          ->setDatasource('/typeahead/common/mailable/')
           ->setName('subscribers')
           ->setLabel(pht('Subscribers'))
           ->setValue($subscriber_handles))
@@ -384,14 +384,20 @@ final class ManiphestTaskSearchEngine
       case 'assigned':
         return $query
           ->setParameter('assignedPHIDs', array($viewer_phid))
-          ->setParameter('statuses', array(ManiphestTaskStatus::STATUS_OPEN));
+          ->setParameter(
+            'statuses',
+            ManiphestTaskStatus::getOpenStatusConstants());
       case 'subscribed':
         return $query
           ->setParameter('subscriberPHIDs', array($viewer_phid))
-          ->setParameter('statuses', array(ManiphestTaskStatus::STATUS_OPEN));
+          ->setParameter(
+            'statuses',
+            ManiphestTaskStatus::getOpenStatusConstants());
       case 'open':
         return $query
-          ->setParameter('statuses', array(ManiphestTaskStatus::STATUS_OPEN));
+          ->setParameter(
+            'statuses',
+            ManiphestTaskStatus::getOpenStatusConstants());
       case 'authored':
         return $query
           ->setParameter('authorPHIDs', array($viewer_phid))

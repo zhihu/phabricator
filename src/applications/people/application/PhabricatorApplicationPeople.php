@@ -3,7 +3,7 @@
 final class PhabricatorApplicationPeople extends PhabricatorApplication {
 
   public function getShortDescription() {
-    return 'User Accounts';
+    return pht('User Accounts');
   }
 
   public function getBaseURI() {
@@ -53,12 +53,22 @@ final class PhabricatorApplicationPeople extends PhabricatorApplication {
       ),
       '/p/(?P<username>[\w._-]+)/'
         => 'PhabricatorPeopleProfileController',
+      '/p/(?P<username>[\w._-]+)/calendar/'
+        => 'PhabricatorPeopleCalendarController',
     );
   }
 
   public function getRemarkupRules() {
     return array(
       new PhabricatorRemarkupRuleMention(),
+    );
+  }
+
+
+  protected function getCustomCapabilities() {
+    return array(
+      PeopleCapabilityBrowseUserDirectory::CAPABILITY => array(
+      ),
     );
   }
 
@@ -97,10 +107,11 @@ final class PhabricatorApplicationPeople extends PhabricatorApplication {
     if ($user->isLoggedIn() && $user->isUserActivated()) {
       $image = $user->loadProfileImageURI();
 
-      $item = new PHUIListItemView();
-      $item->setName($user->getUsername());
-      $item->setHref('/p/'.$user->getUsername().'/');
-      $item->addClass('core-menu-item');
+      $item = id(new PHUIListItemView())
+        ->setName($user->getUsername())
+        ->setHref('/p/'.$user->getUsername().'/')
+        ->addClass('core-menu-item')
+        ->setOrder(100);
 
       $classes = array(
         'phabricator-core-menu-icon',

@@ -16,16 +16,15 @@ body .phui-header-shell.phui-header-no-backgound {
 }
 
 body .phui-header-shell.phui-bleed-header {
-  background-color: {$lightgreybackground};
-  border-top: 1px solid {$thinblueborder};
-  border-bottom: none;
+  background-color: #fff;
+  border-bottom: 1px solid {$thinblueborder};
   width: auto;
-  margin-bottom: 16px;
+  margin: 16px;
 }
 
 body .phui-header-shell.phui-bleed-header
   .phui-header-view {
-  padding: 8px 24px 8px 16px;
+  padding: 8px 24px 8px 0;
   color: {$bluetext};
 }
 
@@ -44,7 +43,8 @@ body .phui-header-shell.phui-bleed-header
   position: relative;
 }
 
-.phui-header-view a {
+.phui-header-view a,
+.phui-header-view a.simple {
   color: {$darkbluetext};
 }
 
@@ -75,7 +75,7 @@ body.device-phone .phui-header-view {
   font-size: 13px;
 }
 
-.phui-header-tags .phabricator-tag-view {
+.phui-header-tags .phui-tag-view {
   margin-left: 4px;
 }
 

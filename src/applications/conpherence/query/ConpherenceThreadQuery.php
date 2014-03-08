@@ -217,16 +217,16 @@ final class ConpherenceThreadQuery
     $participant_phids = array_mergev($participant_phids);
     $file_phids = array_mergev($file_phids);
 
-    $epochs = ConpherenceTimeUtil::getCalendarEventEpochs(
+    $epochs = CalendarTimeUtil::getCalendarEventEpochs(
       $this->getViewer());
     $start_epoch = $epochs['start_epoch'];
     $end_epoch = $epochs['end_epoch'];
-    $statuses = id(new PhabricatorUserStatus())
-      ->loadAllWhere(
-        'userPHID in (%Ls) AND dateTo >= %d AND dateFrom <= %d',
-        $participant_phids,
-        $start_epoch,
-        $end_epoch);
+    $statuses = id(new PhabricatorCalendarEventQuery())
+      ->setViewer($this->getViewer())
+      ->withInvitedPHIDs($participant_phids)
+      ->withDateRange($start_epoch, $end_epoch)
+      ->execute();
+
     $statuses = mgroup($statuses, 'getUserPHID');
 
     // attached files

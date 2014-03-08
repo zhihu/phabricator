@@ -113,6 +113,8 @@ final class PhabricatorPasteEditor
         $this->getActor(),
         $object->getPHID());
     }
+
+    return $xactions;
   }
 
 
@@ -155,7 +157,9 @@ final class PhabricatorPasteEditor
       ->addHeader('Thread-Topic', "P{$id}");
   }
 
-  protected function supportsFeed() {
+  protected function shouldPublishFeedStory(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
     return true;
   }
 

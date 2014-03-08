@@ -164,10 +164,8 @@ abstract class NuanceSourceDefinition extends Phobject {
     $layout = id(new PHUIObjectBoxView())
       ->setHeaderText($this->getEditTitle())
       ->setValidationException($validation_exception)
+      ->setFormErrors($error_messages)
       ->setForm($form);
-    if ($error_messages) {
-      $layout->setFormError($this->renderEditErrorView($error_messages));
-    }
 
     return $layout;
   }
@@ -238,15 +236,6 @@ abstract class NuanceSourceDefinition extends Phobject {
   }
 
   /**
-   * return @{class:AphrontErrorView}
-   */
-  public function renderEditErrorView(array $errors) {
-    return id(new AphrontErrorView())
-      ->setTitle(pht('Error with submission.'))
-      ->setErrors($errors);
-  }
-
-  /**
    * Hook to build up @{class:PhabricatorTransactions}.
    *
    * return array $transactions
@@ -271,4 +260,3 @@ abstract class NuanceSourceDefinition extends Phobject {
 
   abstract public function renderListView();
 }
-

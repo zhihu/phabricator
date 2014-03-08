@@ -130,21 +130,25 @@ final class PhabricatorSettingsPanelEmailAddresses
         $editable,
       ));
 
-    $view = new AphrontPanelView();
+    $view = new PHUIObjectBoxView();
+    $header = new PHUIHeaderView();
+    $header->setHeader(pht('Email Addresses'));
+
     if ($editable) {
-      $view->addButton(
-        javelin_tag(
-          'a',
-          array(
-            'href'      => $uri->alter('new', 'true'),
-            'class'     => 'green button',
-            'sigil'     => 'workflow',
-          ),
-          pht('Add New Address')));
+      $icon = id(new PHUIIconView())
+        ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
+        ->setSpriteIcon('new');
+
+      $button = new PHUIButtonView();
+      $button->setText(pht('Add New Address'));
+      $button->setTag('a');
+      $button->setHref($uri->alter('new', 'true'));
+      $button->setIcon($icon);
+      $button->addSigil('workflow');
+      $header->addActionLink($button);
     }
-    $view->setHeader(pht('Email Addresses'));
+    $view->setHeader($header);
     $view->appendChild($table);
-    $view->setNoBackground();
 
     return $view;
   }
@@ -169,8 +173,11 @@ final class PhabricatorSettingsPanelEmailAddresses
       if (!strlen($email)) {
         $e_email = pht('Required');
         $errors[] = pht('Email is required.');
-      } else if (!PhabricatorUserEmail::isAllowedAddress($email)) {
+      } else if (!PhabricatorUserEmail::isValidAddress($email)) {
         $e_email = pht('Invalid');
+        $errors[] = PhabricatorUserEmail::describeValidAddresses();
+      } else if (!PhabricatorUserEmail::isAllowedAddress($email)) {
+        $e_email = pht('Disallowed');
         $errors[] = PhabricatorUserEmail::describeAllowedAddresses();
       }
 

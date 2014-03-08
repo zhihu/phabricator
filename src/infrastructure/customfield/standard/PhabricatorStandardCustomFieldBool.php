@@ -72,7 +72,7 @@ final class PhabricatorStandardCustomFieldBool
           )));
   }
 
-  public function renderEditControl() {
+  public function renderEditControl(array $handles) {
     return id(new AphrontFormCheckboxControl())
       ->setLabel($this->getFieldName())
       ->setCaption($this->getCaption())
@@ -83,7 +83,7 @@ final class PhabricatorStandardCustomFieldBool
         (bool)$this->getFieldValue());
   }
 
-  public function renderPropertyViewValue() {
+  public function renderPropertyViewValue(array $handles) {
     $value = $this->getFieldValue();
     if ($value) {
       return $this->getString('view.yes', pht('Yes'));

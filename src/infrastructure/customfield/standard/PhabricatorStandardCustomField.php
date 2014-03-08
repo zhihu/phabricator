@@ -200,7 +200,7 @@ abstract class PhabricatorStandardCustomField
     $this->setFieldValue($value);
   }
 
-  public function renderEditControl() {
+  public function renderEditControl(array $handles) {
     return id(new AphrontFormTextControl())
       ->setName($this->getFieldKey())
       ->setCaption($this->getCaption())
@@ -217,7 +217,7 @@ abstract class PhabricatorStandardCustomField
     return $this->getFieldConfigValue('view', true);
   }
 
-  public function renderPropertyViewValue() {
+  public function renderPropertyViewValue(array $handles) {
     if (!strlen($this->getFieldValue())) {
       return null;
     }

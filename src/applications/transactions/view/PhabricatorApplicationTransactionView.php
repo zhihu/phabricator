@@ -11,12 +11,6 @@ class PhabricatorApplicationTransactionView extends AphrontView {
   private $showEditActions = true;
   private $isPreview;
   private $objectPHID;
-  private $isDetailView;
-
-  public function setIsDetailView($is_detail_view) {
-    $this->isDetailView = $is_detail_view;
-    return $this;
-  }
 
   public function setObjectPHID($object_phid) {
     $this->objectPHID = $object_phid;
@@ -57,7 +51,7 @@ class PhabricatorApplicationTransactionView extends AphrontView {
     return $this;
   }
 
-  public function buildEvents() {
+  public function buildEvents($with_hiding = false) {
     $user = $this->getUser();
 
     $anchor = $this->anchorOffset;
@@ -68,11 +62,50 @@ class PhabricatorApplicationTransactionView extends AphrontView {
     $xactions = $this->groupRelatedTransactions($xactions);
     $groups = $this->groupDisplayTransactions($xactions);
 
+    // If the viewer has interacted with this object, we hide things from
+    // before their most recent interaction by default. This tends to make
+    // very long threads much more manageable, because you don't have to
+    // scroll through a lot of history and can focus on just new stuff.
+
+    $show_group = null;
+
+    if ($with_hiding) {
+      // Find the most recent comment by the viewer.
+      $group_keys = array_keys($groups);
+      $group_keys = array_reverse($group_keys);
+
+      // If we would only hide a small number of transactions, don't hide
+      // anything. Just don't examine the last few keys. Also, we always
+      // want to show the most recent pieces of activity, so don't examine
+      // the first few keys either.
+      $group_keys = array_slice($group_keys, 2, -2);
+
+      $type_comment = PhabricatorTransactions::TYPE_COMMENT;
+      foreach ($group_keys as $group_key) {
+        $group = $groups[$group_key];
+        foreach ($group as $xaction) {
+          if ($xaction->getAuthorPHID() == $user->getPHID() &&
+              $xaction->getTransactionType() == $type_comment) {
+            // This is the most recent group where the user commented.
+            $show_group = $group_key;
+            break 2;
+          }
+        }
+      }
+    }
+
     $events = array();
-    foreach ($groups as $group) {
+    $hide_by_default = ($show_group !== null);
+
+    foreach ($groups as $group_key => $group) {
+      if ($hide_by_default && ($show_group === $group_key)) {
+        $hide_by_default = false;
+      }
+
       $group_event = null;
       foreach ($group as $xaction) {
         $event = $this->renderEvent($xaction, $group, $anchor);
+        $event->setHideByDefault($hide_by_default);
         $anchor++;
         if (!$group_event) {
           $group_event = $event;
@@ -81,6 +114,7 @@ class PhabricatorApplicationTransactionView extends AphrontView {
         }
       }
       $events[] = $group_event;
+
     }
 
     return $events;
@@ -91,8 +125,8 @@ class PhabricatorApplicationTransactionView extends AphrontView {
       throw new Exception("Call setObjectPHID() before render()!");
     }
 
-    $view = new PhabricatorTimelineView();
-    $events = $this->buildEvents();
+    $view = new PHUITimelineView();
+    $events = $this->buildEvents($with_hiding = true);
     foreach ($events as $event) {
       $view->addEvent($event);
     }
@@ -115,76 +149,23 @@ class PhabricatorApplicationTransactionView extends AphrontView {
   }
 
   protected function getOrBuildEngine() {
-    if ($this->engine) {
-      return $this->engine;
-    }
+    if (!$this->engine) {
+      $field = PhabricatorApplicationTransactionComment::MARKUP_FIELD_COMMENT;
 
-    $field = PhabricatorApplicationTransactionComment::MARKUP_FIELD_COMMENT;
-
-    $engine = id(new PhabricatorMarkupEngine())
-      ->setViewer($this->getUser());
-    foreach ($this->transactions as $xaction) {
-      if (!$xaction->hasComment()) {
-        continue;
+      $engine = id(new PhabricatorMarkupEngine())
+        ->setViewer($this->getUser());
+      foreach ($this->transactions as $xaction) {
+        if (!$xaction->hasComment()) {
+          continue;
+        }
+        $engine->addObject($xaction->getComment(), $field);
       }
-      $engine->addObject($xaction->getComment(), $field);
+      $engine->process();
+
+      $this->engine = $engine;
     }
-    $engine->process();
 
-    return $engine;
-  }
-
-  private function buildChangeDetails(
-    PhabricatorApplicationTransaction $xaction) {
-
-    Javelin::initBehavior('phabricator-reveal-content');
-
-    $show_id = celerity_generate_unique_node_id();
-    $hide_id = celerity_generate_unique_node_id();
-    $content_id = celerity_generate_unique_node_id();
-
-    $show_more = javelin_tag(
-      'a',
-      array(
-        'href' => '#',
-        'sigil' => 'reveal-content',
-        'mustcapture' => true,
-        'id' => $show_id,
-        'style' => 'display: none',
-        'meta' => array(
-          'hideIDs' => array($show_id),
-          'showIDs' => array($hide_id, $content_id),
-        ),
-      ),
-      pht('(Show Details)'));
-
-    $hide_more = javelin_tag(
-      'a',
-      array(
-        'href' => '#',
-        'sigil' => 'reveal-content',
-        'mustcapture' => true,
-        'id' => $hide_id,
-        'meta' => array(
-          'hideIDs' => array($hide_id, $content_id),
-          'showIDs' => array($show_id),
-        ),
-      ),
-      pht('(Hide Details)'));
-
-    $content = phutil_tag(
-      'div',
-      array(
-        'id'    => $content_id,
-        'class' => 'phabricator-timeline-change-details',
-      ),
-      $xaction->renderChangeDetails($this->getUser()));
-
-    return array(
-      $show_more,
-      $hide_more,
-      $content,
-    );
+    return $this->engine;
   }
 
   private function buildChangeDetailsLink(
@@ -194,11 +175,7 @@ class PhabricatorApplicationTransactionView extends AphrontView {
       'a',
       array(
         'href' => '/transactions/detail/'.$xaction->getPHID().'/',
-        'sigil' => 'transaction-detail',
-        'mustcapture' => true,
-        'meta' => array(
-          'anchor' => $this->anchorOffset,
-        ),
+        'sigil' => 'workflow',
       ),
       pht('(Show Details)'));
   }
@@ -293,7 +270,7 @@ class PhabricatorApplicationTransactionView extends AphrontView {
     $anchor) {
     $viewer = $this->getUser();
 
-    $event = id(new PhabricatorTimelineEventView())
+    $event = id(new PHUITimelineEventView())
       ->setUser($viewer)
       ->setTransactionPHID($xaction->getPHID())
       ->setUserHandle($xaction->getHandle($xaction->getAuthorPHID()))
@@ -303,16 +280,14 @@ class PhabricatorApplicationTransactionView extends AphrontView {
     if (!$this->shouldSuppressTitle($xaction, $group)) {
       $title = $xaction->getTitle();
       if ($xaction->hasChangeDetails()) {
-        if ($this->isPreview || $this->isDetailView) {
-          $details = $this->buildChangeDetails($xaction);
-        } else {
+        if (!$this->isPreview) {
           $details = $this->buildChangeDetailsLink($xaction);
+          $title = array(
+            $title,
+            ' ',
+            $details,
+          );
         }
-        $title = array(
-          $title,
-          ' ',
-          $details,
-        );
       }
       $event->setTitle($title);
     }
@@ -374,4 +349,3 @@ class PhabricatorApplicationTransactionView extends AphrontView {
   }
 
 }
-

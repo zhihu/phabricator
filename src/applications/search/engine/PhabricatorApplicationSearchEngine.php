@@ -349,7 +349,7 @@ abstract class PhabricatorApplicationSearchEngine {
    * This provides flexibility when constructing URIs, especially from external
    * sources.
    *
-   * @param AphrontRequest  Request to read PHIDs from.
+   * @param AphrontRequest  Request to read strings from.
    * @param string          Key to read in the request.
    * @return list<string>   List of values.
    */
@@ -366,6 +366,17 @@ abstract class PhabricatorApplicationSearchEngine {
     }
 
     return $list;
+  }
+
+  protected function readDateFromRequest(
+    AphrontRequest $request,
+    $key) {
+
+    return id(new AphrontFormDateControl())
+      ->setUser($this->requireViewer())
+      ->setName($key)
+      ->setAllowNull(true)
+      ->readValueFromRequest($request);
   }
 
   protected function readBoolFromRequest(

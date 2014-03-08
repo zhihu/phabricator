@@ -14,7 +14,6 @@ final class PhabricatorTypeaheadCommonDatasourceController
   }
 
   public function processRequest() {
-
     $request = $this->getRequest();
     $viewer = $request->getUser();
     $query = $request->getStr('q');
@@ -25,7 +24,6 @@ final class PhabricatorTypeaheadCommonDatasourceController
     $need_users = false;
     $need_agents = false;
     $need_applications = false;
-    $need_all_users = false;
     $need_lists = false;
     $need_projs = false;
     $need_repos = false;
@@ -36,7 +34,9 @@ final class PhabricatorTypeaheadCommonDatasourceController
     $need_symbols = false;
     $need_jump_objects = false;
     $need_build_plans = false;
+    $need_task_priority = false;
     $need_macros = false;
+    $need_legalpad_documents = false;
     switch ($this->type) {
       case 'mainsearch':
         $need_users = true;
@@ -55,25 +55,21 @@ final class PhabricatorTypeaheadCommonDatasourceController
         $need_noproject = true;
         break;
       case 'users':
-        $need_users = true;
-        break;
+      case 'accounts':
       case 'authors':
         $need_users = true;
-        $need_agents = true;
         break;
       case 'mailable':
-        $need_users = true;
-        $need_lists = true;
-        break;
       case 'allmailable':
         $need_users = true;
-        $need_all_users = true;
         $need_lists = true;
+        $need_projs = true;
         break;
       case 'projects':
         $need_projs = true;
         break;
       case 'usersorprojects':
+      case 'accountsorprojects':
         $need_users = true;
         $need_projs = true;
         break;
@@ -83,23 +79,20 @@ final class PhabricatorTypeaheadCommonDatasourceController
       case 'packages':
         $need_packages = true;
         break;
-      case 'accounts':
-        $need_users = true;
-        $need_all_users = true;
-        break;
-      case 'accountsorprojects':
-        $need_users = true;
-        $need_all_users = true;
-        $need_projs = true;
-        break;
       case 'arcanistprojects':
         $need_arcanist_projects = true;
         break;
       case 'buildplans':
         $need_build_plans = true;
         break;
+      case 'taskpriority':
+        $need_task_priority = true;
+        break;
       case 'macros':
         $need_macros = true;
+        break;
+      case 'legalpaddocuments':
+        $need_legalpad_documents = true;
         break;
     }
 
@@ -188,20 +181,21 @@ final class PhabricatorTypeaheadCommonDatasourceController
       }
 
       foreach ($users as $user) {
-        if (!$need_all_users) {
-          if (!$need_agents && $user->getIsSystemAgent()) {
-            continue;
-          }
-          if ($user->getIsDisabled()) {
-            continue;
-          }
+        $closed = null;
+        if ($user->getIsDisabled()) {
+          $closed = pht('Disabled');
+        } else if ($user->getIsSystemAgent()) {
+          $closed = pht('System Agent');
         }
 
         $result = id(new PhabricatorTypeaheadResult())
           ->setName($user->getFullName())
           ->setURI('/p/'.$user->getUsername())
           ->setPHID($user->getPHID())
-          ->setPriorityString($user->getUsername().' '.GetPinyin($user->getRealName()));
+          ->setPriorityString($user->getUsername())
+          ->setIcon('policy-all')
+          ->setPriorityType('user')
+          ->setClosed($closed);
 
         if ($need_rich_data) {
           $display_type = 'User';
@@ -210,7 +204,6 @@ final class PhabricatorTypeaheadCommonDatasourceController
           }
           $result->setDisplayType($display_type);
           $result->setImageURI($handles[$user->getPHID()]->getImageURI());
-          $result->setPriorityType('user');
         }
         $results[] = $result;
       }
@@ -239,6 +232,16 @@ final class PhabricatorTypeaheadCommonDatasourceController
       }
     }
 
+    if ($need_task_priority) {
+      $priority_map = ManiphestTaskPriority::getTaskPriorityMap();
+      foreach ($priority_map as $value => $name) {
+        // NOTE: $value is not a phid but is unique. This'll work.
+        $results[] = id(new PhabricatorTypeaheadResult())
+          ->setPHID($value)
+          ->setName($name);
+      }
+    }
+
     if ($need_macros) {
       $macros = id(new PhabricatorMacroQuery())
         ->setViewer($viewer)
@@ -252,21 +255,38 @@ final class PhabricatorTypeaheadCommonDatasourceController
       }
     }
 
+    if ($need_legalpad_documents) {
+      $documents = id(new LegalpadDocumentQuery())
+        ->setViewer($viewer)
+        ->execute();
+      $documents = mpull($documents, 'getTitle', 'getPHID');
+      foreach ($documents as $phid => $title) {
+        $results[] = id(new PhabricatorTypeaheadResult())
+          ->setPHID($phid)
+          ->setName($title);
+      }
+    }
+
     if ($need_projs) {
       $projs = id(new PhabricatorProjectQuery())
         ->setViewer($viewer)
-        ->withStatus(PhabricatorProjectQuery::STATUS_OPEN)
-        ->needProfiles(true)
+        ->needImages(true)
         ->execute();
       foreach ($projs as $proj) {
+        $closed = null;
+        if ($proj->isArchived()) {
+          $closed = pht('Archived');
+        }
+
         $proj_result = id(new PhabricatorTypeaheadResult())
           ->setName($proj->getName())
           ->setDisplayType("Project")
           ->setURI('/project/view/'.$proj->getID().'/')
-          ->setPHID($proj->getPHID());
+          ->setPHID($proj->getPHID())
+          ->setIcon('policy-project')
+          ->setClosed($closed);
 
-        $prof = $proj->getProfile();
-        $proj_result->setImageURI($prof->getProfileImageURI());
+        $proj_result->setImageURI($proj->getProfileImageURI());
 
         $results[] = $proj_result;
       }

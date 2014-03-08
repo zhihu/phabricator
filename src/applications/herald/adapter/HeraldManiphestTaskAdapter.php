@@ -19,6 +19,13 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
       'React to tasks being created or updated.');
   }
 
+  public function getRepetitionOptions() {
+    return array(
+      HeraldRepetitionPolicyConfig::EVERY,
+      HeraldRepetitionPolicyConfig::FIRST,
+    );
+  }
+
   public function supportsRuleType($rule_type) {
     switch ($rule_type) {
       case HeraldRuleTypeConfig::RULE_TYPE_GLOBAL:
@@ -80,6 +87,8 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
         self::FIELD_CC,
         self::FIELD_CONTENT_SOURCE,
         self::FIELD_PROJECTS,
+        self::FIELD_TASK_PRIORITY,
+        self::FIELD_IS_NEW_OBJECT,
       ),
       parent::getFields());
   }
@@ -125,6 +134,8 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
         return $this->getTask()->getCCPHIDs();
       case self::FIELD_PROJECTS:
         return $this->getTask()->getProjectPHIDs();
+      case self::FIELD_TASK_PRIORITY:
+        return $this->getTask()->getPriority();
     }
 
     return parent::getHeraldField($field);

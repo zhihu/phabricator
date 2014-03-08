@@ -64,26 +64,32 @@ final class HeraldCommitAdapter extends HeraldAdapter {
     if ($object instanceof PhabricatorRepository) {
       return true;
     }
+    if ($object instanceof PhabricatorProject) {
+      return true;
+    }
     return false;
   }
 
   public function getTriggerObjectPHIDs() {
-    return array(
-      $this->repository->getPHID(),
-      $this->getPHID(),
-    );
+    return array_merge(
+      array(
+        $this->repository->getPHID(),
+        $this->getPHID(),
+      ),
+      $this->repository->getProjectPHIDs());
   }
 
   public function explainValidTriggerObjects() {
     return pht(
-      'This rule can trigger for **repositories**.');
+      'This rule can trigger for **repositories** and **projects**.');
   }
 
   public function getFieldNameMap() {
     return array(
       self::FIELD_NEED_AUDIT_FOR_PACKAGE =>
         pht('Affected packages that need audit'),
-      self::FIELD_REPOSITORY_AUTOCLOSE_BRANCH => pht('On autoclose branch'),
+      self::FIELD_REPOSITORY_AUTOCLOSE_BRANCH
+        => pht('Commit is on closing branch'),
     ) + parent::getFieldNameMap();
   }
 
@@ -95,12 +101,12 @@ final class HeraldCommitAdapter extends HeraldAdapter {
         self::FIELD_COMMITTER,
         self::FIELD_REVIEWER,
         self::FIELD_REPOSITORY,
+        self::FIELD_REPOSITORY_PROJECTS,
         self::FIELD_DIFF_FILE,
         self::FIELD_DIFF_CONTENT,
         self::FIELD_DIFF_ADDED_CONTENT,
         self::FIELD_DIFF_REMOVED_CONTENT,
         self::FIELD_DIFF_ENORMOUS,
-        self::FIELD_RULE,
         self::FIELD_AFFECTED_PACKAGE,
         self::FIELD_AFFECTED_PACKAGE_OWNER,
         self::FIELD_NEED_AUDIT_FOR_PACKAGE,
@@ -108,6 +114,7 @@ final class HeraldCommitAdapter extends HeraldAdapter {
         self::FIELD_DIFFERENTIAL_ACCEPTED,
         self::FIELD_DIFFERENTIAL_REVIEWERS,
         self::FIELD_DIFFERENTIAL_CCS,
+        self::FIELD_BRANCHES,
         self::FIELD_REPOSITORY_AUTOCLOSE_BRANCH,
       ),
       parent::getFields());
@@ -175,6 +182,35 @@ final class HeraldCommitAdapter extends HeraldAdapter {
     $object->commitData = $commit_data;
 
     return $object;
+  }
+
+  public function setCommit(PhabricatorRepositoryCommit $commit) {
+    $viewer = PhabricatorUser::getOmnipotentUser();
+
+    $repository = id(new PhabricatorRepositoryQuery())
+      ->setViewer($viewer)
+      ->withIDs(array($commit->getRepositoryID()))
+      ->needProjectPHIDs(true)
+      ->executeOne();
+    if (!$repository) {
+      throw new Exception(pht('Unable to load repository!'));
+    }
+
+    $data = id(new PhabricatorRepositoryCommitData())->loadOneWhere(
+      'commitID = %d',
+      $commit->getID());
+    if (!$data) {
+      throw new Exception(pht('Unable to load commit data!'));
+    }
+
+    $this->commit = clone $commit;
+    $this->commit->attachRepository($repository);
+    $this->commit->attachCommitData($data);
+
+    $this->repository = $repository;
+    $this->commitData = $data;
+
+    return $this;
   }
 
   public function getPHID() {
@@ -270,6 +306,14 @@ final class HeraldCommitAdapter extends HeraldAdapter {
     return $this->affectedRevision;
   }
 
+  public static function getEnormousByteLimit() {
+    return 1024 * 1024 * 1024; // 1GB
+  }
+
+  public static function getEnormousTimeLimit() {
+    return 60 * 15; // 15 Minutes
+  }
+
   private function loadCommitDiff() {
     $drequest = DiffusionRequest::newFromDictionary(
       array(
@@ -278,7 +322,7 @@ final class HeraldCommitAdapter extends HeraldAdapter {
         'commit' => $this->commit->getCommitIdentifier(),
       ));
 
-    $byte_limit = (1024 * 1024 * 1024); // 1GB
+    $byte_limit = self::getEnormousByteLimit();
 
     $raw = DiffusionQuery::callConduitWithDiffusionRequest(
       PhabricatorUser::getOmnipotentUser(),
@@ -286,7 +330,7 @@ final class HeraldCommitAdapter extends HeraldAdapter {
       'diffusion.rawdiffquery',
       array(
         'commit' => $this->commit->getCommitIdentifier(),
-        'timeout' => (60 * 15), // 15 minutes
+        'timeout' => self::getEnormousTimeLimit(),
         'byteLimit' => $byte_limit,
         'linesOfContext' => 0,
       ));
@@ -367,6 +411,8 @@ final class HeraldCommitAdapter extends HeraldAdapter {
         return $this->loadAffectedPaths();
       case self::FIELD_REPOSITORY:
         return $this->repository->getPHID();
+      case self::FIELD_REPOSITORY_PROJECTS:
+        return $this->repository->getProjectPHIDs();
       case self::FIELD_DIFF_CONTENT:
         return $this->getDiffContent('*');
       case self::FIELD_DIFF_ADDED_CONTENT:
@@ -396,8 +442,11 @@ final class HeraldCommitAdapter extends HeraldAdapter {
         if (!$revision) {
           return null;
         }
-        $status_accepted = ArcanistDifferentialRevisionStatus::ACCEPTED;
-        if ($revision->getStatus() != $status_accepted) {
+        // after a revision is accepted, it can be closed (say via arc land)
+        // so use this function to figure out if it was accepted at one point
+        // *and* not later rejected...  what a function!
+        $reviewed_by = $revision->loadReviewedBy();
+        if (!$reviewed_by) {
           return null;
         }
         return $revision->getPHID();
@@ -413,6 +462,18 @@ final class HeraldCommitAdapter extends HeraldAdapter {
           return array();
         }
         return $revision->getCCPHIDs();
+      case self::FIELD_BRANCHES:
+        $params = array(
+          'callsign' => $this->repository->getCallsign(),
+          'contains' => $this->commit->getCommitIdentifier(),
+        );
+
+        $result = id(new ConduitCall('diffusion.branchquery', $params))
+          ->setUser(PhabricatorUser::getOmnipotentUser())
+          ->execute();
+
+        $refs = DiffusionRepositoryRef::loadAllFromDictionaries($result);
+        return mpull($refs, 'getShortName');
       case self::FIELD_REPOSITORY_AUTOCLOSE_BRANCH:
         return $this->repository->shouldAutocloseCommit(
           $this->commit,

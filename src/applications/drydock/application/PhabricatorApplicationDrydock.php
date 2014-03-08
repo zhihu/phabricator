@@ -7,7 +7,7 @@ final class PhabricatorApplicationDrydock extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return 'Allocate Software Resources';
+    return pht('Allocate Software Resources');
   }
 
   public function getIconName() {
@@ -38,7 +38,7 @@ final class PhabricatorApplicationDrydock extends PhabricatorApplication {
           '(?:query/(?P<queryKey>[^/]+)/)?' => 'DrydockBlueprintListController',
           '(?P<id>[1-9]\d*)/' => 'DrydockBlueprintViewController',
           'create/' => 'DrydockBlueprintCreateController',
-          'edit/(?P<id>[1-9]\d*)/' => 'DrydockBlueprintEditController',
+          'edit/(?:(?P<id>[1-9]\d*)/)?' => 'DrydockBlueprintEditController',
         ),
         'resource/' => array(
           '(?:query/(?P<queryKey>[^/]+)/)?' => 'DrydockResourceListController',
@@ -56,5 +56,19 @@ final class PhabricatorApplicationDrydock extends PhabricatorApplication {
       ),
     );
   }
+
+  protected function getCustomCapabilities() {
+    return array(
+      DrydockCapabilityDefaultView::CAPABILITY => array(
+      ),
+      DrydockCapabilityDefaultEdit::CAPABILITY => array(
+        'default' => PhabricatorPolicies::POLICY_ADMIN,
+      ),
+      DrydockCapabilityCreateBlueprints::CAPABILITY => array(
+        'default' => PhabricatorPolicies::POLICY_ADMIN,
+      ),
+    );
+  }
+
 
 }

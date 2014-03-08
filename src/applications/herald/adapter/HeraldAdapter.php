@@ -38,6 +38,8 @@ abstract class HeraldAdapter {
   const FIELD_BRANCHES               = 'branches';
   const FIELD_AUTHOR_RAW             = 'author-raw';
   const FIELD_COMMITTER_RAW          = 'committer-raw';
+  const FIELD_IS_NEW_OBJECT          = 'new-object';
+  const FIELD_TASK_PRIORITY          = 'taskpriority';
 
   const CONDITION_CONTAINS        = 'contains';
   const CONDITION_NOT_CONTAINS    = '!contains';
@@ -88,8 +90,10 @@ abstract class HeraldAdapter {
   const VALUE_CONTENT_SOURCE  = 'contentsource';
   const VALUE_USER_OR_PROJECT = 'userorproject';
   const VALUE_BUILD_PLAN      = 'buildplan';
+  const VALUE_TASK_PRIORITY   = 'taskpriority';
 
   private $contentSource;
+  private $isNewObject;
 
   public function setContentSource(PhabricatorContentSource $content_source) {
     $this->contentSource = $content_source;
@@ -97,6 +101,18 @@ abstract class HeraldAdapter {
   }
   public function getContentSource() {
     return $this->contentSource;
+  }
+
+  public function getIsNewObject() {
+    if (is_bool($this->isNewObject)) {
+      return $this->isNewObject;
+    }
+
+    throw new Exception(pht('You must setIsNewObject to a boolean first!'));
+  }
+  public function setIsNewObject($new) {
+    $this->isNewObject = (bool) $new;
+    return $this;
   }
 
   abstract public function getPHID();
@@ -110,6 +126,8 @@ abstract class HeraldAdapter {
         return $this->getContentSource()->getSource();
       case self::FIELD_ALWAYS:
         return true;
+      case self::FIELD_IS_NEW_OBJECT:
+        return $this->getIsNewObject();
       default:
         throw new Exception(
           "Unknown field '{$field_name}'!");
@@ -176,6 +194,7 @@ abstract class HeraldAdapter {
   public function getFields() {
     return array(
       self::FIELD_ALWAYS,
+      self::FIELD_RULE,
     );
   }
 
@@ -216,6 +235,8 @@ abstract class HeraldAdapter {
       self::FIELD_BRANCHES => pht('Commit\'s branches'),
       self::FIELD_AUTHOR_RAW => pht('Raw author name'),
       self::FIELD_COMMITTER_RAW => pht('Raw committer name'),
+      self::FIELD_IS_NEW_OBJECT => pht('Is newly created?'),
+      self::FIELD_TASK_PRIORITY => pht('Task priority'),
     );
   }
 
@@ -267,6 +288,7 @@ abstract class HeraldAdapter {
       case self::FIELD_COMMITTER:
       case self::FIELD_REVIEWER:
       case self::FIELD_PUSHER:
+      case self::FIELD_TASK_PRIORITY:
         return array(
           self::CONDITION_IS_ANY,
           self::CONDITION_IS_NOT_ANY,
@@ -345,6 +367,7 @@ abstract class HeraldAdapter {
         );
       case self::FIELD_IS_MERGE_COMMIT:
       case self::FIELD_DIFF_ENORMOUS:
+      case self::FIELD_IS_NEW_OBJECT:
         return array(
           self::CONDITION_IS_TRUE,
           self::CONDITION_IS_FALSE,
@@ -607,7 +630,7 @@ abstract class HeraldAdapter {
           self::ACTION_ADD_PROJECTS => pht('Add projects'),
           self::ACTION_ADD_REVIEWERS => pht('Add reviewers'),
           self::ACTION_ADD_BLOCKING_REVIEWERS => pht('Add blocking reviewers'),
-          self::ACTION_APPLY_BUILD_PLANS => pht('Apply build plans'),
+          self::ACTION_APPLY_BUILD_PLANS => pht('Run build plans'),
           self::ACTION_BLOCK => pht('Block change with message'),
         );
       case HeraldRuleTypeConfig::RULE_TYPE_PERSONAL:
@@ -700,6 +723,8 @@ abstract class HeraldAdapter {
         switch ($field) {
           case self::FIELD_REPOSITORY:
             return self::VALUE_REPOSITORY;
+          case self::FIELD_TASK_PRIORITY:
+            return self::VALUE_TASK_PRIORITY;
           default:
             return self::VALUE_USER;
         }
@@ -923,6 +948,7 @@ abstract class HeraldAdapter {
   private function renderConditionAsText(
     HeraldCondition $condition,
     array $handles) {
+
     $field_type = $condition->getFieldName();
     $field_name = idx($this->getFieldNameMap(), $field_type);
 
@@ -955,11 +981,24 @@ abstract class HeraldAdapter {
     if (!is_array($value)) {
       $value = array($value);
     }
-    foreach ($value as $index => $val) {
-      $handle = idx($handles, $val);
-      if ($handle) {
-        $value[$index] = $handle->renderLink();
-      }
+    switch ($condition->getFieldName()) {
+      case self::FIELD_TASK_PRIORITY:
+        $priority_map = ManiphestTaskPriority::getTaskPriorityMap();
+        foreach ($value as $index => $val) {
+          $name = idx($priority_map, $val);
+          if ($name) {
+            $value[$index] = $name;
+          }
+        }
+        break;
+      default:
+        foreach ($value as $index => $val) {
+          $handle = idx($handles, $val);
+          if ($handle) {
+            $value[$index] = $handle->renderLink();
+          }
+        }
+        break;
     }
     $value = phutil_implode_html(', ', $value);
     return $value;
@@ -974,9 +1013,16 @@ abstract class HeraldAdapter {
       $target = array($target);
     }
     foreach ($target as $index => $val) {
-      $handle = idx($handles, $val);
-      if ($handle) {
-        $target[$index] = $handle->renderLink();
+      switch ($action->getAction()) {
+        case self::ACTION_FLAG:
+          $target[$index] = PhabricatorFlagColor::getColorName($val);
+          break;
+        default:
+          $handle = idx($handles, $val);
+          if ($handle) {
+            $target[$index] = $handle->renderLink();
+          }
+          break;
       }
     }
     $target = phutil_implode_html(', ', $target);
@@ -1031,4 +1077,3 @@ abstract class HeraldAdapter {
   }
 
 }
-

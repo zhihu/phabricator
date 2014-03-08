@@ -10,7 +10,9 @@ final class PhabricatorContentSource {
   const SOURCE_TABLET   = 'tablet';
   const SOURCE_FAX      = 'fax';
   const SOURCE_CONSOLE  = 'console';
+  const SOURCE_HERALD   = 'herald';
   const SOURCE_LEGACY   = 'legacy';
+  const SOURCE_DAEMON   = 'daemon';
 
   private $source;
   private $params = array();
@@ -70,7 +72,9 @@ final class PhabricatorContentSource {
       self::SOURCE_FAX      => pht('Fax'),
       self::SOURCE_CONSOLE  => pht('Console'),
       self::SOURCE_LEGACY   => pht('Legacy'),
-      self::SOURCE_UNKNOWN  => pht('Other'),
+      self::SOURCE_HERALD   => pht('Herald'),
+      self::SOURCE_DAEMON   => pht('Daemons'),
+      self::SOURCE_UNKNOWN  => pht('Old World'),
     );
   }
 

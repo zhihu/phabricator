@@ -61,6 +61,9 @@ final class ConduitAPI_conduit_connect_Method extends ConduitAPIMethod {
     $client = $request->getValue('client');
     $client_version = (int)$request->getValue('clientVersion');
     $client_description = (string)$request->getValue('clientDescription');
+    // TODO: This should be character-oriented, not display-oriented.
+    // See T3307.
+    $client_description = phutil_utf8_shorten($client_description, 255);
     $username = (string)$request->getValue('user');
 
     // Log the connection, regardless of the outcome of checks below.
@@ -142,7 +145,10 @@ final class ConduitAPI_conduit_connect_Method extends ConduitAPIMethod {
       if ($valid != $signature) {
         throw new ConduitException('ERR-INVALID-CERTIFICATE');
       }
-      $session_key = $user->establishSession('conduit');
+      $session_key = id(new PhabricatorAuthSessionEngine())
+        ->establishSession(
+          PhabricatorAuthSession::TYPE_CONDUIT,
+          $user->getPHID());
     } else {
       throw new ConduitException('ERR-NO-CERTIFICATE');
     }

@@ -38,21 +38,21 @@ final class PhabricatorRepositoryURITestCase
     $repo->setVersionControlSystem($svn);
 
     $this->assertEqual('http://example.com/', $repo->getRemoteURI());
-    $this->assertEqual('http://example.com/', $repo->getPublicRemoteURI());
+    $this->assertEqual('http://example.com/', $repo->getPublicCloneURI());
     $this->assertEqual('http://example.com/',
       $repo->getRemoteURIEnvelope()->openEnvelope());
 
     $repo->setVersionControlSystem($git);
 
     $this->assertEqual('http://example.com/', $repo->getRemoteURI());
-    $this->assertEqual('http://example.com/', $repo->getPublicRemoteURI());
+    $this->assertEqual('http://example.com/', $repo->getPublicCloneURI());
     $this->assertEqual('http://duck:quack@example.com/',
       $repo->getRemoteURIEnvelope()->openEnvelope());
 
     $repo->setVersionControlSystem($hg);
 
     $this->assertEqual('http://example.com/', $repo->getRemoteURI());
-    $this->assertEqual('http://example.com/', $repo->getPublicRemoteURI());
+    $this->assertEqual('http://example.com/', $repo->getPublicCloneURI());
     $this->assertEqual('http://duck:quack@example.com/',
       $repo->getRemoteURIEnvelope()->openEnvelope());
 
@@ -62,21 +62,21 @@ final class PhabricatorRepositoryURITestCase
     $repo->setVersionControlSystem($svn);
 
     $this->assertEqual('ssh://example.com/', $repo->getRemoteURI());
-    $this->assertEqual('ssh://example.com/', $repo->getPublicRemoteURI());
+    $this->assertEqual('ssh://example.com/', $repo->getPublicCloneURI());
     $this->assertEqual('ssh://example.com/',
       $repo->getRemoteURIEnvelope()->openEnvelope());
 
     $repo->setVersionControlSystem($git);
 
     $this->assertEqual('ssh://example.com/', $repo->getRemoteURI());
-    $this->assertEqual('ssh://example.com/', $repo->getPublicRemoteURI());
+    $this->assertEqual('ssh://example.com/', $repo->getPublicCloneURI());
     $this->assertEqual('ssh://example.com/',
       $repo->getRemoteURIEnvelope()->openEnvelope());
 
     $repo->setVersionControlSystem($hg);
 
     $this->assertEqual('ssh://example.com/', $repo->getRemoteURI());
-    $this->assertEqual('ssh://example.com/', $repo->getPublicRemoteURI());
+    $this->assertEqual('ssh://example.com/', $repo->getPublicCloneURI());
     $this->assertEqual('ssh://example.com/',
       $repo->getRemoteURIEnvelope()->openEnvelope());
 
@@ -86,8 +86,21 @@ final class PhabricatorRepositoryURITestCase
     $repo->setVersionControlSystem($git);
 
     $this->assertEqual('git@example.com:path.git', $repo->getRemoteURI());
-    $this->assertEqual('git@example.com:path.git', $repo->getPublicRemoteURI());
+    $this->assertEqual('git@example.com:path.git', $repo->getPublicCloneURI());
     $this->assertEqual('git@example.com:path.git',
+      $repo->getRemoteURIEnvelope()->openEnvelope());
+
+    // Test SVN "Import Only" paths.
+
+    $repo->setDetail('remote-uri', 'http://example.com/');
+    $repo->setVersionControlSystem($svn);
+    $repo->setDetail('svn-subpath', 'projects/example/');
+
+    $this->assertEqual('http://example.com/', $repo->getRemoteURI());
+    $this->assertEqual(
+      'http://example.com/projects/example/',
+      $repo->getPublicCloneURI());
+    $this->assertEqual('http://example.com/',
       $repo->getRemoteURIEnvelope()->openEnvelope());
 
   }

@@ -246,6 +246,10 @@ td.cov-X {
   white-space:        normal;
 }
 
+.differential-inline-comment-edit .aphront-form-control-textarea {
+  padding: 0;
+}
+
 .differential-inline-comment-unsaved-draft {
   background: #f1f1f1;
   border: 1px dashed {$greytext};
@@ -287,10 +291,9 @@ td.cov-X {
   font-style:   normal;
 }
 
-
-.differential-inline-comment-edit-textarea {
+.differential-inline-comment-edit-body .aphront-form-input {
+  margin: 0;
   width: 100%;
-  height: 12em;
 }
 
 .differential-changeset-buttons {

@@ -53,7 +53,7 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
           => 'DifferentialRevisionLandController',
         'comment/' => array(
           'preview/(?P<id>[1-9]\d*)/' => 'DifferentialCommentPreviewController',
-          'save/' => 'DifferentialCommentSaveController',
+          'save/(?P<id>[1-9]\d*)/' => 'DifferentialCommentSaveController',
           'inline/' => array(
             'preview/(?P<id>[1-9]\d*)/'
               => 'DifferentialInlineCommentPreviewController',
@@ -61,8 +61,6 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
               => 'DifferentialInlineCommentEditController',
           ),
         ),
-        'subscribe/(?P<action>add|rem)/(?P<id>[1-9]\d*)/'
-          => 'DifferentialSubscribeController',
         'preview/' => 'PhabricatorMarkupPreviewController',
       ),
     );
@@ -131,4 +129,3 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
   }
 
 }
-

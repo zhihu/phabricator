@@ -21,11 +21,10 @@ final class PhabricatorApplicationDiviner extends PhabricatorApplication {
   public function getRoutes() {
     return array(
       '/diviner/' => array(
-        '' => 'DivinerLegacyController',
+        '' => 'DivinerMainController',
         'query/((?<key>[^/]+)/)?' => 'DivinerAtomListController',
         'find/' => 'DivinerFindController',
       ),
-      '/docs/(?P<keyword>[^/]+)/' => 'DivinerJumpController',
       '/book/(?P<book>[^/]+)/' => 'DivinerBookController',
       '/book/'.
         '(?P<book>[^/]+)/'.
@@ -58,11 +57,12 @@ final class PhabricatorApplicationDiviner extends PhabricatorApplication {
     }
 
     if ($application && $application->getHelpURI()) {
-      $item = new PHUIListItemView();
-      $item->setName(pht('%s Help', $application->getName()));
-      $item->addClass('core-menu-item');
-      $item->setIcon('help');
-      $item->setHref($application->getHelpURI());
+      $item = id(new PHUIListItemView())
+        ->setName(pht('%s Help', $application->getName()))
+        ->addClass('core-menu-item')
+        ->setIcon('info-sm')
+        ->setOrder(200)
+        ->setHref($application->getHelpURI());
       $items[] = $item;
     }
 
@@ -71,4 +71,3 @@ final class PhabricatorApplicationDiviner extends PhabricatorApplication {
 
 
 }
-

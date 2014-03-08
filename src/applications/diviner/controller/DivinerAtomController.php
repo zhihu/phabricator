@@ -72,9 +72,9 @@ final class DivinerAtomController extends DivinerController {
     $header = id(new PHUIHeaderView())
       ->setHeader($this->renderFullSignature($symbol))
       ->addTag(
-        id(new PhabricatorTagView())
-          ->setType(PhabricatorTagView::TYPE_STATE)
-          ->setBackgroundColor(PhabricatorTagView::COLOR_BLUE)
+        id(new PHUITagView())
+          ->setType(PHUITagView::TYPE_STATE)
+          ->setBackgroundColor(PHUITagView::COLOR_BLUE)
           ->setName(DivinerAtom::getAtomTypeNameString($atom->getType())));
 
     $properties = id(new PHUIPropertyListView());
@@ -121,6 +121,7 @@ final class DivinerAtomController extends DivinerController {
     $document = id(new PHUIDocumentView())
       ->setBook($book->getTitle(), $group_name)
       ->setHeader($header)
+      ->setFontKit(PHUIDocumentView::FONT_SOURCE_SANS)
       ->appendChild($properties)
       ->appendChild($warnings)
       ->appendChild($content);
@@ -206,9 +207,9 @@ final class DivinerAtomController extends DivinerController {
         $inherited = $spec['inherited'];
         if ($inherited) {
           $method_header->addTag(
-            id(new PhabricatorTagView())
-              ->setType(PhabricatorTagView::TYPE_STATE)
-              ->setBackgroundColor(PhabricatorTagView::COLOR_GREY)
+            id(new PHUITagView())
+              ->setType(PHUITagView::TYPE_STATE)
+              ->setBackgroundColor(PHUITagView::COLOR_GREY)
               ->setName(pht('Inherited')));
         }
 
@@ -291,8 +292,8 @@ final class DivinerAtomController extends DivinerController {
   }
 
   private function renderAtomTag(DivinerLiveSymbol $symbol) {
-    return id(new PhabricatorTagView())
-      ->setType(PhabricatorTagView::TYPE_OBJECT)
+    return id(new PHUITagView())
+      ->setType(PHUITagView::TYPE_OBJECT)
       ->setName($symbol->getName())
       ->setHref($symbol->getURI());
   }
@@ -461,7 +462,7 @@ final class DivinerAtomController extends DivinerController {
       case DivinerAtom::TYPE_FUNCTION:
         break;
       default:
-        return null;
+        return $symbol->getTitle();
     }
 
     $atom = $symbol->getAtom();

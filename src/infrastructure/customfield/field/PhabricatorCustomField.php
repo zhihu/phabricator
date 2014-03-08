@@ -1,16 +1,17 @@
 <?php
 
 /**
- * @task apps       Building Applications with Custom Fields
- * @task core       Core Properties and Field Identity
- * @task proxy      Field Proxies
- * @task context    Contextual Data
- * @task storage    Field Storage
- * @task appsearch  Integration with ApplicationSearch
- * @task appxaction Integration with ApplicationTransactions
- * @task edit       Integration with edit views
- * @task view       Integration with property views
- * @task list       Integration with list views
+ * @task apps         Building Applications with Custom Fields
+ * @task core         Core Properties and Field Identity
+ * @task proxy        Field Proxies
+ * @task context      Contextual Data
+ * @task storage      Field Storage
+ * @task edit         Integration with Edit Views
+ * @task view         Integration with Property Views
+ * @task list         Integration with List views
+ * @task appsearch    Integration with ApplicationSearch
+ * @task appxaction   Integration with ApplicationTransactions
+ * @task globalsearch Integration with Global Search
  */
 abstract class PhabricatorCustomField {
 
@@ -25,6 +26,7 @@ abstract class PhabricatorCustomField {
   const ROLE_EDIT                     = 'edit';
   const ROLE_VIEW                     = 'view';
   const ROLE_LIST                     = 'list';
+  const ROLE_GLOBALSEARCH             = 'GlobalSearch';
 
 
 /* -(  Building Applications with Custom Fields  )--------------------------- */
@@ -253,6 +255,8 @@ abstract class PhabricatorCustomField {
         return $this->shouldAppearInPropertyView();
       case self::ROLE_LIST:
         return $this->shouldAppearInListView();
+      case self::ROLE_GLOBALSEARCH:
+        return $this->shouldAppearInGlobalSearch();
       case self::ROLE_DEFAULT:
         return true;
       default:
@@ -272,6 +276,10 @@ abstract class PhabricatorCustomField {
    */
   public function canDisableField() {
     return true;
+  }
+
+  public function shouldDisableByDefault() {
+    return false;
   }
 
 
@@ -347,6 +355,7 @@ abstract class PhabricatorCustomField {
    * Sets the object this field belongs to.
    *
    * @param PhabricatorCustomFieldInterface The object this field belongs to.
+   * @return this
    * @task context
    */
   final public function setObject(PhabricatorCustomFieldInterface $object) {
@@ -357,6 +366,21 @@ abstract class PhabricatorCustomField {
 
     $this->object = $object;
     $this->didSetObject($object);
+    return $this;
+  }
+
+
+  /**
+   * Read object data into local field storage, if applicable.
+   *
+   * @param PhabricatorCustomFieldInterface The object this field belongs to.
+   * @return this
+   * @task context
+   */
+  public function readValueFromObject(PhabricatorCustomFieldInterface $object) {
+    if ($this->proxy) {
+      $this->proxy->readValueFromObject($object);
+    }
     return $this;
   }
 
@@ -736,6 +760,28 @@ abstract class PhabricatorCustomField {
   /**
    * @task appxaction
    */
+  public function getApplicationTransactionType() {
+    if ($this->proxy) {
+      return $this->proxy->getApplicationTransactionType();
+    }
+    return PhabricatorTransactions::TYPE_CUSTOMFIELD;
+  }
+
+
+  /**
+   * @task appxaction
+   */
+  public function getApplicationTransactionMetadata() {
+    if ($this->proxy) {
+      return $this->proxy->getApplicationTransactionMetadata();
+    }
+    return array();
+  }
+
+
+  /**
+   * @task appxaction
+   */
   public function getOldValueForApplicationTransactions() {
     if ($this->proxy) {
       return $this->proxy->getOldValueForApplicationTransactions();
@@ -799,6 +845,18 @@ abstract class PhabricatorCustomField {
       return $this->proxy->applyApplicationTransactionInternalEffects($xaction);
     }
     return;
+  }
+
+
+  /**
+   * @task appxaction
+   */
+  public function getApplicationTransactionRemarkupBlocks(
+    PhabricatorApplicationTransaction $xaction) {
+    if ($this->proxy) {
+      return $this->proxy->getApplicationTransactionRemarkupBlocks($xaction);
+    }
+    return array();
   }
 
 
@@ -904,6 +962,36 @@ abstract class PhabricatorCustomField {
   }
 
 
+  public function getApplicationTransactionHasChangeDetails(
+    PhabricatorApplicationTransaction $xaction) {
+    if ($this->proxy) {
+      return $this->proxy->getApplicationTransactionHasChangeDetails(
+        $xaction);
+    }
+    return false;
+  }
+
+  public function getApplicationTransactionChangeDetails(
+    PhabricatorApplicationTransaction $xaction,
+    PhabricatorUser $viewer) {
+    if ($this->proxy) {
+      return $this->proxy->getApplicationTransactionChangeDetails(
+        $xaction,
+        $viewer);
+    }
+    return null;
+  }
+
+  public function getApplicationTransactionRequiredHandlePHIDs(
+    PhabricatorApplicationTransaction $xaction) {
+    if ($this->proxy) {
+      return $this->proxy->getApplicationTransactionRequiredHandlePHIDs(
+        $xaction);
+    }
+    return array();
+  }
+
+
 /* -(  Edit View  )---------------------------------------------------------- */
 
 
@@ -932,9 +1020,20 @@ abstract class PhabricatorCustomField {
   /**
    * @task edit
    */
-  public function renderEditControl() {
+  public function getRequiredHandlePHIDsForEdit() {
     if ($this->proxy) {
-      return $this->proxy->renderEditControl();
+      return $this->proxy->getRequiredHandlePHIDsForEdit();
+    }
+    return array();
+  }
+
+
+  /**
+   * @task edit
+   */
+  public function renderEditControl(array $handles) {
+    if ($this->proxy) {
+      return $this->proxy->renderEditControl($handles);
     }
     throw new PhabricatorCustomFieldImplementationIncompleteException($this);
   }
@@ -968,9 +1067,9 @@ abstract class PhabricatorCustomField {
   /**
    * @task view
    */
-  public function renderPropertyViewValue() {
+  public function renderPropertyViewValue(array $handles) {
     if ($this->proxy) {
-      return $this->proxy->renderPropertyViewValue();
+      return $this->proxy->renderPropertyViewValue($handles);
     }
     throw new PhabricatorCustomFieldImplementationIncompleteException($this);
   }
@@ -984,6 +1083,28 @@ abstract class PhabricatorCustomField {
       return $this->proxy->getStyleForPropertyView();
     }
     return 'property';
+  }
+
+
+  /**
+   * @task view
+   */
+  public function getIconForPropertyView() {
+    if ($this->proxy) {
+      return $this->proxy->getIconForPropertyView();
+    }
+    return null;
+  }
+
+
+  /**
+   * @task view
+   */
+  public function getRequiredHandlePHIDsForPropertyView() {
+    if ($this->proxy) {
+      return $this->proxy->getRequiredHandlePHIDsForPropertyView();
+    }
+    return array();
   }
 
 
@@ -1009,6 +1130,32 @@ abstract class PhabricatorCustomField {
       return $this->proxy->renderOnListItem($view);
     }
     throw new PhabricatorCustomFieldImplementationIncompleteException($this);
+  }
+
+
+/* -(  Global Search  )------------------------------------------------------ */
+
+
+  /**
+   * @task globalsearch
+   */
+  public function shouldAppearInGlobalSearch() {
+    if ($this->proxy) {
+      return $this->proxy->shouldAppearInGlobalSearch();
+    }
+    return false;
+  }
+
+
+  /**
+   * @task globalsearch
+   */
+  public function updateAbstractDocument(
+    PhabricatorSearchAbstractDocument $document) {
+    if ($this->proxy) {
+      return $this->proxy->updateAbstractDocument($document);
+    }
+    return $document;
   }
 
 

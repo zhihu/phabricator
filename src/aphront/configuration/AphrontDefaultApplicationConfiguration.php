@@ -1,6 +1,9 @@
 <?php
 
 /**
+ * NOTE: Do not extend this!
+ *
+ * @concrete-extensible
  * @group aphront
  */
 class AphrontDefaultApplicationConfiguration
@@ -16,14 +19,6 @@ class AphrontDefaultApplicationConfiguration
 
   public function getURIMap() {
     return $this->getResourceURIMapRules() + array(
-      '/(?:(?P<filter>(?:jump))/)?' =>
-        'PhabricatorDirectoryMainController',
-
-      '/typeahead/' => array(
-        'common/(?P<type>\w+)/'
-          => 'PhabricatorTypeaheadCommonDatasourceController',
-      ),
-
       '/oauthserver/' => array(
         'auth/'          => 'PhabricatorOAuthServerAuthController',
         'test/'          => 'PhabricatorOAuthServerTestController',
@@ -56,15 +51,6 @@ class AphrontDefaultApplicationConfiguration
         'keyboardshortcut/' => 'PhabricatorHelpKeyboardShortcutController',
       ),
 
-      '/notification/' => array(
-        '(?:(?P<filter>all|unread)/)?'
-          => 'PhabricatorNotificationListController',
-        'panel/' => 'PhabricatorNotificationPanelController',
-        'individual/' => 'PhabricatorNotificationIndividualController',
-        'status/' => 'PhabricatorNotificationStatusController',
-        'clear/' => 'PhabricatorNotificationClearController',
-      ),
-
       '/debug/' => 'PhabricatorDebugController',
     );
   }
@@ -75,7 +61,7 @@ class AphrontDefaultApplicationConfiguration
         '(?:(?P<mtime>[0-9]+)T/)?'.
         '(?P<library>[^/]+)/'.
         '(?P<hash>[a-f0-9]{8})/'.
-        '(?P<path>.+\.(?:css|js|jpg|png|swf|gif))'
+        '(?P<path>.+\.(?:css|js|jpg|png|swf|gif|woff))'
           => 'CelerityPhabricatorResourceController',
       ),
     );
@@ -107,9 +93,12 @@ class AphrontDefaultApplicationConfiguration
 
     $data += $parser->parseQueryString(idx($_SERVER, 'QUERY_STRING', ''));
 
+    $cookie_prefix = PhabricatorEnv::getEnvConfig('phabricator.cookie-prefix');
+
     $request = new AphrontRequest($this->getHost(), $this->getPath());
     $request->setRequestData($data);
     $request->setApplicationConfiguration($this);
+    $request->setCookiePrefix($cookie_prefix);
 
     return $request;
   }

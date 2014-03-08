@@ -4,6 +4,7 @@ final class PhabricatorAuthLoginController
   extends PhabricatorAuthController {
 
   private $providerKey;
+  private $extraURIData;
   private $provider;
 
   public function shouldRequireLogin() {
@@ -12,6 +13,11 @@ final class PhabricatorAuthLoginController
 
   public function willProcessRequest(array $data) {
     $this->providerKey = $data['pkey'];
+    $this->extraURIData = idx($data, 'extra');
+  }
+
+  public function getExtraURIData() {
+    return $this->extraURIData;
   }
 
   public function processRequest() {
@@ -166,7 +172,9 @@ final class PhabricatorAuthLoginController
       $account->save();
     unset($unguarded);
 
-    $this->getRequest()->setCookie('phreg', $registration_key);
+    $this->getRequest()->setCookie(
+      PhabricatorCookies::COOKIE_REGISTRATION,
+      $registration_key);
 
     return id(new AphrontRedirectResponse())->setURI($next_uri);
   }

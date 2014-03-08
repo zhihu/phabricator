@@ -10,6 +10,7 @@
 final class PhabricatorCustomFieldList extends Phobject {
 
   private $fields;
+  private $viewer;
 
   public function __construct(array $fields) {
     assert_instances_of($fields, 'PhabricatorCustomField');
@@ -21,6 +22,7 @@ final class PhabricatorCustomFieldList extends Phobject {
   }
 
   public function setViewer(PhabricatorUser $viewer) {
+    $this->viewer = $viewer;
     foreach ($this->getFields() as $field) {
       $field->setViewer($viewer);
     }
@@ -37,6 +39,11 @@ final class PhabricatorCustomFieldList extends Phobject {
   public function readFieldsFromStorage(
     PhabricatorCustomFieldInterface $object) {
 
+    foreach ($this->fields as $field) {
+      $field->setObject($object);
+      $field->readValueFromObject($object);
+    }
+
     $keys = array();
     foreach ($this->fields as $field) {
       if ($field->shouldEnableForRole(PhabricatorCustomField::ROLE_STORAGE)) {
@@ -45,7 +52,7 @@ final class PhabricatorCustomFieldList extends Phobject {
     }
 
     if (!$keys) {
-      return;
+      return $this;
     }
 
     // NOTE: We assume all fields share the same storage. This isn't guaranteed
@@ -72,13 +79,36 @@ final class PhabricatorCustomFieldList extends Phobject {
         $field->setValueFromStorage(null);
       }
     }
+
+    return $this;
   }
 
   public function appendFieldsToForm(AphrontFormView $form) {
+    $enabled = array();
     foreach ($this->fields as $field) {
       if ($field->shouldEnableForRole(PhabricatorCustomField::ROLE_EDIT)) {
-        $form->appendChild($field->renderEditControl());
+        $enabled[] = $field;
       }
+    }
+
+    $phids = array();
+    foreach ($enabled as $field_key => $field) {
+      $phids[$field_key] = $field->getRequiredHandlePHIDsForEdit();
+    }
+
+    $all_phids = array_mergev($phids);
+    if ($all_phids) {
+      $handles = id(new PhabricatorHandleQuery())
+        ->setViewer($this->viewer)
+        ->withPHIDs($all_phids)
+        ->execute();
+    } else {
+      $handles = array();
+    }
+
+    foreach ($enabled as $field_key => $field) {
+      $field_handles = array_select_keys($handles, $phids[$field_key]);
+      $form->appendChild($field->renderEditControl($field_handles));
     }
   }
 
@@ -119,9 +149,25 @@ final class PhabricatorCustomFieldList extends Phobject {
 
     $add_header = null;
 
-    foreach ($fields as $field) {
+    $phids = array();
+    foreach ($fields as $key => $field) {
+      $phids[$key] = $field->getRequiredHandlePHIDsForPropertyView();
+    }
+
+    $all_phids = array_mergev($phids);
+    if ($all_phids) {
+      $handles = id(new PhabricatorHandleQuery())
+        ->setViewer($viewer)
+        ->withPHIDs($all_phids)
+        ->execute();
+    } else {
+      $handles = array();
+    }
+
+    foreach ($fields as $key => $field) {
+      $field_handles = array_select_keys($handles, $phids[$key]);
       $label = $field->renderPropertyViewLabel();
-      $value = $field->renderPropertyViewValue();
+      $value = $field->renderPropertyViewValue($field_handles);
       if ($value !== null) {
         switch ($field->getStyleForPropertyView()) {
           case 'header':
@@ -153,9 +199,10 @@ final class PhabricatorCustomFieldList extends Phobject {
             $view->addProperty($label, $value);
             break;
           case 'block':
+            $icon = $field->getIconForPropertyView();
             $view->invokeWillRenderEvent();
             if ($label !== null) {
-              $view->addSectionHeader($label);
+              $view->addSectionHeader($label, $icon);
             }
             $view->addTextContent($value);
             break;
@@ -176,15 +223,31 @@ final class PhabricatorCustomFieldList extends Phobject {
         continue;
       }
 
-      $old_value = $field->getOldValueForApplicationTransactions();
+      $transaction_type = $field->getApplicationTransactionType();
+      $xaction = id(clone $template)
+        ->setTransactionType($transaction_type);
+
+      if ($transaction_type == PhabricatorTransactions::TYPE_CUSTOMFIELD) {
+        // For TYPE_CUSTOMFIELD transactions only, we provide the old value
+        // as an input.
+        $old_value = $field->getOldValueForApplicationTransactions();
+        $xaction->setOldValue($old_value);
+      }
 
       $field->readValueFromRequest($request);
 
-      $xaction = id(clone $template)
-        ->setTransactionType(PhabricatorTransactions::TYPE_CUSTOMFIELD)
-        ->setMetadataValue('customfield:key', $field->getFieldKey())
-        ->setOldValue($old_value)
+      $xaction
         ->setNewValue($field->getNewValueForApplicationTransactions());
+
+      if ($transaction_type == PhabricatorTransactions::TYPE_CUSTOMFIELD) {
+        // For TYPE_CUSTOMFIELD transactions, add the field key in metadata.
+        $xaction->setMetadataValue('customfield:key', $field->getFieldKey());
+      }
+
+      $metadata = $field->getApplicationTransactionMetadata();
+      foreach ($metadata as $key => $value) {
+        $xaction->setMetadataValue($key, $value);
+      }
 
       $xactions[] = $xaction;
     }
@@ -259,5 +322,20 @@ final class PhabricatorCustomFieldList extends Phobject {
 
     $any_index->saveTransaction();
   }
+
+  public function updateAbstractDocument(
+    PhabricatorSearchAbstractDocument $document) {
+
+    $role = PhabricatorCustomField::ROLE_GLOBALSEARCH;
+    foreach ($this->getFields() as $field) {
+      if (!$field->shouldEnableForRole($role)) {
+        continue;
+      }
+      $field->updateAbstractDocument($document);
+    }
+
+    return $document;
+  }
+
 
 }

@@ -36,6 +36,11 @@ final class PhamePostEditController
       $blog = id(new PhameBlogQuery())
         ->setViewer($user)
         ->withIDs(array($request->getInt('blog')))
+        ->requireCapabilities(
+          array(
+            PhabricatorPolicyCapability::CAN_VIEW,
+            PhabricatorPolicyCapability::CAN_JOIN,
+          ))
         ->executeOne();
       if (!$blog) {
         return new Aphront404Response();
@@ -163,17 +168,9 @@ final class PhamePostEditController
         'uri'         => '/phame/post/preview/',
       ));
 
-    if ($errors) {
-      $error_view = id(new AphrontErrorView())
-        ->setTitle(pht('Errors saving post.'))
-        ->setErrors($errors);
-    } else {
-      $error_view = null;
-    }
-
     $form_box = id(new PHUIObjectBoxView())
       ->setHeaderText($page_title)
-      ->setFormError($error_view)
+      ->setFormErrors($errors)
       ->setForm($form);
 
     $crumbs = $this->buildApplicationCrumbs();

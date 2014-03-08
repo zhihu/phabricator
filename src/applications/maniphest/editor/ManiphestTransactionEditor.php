@@ -16,6 +16,8 @@ final class ManiphestTransactionEditor
     $types[] = ManiphestTransaction::TYPE_PROJECTS;
     $types[] = ManiphestTransaction::TYPE_ATTACH;
     $types[] = ManiphestTransaction::TYPE_EDGE;
+    $types[] = ManiphestTransaction::TYPE_SUBPRIORITY;
+    $types[] = ManiphestTransaction::TYPE_PROJECT_COLUMN;
     $types[] = PhabricatorTransactions::TYPE_VIEW_POLICY;
     $types[] = PhabricatorTransactions::TYPE_EDIT_POLICY;
 
@@ -56,8 +58,11 @@ final class ManiphestTransactionEditor
       case ManiphestTransaction::TYPE_ATTACH:
         return $object->getAttached();
       case ManiphestTransaction::TYPE_EDGE:
+      case ManiphestTransaction::TYPE_PROJECT_COLUMN:
         // These are pre-populated.
         return $xaction->getOldValue();
+      case ManiphestTransaction::TYPE_SUBPRIORITY:
+        return $object->getSubpriority();
     }
 
   }
@@ -79,6 +84,8 @@ final class ManiphestTransactionEditor
       case ManiphestTransaction::TYPE_DESCRIPTION:
       case ManiphestTransaction::TYPE_ATTACH:
       case ManiphestTransaction::TYPE_EDGE:
+      case ManiphestTransaction::TYPE_SUBPRIORITY:
+      case ManiphestTransaction::TYPE_PROJECT_COLUMN:
         return $xaction->getNewValue();
     }
   }
@@ -97,11 +104,16 @@ final class ManiphestTransactionEditor
         sort($old);
         sort($new);
         return ($old !== $new);
+      case ManiphestTransaction::TYPE_PROJECT_COLUMN:
+        $new_column_phids = $new['columnPHIDs'];
+        $old_column_phids = $old['columnPHIDs'];
+        sort($new_column_phids);
+        sort($old_column_phids);
+        return ($old !== $new);
     }
 
     return parent::transactionHasEffect($object, $xaction);
   }
-
 
   protected function applyCustomInternalTransaction(
     PhabricatorLiskDAO $object,
@@ -147,19 +159,100 @@ final class ManiphestTransactionEditor
         // These are a weird, funky mess and are already being applied by the
         // time we reach this.
         return;
+      case ManiphestTransaction::TYPE_SUBPRIORITY:
+        $data = $xaction->getNewValue();
+        $new_sub = $this->getNextSubpriority(
+          $data['newPriority'],
+          $data['newSubpriorityBase']);
+        $object->setSubpriority($new_sub);
+        return;
+      case ManiphestTransaction::TYPE_PROJECT_COLUMN:
+        // these do external (edge) updates
+        return;
     }
 
+  }
+
+  protected function expandTransaction(
+    PhabricatorLiskDAO $object,
+    PhabricatorApplicationTransaction $xaction) {
+
+    $xactions = parent::expandTransaction($object, $xaction);
+    switch ($xaction->getTransactionType()) {
+      case ManiphestTransaction::TYPE_SUBPRIORITY:
+        $data = $xaction->getNewValue();
+        $new_pri = $data['newPriority'];
+        if ($new_pri != $object->getPriority()) {
+          $xactions[] = id(new ManiphestTransaction())
+            ->setTransactionType(ManiphestTransaction::TYPE_PRIORITY)
+            ->setNewValue($new_pri);
+        }
+        break;
+      default:
+        break;
+    }
+
+    return $xactions;
   }
 
   protected function applyCustomExternalTransaction(
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
+
+    switch ($xaction->getTransactionType()) {
+      case ManiphestTransaction::TYPE_PROJECT_COLUMN:
+        $new = $xaction->getNewValue();
+        $old = $xaction->getOldValue();
+        $src = $object->getPHID();
+        $dst = head($new['columnPHIDs']);
+        $edges = $old['columnPHIDs'];
+        $edge_type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_COLUMN;
+        // NOTE: Normally, we expect only one edge to exist, but this works in
+        // a general way so it will repair any stray edges.
+        $remove = array();
+        $edge_missing = true;
+        foreach ($edges as $phid) {
+          if ($phid == $dst) {
+            $edge_missing = false;
+          } else {
+            $remove[] = $phid;
+          }
+        }
+
+        $add = array();
+        if ($edge_missing) {
+          $add[] = $dst;
+        }
+
+        // This should never happen because of the code in
+        // transactionHasEffect, but keep it for maximum conservativeness
+        if (!$add && !$remove) {
+          return;
+        }
+
+        $editor = id(new PhabricatorEdgeEditor())
+          ->setActor($this->getActor())
+          ->setSuppressEvents(true);
+
+        foreach ($add as $phid) {
+          $editor->addEdge($src, $edge_type, $phid);
+        }
+        foreach ($remove as $phid) {
+          $editor->removeEdge($src, $edge_type, $phid);
+        }
+        $editor->save();
+        break;
+      default:
+        break;
+    }
   }
 
   protected function shouldSendMail(
     PhabricatorLiskDAO $object,
     array $xactions) {
-    return true;
+
+    $xactions = mfilter($xactions, 'shouldHide', true);
+    return $xactions;
   }
 
   protected function getMailSubjectPrefix() {
@@ -214,15 +307,19 @@ final class ManiphestTransactionEditor
     return $body;
   }
 
-  protected function supportsFeed() {
-    return true;
+  protected function shouldPublishFeedStory(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
+    return $this->shouldSendMail($object, $xactions);
   }
 
   protected function supportsSearch() {
     return true;
   }
 
-  protected function supportsHerald() {
+  protected function shouldApplyHeraldRules(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
     return true;
   }
 
@@ -239,18 +336,15 @@ final class ManiphestTransactionEditor
     HeraldAdapter $adapter,
     HeraldTranscript $transcript) {
 
+    // TODO: Convert these to transactions. The way Maniphest deals with these
+    // transactions is currently unconventional and messy.
+
     $save_again = false;
     $cc_phids = $adapter->getCcPHIDs();
     if ($cc_phids) {
       $existing_cc = $object->getCCPHIDs();
       $new_cc = array_unique(array_merge($cc_phids, $existing_cc));
       $object->setCCPHIDs($new_cc);
-      $save_again = true;
-    }
-
-    $assign_phid = $adapter->getAssignPHID();
-    if ($assign_phid) {
-      $object->setOwnerPHID($assign_phid);
       $save_again = true;
     }
 
@@ -266,6 +360,17 @@ final class ManiphestTransactionEditor
     if ($save_again) {
       $object->save();
     }
+
+    $xactions = array();
+
+    $assign_phid = $adapter->getAssignPHID();
+    if ($assign_phid) {
+      $xactions[] = id(new ManiphestTransaction())
+        ->setTransactionType(ManiphestTransaction::TYPE_OWNER)
+        ->setNewValue($assign_phid);
+    }
+
+    return $xactions;
   }
 
   protected function requireCapabilities(
@@ -305,10 +410,7 @@ final class ManiphestTransactionEditor
   }
 
 
-  public static function getNextSubpriority($pri, $sub) {
-
-    // TODO: T603 Figure out what the policies here should be once this gets
-    // cleaned up.
+  private function getNextSubpriority($pri, $sub) {
 
     if ($sub === null) {
       $next = id(new ManiphestTask())->loadOneWhere(

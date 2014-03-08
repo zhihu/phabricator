@@ -19,6 +19,8 @@ final class PHUIButtonView extends AphrontTagView {
   private $dropdown;
   private $icon;
   private $href = null;
+  private $title = null;
+  private $disabled;
 
   public function setText($text) {
     $this->text = $text;
@@ -30,6 +32,11 @@ final class PHUIButtonView extends AphrontTagView {
     return $this;
   }
 
+  public function setTitle($title) {
+    $this->title = $title;
+    return $this;
+  }
+
   public function setSubtext($subtext) {
     $this->subtext = $subtext;
     return $this;
@@ -37,6 +44,11 @@ final class PHUIButtonView extends AphrontTagView {
 
   public function setColor($color) {
     $this->color = $color;
+    return $this;
+  }
+
+  public function setDisabled($disabled) {
+    $this->disabled = $disabled;
     return $this;
   }
 
@@ -87,8 +99,13 @@ final class PHUIButtonView extends AphrontTagView {
       $classes[] = 'has-icon';
     }
 
-    return array('class' => $classes,
-                  'href' => $this->href);
+    if ($this->disabled) {
+      $classes[] = 'disabled';
+    }
+
+    return array('class'  => $classes,
+                 'href'   => $this->href,
+                 'title'  => $this->title);
   }
 
   protected function getTagContent() {

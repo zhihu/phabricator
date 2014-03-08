@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group pholio
- */
 final class PholioTransaction extends PhabricatorApplicationTransaction {
 
   public function getApplicationName() {
@@ -286,12 +283,10 @@ final class PholioTransaction extends PhabricatorApplicationTransaction {
       $new = reset($new);
     }
 
-    $view = id(new PhabricatorApplicationTransactionTextDiffDetailView())
-      ->setUser($viewer)
-      ->setOldText($old)
-      ->setNewText($new);
-
-    return $view->render();
+    return $this->renderTextCorpusChangeDetails(
+      $viewer,
+      $old,
+      $new);
   }
 
   public function getColor() {

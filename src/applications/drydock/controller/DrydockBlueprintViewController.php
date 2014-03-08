@@ -20,10 +20,12 @@ final class DrydockBlueprintViewController extends DrydockBlueprintController {
       return new Aphront404Response();
     }
 
-    $title = 'Blueprint '.$blueprint->getID().' '.$blueprint->getClassName();
+    $title = $blueprint->getBlueprintName();
 
     $header = id(new PHUIHeaderView())
-      ->setHeader($title);
+      ->setHeader($title)
+      ->setUser($viewer)
+      ->setPolicyObject($blueprint);
 
     $actions = $this->buildActionListView($blueprint);
     $properties = $this->buildPropertyListView($blueprint, $actions);
@@ -51,11 +53,26 @@ final class DrydockBlueprintViewController extends DrydockBlueprintController {
       ->setHeader($header)
       ->addPropertyList($properties);
 
+    $xactions = id(new DrydockBlueprintTransactionQuery())
+      ->setViewer($viewer)
+      ->withObjectPHIDs(array($blueprint->getPHID()))
+      ->execute();
+
+    $engine = id(new PhabricatorMarkupEngine())
+      ->setViewer($viewer);
+
+    $timeline = id(new PhabricatorApplicationTransactionView())
+      ->setUser($viewer)
+      ->setObjectPHID($blueprint->getPHID())
+      ->setTransactions($xactions)
+      ->setMarkupEngine($engine);
+
     return $this->buildApplicationPage(
       array(
         $crumbs,
         $object_box,
-        $resource_list
+        $resource_list,
+        $timeline,
       ),
       array(
         'device'  => true,
@@ -65,21 +82,28 @@ final class DrydockBlueprintViewController extends DrydockBlueprintController {
   }
 
   private function buildActionListView(DrydockBlueprint $blueprint) {
+    $viewer = $this->getRequest()->getUser();
+
     $view = id(new PhabricatorActionListView())
-      ->setUser($this->getRequest()->getUser())
+      ->setUser($viewer)
       ->setObjectURI($this->getRequest()->getRequestURI())
       ->setObject($blueprint);
 
     $uri = '/blueprint/edit/'.$blueprint->getID().'/';
     $uri = $this->getApplicationURI($uri);
 
+    $can_edit = PhabricatorPolicyFilter::hasCapability(
+      $viewer,
+      $blueprint,
+      PhabricatorPolicyCapability::CAN_EDIT);
+
     $view->addAction(
       id(new PhabricatorActionView())
         ->setHref($uri)
-        ->setName(pht('Edit Blueprint Policies'))
+        ->setName(pht('Edit Blueprint'))
         ->setIcon('edit')
-        ->setWorkflow(true)
-        ->setDisabled(false));
+        ->setWorkflow(!$can_edit)
+        ->setDisabled(!$can_edit));
 
     return $view;
   }
@@ -92,8 +116,8 @@ final class DrydockBlueprintViewController extends DrydockBlueprintController {
     $view->setActionList($actions);
 
     $view->addProperty(
-      pht('Implementation'),
-      $blueprint->getClassName());
+      pht('Type'),
+      $blueprint->getImplementation()->getBlueprintName());
 
     return $view;
   }

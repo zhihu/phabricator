@@ -259,8 +259,7 @@ abstract class PhabricatorAuthProvider {
 
   public function getLoginURI() {
     $app = PhabricatorApplication::getByClass('PhabricatorApplicationAuth');
-    $uri = $app->getApplicationURI('/login/'.$this->getProviderKey().'/');
-    return PhabricatorEnv::getURI($uri);
+    return $app->getApplicationURI('/login/'.$this->getProviderKey().'/');
   }
 
   public function getSettingsURI() {
@@ -436,6 +435,44 @@ abstract class PhabricatorAuthProvider {
         'sigil'  => idx($attributes, 'sigil'),
       ),
       $content);
+  }
+
+  public function renderConfigurationFooter() {
+    return null;
+  }
+
+  protected function getAuthCSRFCode(AphrontRequest $request) {
+    $phcid = $request->getCookie(PhabricatorCookies::COOKIE_CLIENTID);
+    if (!strlen($phcid)) {
+      throw new Exception(
+        pht(
+          'Your browser did not submit a "%s" cookie with client state '.
+          'information in the request. Check that cookies are enabled. '.
+          'If this problem persists, you may need to clear your cookies.',
+          PhabricatorCookies::COOKIE_CLIENTID));
+    }
+
+    return PhabricatorHash::digest($phcid);
+  }
+
+  protected function verifyAuthCSRFCode(AphrontRequest $request, $actual) {
+    $expect = $this->getAuthCSRFCode($request);
+
+    if (!strlen($actual)) {
+      throw new Exception(
+        pht(
+          'The authentication provider did not return a client state '.
+          'parameter in its response, but one was expected. If this '.
+          'problem persists, you may need to clear your cookies.'));
+    }
+
+    if ($actual !== $expect) {
+      throw new Exception(
+        pht(
+          'The authentication provider did not return the correct client '.
+          'state parameter in its response. If this problem persists, you may '.
+          'need to clear your cookies.'));
+    }
   }
 
 }

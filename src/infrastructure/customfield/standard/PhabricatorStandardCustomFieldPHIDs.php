@@ -68,22 +68,94 @@ abstract class PhabricatorStandardCustomFieldPHIDs
     return array();
   }
 
-  public function renderPropertyViewValue() {
+  public function getRequiredHandlePHIDsForProperyView() {
+    $value = $this->getFieldValue();
+    if ($value) {
+      return $value;
+    }
+    return array();
+  }
+
+  public function renderPropertyViewValue(array $handles) {
     $value = $this->getFieldValue();
     if (!$value) {
       return null;
     }
 
-    // TODO: Surface and batch this.
-
-    $handles = id(new PhabricatorHandleQuery())
-      ->setViewer($this->getViewer())
-      ->withPHIDs($value)
-      ->execute();
-
     $handles = mpull($handles, 'renderLink');
     $handles = phutil_implode_html(', ', $handles);
     return $handles;
+  }
+
+  public function getRequiredHandlePHIDsForEdit() {
+    $value = $this->getFieldValue();
+    if ($value) {
+      return $value;
+    } else {
+      return array();
+    }
+  }
+
+  public function getApplicationTransactionRequiredHandlePHIDs(
+    PhabricatorApplicationTransaction $xaction) {
+
+    $old = json_decode($xaction->getOldValue());
+    if (!is_array($old)) {
+      $old = array();
+    }
+
+    $new = json_decode($xaction->getNewValue());
+    if (!is_array($new)) {
+      $new = array();
+    }
+
+    $add = array_diff($new, $old);
+    $rem = array_diff($old, $new);
+
+    return array_merge($add, $rem);
+  }
+
+  public function getApplicationTransactionTitle(
+    PhabricatorApplicationTransaction $xaction) {
+    $author_phid = $xaction->getAuthorPHID();
+
+    $old = json_decode($xaction->getOldValue());
+    if (!is_array($old)) {
+      $old = array();
+    }
+
+    $new = json_decode($xaction->getNewValue());
+    if (!is_array($new)) {
+      $new = array();
+    }
+
+    $add = array_diff($new, $old);
+    $rem = array_diff($old, $new);
+
+    if ($add && !$rem) {
+      return pht(
+        '%s updated %s, added %d: %s.',
+        $xaction->renderHandleLink($author_phid),
+        $this->getFieldName(),
+        new PhutilNumber(count($add)),
+        $xaction->renderHandleList($add));
+    } else if ($rem && !$add) {
+      return pht(
+        '%s updated %s, removed %d: %s.',
+        $xaction->renderHandleLink($author_phid),
+        $this->getFieldName(),
+        new PhutilNumber(count($rem)),
+        $xaction->renderHandleList($rem));
+    } else {
+      return pht(
+        '%s updated %s, added %d: %s; removed %d: %s.',
+        $xaction->renderHandleLink($author_phid),
+        $this->getFieldName(),
+        new PhutilNumber(count($add)),
+        $xaction->renderHandleList($add),
+        new PhutilNumber(count($rem)),
+        $xaction->renderHandleList($rem));
+    }
   }
 
 }

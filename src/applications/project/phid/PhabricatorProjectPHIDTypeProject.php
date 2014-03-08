@@ -12,6 +12,10 @@ final class PhabricatorProjectPHIDTypeProject extends PhabricatorPHIDType {
     return pht('Project');
   }
 
+  public function getTypeIcon() {
+    return 'policy-project';
+  }
+
   public function newObject() {
     return new PhabricatorProject();
   }
@@ -38,6 +42,10 @@ final class PhabricatorProjectPHIDTypeProject extends PhabricatorPHIDType {
       $handle->setName($name);
       $handle->setObjectName('#'.rtrim($project->getPhrictionSlug(), '/'));
       $handle->setURI("/project/view/{$id}/");
+
+      if ($project->isArchived()) {
+        $handle->setStatus(PhabricatorObjectHandleStatus::STATUS_CLOSED);
+      }
     }
   }
 
@@ -45,7 +53,7 @@ final class PhabricatorProjectPHIDTypeProject extends PhabricatorPHIDType {
     // NOTE: This explicitly does not match strings which contain only
     // digits, because digit strings like "#123" are used to reference tasks at
     // Facebook and are somewhat conventional in general.
-    return '[^\s.!,:;]*[^\s\d.!,:;]+[^\s.!,:;]*';
+    return '[^\s.!,:;{}#]*[^\s\d.!,:;{}#]+[^\s.!,:;{}#]*';
   }
 
   public function canLoadNamedObject($name) {

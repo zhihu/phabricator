@@ -26,6 +26,10 @@ final class HarbormasterBuildable extends HarbormasterDAO
       ->setBuildableStatus(self::STATUS_WHATEVER);
   }
 
+  public function getMonogram() {
+    return 'B'.$this->getID();
+  }
+
   /**
    * Returns an existing buildable for the object's PHID or creates a
    * new buildable implicitly if needed.
@@ -173,6 +177,7 @@ final class HarbormasterBuildable extends HarbormasterDAO
   public function getCapabilities() {
     return array(
       PhabricatorPolicyCapability::CAN_VIEW,
+      PhabricatorPolicyCapability::CAN_EDIT,
     );
   }
 
@@ -187,9 +192,7 @@ final class HarbormasterBuildable extends HarbormasterDAO
   }
 
   public function describeAutomaticCapability($capability) {
-    return pht(
-      'Users must be able to see the revision or repository to see a '.
-      'buildable.');
+    return pht('A buildable inherits policies from the underlying object.');
   }
 
 
