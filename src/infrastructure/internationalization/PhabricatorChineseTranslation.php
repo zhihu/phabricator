@@ -196,7 +196,7 @@ final class PhabricatorChineseTranslation
       'Subscribers' => '订阅者',
       'CC' => '抄送',
       'Author' => '创建人',
-      'Projects' => '项目',
+      // 'Projects' => '项目',
       'Dependent Tasks' => '父任务',
       'Description' => '描述',
       'Depends On' => '子任务',
