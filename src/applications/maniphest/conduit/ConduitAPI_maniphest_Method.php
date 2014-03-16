@@ -112,9 +112,10 @@ abstract class ConduitAPI_maniphest_Method extends ConduitAPIMethod {
 
     $ccs = $request->getValue('ccPHIDs');
     if ($ccs !== null) {
-      $this->validatePHIDList($ccs,
-                              PhabricatorPeoplePHIDTypeUser::TYPECONST,
-                              'ccPHIDS');
+      // Allow CC Project
+      // $this->validatePHIDList($ccs,
+      //                         PhabricatorPeoplePHIDTypeUser::TYPECONST,
+      //                         'ccPHIDS');
       $changes[ManiphestTransaction::TYPE_CCS] = $ccs;
     }
 
