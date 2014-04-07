@@ -11,6 +11,7 @@ class PhabricatorApplicationTransactionView extends AphrontView {
   private $showEditActions = true;
   private $isPreview;
   private $objectPHID;
+  private $shouldTerminate = false;
 
   public function setObjectPHID($object_phid) {
     $this->objectPHID = $object_phid;
@@ -48,6 +49,11 @@ class PhabricatorApplicationTransactionView extends AphrontView {
   public function setTransactions(array $transactions) {
     assert_instances_of($transactions, 'PhabricatorApplicationTransaction');
     $this->transactions = $transactions;
+    return $this;
+  }
+
+  public function setShouldTerminate($term) {
+    $this->shouldTerminate = $term;
     return $this;
   }
 
@@ -126,6 +132,7 @@ class PhabricatorApplicationTransactionView extends AphrontView {
     }
 
     $view = new PHUITimelineView();
+    $view->setShouldTerminate($this->shouldTerminate);
     $events = $this->buildEvents($with_hiding = true);
     foreach ($events as $event) {
       $view->addEvent($event);
@@ -139,9 +146,12 @@ class PhabricatorApplicationTransactionView extends AphrontView {
       Javelin::initBehavior(
         'phabricator-transaction-list',
         array(
-          'listID'      => $list_id,
-          'objectPHID'  => $this->getObjectPHID(),
-          'nextAnchor'  => $this->anchorOffset + count($events),
+          'listID'          => $list_id,
+          'objectPHID'      => $this->getObjectPHID(),
+          'nextAnchor'      => $this->anchorOffset + count($events),
+          'historyLink'     => '/transactions/history/',
+          'historyLinkText' => pht('Edited'),
+          'linkDelimiter'   => PHUITimelineEventView::DELIMITER,
         ));
     }
 
@@ -193,14 +203,28 @@ class PhabricatorApplicationTransactionView extends AphrontView {
     $engine = $this->getOrBuildEngine();
     $comment = $xaction->getComment();
 
-    if ($xaction->hasComment()) {
+    if ($comment) {
       if ($comment->getIsDeleted()) {
-        return phutil_tag(
-          'em',
-          array(),
+        return javelin_tag(
+          'span',
+          array(
+            'class' => 'comment-deleted',
+            'sigil' => 'transaction-comment',
+            'meta'  => array('phid' => $comment->getTransactionPHID()),
+          ),
           pht('This comment has been deleted.'));
+      } else if ($xaction->hasComment()) {
+        return javelin_tag(
+          'span',
+          array(
+            'sigil' => 'transaction-comment',
+            'meta'  => array('phid' => $comment->getTransactionPHID()),
+          ),
+          $engine->getOutput($comment, $field));
       } else {
-        return $engine->getOutput($comment, $field);
+        // This is an empty, non-deleted comment. Usually this happens when
+        // rendering previews.
+        return null;
       }
     }
 
@@ -322,9 +346,9 @@ class PhabricatorApplicationTransactionView extends AphrontView {
       }
     }
 
-    $content = $this->renderTransactionContent($xaction);
-    if ($content) {
-      $event->appendChild($content);
+    $comment = $this->renderTransactionContent($xaction);
+    if ($comment) {
+      $event->appendChild($comment);
     }
 
     return $event;

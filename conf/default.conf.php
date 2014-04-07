@@ -794,22 +794,6 @@ return array(
     '/\.l?hs$/',
   ),
 
-  'differential.field-selector' => 'DifferentialDefaultFieldSelector',
-
-  // Differential can show "Host" and "Path" fields on revisions, with
-  // information about the machine and working directory where the
-  // change came from. These fields are disabled by default because they may
-  // occasionally have sensitive information; you can set this to true to
-  // enable them.
-  'differential.show-host-field'  => false,
-
-  // Differential has a required "Test Plan" field by default, which requires
-  // authors to fill out information about how they verified the correctness of
-  // their changes when sending code for review. If you'd prefer not to use
-  // this field, you can disable it here. You can also make it optional
-  // (instead of required) below.
-  'differential.show-test-plan-field' => true,
-
   // Differential has a required "Test Plan" field by default. You can make it
   // optional by setting this to false. You can also completely remove it above,
   // if you prefer.
@@ -941,7 +925,8 @@ return array(
   // task will be created for each uri that posts the story data to the uri.
   // Daemons automagically retry failures 100 times, waiting $fail_count * 60s
   // between each subsequent failure. Be sure to keep the daemon console
-  // (/daemon/) open while developing and testing your end points.
+  // (/daemon/) open while developing and testing your end points. You may need
+  // to restart your daemons to start sending http requests.
   //
   // NOTE: URIs are not validated, the URI must return http status 200 within
   // 30 seconds, and no permission checks are performed.

@@ -126,7 +126,6 @@ return array(
     'differential-revision-add-comment-css',
     'phabricator-object-selector-css',
     'phabricator-content-source-view-css',
-    'differential-local-commits-view-css',
     'inline-comment-summary-css',
   ),
   'differential.pkg.js' => array(
@@ -138,7 +137,6 @@ return array(
     'javelin-behavior-differential-populate',
     'javelin-behavior-differential-show-more',
     'javelin-behavior-differential-diff-radios',
-    'javelin-behavior-differential-accept-with-errors',
     'javelin-behavior-differential-comment-jump',
     'javelin-behavior-differential-add-reviewers-and-ccs',
     'javelin-behavior-differential-keyboard-navigation',

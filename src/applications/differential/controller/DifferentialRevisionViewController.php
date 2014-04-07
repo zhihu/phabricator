@@ -84,8 +84,6 @@ final class DifferentialRevisionViewController extends DifferentialController {
       $target_manual->getID());
     $props = mpull($props, 'getData', 'getName');
 
-    $comments = $revision->loadComments();
-
     $all_changesets = $changesets;
     $inlines = $this->loadInlineComments(
       $revision,
@@ -98,14 +96,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
       array(
         $revision->getAuthorPHID(),
         $user->getPHID(),
-      ),
-      mpull($comments, 'getAuthorPHID'));
-
-    foreach ($comments as $comment) {
-      foreach ($comment->getRequiredHandlePHIDs() as $phid) {
-        $object_phids[] = $phid;
-      }
-    }
+      ));
 
     foreach ($revision->getAttached() as $type => $phids) {
       foreach ($phids as $phid => $info) {
@@ -195,6 +186,18 @@ final class DifferentialRevisionViewController extends DifferentialController {
       }
     }
 
+    $commit_hashes = mpull($diffs, 'getSourceControlBaseRevision');
+    $local_commits = idx($props, 'local:commits', array());
+    foreach ($local_commits as $local_commit) {
+      $commit_hashes[] = idx($local_commit, 'tree');
+      $commit_hashes[] = idx($local_commit, 'local');
+    }
+    $commit_hashes = array_unique(array_filter($commit_hashes));
+    $commits_for_links = id(new DiffusionCommitQuery())
+      ->setViewer($user)
+      ->withIdentifiers($commit_hashes)
+      ->execute();
+    $commits_for_links = mpull($commits_for_links, null, 'getCommitIdentifier');
 
     $revision_detail = id(new DifferentialRevisionDetailView())
       ->setUser($user)
@@ -276,16 +279,18 @@ final class DifferentialRevisionViewController extends DifferentialController {
     $changeset_view->setSymbolIndexes($symbol_indexes);
     $changeset_view->setTitle('Diff '.$target->getID());
 
-    $diff_history = new DifferentialRevisionUpdateHistoryView();
-    $diff_history->setDiffs($diffs);
-    $diff_history->setSelectedVersusDiffID($diff_vs);
-    $diff_history->setSelectedDiffID($target->getID());
-    $diff_history->setSelectedWhitespace($whitespace);
-    $diff_history->setUser($user);
+    $diff_history = id(new DifferentialRevisionUpdateHistoryView())
+      ->setUser($user)
+      ->setDiffs($diffs)
+      ->setSelectedVersusDiffID($diff_vs)
+      ->setSelectedDiffID($target->getID())
+      ->setSelectedWhitespace($whitespace)
+      ->setCommitsForLinks($commits_for_links);
 
-    $local_view = new DifferentialLocalCommitsView();
-    $local_view->setUser($user);
-    $local_view->setLocalCommits(idx($props, 'local:commits'));
+    $local_view = id(new DifferentialLocalCommitsView())
+      ->setUser($user)
+      ->setLocalCommits(idx($props, 'local:commits'))
+      ->setCommitsForLinks($commits_for_links);
 
     if ($repository) {
       $other_revisions = $this->loadOtherRevisions(
@@ -335,6 +340,19 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
       $comment_form = new DifferentialAddCommentView();
       $comment_form->setRevision($revision);
+
+      $review_warnings = array();
+      foreach ($field_list->getFields() as $field) {
+        $review_warnings[] = $field->getWarningsForDetailView();
+      }
+      $review_warnings = array_mergev($review_warnings);
+
+      if ($review_warnings) {
+        $review_warnings_panel = id(new AphrontErrorView())
+          ->setSeverity(AphrontErrorView::SEVERITY_WARNING)
+          ->setErrors($review_warnings);
+        $comment_form->setErrorView($review_warnings_panel);
+      }
 
       // TODO: Restore the ability for fields to add accept warnings.
 
@@ -402,6 +420,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
     $crumbs = $this->buildApplicationCrumbs();
     $crumbs->addTextCrumb($object_id, '/'.$object_id);
+    $crumbs->setActionList($revision_detail->getActionList());
 
     $prefs = $user->loadPreferences();
 
@@ -429,6 +448,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
       array(
         'title' => $object_id.' '.$revision->getTitle(),
         'pageObjects' => array($revision->getPHID()),
+        'device' => true,
       ));
   }
 
@@ -766,7 +786,6 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
     $view = id(new DifferentialRevisionListView())
       ->setRevisions($revisions)
-      ->setFields(DifferentialRevisionListView::getDefaultFields($user))
       ->setUser($user);
 
     $phids = $view->getRequiredHandlePHIDs();

@@ -68,7 +68,7 @@ abstract class PhabricatorStandardCustomFieldPHIDs
     return array();
   }
 
-  public function getRequiredHandlePHIDsForProperyView() {
+  public function getRequiredHandlePHIDsForPropertyView() {
     $value = $this->getFieldValue();
     if ($value) {
       return $value;
@@ -156,6 +156,20 @@ abstract class PhabricatorStandardCustomFieldPHIDs
         new PhutilNumber(count($rem)),
         $xaction->renderHandleList($rem));
     }
+  }
+
+  public function shouldAppearInHerald() {
+    return true;
+  }
+
+  public function getHeraldFieldConditions() {
+    return array(
+      HeraldAdapter::CONDITION_INCLUDE_ALL,
+      HeraldAdapter::CONDITION_INCLUDE_ANY,
+      HeraldAdapter::CONDITION_INCLUDE_NONE,
+      HeraldAdapter::CONDITION_EXISTS,
+      HeraldAdapter::CONDITION_NOT_EXISTS,
+    );
   }
 
 }

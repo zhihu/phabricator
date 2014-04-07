@@ -1,7 +1,7 @@
 <?php
 
 final class HarbormasterHTTPRequestBuildStepImplementation
-  extends VariableBuildStepImplementation {
+  extends HarbormasterBuildStepImplementation {
 
   public function getName() {
     return pht('Make HTTP Request');
@@ -12,11 +12,16 @@ final class HarbormasterHTTPRequestBuildStepImplementation
   }
 
   public function getDescription() {
-    $settings = $this->getSettings();
+    $domain = null;
+    $uri = $this->getSetting('uri');
+    if ($uri) {
+      $domain = id(new PhutilURI($uri))->getDomain();
+    }
 
-    $uri = new PhutilURI($settings['uri']);
-    $domain = $uri->getDomain();
-    return pht('Make an HTTP request to %s', $domain);
+    return pht(
+      'Make an HTTP %s request to %s.',
+      $this->formatSettingForDescription('method', 'POST'),
+      $this->formatValueForDescription($domain));
   }
 
   public function execute(
@@ -34,8 +39,10 @@ final class HarbormasterHTTPRequestBuildStepImplementation
     $log_body = $build->createLog($build_target, $uri, 'http-body');
     $start = $log_body->start();
 
+    $method = nonempty(idx($settings, 'method'), 'POST');
+
     list($status, $body, $headers) = id(new HTTPSFuture($uri))
-      ->setMethod('POST')
+      ->setMethod($method)
       ->setTimeout(60)
       ->resolve();
 
@@ -47,22 +54,17 @@ final class HarbormasterHTTPRequestBuildStepImplementation
     }
   }
 
-  public function validateSettings() {
-    $settings = $this->getSettings();
-
-    if ($settings['uri'] === null || !is_string($settings['uri'])) {
-      return false;
-    }
-
-    return true;
-  }
-
-  public function getSettingDefinitions() {
+  public function getFieldSpecifications() {
     return array(
       'uri' => array(
-        'name' => 'URI',
-        'description' => pht('The URI to request.'),
-        'type' => BuildStepImplementation::SETTING_TYPE_STRING,
+        'name' => pht('URI'),
+        'type' => 'text',
+        'required' => true,
+      ),
+      'method' => array(
+        'name' => pht('HTTP Method'),
+        'type' => 'select',
+        'options' => array_fuse(array('POST', 'GET', 'PUT', 'DELETE')),
       ),
     );
   }

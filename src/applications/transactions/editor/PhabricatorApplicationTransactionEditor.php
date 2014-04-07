@@ -103,7 +103,7 @@ abstract class PhabricatorApplicationTransactionEditor
     return $this->parentMessageID;
   }
 
-  protected function getIsNewObject() {
+  public function getIsNewObject() {
     return $this->isNewObject;
   }
 
@@ -695,6 +695,11 @@ abstract class PhabricatorApplicationTransactionEditor
       }
     }
 
+    // Before sending mail or publishing feed stories, reload the object
+    // subscribers to pick up changes caused by Herald (or by other side effects
+    // in various transaction phases).
+    $this->loadSubscribers($object);
+
     $this->loadHandles($xactions);
 
     $mail = null;
@@ -897,29 +902,39 @@ abstract class PhabricatorApplicationTransactionEditor
             get_class($this)));
       }
     }
-
-    // The actor must have permission to view and edit the object.
-
-    $actor = $this->requireActor();
-
-    PhabricatorPolicyFilter::requireCapability(
-      $actor,
-      $object,
-      PhabricatorPolicyCapability::CAN_VIEW);
   }
 
   protected function requireCapabilities(
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
 
-    switch ($xaction->getTransactionType()) {
-      case PhabricatorTransactions::TYPE_EDIT_POLICY:
-        // You must have the edit capability to alter the edit policy of an
-        // object. For other default transaction types, we don't enforce
-        // anything for the moment.
+    if ($this->getIsNewObject()) {
+      return;
+    }
 
+    $actor = $this->requireActor();
+    switch ($xaction->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_COMMENT:
         PhabricatorPolicyFilter::requireCapability(
-          $this->requireActor(),
+          $actor,
+          $object,
+          PhabricatorPolicyCapability::CAN_VIEW);
+        break;
+      case PhabricatorTransactions::TYPE_VIEW_POLICY:
+        PhabricatorPolicyFilter::requireCapability(
+          $actor,
+          $object,
+          PhabricatorPolicyCapability::CAN_EDIT);
+        break;
+      case PhabricatorTransactions::TYPE_EDIT_POLICY:
+        PhabricatorPolicyFilter::requireCapability(
+          $actor,
+          $object,
+          PhabricatorPolicyCapability::CAN_EDIT);
+        break;
+      case PhabricatorTransactions::TYPE_JOIN_POLICY:
+        PhabricatorPolicyFilter::requireCapability(
+          $actor,
           $object,
           PhabricatorPolicyCapability::CAN_EDIT);
         break;
@@ -1464,28 +1479,19 @@ abstract class PhabricatorApplicationTransactionEditor
 
     $errors = array();
     switch ($type) {
+      case PhabricatorTransactions::TYPE_VIEW_POLICY:
+        $errors[] = $this->validatePolicyTransaction(
+          $object,
+          $xactions,
+          $type,
+          PhabricatorPolicyCapability::CAN_VIEW);
+        break;
       case PhabricatorTransactions::TYPE_EDIT_POLICY:
-        // Make sure the user isn't editing away their ability to edit this
-        // object.
-        foreach ($xactions as $xaction) {
-          try {
-            PhabricatorPolicyFilter::requireCapabilityWithForcedPolicy(
-              $this->requireActor(),
-              $object,
-              PhabricatorPolicyCapability::CAN_EDIT,
-              $xaction->getNewValue());
-          } catch (PhabricatorPolicyException $ex) {
-            $errors[] = array(
-              new PhabricatorApplicationTransactionValidationError(
-                $type,
-                pht('Invalid'),
-                pht(
-                  'You can not select this edit policy, because you would '.
-                  'no longer be able to edit the object.'),
-                $xaction),
-            );
-          }
-        }
+        $errors[] = $this->validatePolicyTransaction(
+          $object,
+          $xactions,
+          $type,
+          PhabricatorPolicyCapability::CAN_EDIT);
         break;
       case PhabricatorTransactions::TYPE_CUSTOMFIELD:
         $groups = array();
@@ -1496,6 +1502,7 @@ abstract class PhabricatorApplicationTransactionEditor
         $field_list = PhabricatorCustomField::getObjectFields(
           $object,
           PhabricatorCustomField::ROLE_EDIT);
+        $field_list->setViewer($this->getActor());
 
         $role_xactions = PhabricatorCustomField::ROLE_APPLICATIONTRANSACTIONS;
         foreach ($field_list->getFields() as $field) {
@@ -1513,6 +1520,70 @@ abstract class PhabricatorApplicationTransactionEditor
     return array_mergev($errors);
   }
 
+  private function validatePolicyTransaction(
+    PhabricatorLiskDAO $object,
+    array $xactions,
+    $transaction_type,
+    $capability) {
+
+    $actor = $this->requireActor();
+    $errors = array();
+    // Note $this->xactions is necessary; $xactions is $this->xactions of
+    // $transaction_type
+    $policy_object = $this->adjustObjectForPolicyChecks(
+      $object,
+      $this->xactions);
+
+    // Make sure the user isn't editing away their ability to $capability this
+    // object.
+    foreach ($xactions as $xaction) {
+      try {
+        PhabricatorPolicyFilter::requireCapabilityWithForcedPolicy(
+          $actor,
+          $policy_object,
+          $capability,
+          $xaction->getNewValue());
+      } catch (PhabricatorPolicyException $ex) {
+        $errors[] = new PhabricatorApplicationTransactionValidationError(
+          $transaction_type,
+          pht('Invalid'),
+          pht(
+            'You can not select this %s policy, because you would no longer '.
+            'be able to %s the object.',
+            $capability,
+            $capability),
+          $xaction);
+      }
+    }
+
+    if ($this->getIsNewObject()) {
+      if (!$xactions) {
+        $has_capability = PhabricatorPolicyFilter::hasCapability(
+          $actor,
+          $policy_object,
+          $capability);
+        if (!$has_capability) {
+          $errors[] = new PhabricatorApplicationTransactionValidationError(
+            $transaction_type,
+            pht('Invalid'),
+            pht('The selected %s policy excludes you. Choose a %s policy '.
+                'which allows you to %s the object.',
+            $capability,
+            $capability,
+            $capability));
+        }
+      }
+    }
+
+    return $errors;
+  }
+
+  protected function adjustObjectForPolicyChecks(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
+
+    return clone $object;
+  }
 
   /**
    * Check for a missing text field.
@@ -1648,8 +1719,13 @@ abstract class PhabricatorApplicationTransactionEditor
     $body = $this->buildMailBody($object, $xactions);
 
     $mail_tags = $this->getMailTags($object, $xactions);
+    $action = $this->getMailAction($object, $xactions);
 
-    $action = $this->getStrongestAction($object, $xactions)->getActionName();
+    $reply_handler = $this->buildReplyHandler($object);
+    $reply_section = $reply_handler->getReplyHandlerInstructions();
+    if ($reply_section !== null) {
+      $body->addReplySection($reply_section);
+    }
 
     $template
       ->setFrom($this->requireActor()->getPHID())
@@ -1661,6 +1737,10 @@ abstract class PhabricatorApplicationTransactionEditor
       ->setMailTags($mail_tags)
       ->setIsBulk(true)
       ->setBody($body->render());
+
+    foreach ($body->getAttachments() as $attachment) {
+      $template->addAttachment($attachment);
+    }
 
     $herald_xscript = $this->getHeraldTranscript();
     if ($herald_xscript) {
@@ -1681,9 +1761,7 @@ abstract class PhabricatorApplicationTransactionEditor
       $template->setParentMessageID($this->getParentMessageID());
     }
 
-    $mails = $this
-      ->buildReplyHandler($object)
-      ->multiplexMail(
+    $mails = $reply_handler->multiplexMail(
         $template,
         array_select_keys($handles, $email_to),
         array_select_keys($handles, $email_cc));
@@ -1742,6 +1820,15 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     return array_mergev($tags);
+  }
+
+  /**
+   * @task mail
+   */
+  protected function getMailAction(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
+    return $this->getStrongestAction($object, $xactions)->getActionName();
   }
 
 
@@ -1803,6 +1890,21 @@ abstract class PhabricatorApplicationTransactionEditor
 
     foreach ($comments as $comment) {
       $body->addRawSection($comment);
+    }
+
+    if ($object instanceof PhabricatorCustomFieldInterface) {
+      $field_list = PhabricatorCustomField::getObjectFields(
+        $object,
+        PhabricatorCustomField::ROLE_TRANSACTIONMAIL);
+      $field_list->setViewer($this->getActor());
+      $field_list->readFieldsFromStorage($object);
+
+      foreach ($field_list->getFields() as $field) {
+        $field->updateTransactionMailBody(
+          $body,
+          $this,
+          $xactions);
+      }
     }
 
     return $body;

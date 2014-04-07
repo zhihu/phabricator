@@ -2,6 +2,8 @@
 
 final class PHUITimelineEventView extends AphrontView {
 
+  const DELIMITER = " \xC2\xB7 ";
+
   private $userHandle;
   private $title;
   private $icon;
@@ -16,6 +18,8 @@ final class PHUITimelineEventView extends AphrontView {
   private $isPreview;
   private $eventGroup = array();
   private $hideByDefault;
+  private $token;
+  private $tokenRemoved;
 
   public function setHideByDefault($hide_by_default) {
     $this->hideByDefault = $hide_by_default;
@@ -114,6 +118,12 @@ final class PHUITimelineEventView extends AphrontView {
     return $this;
   }
 
+  public function setToken($token, $removed=false) {
+    $this->token = $token;
+    $this->tokenRemoved = $removed;
+    return $this;
+  }
+
   public function getEventGroup() {
     return array_merge(array($this), $this->eventGroup);
   }
@@ -138,12 +148,13 @@ final class PHUITimelineEventView extends AphrontView {
       }
       $extra = array_reverse($extra);
       $extra = array_mergev($extra);
-      $extra = phutil_tag(
+      $extra = javelin_tag(
         'span',
         array(
+          'sigil' => 'timeline-extra',
           'class' => 'phui-timeline-extra',
         ),
-        phutil_implode_html(" \xC2\xB7 ", $extra));
+        phutil_implode_html(self::DELIMITER, $extra));
     } else {
       $extra = null;
     }
@@ -178,12 +189,23 @@ final class PHUITimelineEventView extends AphrontView {
             ''));
       }
 
+      $token = null;
+      if ($this->token) {
+        $token = id(new PHUIIconView())
+          ->addClass('phui-timeline-token')
+          ->setSpriteSheet(PHUIIconView::SPRITE_TOKENS)
+          ->setSpriteIcon($this->token);
+        if ($this->tokenRemoved) {
+          $token->addClass('strikethrough');
+        }
+      }
+
       $title = phutil_tag(
         'div',
         array(
           'class' => implode(' ', $title_classes),
         ),
-        array($icon, $title, $extra));
+        array($icon, $token, $title, $extra));
     }
 
     return $title;
@@ -323,7 +345,7 @@ final class PHUITimelineEventView extends AphrontView {
           'a',
           array(
             'href'  => '/transactions/history/'.$xaction_phid.'/',
-            'sigil' => 'workflow',
+            'sigil' => 'workflow transaction-edit-history',
           ),
           pht('Edited'));
       }

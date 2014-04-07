@@ -15,7 +15,7 @@
 
 .device-phone .phui-timeline-view {
   padding: 0;
-  background-position: 20px;
+  background-position: 24px;
 }
 
 .phui-timeline-major-event .phui-timeline-group {
@@ -34,7 +34,14 @@
 
 .device-desktop .phui-timeline-spacer {
   min-height: 16px;
-  border-width: 0 0 0 1px;
+}
+
+.device-desktop .phui-timeline-event-view.the-worlds-end {
+  background: {$lightblueborder};
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  margin-left: 74px;
 }
 
 .device-desktop .phui-timeline-wedge {
@@ -118,6 +125,30 @@
   padding-left: 38px;
 }
 
+.phui-timeline-view .phui-icon-view.phui-timeline-token {
+  vertical-align: middle;
+}
+
+.phui-timeline-token.strikethrough {
+  position: relative;
+}
+
+.phui-timeline-token.strikethrough:before {
+  position: absolute;
+  content: "";
+  left: 0;
+  top: 50%;
+  right: 0;
+  border-top: 3px solid;
+  border-color: {$darkbluetext};
+
+  -webkit-transform:rotate(-40deg);
+  -moz-transform:rotate(-40deg);
+  -ms-transform:rotate(-40deg);
+  -o-transform:rotate(-40deg);
+  transform:rotate(-40deg);
+}
+
 .phui-timeline-major-event .phui-timeline-content
   .phui-timeline-core-content {
   padding: 16px 12px;
@@ -129,13 +160,17 @@
   overflow-x: auto;
 }
 
+.phui-timeline-core-content .comment-deleted {
+  font-style: italic;
+}
+
 .device .phui-timeline-event-view {
   min-height: 23px;
   position: relative;
 }
 
 .device-phone .phui-timeline-event-view {
-  margin: 0 4px;
+  margin: 0 8px;
 }
 
 .device .phui-timeline-image {
@@ -267,5 +302,8 @@
   text-align: center;
   padding: 12px;
   color: {$darkgreytext};
-  margin-top: 16px;
+}
+
+.device-phone .phui-timeline-older-transactions-are-hidden {
+  margin: 0 8px;
 }

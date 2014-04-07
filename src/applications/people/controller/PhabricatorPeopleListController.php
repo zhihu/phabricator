@@ -53,16 +53,18 @@ final class PhabricatorPeopleListController extends PhabricatorPeopleController
         $email = pht('Unverified');
       }
 
-      $user_handle = new PhabricatorObjectHandle();
-      $user_handle->setImageURI($user->loadProfileImageURI());
-
       $item = new PHUIObjectItemView();
       $item->setHeader($user->getFullName())
         ->setHref('/p/'.$user->getUsername().'/')
         ->addAttribute(hsprintf('%s %s',
             phabricator_date($user->getDateCreated(), $viewer),
             phabricator_time($user->getDateCreated(), $viewer)))
-        ->addAttribute($email);
+        ->addAttribute($email)
+        ->setImageURI($user->getProfileImageURI());
+
+      if ($is_approval && $primary_email) {
+        $item->addAttribute($primary_email->getAddress());
+      }
 
       if ($user->getIsDisabled()) {
         $item->addIcon('disable', pht('Disabled'));
@@ -79,7 +81,7 @@ final class PhabricatorPeopleListController extends PhabricatorPeopleController
       }
 
       if ($user->getIsSystemAgent()) {
-        $item->addIcon('computer', pht('System Agent'));
+        $item->addIcon('computer', pht('Bot/Script'));
       }
 
       if ($viewer->getIsAdmin()) {
@@ -90,18 +92,13 @@ final class PhabricatorPeopleListController extends PhabricatorPeopleController
               ->setIcon('disable')
               ->setName(pht('Disable'))
               ->setWorkflow(true)
-              ->setHref($this->getApplicationURI('disable/'.$user_id.'/')));
+              ->setHref($this->getApplicationURI('disapprove/'.$user_id.'/')));
           $item->addAction(
             id(new PHUIListItemView())
               ->setIcon('like')
               ->setName(pht('Approve'))
               ->setWorkflow(true)
               ->setHref($this->getApplicationURI('approve/'.$user_id.'/')));
-        } else {
-          $item->addAction(
-            id(new PHUIListItemView())
-              ->setIcon('edit')
-              ->setHref($this->getApplicationURI('edit/'.$user_id.'/')));
         }
       }
 

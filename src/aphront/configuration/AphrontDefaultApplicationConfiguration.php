@@ -19,39 +19,10 @@ class AphrontDefaultApplicationConfiguration
 
   public function getURIMap() {
     return $this->getResourceURIMapRules() + array(
-      '/oauthserver/' => array(
-        'auth/'          => 'PhabricatorOAuthServerAuthController',
-        'test/'          => 'PhabricatorOAuthServerTestController',
-        'token/'         => 'PhabricatorOAuthServerTokenController',
-        'clientauthorization/' => array(
-          '' => 'PhabricatorOAuthClientAuthorizationListController',
-          'delete/(?P<phid>[^/]+)/' =>
-            'PhabricatorOAuthClientAuthorizationDeleteController',
-          'edit/(?P<phid>[^/]+)/' =>
-            'PhabricatorOAuthClientAuthorizationEditController',
-        ),
-        'client/' => array(
-          ''                        => 'PhabricatorOAuthClientListController',
-          'create/'                 => 'PhabricatorOAuthClientEditController',
-          'delete/(?P<phid>[^/]+)/' => 'PhabricatorOAuthClientDeleteController',
-          'edit/(?P<phid>[^/]+)/'   => 'PhabricatorOAuthClientEditController',
-          'view/(?P<phid>[^/]+)/'   => 'PhabricatorOAuthClientViewController',
-        ),
-      ),
-
       '/~/' => array(
         '' => 'DarkConsoleController',
         'data/(?P<key>[^/]+)/' => 'DarkConsoleDataController',
       ),
-
-      '/status/' => 'PhabricatorStatusController',
-
-
-      '/help/' => array(
-        'keyboardshortcut/' => 'PhabricatorHelpKeyboardShortcutController',
-      ),
-
-      '/debug/' => 'PhabricatorDebugController',
     );
   }
 
@@ -138,6 +109,20 @@ class AphrontDefaultApplicationConfiguration
     if (!$user) {
       // If we hit an exception very early, we won't have a user.
       $user = new PhabricatorUser();
+    }
+
+    if ($ex instanceof PhabricatorSystemActionRateLimitException) {
+      $dialog = id(new AphrontDialogView())
+        ->setTitle(pht('Slow Down!'))
+        ->setUser($user)
+        ->setErrors(array(pht('You are being rate limited.')))
+        ->appendParagraph($ex->getMessage())
+        ->appendParagraph($ex->getRateExplanation())
+        ->addCancelButton('/', pht('Okaaaaaaaaaaaaaay...'));
+
+      $response = new AphrontDialogResponse();
+      $response->setDialog($dialog);
+      return $response;
     }
 
     if ($ex instanceof PhabricatorPolicyException) {

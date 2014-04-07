@@ -11,6 +11,15 @@ final class PhabricatorAuthLoginController
     return false;
   }
 
+  public function shouldAllowRestrictedParameter($parameter_name) {
+    // Whitelist the OAuth 'code' parameter.
+
+    if ($parameter_name == 'code') {
+      return true;
+    }
+    return parent::shouldAllowRestrictedParameter($parameter_name);
+  }
+
   public function willProcessRequest(array $data) {
     $this->providerKey = $data['pkey'];
     $this->extraURIData = idx($data, 'extra');
@@ -172,7 +181,7 @@ final class PhabricatorAuthLoginController
       $account->save();
     unset($unguarded);
 
-    $this->getRequest()->setCookie(
+    $this->getRequest()->setTemporaryCookie(
       PhabricatorCookies::COOKIE_REGISTRATION,
       $registration_key);
 

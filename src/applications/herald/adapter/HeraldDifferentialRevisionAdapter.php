@@ -76,6 +76,7 @@ final class HeraldDifferentialRevisionAdapter extends HeraldAdapter {
         self::FIELD_AFFECTED_PACKAGE,
         self::FIELD_AFFECTED_PACKAGE_OWNER,
         self::FIELD_IS_NEW_OBJECT,
+        self::FIELD_ARCANIST_PROJECT,
       ),
       parent::getFields());
   }
@@ -156,28 +157,10 @@ final class HeraldDifferentialRevisionAdapter extends HeraldAdapter {
   public function loadRepository() {
     if ($this->repository === null) {
       $this->repository = false;
-
-      $viewer = PhabricatorUser::getOmnipotentUser();
-      $repository_phid = null;
-
-      $revision = $this->revision;
-      if ($revision->getRepositoryPHID()) {
-        $repository_phid = $revision->getRepositoryPHID();
-      } else {
-        $repository = id(new DifferentialRepositoryLookup())
-          ->setViewer($viewer)
-          ->setDiff($this->diff)
-          ->lookupRepository();
-        if ($repository) {
-          // We want to get the projects for this repository too, so run a
-          // full query for it below.
-          $repository_phid = $repository->getPHID();
-        }
-      }
-
+      $repository_phid = $this->getObject()->getRepositoryPHID();
       if ($repository_phid) {
         $repository = id(new PhabricatorRepositoryQuery())
-          ->setViewer($viewer)
+          ->setViewer(PhabricatorUser::getOmnipotentUser())
           ->withPHIDs(array($repository_phid))
           ->needProjectPHIDs(true)
           ->executeOne();
@@ -373,6 +356,8 @@ final class HeraldDifferentialRevisionAdapter extends HeraldAdapter {
         $packages = $this->loadAffectedPackages();
         return PhabricatorOwnersOwner::loadAffiliatedUserPHIDs(
           mpull($packages, 'getID'));
+      case self::FIELD_ARCANIST_PROJECT:
+        return $this->revision->getArcanistProjectPHID();
     }
 
     return parent::getHeraldField($field);

@@ -32,7 +32,7 @@ final class PhabricatorUser
   protected $isEmailVerified = 0;
   protected $isApproved = 0;
 
-  private $profileImage = null;
+  private $profileImage = self::ATTACHABLE;
   private $profile = null;
   private $status = self::ATTACHABLE;
   private $preferences = null;
@@ -88,6 +88,18 @@ final class PhabricatorUser
     }
 
     return true;
+  }
+
+  /**
+   * Returns `true` if this is a standard user who is logged in. Returns `false`
+   * for logged out, anonymous, or external users.
+   *
+   * @return bool `true` if the user is a standard user who is logged in with
+   *              a normal session.
+   */
+  public function getIsStandardUser() {
+    $type_user = PhabricatorPeoplePHIDTypeUser::TYPECONST;
+    return $this->getPHID() && (phid_get_type($this->getPHID()) == $type_user);
   }
 
   public function getConfiguration() {
@@ -441,14 +453,26 @@ final class PhabricatorUser
       }
     }
 
-    if ($editor) {
-      return strtr($editor, array(
-        '%%' => '%',
-        '%f' => phutil_escape_uri($path),
-        '%l' => phutil_escape_uri($line),
-        '%r' => phutil_escape_uri($callsign),
-      ));
+    if (!strlen($editor)) {
+      return null;
     }
+
+    $uri = strtr($editor, array(
+      '%%' => '%',
+      '%f' => phutil_escape_uri($path),
+      '%l' => phutil_escape_uri($line),
+      '%r' => phutil_escape_uri($callsign),
+    ));
+
+    // The resulting URI must have an allowed protocol. Otherwise, we'll return
+    // a link to an error page explaining the misconfiguration.
+
+    $ok = PhabricatorHelpEditorProtocolController::hasAllowedProtocol($uri);
+    if (!$ok) {
+      return '/help/editorprotocol/';
+    }
+
+    return (string)$uri;
   }
 
   public function getAlternateCSRFString() {
@@ -614,7 +638,7 @@ EOBODY;
       return false;
     }
 
-    return (bool)preg_match('/^[a-zA-Z0-9._-]*[a-zA-Z0-9_-]$/', $username);
+    return (bool)preg_match('/^[a-zA-Z0-9._-]*[a-zA-Z0-9_-]\z/', $username);
   }
 
   public static function getDefaultProfileImageURI() {
@@ -639,8 +663,12 @@ EOBODY;
     return $this;
   }
 
+  public function getProfileImageURI() {
+    return $this->assertAttached($this->profileImage);
+  }
+
   public function loadProfileImageURI() {
-    if ($this->profileImage) {
+    if ($this->profileImage && ($this->profileImage !== self::ATTACHABLE)) {
       return $this->profileImage;
     }
 
@@ -652,13 +680,11 @@ EOBODY;
       $file = id(new PhabricatorFile())->loadOneWhere('phid = %s', $src_phid);
       if ($file) {
         $this->profileImage = $file->getBestURI();
+        return $this->profileImage;
       }
     }
 
-    if (!$this->profileImage) {
-      $this->profileImage = self::getDefaultProfileImageURI();
-    }
-
+    $this->profileImage = self::getDefaultProfileImageURI();
     return $this->profileImage;
   }
 
@@ -729,7 +755,11 @@ EOBODY;
       case PhabricatorPolicyCapability::CAN_VIEW:
         return PhabricatorPolicies::POLICY_PUBLIC;
       case PhabricatorPolicyCapability::CAN_EDIT:
-        return PhabricatorPolicies::POLICY_NOONE;
+        if ($this->getIsSystemAgent()) {
+          return PhabricatorPolicies::POLICY_ADMIN;
+        } else {
+          return PhabricatorPolicies::POLICY_NOONE;
+        }
     }
   }
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @group herald
+ * @task customfield Custom Field Integration
  */
 abstract class HeraldAdapter {
 
@@ -40,6 +40,8 @@ abstract class HeraldAdapter {
   const FIELD_COMMITTER_RAW          = 'committer-raw';
   const FIELD_IS_NEW_OBJECT          = 'new-object';
   const FIELD_TASK_PRIORITY          = 'taskpriority';
+  const FIELD_ARCANIST_PROJECT       = 'arcanist-project';
+  const FIELD_PUSHER_IS_COMMITTER    = 'pusher-is-committer';
 
   const CONDITION_CONTAINS        = 'contains';
   const CONDITION_NOT_CONTAINS    = '!contains';
@@ -58,6 +60,7 @@ abstract class HeraldAdapter {
   const CONDITION_EXISTS          = 'exists';
   const CONDITION_NOT_EXISTS      = '!exists';
   const CONDITION_UNCONDITIONALLY = 'unconditionally';
+  const CONDITION_NEVER           = 'never';
   const CONDITION_REGEXP_PAIR     = 'regexp-pair';
   const CONDITION_HAS_BIT         = 'bit';
   const CONDITION_NOT_BIT         = '!bit';
@@ -91,9 +94,11 @@ abstract class HeraldAdapter {
   const VALUE_USER_OR_PROJECT = 'userorproject';
   const VALUE_BUILD_PLAN      = 'buildplan';
   const VALUE_TASK_PRIORITY   = 'taskpriority';
+  const VALUE_ARCANIST_PROJECT = 'arcanistprojects';
 
   private $contentSource;
   private $isNewObject;
+  private $customFields = false;
 
   public function setContentSource(PhabricatorContentSource $content_source) {
     $this->contentSource = $content_source;
@@ -129,6 +134,10 @@ abstract class HeraldAdapter {
       case self::FIELD_IS_NEW_OBJECT:
         return $this->getIsNewObject();
       default:
+        if ($this->isHeraldCustomKey($field_name)) {
+          return $this->getCustomFieldValue($field_name);
+        }
+
         throw new Exception(
           "Unknown field '{$field_name}'!");
     }
@@ -192,10 +201,20 @@ abstract class HeraldAdapter {
 
 
   public function getFields() {
-    return array(
-      self::FIELD_ALWAYS,
-      self::FIELD_RULE,
-    );
+    $fields = array();
+
+    $fields[] = self::FIELD_ALWAYS;
+    $fields[] = self::FIELD_RULE;
+
+    $custom_fields = $this->getCustomFields();
+    if ($custom_fields) {
+      foreach ($custom_fields->getFields() as $custom_field) {
+        $key = $custom_field->getFieldKey();
+        $fields[] = $this->getHeraldKeyFromCustomKey($key);
+      }
+    }
+
+    return $fields;
   }
 
   public function getFieldNameMap() {
@@ -237,7 +256,9 @@ abstract class HeraldAdapter {
       self::FIELD_COMMITTER_RAW => pht('Raw committer name'),
       self::FIELD_IS_NEW_OBJECT => pht('Is newly created?'),
       self::FIELD_TASK_PRIORITY => pht('Task priority'),
-    );
+      self::FIELD_ARCANIST_PROJECT => pht('Arcanist Project'),
+      self::FIELD_PUSHER_IS_COMMITTER => pht('Pusher same as committer'),
+    ) + $this->getCustomFieldNameMap();
   }
 
 
@@ -265,6 +286,7 @@ abstract class HeraldAdapter {
       self::CONDITION_EXISTS          => pht('exists'),
       self::CONDITION_NOT_EXISTS      => pht('does not exist'),
       self::CONDITION_UNCONDITIONALLY => '',  // don't show anything!
+      self::CONDITION_NEVER           => '',  // don't show anything!
       self::CONDITION_REGEXP_PAIR     => pht('matches regexp pair'),
       self::CONDITION_HAS_BIT         => pht('has bit'),
       self::CONDITION_NOT_BIT         => pht('lacks bit'),
@@ -284,17 +306,18 @@ abstract class HeraldAdapter {
           self::CONDITION_IS_NOT,
           self::CONDITION_REGEXP,
         );
-      case self::FIELD_AUTHOR:
-      case self::FIELD_COMMITTER:
       case self::FIELD_REVIEWER:
       case self::FIELD_PUSHER:
       case self::FIELD_TASK_PRIORITY:
+      case self::FIELD_ARCANIST_PROJECT:
         return array(
           self::CONDITION_IS_ANY,
           self::CONDITION_IS_NOT_ANY,
         );
       case self::FIELD_REPOSITORY:
       case self::FIELD_ASSIGNEE:
+      case self::FIELD_AUTHOR:
+      case self::FIELD_COMMITTER:
         return array(
           self::CONDITION_IS_ANY,
           self::CONDITION_IS_NOT_ANY,
@@ -368,11 +391,15 @@ abstract class HeraldAdapter {
       case self::FIELD_IS_MERGE_COMMIT:
       case self::FIELD_DIFF_ENORMOUS:
       case self::FIELD_IS_NEW_OBJECT:
+      case self::FIELD_PUSHER_IS_COMMITTER:
         return array(
           self::CONDITION_IS_TRUE,
           self::CONDITION_IS_FALSE,
         );
       default:
+        if ($this->isHeraldCustomKey($field)) {
+          return $this->getCustomFieldConditions($field);
+        }
         throw new Exception(
           "This adapter does not define conditions for field '{$field}'!");
     }
@@ -449,6 +476,8 @@ abstract class HeraldAdapter {
         return !$field_value;
       case self::CONDITION_UNCONDITIONALLY:
         return (bool)$field_value;
+      case self::CONDITION_NEVER:
+        return false;
       case self::CONDITION_REGEXP:
         foreach ((array)$field_value as $value) {
           // We add the 'S' flag because we use the regexp multiple times.
@@ -595,6 +624,7 @@ abstract class HeraldAdapter {
       case self::CONDITION_EXISTS:
       case self::CONDITION_NOT_EXISTS:
       case self::CONDITION_UNCONDITIONALLY:
+      case self::CONDITION_NEVER:
       case self::CONDITION_HAS_BIT:
       case self::CONDITION_NOT_BIT:
       case self::CONDITION_IS_TRUE:
@@ -703,6 +733,16 @@ abstract class HeraldAdapter {
 
 
   public function getValueTypeForFieldAndCondition($field, $condition) {
+
+    if ($this->isHeraldCustomKey($field)) {
+      $value_type = $this->getCustomFieldValueTypeForFieldAndCondition(
+        $field,
+        $condition);
+      if ($value_type !== null) {
+        return $value_type;
+      }
+    }
+
     switch ($condition) {
       case self::CONDITION_CONTAINS:
       case self::CONDITION_NOT_CONTAINS:
@@ -725,6 +765,8 @@ abstract class HeraldAdapter {
             return self::VALUE_REPOSITORY;
           case self::FIELD_TASK_PRIORITY:
             return self::VALUE_TASK_PRIORITY;
+          case self::FIELD_ARCANIST_PROJECT:
+            return self::VALUE_ARCANIST_PROJECT;
           default:
             return self::VALUE_USER;
         }
@@ -757,6 +799,7 @@ abstract class HeraldAdapter {
       case self::CONDITION_EXISTS:
       case self::CONDITION_NOT_EXISTS:
       case self::CONDITION_UNCONDITIONALLY:
+      case self::CONDITION_NEVER:
       case self::CONDITION_IS_TRUE:
       case self::CONDITION_IS_FALSE:
         return self::VALUE_NONE;
@@ -950,7 +993,12 @@ abstract class HeraldAdapter {
     array $handles) {
 
     $field_type = $condition->getFieldName();
-    $field_name = idx($this->getFieldNameMap(), $field_type);
+
+    $default = $this->isHeraldCustomKey($field_type)
+      ? pht('(Unknown Custom Field "%s")', $field_type)
+      : pht('(Unknown Field "%s")', $field_type);
+
+    $field_name = idx($this->getFieldNameMap(), $field_type, $default);
 
     $condition_type = $condition->getFieldCondition();
     $condition_name = idx($this->getConditionNameMap(), $condition_type);
@@ -1075,5 +1123,206 @@ abstract class HeraldAdapter {
 
     return $phids;
   }
+
+/* -(  Custom Field Integration  )------------------------------------------- */
+
+
+  /**
+   * Return an object which custom fields can be generated from while editing
+   * rules. Adapters must return an object from this method to enable custom
+   * field rules.
+   *
+   * Normally, you'll return an empty version of the adapted object, assuming
+   * it implements @{interface:PhabricatorCustomFieldInterface}:
+   *
+   *   return new ApplicationObject();
+   *
+   * This is normally the only adapter method you need to override to enable
+   * Herald rules to run against custom fields.
+   *
+   * @return null|PhabricatorCustomFieldInterface Template object.
+   * @task customfield
+   */
+  protected function getCustomFieldTemplateObject() {
+    return null;
+  }
+
+
+  /**
+   * Returns the prefix used to namespace Herald fields which are based on
+   * custom fields.
+   *
+   * @return string Key prefix.
+   * @task customfield
+   */
+  private function getCustomKeyPrefix() {
+    return 'herald.custom/';
+  }
+
+
+  /**
+   * Determine if a field key is based on a custom field or a regular internal
+   * field.
+   *
+   * @param string Field key.
+   * @return bool True if the field key is based on a custom field.
+   * @task customfield
+   */
+  private function isHeraldCustomKey($key) {
+    $prefix = $this->getCustomKeyPrefix();
+    return (strncmp($key, $prefix, strlen($prefix)) == 0);
+  }
+
+
+  /**
+   * Convert a custom field key into a Herald field key.
+   *
+   * @param string Custom field key.
+   * @return string Herald field key.
+   * @task customfield
+   */
+  private function getHeraldKeyFromCustomKey($key) {
+    return $this->getCustomKeyPrefix().$key;
+  }
+
+
+  /**
+   * Get custom fields for this adapter, if appliable. This will either return
+   * a field list or `null` if the adapted object does not implement custom
+   * fields or the adapter does not support them.
+   *
+   * @return PhabricatorCustomFieldList|null List of fields, or `null`.
+   * @task customfield
+   */
+  private function getCustomFields() {
+    if ($this->customFields === false) {
+      $this->customFields = null;
+
+
+      $template_object = $this->getCustomFieldTemplateObject();
+      if ($template_object) {
+        $object = $this->getObject();
+        if (!$object) {
+          $object = $template_object;
+        }
+
+        $fields = PhabricatorCustomField::getObjectFields(
+          $object,
+          PhabricatorCustomField::ROLE_HERALD);
+        $fields->setViewer(PhabricatorUser::getOmnipotentUser());
+        $fields->readFieldsFromStorage($object);
+
+        $this->customFields = $fields;
+      }
+    }
+
+    return $this->customFields;
+  }
+
+
+  /**
+   * Get a custom field by Herald field key, or `null` if it does not exist
+   * or custom fields are not supported.
+   *
+   * @param string Herald field key.
+   * @return PhabricatorCustomField|null Matching field, if it exists.
+   * @task customfield
+   */
+  private function getCustomField($herald_field_key) {
+    $fields = $this->getCustomFields();
+    if (!$fields) {
+      return null;
+    }
+
+    foreach ($fields->getFields() as $custom_field) {
+      $key = $custom_field->getFieldKey();
+      if ($this->getHeraldKeyFromCustomKey($key) == $herald_field_key) {
+        return $custom_field;
+      }
+    }
+
+    return null;
+  }
+
+
+  /**
+   * Get the field map for custom fields.
+   *
+   * @return map<string, string> Map of Herald field keys to field names.
+   * @task customfield
+   */
+  private function getCustomFieldNameMap() {
+    $fields = $this->getCustomFields();
+    if (!$fields) {
+      return array();
+    }
+
+    $map = array();
+    foreach ($fields->getFields() as $field) {
+      $key = $field->getFieldKey();
+      $name = $field->getHeraldFieldName();
+      $map[$this->getHeraldKeyFromCustomKey($key)] = $name;
+    }
+
+    return $map;
+  }
+
+
+  /**
+   * Get the value for a custom field.
+   *
+   * @param string Herald field key.
+   * @return wild Custom field value.
+   * @task customfield
+   */
+  private function getCustomFieldValue($field_key) {
+    $field = $this->getCustomField($field_key);
+    if (!$field) {
+      return null;
+    }
+
+    return $field->getHeraldFieldValue();
+  }
+
+
+  /**
+   * Get the Herald conditions for a custom field.
+   *
+   * @param string Herald field key.
+   * @return list<const> List of Herald conditions.
+   * @task customfield
+   */
+  private function getCustomFieldConditions($field_key) {
+    $field = $this->getCustomField($field_key);
+    if (!$field) {
+      return array(
+        self::CONDITION_NEVER,
+      );
+    }
+
+    return $field->getHeraldFieldConditions();
+  }
+
+
+  /**
+   * Get the Herald value type for a custom field and condition.
+   *
+   * @param string Herald field key.
+   * @param const Herald condition constant.
+   * @return const|null Herald value type constant, or null to use the default.
+   * @task customfield
+   */
+  private function getCustomFieldValueTypeForFieldAndCondition(
+    $field_key,
+    $condition) {
+
+    $field = $this->getCustomField($field_key);
+    if (!$field) {
+      return self::VALUE_NONE;
+    }
+
+    return $field->getHeraldFieldValueType($condition);
+  }
+
 
 }

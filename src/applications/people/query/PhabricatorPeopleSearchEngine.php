@@ -26,7 +26,8 @@ final class PhabricatorPeopleSearchEngine
 
   public function buildQueryFromSavedQuery(PhabricatorSavedQuery $saved) {
     $query = id(new PhabricatorPeopleQuery())
-      ->needPrimaryEmail(true);
+      ->needPrimaryEmail(true)
+      ->needProfileImage(true);
 
     $usernames = $saved->getParameter('usernames', array());
     if ($usernames) {
@@ -107,7 +108,7 @@ final class PhabricatorPeopleSearchEngine
           ->addCheckbox(
             'isAdmin',
             1,
-            pht('Show only Administrators.'),
+            pht('Show only administrators.'),
             $is_admin)
           ->addCheckbox(
             'isDisabled',
@@ -117,7 +118,7 @@ final class PhabricatorPeopleSearchEngine
           ->addCheckbox(
             'isSystemAgent',
             1,
-            pht('Show only System Agents.'),
+            pht('Show only bots.'),
             $is_system_agent)
           ->addCheckbox(
             'needsApproval',
