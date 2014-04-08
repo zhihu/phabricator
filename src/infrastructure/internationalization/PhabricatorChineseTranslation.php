@@ -193,7 +193,8 @@ final class PhabricatorChineseTranslation
 
       'Assigned To' => '负责人',
       'Priority' => '优先级',
-      'Subscribers' => '订阅者',
+      // NOTE(xiaogaozi): Do not translate this word, cause `arc diff` will use it.
+      // 'Subscribers' => '订阅者',
       'CC' => '抄送',
       'Author' => '创建人',
       // 'Projects' => '项目',
