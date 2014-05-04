@@ -175,18 +175,16 @@ final class PHUITimelineEventView extends AphrontView {
           $fill_classes[] = 'phui-timeline-icon-fill-'.$this->color;
         }
 
+        $icon = id(new PHUIIconView())
+          ->setIconFont($this->icon.' white')
+          ->addClass('phui-timeline-icon');
+
         $icon = phutil_tag(
           'span',
           array(
             'class' => implode(' ', $fill_classes),
           ),
-          phutil_tag(
-            'span',
-            array(
-              'class' => 'phui-timeline-icon sprite-icons '.
-                         'icons-'.$this->icon.'-white',
-            ),
-            ''));
+          $icon);
       }
 
       $token = null;
@@ -236,14 +234,16 @@ final class PHUITimelineEventView extends AphrontView {
       }
     }
 
+    $image_uri = $this->userHandle->getImageURI();
+
     $wedge = phutil_tag(
       'div',
       array(
         'class' => 'phui-timeline-wedge phui-timeline-border',
+        'style' => (nonempty($image_uri)) ? '' : 'display: none;',
       ),
       '');
 
-    $image_uri = $this->userHandle->getImageURI();
     $image = phutil_tag(
       'div',
       array(

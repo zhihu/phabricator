@@ -55,6 +55,7 @@ final class PhabricatorRemarkupRuleEmbedFile
       'float'   => false,
       'width'   => null,
       'height'  => null,
+      'alt' => null,
     );
 
     if ($option_string) {
@@ -98,6 +99,7 @@ final class PhabricatorRemarkupRuleEmbedFile
             'width' => $file->getImageWidth(),
             'height' => $file->getImageHeight(),
           );
+          $image_class = 'phabricator-remarkup-embed-image-full';
           break;
         case 'thumb':
         default:
@@ -109,6 +111,10 @@ final class PhabricatorRemarkupRuleEmbedFile
           $image_class = 'phabricator-remarkup-embed-image';
           break;
       }
+    }
+
+    if (isset($options['alt'])) {
+      $attrs['alt'] = $options['alt'];
     }
 
     $img = phutil_tag('img', $attrs);

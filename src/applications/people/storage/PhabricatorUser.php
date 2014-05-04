@@ -5,7 +5,8 @@ final class PhabricatorUser
   implements
     PhutilPerson,
     PhabricatorPolicyInterface,
-    PhabricatorCustomFieldInterface {
+    PhabricatorCustomFieldInterface,
+    PhabricatorDestructableInterface {
 
   const SESSION_TABLE = 'phabricator_session';
   const NAMETOKEN_TABLE = 'user_nametoken';
@@ -32,6 +33,8 @@ final class PhabricatorUser
   protected $isEmailVerified = 0;
   protected $isApproved = 0;
 
+  protected $accountSecret;
+
   private $profileImage = self::ATTACHABLE;
   private $profile = null;
   private $status = self::ATTACHABLE;
@@ -40,6 +43,7 @@ final class PhabricatorUser
   private $customFields = self::ATTACHABLE;
 
   private $alternateCSRFString = self::ATTACHABLE;
+  private $session = self::ATTACHABLE;
 
   protected function readField($field) {
     switch ($field) {
@@ -136,6 +140,10 @@ final class PhabricatorUser
     return $this->sex;
   }
 
+  public function getMonogram() {
+    return '@'.$this->getUsername();
+  }
+
   public function getTranslation() {
     try {
       if ($this->translation &&
@@ -157,6 +165,11 @@ final class PhabricatorUser
     if (!$this->getConduitCertificate()) {
       $this->setConduitCertificate($this->generateConduitCertificate());
     }
+
+    if (!strlen($this->getAccountSecret())) {
+      $this->setAccountSecret(Filesystem::readRandomCharacters(64));
+    }
+
     $result = parent::save();
 
     if ($this->profile) {
@@ -169,6 +182,19 @@ final class PhabricatorUser
       ->queueDocumentForIndexing($this->getPHID());
 
     return $result;
+  }
+
+  public function attachSession(PhabricatorAuthSession $session) {
+    $this->session = $session;
+    return $this;
+  }
+
+  public function getSession() {
+    return $this->assertAttached($this->session);
+  }
+
+  public function hasSession() {
+    return ($this->session !== self::ATTACHABLE);
   }
 
   private function generateConduitCertificate() {
@@ -305,7 +331,7 @@ final class PhabricatorUser
 
   private function generateToken($epoch, $frequency, $key, $len) {
     if ($this->getPHID()) {
-      $vec = $this->getPHID().$this->getPasswordHash();
+      $vec = $this->getPHID().$this->getAccountSecret();
     } else {
       $vec = $this->getAlternateCSRFString();
     }
@@ -796,5 +822,68 @@ EOBODY;
     $this->customFields = $fields;
     return $this;
   }
+
+
+/* -(  PhabricatorDestructableInterface  )----------------------------------- */
+
+
+  public function destroyObjectPermanently(
+    PhabricatorDestructionEngine $engine) {
+
+    $this->openTransaction();
+      $this->delete();
+
+      $externals = id(new PhabricatorExternalAccount())->loadAllWhere(
+        'userPHID = %s',
+        $this->getPHID());
+      foreach ($externals as $external) {
+        $external->delete();
+      }
+
+      $prefs = id(new PhabricatorUserPreferences())->loadAllWhere(
+        'userPHID = %s',
+        $this->getPHID());
+      foreach ($prefs as $pref) {
+        $pref->delete();
+      }
+
+      $profiles = id(new PhabricatorUserProfile())->loadAllWhere(
+        'userPHID = %s',
+        $this->getPHID());
+      foreach ($profiles as $profile) {
+        $profile->delete();
+      }
+
+      $keys = id(new PhabricatorUserSSHKey())->loadAllWhere(
+        'userPHID = %s',
+        $this->getPHID());
+      foreach ($keys as $key) {
+        $key->delete();
+      }
+
+      $emails = id(new PhabricatorUserEmail())->loadAllWhere(
+        'userPHID = %s',
+        $this->getPHID());
+      foreach ($emails as $email) {
+        $email->delete();
+      }
+
+      $sessions = id(new PhabricatorAuthSession())->loadAllWhere(
+        'userPHID = %s',
+        $this->getPHID());
+      foreach ($sessions as $session) {
+        $session->delete();
+      }
+
+      $factors = id(new PhabricatorAuthFactorConfig())->loadAllWhere(
+        'userPHID = %s',
+        $this->getPHID());
+      foreach ($factors as $factor) {
+        $factor->delete();
+      }
+
+    $this->saveTransaction();
+  }
+
 
 }

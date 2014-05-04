@@ -59,8 +59,8 @@ final class PhabricatorCoreConfigOptions
               "won't work. The major use case for this is moving installs ".
               "across domains."))
         ->addExample(
-          '["http://phabricator2.example.com/", '.
-            '"http://phabricator3.example.com/"]',
+          "http://phabricator2.example.com/\n".
+          "http://phabricator3.example.com/",
           pht('Valid Setting')),
       $this->newOption('phabricator.timezone', 'string', null)
         ->setSummary(
@@ -92,6 +92,9 @@ final class PhabricatorCoreConfigOptions
             pht('Install Beta Applications'),
             pht('Uninstall Beta Applications')
           ))
+        ->setSummary(
+          pht(
+            'Install applications which are still under development.'))
         ->setDescription(
           pht(
             "Phabricator includes 'Beta' applications which are in an early ".
@@ -109,14 +112,14 @@ final class PhabricatorCoreConfigOptions
             pht('Shenanigans'), // That should be interesting to translate. :P
           ))
         ->setSummary(
-          pht("Should Phabricator be serious?"))
+          pht("Allows you to remove levity and jokes from the UI."))
         ->setDescription(
           pht(
-            "By default, Phabricator includes some silly nonsense in the UI, ".
-            "such as a submit button called 'Clowncopterize' in Differential ".
-            "and a call to 'Leap Into Action'. If you'd prefer more ".
-            "traditional UI strings like 'Submit', you can set this flag to ".
-            "disable most of the jokes and easter eggs.")),
+            'By default, Phabricator includes some flavor text in the UI, '.
+            'like a prompt to "Weigh In" rather than "Add Comment" in '.
+            'Maniphest. If you\'d prefer more traditional UI strings like '.
+            '"Add Comment", you can set this flag to disable most of the '.
+            'extra flavor.')),
        $this->newOption('environment.append-paths', 'list<string>', $paths)
         ->setSummary(
           pht("These paths get appended to your \$PATH envrionment variable."))
@@ -135,6 +138,7 @@ final class PhabricatorCoreConfigOptions
             "The current value of PATH after configuration is applied is:\n\n".
             "  lang=text\n".
             "  %s", $path))
+        ->setLocked(true)
         ->addExample('/usr/local/bin', pht('Add One Path'))
         ->addExample("/usr/bin\n/usr/local/bin", pht('Add Multiple Paths')),
       $this->newOption('config.lock', 'set', array())

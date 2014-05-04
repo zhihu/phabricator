@@ -14,6 +14,10 @@ abstract class CelerityResourceController extends PhabricatorController {
     return false;
   }
 
+  public function shouldAllowPartialSessions() {
+    return true;
+  }
+
   abstract public function getCelerityResourceMap();
 
   protected function serveResource($path, $package_hash = null) {
@@ -93,6 +97,8 @@ abstract class CelerityResourceController extends PhabricatorController {
       'jpg' => 'image/jpeg',
       'swf' => 'application/x-shockwave-flash',
       'woff' => 'font/woff',
+      'eot' => 'font/eot',
+      'ttf' => 'font/ttf',
     );
   }
 

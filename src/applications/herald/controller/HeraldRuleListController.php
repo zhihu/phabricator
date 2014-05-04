@@ -36,7 +36,8 @@ final class HeraldRuleListController extends HeraldController
     $content_type_map = HeraldAdapter::getEnabledAdapterMap($viewer);
 
     $list = id(new PHUIObjectItemListView())
-      ->setUser($viewer);
+      ->setUser($viewer)
+      ->setCards(true);
     foreach ($rules as $rule) {
       $id = $rule->getID();
 
@@ -46,6 +47,7 @@ final class HeraldRuleListController extends HeraldController
         ->setHref($this->getApplicationURI("rule/{$id}/"));
 
       if ($rule->isPersonalRule()) {
+        $item->addIcon('user', pht('Personal Rule'));
         $item->addByline(
           pht(
             'Authored by %s',

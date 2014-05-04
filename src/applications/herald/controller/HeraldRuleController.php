@@ -463,6 +463,8 @@ final class HeraldRuleController extends HeraldController {
        $rule->getRuleType());
     }
 
+    $changeflag_options =
+      PhabricatorRepositoryPushLog::getHeraldChangeFlagConditionOptions();
     Javelin::initBehavior(
       'herald-rule-editor',
       array(
@@ -490,20 +492,11 @@ final class HeraldRuleController extends HeraldController {
             'default' => PhabricatorRepositoryPushLog::REFTYPE_BRANCH,
           ),
           HeraldPreCommitRefAdapter::VALUE_REF_CHANGE => array(
-            'options' => array(
-              PhabricatorRepositoryPushLog::CHANGEFLAG_ADD =>
-                pht('change creates ref'),
-              PhabricatorRepositoryPushLog::CHANGEFLAG_DELETE =>
-                pht('change deletes ref'),
-              PhabricatorRepositoryPushLog::CHANGEFLAG_REWRITE =>
-                pht('change rewrites ref'),
-              PhabricatorRepositoryPushLog::CHANGEFLAG_DANGEROUS =>
-                pht('dangerous change'),
-            ),
+            'options' => $changeflag_options,
             'default' => PhabricatorRepositoryPushLog::CHANGEFLAG_ADD,
           ),
         ),
-        'template' => $this->buildTokenizerTemplates() + array(
+        'template' => $this->buildTokenizerTemplates($handles) + array(
           'rules' => $all_rules,
         ),
         'author' => array($rule->getAuthorPHID() =>
@@ -588,7 +581,7 @@ final class HeraldRuleController extends HeraldController {
   }
 
 
-  protected function buildTokenizerTemplates() {
+  protected function buildTokenizerTemplates(array $handles) {
     $template = new AphrontTokenizerTemplateView();
     $template = $template->render();
 
@@ -604,6 +597,8 @@ final class HeraldRuleController extends HeraldController {
         'taskpriority'  => '/typeahead/common/taskpriority/',
         'arcanistprojects' => '/typeahead/common/arcanistprojects/',
       ),
+      'username' => $this->getRequest()->getUser()->getUserName(),
+      'icons' => mpull($handles, 'getTypeIcon', 'getPHID'),
       'markup' => $template,
     );
   }

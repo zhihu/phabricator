@@ -40,7 +40,8 @@ final class PhabricatorApplicationPeople extends PhabricatorApplication {
     return array(
       '/people/' => array(
         '(query/(?P<key>[^/]+)/)?' => 'PhabricatorPeopleListController',
-        'logs/' => 'PhabricatorPeopleLogsController',
+        'logs/(?:query/(?P<queryKey>[^/]+)/)?'
+          => 'PhabricatorPeopleLogsController',
         'approve/(?P<id>[1-9]\d*)/' => 'PhabricatorPeopleApproveController',
         '(?P<via>disapprove)/(?P<id>[1-9]\d*)/'
           => 'PhabricatorPeopleDisableController',
@@ -119,6 +120,7 @@ final class PhabricatorApplicationPeople extends PhabricatorApplication {
         ->setName($user->getUsername())
         ->setHref('/p/'.$user->getUsername().'/')
         ->addClass('core-menu-item')
+        ->setAural(pht('Profile'))
         ->setOrder(100);
 
       $classes = array(

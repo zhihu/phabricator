@@ -4,7 +4,9 @@ final class DifferentialDiff
   extends DifferentialDAO
   implements
     PhabricatorPolicyInterface,
-    HarbormasterBuildableInterface {
+    HarbormasterBuildableInterface,
+    PhabricatorApplicationTransactionInterface,
+    PhabricatorDestructableInterface {
 
   protected $revisionID;
   protected $authorPHID;
@@ -95,27 +97,6 @@ final class DifferentialDiff
     return $name;
   }
 
-  public function loadArcanistProject() {
-    if (!$this->getArcanistProjectPHID()) {
-      return null;
-    }
-    return id(new PhabricatorRepositoryArcanistProject())->loadOneWhere(
-      'phid = %s',
-      $this->getArcanistProjectPHID());
-  }
-
-  public function getBackingVersionControlSystem() {
-    $arcanist_project = $this->loadArcanistProject();
-    if (!$arcanist_project) {
-      return null;
-    }
-    $repository = $arcanist_project->loadRepository();
-    if (!$repository) {
-      return null;
-    }
-    return $repository->getVersionControlSystem();
-  }
-
   public function save() {
     $this->openTransaction();
       $ret = parent::save();
@@ -123,24 +104,6 @@ final class DifferentialDiff
         $changeset->setDiffID($this->getID());
         $changeset->save();
       }
-    $this->saveTransaction();
-    return $ret;
-  }
-
-  public function delete() {
-    $this->openTransaction();
-      foreach ($this->loadChangesets() as $changeset) {
-        $changeset->delete();
-      }
-
-      $properties = id(new DifferentialDiffProperty())->loadAllWhere(
-        'diffID = %d',
-        $this->getID());
-      foreach ($properties as $prop) {
-        $prop->delete();
-      }
-
-      $ret = parent::delete();
     $this->saveTransaction();
     return $ret;
   }
@@ -368,6 +331,56 @@ final class DifferentialDiff
     }
 
     return null;
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    if (!$this->getRevisionID()) {
+      return null;
+    }
+    return $this->getRevision()->getApplicationTransactionEditor();
+  }
+
+
+  public function getApplicationTransactionObject() {
+    if (!$this->getRevisionID()) {
+      return null;
+    }
+    return $this->getRevision();
+  }
+
+  public function getApplicationTransactionTemplate() {
+    if (!$this->getRevisionID()) {
+      return null;
+    }
+    return $this->getRevision()->getApplicationTransactionTemplate();
+  }
+
+
+/* -(  PhabricatorDestructableInterface  )----------------------------------- */
+
+
+  public function destroyObjectPermanently(
+    PhabricatorDestructionEngine $engine) {
+
+    $this->openTransaction();
+      $this->delete();
+
+      foreach ($this->loadChangesets() as $changeset) {
+        $changeset->delete();
+      }
+
+      $properties = id(new DifferentialDiffProperty())->loadAllWhere(
+        'diffID = %d',
+        $this->getID());
+      foreach ($properties as $prop) {
+        $prop->delete();
+      }
+
+    $this->saveTransaction();
   }
 
 }
