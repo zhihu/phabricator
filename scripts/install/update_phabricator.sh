@@ -32,7 +32,7 @@ git pull -r
 $ROOT/phabricator/bin/phd stop
 
 # If running the notification server, stop it.
-$ROOT/phabricator/bin/aphlict stop
+# $ROOT/phabricator/bin/aphlict stop
 
 # Stop the webserver (apache, nginx, lighttpd, etc). This command will differ
 # depending on which system and webserver you are running: replace it with an
@@ -58,4 +58,4 @@ $ROOT/phabricator/bin/phd start
 $ROOT/phabricator/bin/phd launch PhabricatorFactDaemon
 
 # If running the notification server, start it.
-$ROOT/phabricator/bin/aphlict start
+# $ROOT/phabricator/bin/aphlict start
