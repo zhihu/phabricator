@@ -6,9 +6,19 @@
   font-size: 12px;
 }
 
+.phuix-dropdown-menu .phabricator-action-list-view {
+  font-size: 13px;
+}
+
 .device .phabricator-action-list-view {
   padding: 4px 0;
   display: none;
+}
+
+.device .phuix-dropdown-menu .phabricator-action-list-view {
+  /* When an action list view appears inside a dropdown menu, don't hide it
+     by default. */
+  display: block;
 }
 
 .device .phabricator-action-list-view.phabricator-action-list-toggle {
@@ -21,10 +31,15 @@
   line-height: 22px;
   padding-bottom: 4px;
   border-bottom: 1px solid {$thinblueborder};
+  padding-left: 30px;
+}
+
+.device .phui-property-list-actions .phabricator-action-view .phui-icon-view {
+  font-size: 14px;
+  line-height: 18px;
 }
 
 .phabricator-action-view {
-  padding: 1px 0;
   position: relative;
 }
 
@@ -49,7 +64,7 @@
 
 .phabricator-action-view button.phabricator-action-view-item,
 .phabricator-action-view-item {
-  padding: 2px 4px 2px 28px;
+  padding: 3px 4px 3px 28px;
   line-height: 18px;
   display: block;
   text-decoration: none;
@@ -62,17 +77,35 @@
   position: absolute;
   top: 5px;
   left: 9px;
+  font-size: 13px;
 }
 
 .device-desktop .phabricator-action-view:hover .phabricator-action-view-item {
   text-decoration: none;
-  background-color: {$blue};
-  color: #ffffff;
+  background-color: {$sky};
+  color: #fff;
+}
+
+.device-desktop .phabricator-action-view:hover .phabricator-action-view-icon {
+  color: #fff;
 }
 
 .phabricator-action-view-disabled .phabricator-action-view-item,
 .phabricator-action-view-disabled button.phabricator-action-view-item {
   color: {$lightgreytext};
+}
+
+.phabricator-action-view-selected {
+  border-left: 3px solid {$sky};
+  background: {$hoverblue};
+}
+
+.phabricator-action-view-selected .phabricator-action-view-item {
+  padding-left: 25px;
+}
+
+.phabricator-action-view-selected .phabricator-action-view-icon {
+  left: 6px;
 }
 
 .phabricator-action-view button[disabled] {
@@ -82,7 +115,11 @@
 .device-desktop .phabricator-action-view-disabled:hover
   .phabricator-action-view-item,
 .device-desktop .phabricator-action-view-disabled:hover
-  button.phabricator-action-view-item {
-  background-color: #dfdfdf;
+  button.phabricator-action-view-item,
+.device-desktop .phabricator-action-view-disabled:hover
+  .phabricator-action-view-icon,
+.device-desktop .phabricator-action-view-disabled:hover
+  button.phabricator-action-view-icon {
+  background-color: {$greybackground};
   color: {$lightgreytext};
 }

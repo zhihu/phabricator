@@ -352,22 +352,19 @@ final class DifferentialChangesetParser {
       return;
     }
 
-    try {
-      $changeset = new DifferentialChangeset();
-      $conn_w = $changeset->establishConnection('w');
+    $changeset = new DifferentialChangeset();
+    $conn_w = $changeset->establishConnection('w');
 
-      $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
+    $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
       queryfx(
         $conn_w,
-        'INSERT INTO %T (id, cache, dateCreated) VALUES (%d, %s, %d)
+        'INSERT INTO %T (id, cache, dateCreated) VALUES (%d, %B, %d)
           ON DUPLICATE KEY UPDATE cache = VALUES(cache)',
         DifferentialChangeset::TABLE_CACHE,
         $render_cache_key,
         $cache,
         time());
-    } catch (AphrontQueryException $ex) {
-      // TODO: uhoh
-    }
+    unset($unguarded);
   }
 
   private function markGenerated($new_corpus_block = '') {
@@ -1179,6 +1176,16 @@ final class DifferentialChangesetParser {
         $added = array_map('trim', $hunk->getAddedLines());
         for (reset($added); list($line, $code) = each($added); ) {
           if (isset($map[$code])) { // We found a long matching line.
+
+            if (count($map[$code]) > 16) {
+              // If there are a large number of identical lines in this diff,
+              // don't try to figure out where this block came from: the
+              // analysis is O(N^2), since we need to compare every line
+              // against every other line. Even if we arrive at a result, it
+              // is unlikely to be meaningful. See T5041.
+              continue 2;
+            }
+
             $best_length = 0;
             foreach ($map[$code] as $val) { // Explore all candidates.
               list($file, $orig_line) = $val;

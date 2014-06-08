@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group pholio
- */
 final class PhabricatorApplicationPholio extends PhabricatorApplication {
 
   public function getBaseURI() {
@@ -10,7 +7,7 @@ final class PhabricatorApplicationPholio extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return pht('Design Review');
+    return pht('Review Mocks and Design');
   }
 
   public function getIconName() {
@@ -23,11 +20,6 @@ final class PhabricatorApplicationPholio extends PhabricatorApplication {
 
   public function getFlavorText() {
     return pht('Things before they were cool.');
-  }
-
-  public function getApplicationGroup() {
-    // TODO: Move to CORE, this just keeps it out of the side menu.
-    return self::GROUP_COMMUNICATION;
   }
 
   public function isBeta() {
@@ -75,7 +67,7 @@ final class PhabricatorApplicationPholio extends PhabricatorApplication {
 
     $item = id(new PHUIListItemView())
       ->setName(pht('Pholio Mock'))
-      ->setAppIcon('pholio-dark')
+      ->setIcon('fa-picture-o')
       ->setHref($this->getBaseURI().'new/');
     $items[] = $item;
 

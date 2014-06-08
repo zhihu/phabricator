@@ -26,23 +26,18 @@ final class PassphraseCredentialEditController extends PassphraseController {
         return new Aphront404Response();
       }
 
-      $type = PassphraseCredentialType::getTypeByConstant(
-        $credential->getCredentialType());
-      if (!$type) {
-        throw new Exception(pht('Credential has invalid type "%s"!', $type));
-      }
-
-      if (!$type->isCreateable()) {
-        throw new Exception(
-          pht('Credential has noncreateable type "%s"!', $type));
-      }
+      $type = $this->getCredentialType($credential->getCredentialType());
 
       $is_new = false;
     } else {
       $type_const = $request->getStr('type');
-      $type = PassphraseCredentialType::getTypeByConstant($type_const);
-      if (!$type) {
-        return new Aphront404Response();
+      $type = $this->getCredentialType($type_const);
+
+      if (!$type->isCreateable()) {
+        throw new Exception(
+          pht(
+            'Credential has noncreateable type "%s"!',
+            $credential->getCredentialType()));
       }
 
       $credential = PassphraseCredential::initializeNewCredential($viewer)
@@ -293,7 +288,11 @@ final class PassphraseCredentialEditController extends PassphraseController {
           ->addCheckbox(
             'lock',
             1,
-            pht('Lock Permanently'),
+            array(
+              phutil_tag('strong', array(), pht('Lock Permanently:')),
+              ' ',
+              pht('Prevent the secret from being revealed or changed.'),
+            ),
             $v_is_locked)
           ->setDisabled($credential_is_locked));
     }
@@ -352,6 +351,17 @@ final class PassphraseCredentialEditController extends PassphraseController {
         'title' => $title,
         'device' => true,
       ));
+  }
+
+  private function getCredentialType($type_const) {
+    $type = PassphraseCredentialType::getTypeByConstant($type_const);
+
+    if (!$type) {
+      throw new Exception(
+        pht('Credential has invalid type "%s"!', $type_const));
+    }
+
+    return $type;
   }
 
 }

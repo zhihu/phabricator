@@ -3,7 +3,7 @@
 final class PhabricatorApplicationPeople extends PhabricatorApplication {
 
   public function getShortDescription() {
-    return pht('User Accounts');
+    return pht('User Accounts and Profiles');
   }
 
   public function getBaseURI() {
@@ -18,12 +18,12 @@ final class PhabricatorApplicationPeople extends PhabricatorApplication {
     return 'people';
   }
 
-  public function getFlavorText() {
-    return pht('Sort of a social utility.');
+  public function isPinnedByDefault(PhabricatorUser $viewer) {
+    return $viewer->getIsAdmin();
   }
 
-  public function getApplicationGroup() {
-    return self::GROUP_ORGANIZATION;
+  public function getFlavorText() {
+    return pht('Sort of a social utility.');
   }
 
   public function canUninstall() {
@@ -150,7 +150,7 @@ final class PhabricatorApplicationPeople extends PhabricatorApplication {
     if ($viewer->getIsAdmin()) {
       $item = id(new PHUIListItemView())
         ->setName(pht('User Account'))
-        ->setAppIcon('people-dark')
+        ->setIcon('fa-users')
         ->setHref($this->getBaseURI().'create/');
       $items[] = $item;
     }

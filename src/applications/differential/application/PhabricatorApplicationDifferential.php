@@ -14,6 +14,10 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
     return 'differential';
   }
 
+  public function isPinnedByDefault(PhabricatorUser $viewer) {
+    return true;
+  }
+
   public function getHelpURI() {
     return PhabricatorEnv::getDoclink('Differential User Guide');
   }
@@ -34,6 +38,14 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
       new DifferentialHovercardEventListener(),
       new DifferentialLandingActionMenuEventListener(),
     );
+  }
+
+  public function getOverview() {
+    return pht(<<<EOTEXT
+Differential is a **code review application** which allows engineers to review,
+discuss and approve changes to software.
+EOTEXT
+);
   }
 
   public function getRoutes() {
@@ -64,10 +76,6 @@ final class PhabricatorApplicationDifferential extends PhabricatorApplication {
         'preview/' => 'PhabricatorMarkupPreviewController',
       ),
     );
-  }
-
-  public function getApplicationGroup() {
-    return self::GROUP_CORE;
   }
 
   public function getApplicationOrder() {

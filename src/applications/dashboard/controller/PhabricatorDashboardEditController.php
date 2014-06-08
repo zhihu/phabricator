@@ -17,6 +17,7 @@ final class PhabricatorDashboardEditController
       $dashboard = id(new PhabricatorDashboardQuery())
         ->setViewer($viewer)
         ->withIDs(array($this->id))
+        ->needPanels(true)
         ->requireCapabilities(
           array(
             PhabricatorPolicyCapability::CAN_VIEW,
@@ -45,7 +46,7 @@ final class PhabricatorDashboardEditController
       $crumbs->addTextCrumb('Create Dashboard');
     } else {
       $id = $dashboard->getID();
-      $cancel_uri = $this->getApplicationURI('view/'.$id.'/');
+      $cancel_uri = $this->getApplicationURI('manage/'.$id.'/');
 
       $title = pht('Edit Dashboard %d', $dashboard->getID());
       $header = pht('Edit Dashboard "%s"', $dashboard->getName());
@@ -56,19 +57,35 @@ final class PhabricatorDashboardEditController
     }
 
     $v_name = $dashboard->getName();
+    $v_layout_mode = $dashboard->getLayoutConfigObject()->getLayoutMode();
     $e_name = true;
 
     $validation_exception = null;
     if ($request->isFormPost()) {
       $v_name = $request->getStr('name');
+      $v_layout_mode = $request->getStr('layout_mode');
+      $v_view_policy = $request->getStr('viewPolicy');
+      $v_edit_policy = $request->getStr('editPolicy');
 
       $xactions = array();
 
       $type_name = PhabricatorDashboardTransaction::TYPE_NAME;
+      $type_layout_mode = PhabricatorDashboardTransaction::TYPE_LAYOUT_MODE;
+      $type_view_policy = PhabricatorTransactions::TYPE_VIEW_POLICY;
+      $type_edit_policy = PhabricatorTransactions::TYPE_EDIT_POLICY;
 
       $xactions[] = id(new PhabricatorDashboardTransaction())
         ->setTransactionType($type_name)
         ->setNewValue($v_name);
+      $xactions[] = id(new PhabricatorDashboardTransaction())
+        ->setTransactionType($type_layout_mode)
+        ->setNewValue($v_layout_mode);
+      $xactions[] = id(new PhabricatorDashboardTransaction())
+        ->setTransactionType($type_view_policy)
+        ->setNewValue($v_view_policy);
+      $xactions[] = id(new PhabricatorDashboardTransaction())
+        ->setTransactionType($type_edit_policy)
+        ->setNewValue($v_edit_policy);
 
       try {
         $editor = id(new PhabricatorDashboardTransactionEditor())
@@ -77,15 +94,26 @@ final class PhabricatorDashboardEditController
           ->setContentSourceFromRequest($request)
           ->applyTransactions($dashboard, $xactions);
 
-        return id(new AphrontRedirectResponse())
-          ->setURI($this->getApplicationURI('view/'.$dashboard->getID().'/'));
+        $uri = $this->getApplicationURI('manage/'.$dashboard->getID().'/');
+
+        return id(new AphrontRedirectResponse())->setURI($uri);
       } catch (PhabricatorApplicationTransactionValidationException $ex) {
         $validation_exception = $ex;
 
         $e_name = $validation_exception->getShortMessage($type_name);
+
+        $dashboard->setViewPolicy($v_view_policy);
+        $dashboard->setEditPolicy($v_edit_policy);
       }
     }
 
+    $policies = id(new PhabricatorPolicyQuery())
+      ->setViewer($viewer)
+      ->setObject($dashboard)
+      ->execute();
+
+    $layout_mode_options =
+      PhabricatorDashboardLayoutConfig::getLayoutModeSelectOptions();
     $form = id(new AphrontFormView())
       ->setUser($viewer)
       ->appendChild(
@@ -95,10 +123,27 @@ final class PhabricatorDashboardEditController
           ->setValue($v_name)
           ->setError($e_name))
       ->appendChild(
+        id(new AphrontFormPolicyControl())
+          ->setName('viewPolicy')
+          ->setPolicyObject($dashboard)
+          ->setCapability(PhabricatorPolicyCapability::CAN_VIEW)
+          ->setPolicies($policies))
+      ->appendChild(
+        id(new AphrontFormPolicyControl())
+          ->setName('editPolicy')
+          ->setPolicyObject($dashboard)
+          ->setCapability(PhabricatorPolicyCapability::CAN_EDIT)
+          ->setPolicies($policies))
+      ->appendChild(
+        id(new AphrontFormSelectControl())
+          ->setLabel(pht('Layout Mode'))
+          ->setName('layout_mode')
+          ->setValue($v_layout_mode)
+          ->setOptions($layout_mode_options))
+      ->appendChild(
         id(new AphrontFormSubmitControl())
           ->setValue($button)
           ->addCancelButton($cancel_uri));
-
 
     $box = id(new PHUIObjectBoxView())
       ->setHeaderText($header)

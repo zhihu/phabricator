@@ -3,11 +3,18 @@
 final class PholioMockSearchEngine
   extends PhabricatorApplicationSearchEngine {
 
+  public function getApplicationClassName() {
+    return 'PhabricatorApplicationPholio';
+  }
+
   public function buildSavedQueryFromRequest(AphrontRequest $request) {
     $saved = new PhabricatorSavedQuery();
     $saved->setParameter(
       'authorPHIDs',
       $this->readUsersFromRequest($request, 'authors'));
+    $saved->setParameter(
+      'statuses',
+      $request->getStrList('status'));
 
     return $saved;
   }
@@ -17,7 +24,8 @@ final class PholioMockSearchEngine
       ->needCoverFiles(true)
       ->needImages(true)
       ->needTokenCounts(true)
-      ->withAuthorPHIDs($saved->getParameter('authorPHIDs', array()));
+      ->withAuthorPHIDs($saved->getParameter('authorPHIDs', array()))
+      ->withStatuses($saved->getParameter('statuses', array()));
 
     return $query;
   }
@@ -32,13 +40,27 @@ final class PholioMockSearchEngine
       ->withPHIDs($phids)
       ->execute();
 
+    $statuses = array(
+      ''=>pht('Any Status'),
+      'closed'=>pht('Closed'),
+      'open'=>pht('Open'));
+
+    $status = $saved_query->getParameter('statuses', array());
+    $status = head($status);
+
     $form
       ->appendChild(
         id(new AphrontFormTokenizerControl())
           ->setDatasource('/typeahead/common/users/')
           ->setName('authors')
           ->setLabel(pht('Authors'))
-          ->setValue($author_handles));
+          ->setValue($author_handles))
+      ->appendChild(
+        id(new AphrontFormSelectControl())
+          ->setLabel(pht('Status'))
+          ->setName('status')
+          ->setOptions($statuses)
+          ->setValue($status));
   }
 
   protected function getURI($path) {
@@ -47,6 +69,7 @@ final class PholioMockSearchEngine
 
   public function getBuiltinQueryNames() {
     $names = array(
+      'open' => pht('Open Mocks'),
       'all' => pht('All Mocks'),
     );
 
@@ -63,6 +86,10 @@ final class PholioMockSearchEngine
     $query->setQueryKey($query_key);
 
     switch ($query_key) {
+      case 'open':
+        return $query->setParameter(
+          'statuses',
+          array('open'));
       case 'all':
         return $query;
       case 'authored':
@@ -72,6 +99,49 @@ final class PholioMockSearchEngine
     }
 
     return parent::buildSavedQueryFromBuiltin($query_key);
+  }
+
+  protected function getRequiredHandlePHIDsForResultList(
+    array $mocks,
+    PhabricatorSavedQuery $query) {
+    return mpull($mocks, 'getAuthorPHID');
+  }
+
+  protected function renderResultList(
+    array $mocks,
+    PhabricatorSavedQuery $query,
+    array $handles) {
+    assert_instances_of($mocks, 'PholioMock');
+
+    $viewer = $this->requireViewer();
+
+    $board = new PHUIPinboardView();
+    foreach ($mocks as $mock) {
+
+      $header = 'M'.$mock->getID().' '.$mock->getName();
+      if ($mock->isClosed()) {
+        $header = pht('%s (Closed)', $header);
+      }
+
+      $item = id(new PHUIPinboardItemView())
+        ->setHeader($header)
+        ->setURI('/M'.$mock->getID())
+        ->setImageURI($mock->getCoverFile()->getThumb280x210URI())
+        ->setImageSize(280, 210)
+        ->addIconCount('fa-picture-o', count($mock->getImages()))
+        ->addIconCount('fa-trophy', $mock->getTokenCount());
+
+      if ($mock->getAuthorPHID()) {
+        $author_handle = $handles[$mock->getAuthorPHID()];
+        $datetime = phabricator_date($mock->getDateCreated(), $viewer);
+        $item->appendChild(
+          pht('By %s on %s', $author_handle->renderLink(), $datetime));
+      }
+
+      $board->addItem($item);
+    }
+
+    return $board;
   }
 
 }

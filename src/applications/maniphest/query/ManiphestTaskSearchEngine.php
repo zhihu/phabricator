@@ -3,6 +3,37 @@
 final class ManiphestTaskSearchEngine
   extends PhabricatorApplicationSearchEngine {
 
+  private $showBatchControls;
+  private $baseURI;
+  private $isBoardView;
+
+  public function setIsBoardView($is_board_view) {
+    $this->isBoardView = $is_board_view;
+    return $this;
+  }
+
+  public function getIsBoardView() {
+    return $this->isBoardView;
+  }
+
+  public function setBaseURI($base_uri) {
+    $this->baseURI = $base_uri;
+    return $this;
+  }
+
+  public function getBaseURI() {
+    return $this->baseURI;
+  }
+
+  public function setShowBatchControls($show_batch_controls) {
+    $this->showBatchControls = $show_batch_controls;
+    return $this;
+  }
+
+  public function getApplicationClassName() {
+    return 'PhabricatorApplicationManiphest';
+  }
+
   public function getCustomFieldObject() {
     return new ManiphestTask();
   }
@@ -50,7 +81,7 @@ final class ManiphestTaskSearchEngine
 
     $saved->setParameter(
       'allProjectPHIDs',
-      $request->getArr('allProjects'));
+      $this->readPHIDsFromRequest($request, 'allProjects'));
 
     $saved->setParameter(
       'withNoProject',
@@ -58,11 +89,11 @@ final class ManiphestTaskSearchEngine
 
     $saved->setParameter(
       'anyProjectPHIDs',
-      $request->getArr('anyProjects'));
+      $this->readPHIDsFromRequest($request, 'anyProjects'));
 
     $saved->setParameter(
       'excludeProjectPHIDs',
-      $request->getArr('excludeProjects'));
+      $this->readPHIDsFromRequest($request, 'excludeProjects'));
 
     $saved->setParameter(
       'userProjectPHIDs',
@@ -290,14 +321,20 @@ final class ManiphestTaskSearchEngine
           ->setDatasource('/typeahead/common/projects/')
           ->setName('allProjects')
           ->setLabel(pht('In All Projects'))
-          ->setValue($all_project_handles))
-      ->appendChild(
-        id(new AphrontFormCheckboxControl())
-          ->addCheckbox(
-            'withNoProject',
-            1,
-            pht('Show only tasks with no projects.'),
-            $with_no_projects))
+          ->setValue($all_project_handles));
+
+    if (!$this->getIsBoardView()) {
+      $form
+        ->appendChild(
+          id(new AphrontFormCheckboxControl())
+            ->addCheckbox(
+              'withNoProject',
+              1,
+              pht('Show only tasks with no projects.'),
+              $with_no_projects));
+    }
+
+    $form
       ->appendChild(
         id(new AphrontFormTokenizerControl())
           ->setDatasource('/typeahead/common/projects/')
@@ -329,23 +366,29 @@ final class ManiphestTaskSearchEngine
           ->setLabel(pht('Subscribers'))
           ->setValue($subscriber_handles))
       ->appendChild($status_control)
-      ->appendChild($priority_control)
-      ->appendChild(
-        id(new AphrontFormSelectControl())
-          ->setName('group')
-          ->setLabel(pht('Group By'))
-          ->setValue($saved->getParameter('group'))
-          ->setOptions($this->getGroupOptions()))
-      ->appendChild(
-        id(new AphrontFormSelectControl())
-          ->setName('order')
-          ->setLabel(pht('Order By'))
-          ->setValue($saved->getParameter('order'))
-          ->setOptions($this->getOrderOptions()))
+      ->appendChild($priority_control);
+
+    if (!$this->getIsBoardView()) {
+      $form
+        ->appendChild(
+          id(new AphrontFormSelectControl())
+            ->setName('group')
+            ->setLabel(pht('Group By'))
+            ->setValue($saved->getParameter('group'))
+            ->setOptions($this->getGroupOptions()))
+        ->appendChild(
+          id(new AphrontFormSelectControl())
+            ->setName('order')
+            ->setLabel(pht('Order By'))
+            ->setValue($saved->getParameter('order'))
+            ->setOptions($this->getOrderOptions()));
+    }
+
+    $form
       ->appendChild(
         id(new AphrontFormTextControl())
           ->setName('fulltext')
-          ->setLabel(pht('Contains Text'))
+          ->setLabel(pht('Contains Words'))
           ->setValue($saved->getParameter('fulltext')))
       ->appendChild(
         id(new AphrontFormTextControl())
@@ -371,15 +414,20 @@ final class ManiphestTaskSearchEngine
       'modifiedEnd',
       pht('Updated Before'));
 
-    $form
-      ->appendChild(
-        id(new AphrontFormTextControl())
-          ->setName('limit')
-          ->setLabel(pht('Page Size'))
-          ->setValue($saved->getParameter('limit', 100)));
+    if (!$this->getIsBoardView()) {
+      $form
+        ->appendChild(
+          id(new AphrontFormTextControl())
+            ->setName('limit')
+            ->setLabel(pht('Page Size'))
+            ->setValue($saved->getParameter('limit', 100)));
+    }
   }
 
   protected function getURI($path) {
+    if ($this->baseURI) {
+      return $this->baseURI.$path;
+    }
     return '/maniphest/'.$path;
   }
 
@@ -471,6 +519,32 @@ final class ManiphestTaskSearchEngine
       'project' => ManiphestTaskQuery::GROUP_PROJECT,
       'none' => ManiphestTaskQuery::GROUP_NONE,
     );
+  }
+
+  protected function renderResultList(
+    array $tasks,
+    PhabricatorSavedQuery $saved,
+    array $handles) {
+
+    $viewer = $this->requireViewer();
+
+    $can_edit_priority = PhabricatorPolicyFilter::hasCapability(
+      $viewer,
+      $this->getApplication(),
+      ManiphestCapabilityEditPriority::CAPABILITY);
+
+    $can_bulk_edit = PhabricatorPolicyFilter::hasCapability(
+      $viewer,
+      $this->getApplication(),
+      ManiphestCapabilityBulkEdit::CAPABILITY);
+
+    return id(new ManiphestTaskResultListView())
+      ->setUser($viewer)
+      ->setTasks($tasks)
+      ->setSavedQuery($saved)
+      ->setCanEditPriority($can_edit_priority)
+      ->setCanBatchEdit($can_bulk_edit)
+      ->setShowBatchControls($this->showBatchControls);
   }
 
 }

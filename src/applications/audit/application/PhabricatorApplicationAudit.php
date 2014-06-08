@@ -2,16 +2,20 @@
 
 final class PhabricatorApplicationAudit extends PhabricatorApplication {
 
-  public function getShortDescription() {
-    return pht('Audit Code');
-  }
-
   public function getBaseURI() {
     return '/audit/';
   }
 
   public function getIconName() {
     return 'audit';
+  }
+
+  public function getShortDescription() {
+    return pht('Browse and Audit Commits');
+  }
+
+  public function isPinnedByDefault(PhabricatorUser $viewer) {
+    return true;
   }
 
   public function getHelpURI() {
@@ -32,10 +36,6 @@ final class PhabricatorApplicationAudit extends PhabricatorApplication {
         'preview/(?P<id>[1-9]\d*)/' => 'PhabricatorAuditPreviewController',
       ),
     );
-  }
-
-  public function getApplicationGroup() {
-    return self::GROUP_CORE;
   }
 
   public function getApplicationOrder() {

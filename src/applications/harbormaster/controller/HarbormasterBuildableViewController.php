@@ -46,6 +46,15 @@ final class HarbormasterBuildableViewController
     $box = id(new PHUIObjectBoxView())
       ->setHeader($header);
 
+    $xactions = id(new HarbormasterBuildableTransactionQuery())
+      ->setViewer($viewer)
+      ->withObjectPHIDs(array($buildable->getPHID()))
+      ->execute();
+    $timeline = id(new PhabricatorApplicationTransactionView())
+      ->setUser($viewer)
+      ->setObjectPHID($buildable->getPHID())
+      ->setTransactions($xactions);
+
     $actions = $this->buildActionList($buildable);
     $this->buildPropertyLists($box, $buildable, $actions);
 
@@ -57,6 +66,7 @@ final class HarbormasterBuildableViewController
         $crumbs,
         $box,
         $build_list,
+        $timeline,
       ),
       array(
         'title' => $title,
@@ -101,7 +111,7 @@ final class HarbormasterBuildableViewController
 
     $list->addAction(
       id(new PhabricatorActionView())
-        ->setIcon('backward')
+        ->setIcon('fa-backward')
         ->setName(pht('Restart All Builds'))
         ->setHref($this->getApplicationURI($restart_uri))
         ->setWorkflow(true)
@@ -109,7 +119,7 @@ final class HarbormasterBuildableViewController
 
     $list->addAction(
       id(new PhabricatorActionView())
-        ->setIcon('stop')
+        ->setIcon('fa-stop')
         ->setName(pht('Stop All Builds'))
         ->setHref($this->getApplicationURI($stop_uri))
         ->setWorkflow(true)
@@ -117,7 +127,7 @@ final class HarbormasterBuildableViewController
 
     $list->addAction(
       id(new PhabricatorActionView())
-        ->setIcon('play')
+        ->setIcon('fa-play')
         ->setName(pht('Resume All Builds'))
         ->setHref($this->getApplicationURI($resume_uri))
         ->setWorkflow(true)
@@ -197,11 +207,11 @@ final class HarbormasterBuildableViewController
       $item->addAttribute(HarbormasterBuild::getBuildStatusName($status));
 
       if ($build->isRestarting()) {
-        $item->addIcon('backward', pht('Restarting'));
+        $item->addIcon('fa-backward', pht('Restarting'));
       } else if ($build->isStopping()) {
-        $item->addIcon('stop', pht('Stopping'));
+        $item->addIcon('fa-stop', pht('Stopping'));
       } else if ($build->isResuming()) {
-        $item->addIcon('play', pht('Resuming'));
+        $item->addIcon('fa-play', pht('Resuming'));
       }
 
       $build_id = $build->getID();
@@ -212,7 +222,7 @@ final class HarbormasterBuildableViewController
 
       $item->addAction(
         id(new PHUIListItemView())
-          ->setIcon('backward')
+          ->setIcon('fa-backward')
           ->setName(pht('Restart'))
           ->setHref($this->getApplicationURI($restart_uri))
           ->setWorkflow(true)
@@ -221,14 +231,14 @@ final class HarbormasterBuildableViewController
       if ($build->canResumeBuild()) {
         $item->addAction(
           id(new PHUIListItemView())
-            ->setIcon('play')
+            ->setIcon('fa-play')
             ->setName(pht('Resume'))
             ->setHref($this->getApplicationURI($resume_uri))
             ->setWorkflow(true));
       } else {
         $item->addAction(
           id(new PHUIListItemView())
-            ->setIcon('stop')
+            ->setIcon('fa-stop')
             ->setName(pht('Stop'))
             ->setHref($this->getApplicationURI($stop_uri))
             ->setWorkflow(true)
@@ -242,27 +252,33 @@ final class HarbormasterBuildableViewController
         foreach ($targets as $target) {
           switch ($target->getTargetStatus()) {
             case HarbormasterBuildTarget::STATUS_PENDING:
-              $icon = 'time-green';
+              $icon = PHUIStatusItemView::ICON_CLOCK;
+              $color = 'green';
               $status_name = pht('Pending');
               break;
             case HarbormasterBuildTarget::STATUS_BUILDING:
-              $icon = 'right-green';
+              $icon = PHUIStatusItemView::ICON_RIGHT;
+              $color = 'green';
               $status_name = pht('Building');
               break;
             case HarbormasterBuildTarget::STATUS_WAITING:
-              $icon = 'time-orange';
+              $icon = PHUIStatusItemView::ICON_CLOCK;
+              $color = 'orange';
               $status_name = pht('Waiting');
               break;
             case HarbormasterBuildTarget::STATUS_PASSED:
-              $icon = 'accept-green';
+              $icon = PHUIStatusItemView::ICON_ACCEPT;
+              $color = 'green';
               $status_name = pht('Passed');
               break;
             case HarbormasterBuildTarget::STATUS_FAILED:
-              $icon = 'reject-red';
+              $icon = PHUIStatusItemView::ICON_REJECT;
+              $color = 'red';
               $status_name = pht('Failed');
               break;
             default:
-              $icon = 'question';
+              $icon = PHUIStatusItemView::ICON_QUESTION;
+              $color = 'bluegrey';
               $status_name = pht('Unknown');
               break;
           }
@@ -276,7 +292,7 @@ final class HarbormasterBuildableViewController
 
           $target_list->addItem(
             id(new PHUIStatusItemView())
-              ->setIcon($icon, $status_name)
+              ->setIcon($icon, $color, $status_name)
               ->setTarget(pht('Target %d', $target->getID()))
               ->setNote($name));
         }

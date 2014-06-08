@@ -374,6 +374,11 @@ final class PhabricatorMarkupEngine {
         $engine = self::newMarkupEngine(array());
         $engine->setConfig('preserve-linebreaks', false);
         break;
+      case 'diffusion-readme':
+        $engine = self::newMarkupEngine(array());
+        $engine->setConfig('preserve-linebreaks', false);
+        $engine->setConfig('header.generate-toc', true);
+        break;
       case 'diviner':
         $engine = self::newMarkupEngine(array());
         $engine->setConfig('preserve-linebreaks', false);
@@ -471,6 +476,7 @@ final class PhabricatorMarkupEngine {
 
     $blocks = array();
     $blocks[] = new PhutilRemarkupEngineRemarkupQuotesBlockRule();
+    $blocks[] = new PhutilRemarkupEngineRemarkupReplyBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupLiteralBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupHeaderBlockRule();
     $blocks[] = new PhutilRemarkupEngineRemarkupHorizontalRuleBlockRule();

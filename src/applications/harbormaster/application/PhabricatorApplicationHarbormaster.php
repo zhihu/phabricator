@@ -7,7 +7,7 @@ final class PhabricatorApplicationHarbormaster extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return pht('Continuous Build');
+    return pht('Build/CI');
   }
 
   public function getIconName() {

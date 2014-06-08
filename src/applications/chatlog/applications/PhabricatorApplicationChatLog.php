@@ -7,7 +7,7 @@ final class PhabricatorApplicationChatLog extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return pht('Chat Log');
+    return pht('IRC Logs');
   }
 
   public function getIconName() {
@@ -23,7 +23,7 @@ final class PhabricatorApplicationChatLog extends PhabricatorApplication {
   }
 
   public function getApplicationGroup() {
-    return self::GROUP_COMMUNICATION;
+    return self::GROUP_UTILITIES;
   }
 
  public function getRoutes() {

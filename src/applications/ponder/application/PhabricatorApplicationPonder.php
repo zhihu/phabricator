@@ -7,7 +7,7 @@ final class PhabricatorApplicationPonder extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return pht('Find Answers');
+    return pht('Questions and Answers');
   }
 
   public function getIconName() {
@@ -35,10 +35,6 @@ final class PhabricatorApplicationPonder extends PhabricatorApplication {
     return array(
       new PonderRemarkupRule(),
     );
-  }
-
-  public function getApplicationGroup() {
-    return self::GROUP_COMMUNICATION;
   }
 
   public function isBeta() {

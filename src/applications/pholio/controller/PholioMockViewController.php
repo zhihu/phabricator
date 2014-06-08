@@ -67,9 +67,20 @@ final class PholioMockViewController extends PholioController {
 
     $title = $mock->getName();
 
+    if ($mock->isClosed()) {
+      $header_icon = 'fa-ban';
+      $header_name = pht('Closed');
+      $header_color = 'dark';
+    } else {
+      $header_icon = 'fa-square-o';
+      $header_name = pht('Open');
+      $header_color = 'bluegrey';
+    }
+
     $header = id(new PHUIHeaderView())
       ->setHeader($title)
       ->setUser($user)
+      ->setStatus($header_icon, $header_color, $header_name)
       ->setPolicyObject($mock);
 
     $actions = $this->buildActionView($mock);
@@ -174,7 +185,7 @@ final class PholioMockViewController extends PholioController {
 
     $actions->addAction(
       id(new PhabricatorActionView())
-      ->setIcon('edit')
+      ->setIcon('fa-pencil')
       ->setName(pht('Edit Mock'))
       ->setHref($this->getApplicationURI('/edit/'.$mock->getID().'/'))
       ->setDisabled(!$can_edit)
@@ -182,7 +193,7 @@ final class PholioMockViewController extends PholioController {
 
     $actions->addAction(
       id(new PhabricatorActionView())
-      ->setIcon('attach')
+      ->setIcon('fa-anchor')
       ->setName(pht('Edit Maniphest Tasks'))
       ->setHref("/search/attach/{$mock->getPHID()}/TASK/edge/")
       ->setDisabled(!$user->isLoggedIn())

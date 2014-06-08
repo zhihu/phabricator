@@ -10,12 +10,25 @@ final class PhabricatorObjectHandle
   private $fullName;
   private $title;
   private $imageURI;
+  private $icon;
   private $timestamp;
   private $status = PhabricatorObjectHandleStatus::STATUS_OPEN;
   private $complete;
   private $disabled;
   private $objectName;
   private $policyFiltered;
+
+  public function setIcon($icon) {
+    $this->icon = $icon;
+    return $this;
+  }
+
+  public function getIcon() {
+    if ($this->icon) {
+      return $this->icon;
+    }
+    return $this->getTypeIcon();
+  }
 
   public function getTypeIcon() {
     if ($this->getPHIDType()) {
@@ -229,8 +242,7 @@ final class PhabricatorObjectHandle
     $icon = null;
     if ($this->getPolicyFiltered()) {
       $icon = id(new PHUIIconView())
-        ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
-        ->setSpriteIcon('lock-grey');
+        ->setIconFont('fa-lock lightgreytext');
     }
 
     return phutil_tag(

@@ -3,7 +3,11 @@
 final class PhabricatorApplicationFact extends PhabricatorApplication {
 
   public function getShortDescription() {
-    return 'Analyze Data';
+    return pht('Chart and Analyze Data');
+  }
+
+  public function getName() {
+    return pht('Facts');
   }
 
   public function getBaseURI() {

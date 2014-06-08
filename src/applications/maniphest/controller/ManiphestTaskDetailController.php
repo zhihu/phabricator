@@ -205,21 +205,6 @@ final class ManiphestTaskDetailController extends ManiphestController {
       $draft_text = null;
     }
 
-    $submit_control = id(new PHUIFormMultiSubmitControl());
-    if (!$task->isClosed()) {
-      $close_image = id(new PHUIIconView())
-          ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
-          ->setSpriteIcon('check');
-      $submit_control->addButtonView(
-        id(new PHUIButtonView())
-          ->setColor(PHUIButtonView::GREY)
-          ->setIcon($close_image)
-          ->setText(pht('Close Task'))
-          ->setName('scuttle')
-          ->addSigil('alternate-submit-button'));
-    }
-    $submit_control->addSubmitButton(pht('Submit'));
-
     $comment_form = new AphrontFormView();
     $comment_form
       ->setUser($user)
@@ -285,7 +270,9 @@ final class ManiphestTaskDetailController extends ManiphestController {
           ->setValue($draft_text)
           ->setID('transaction-comments')
           ->setUser($user))
-      ->appendChild($submit_control);
+      ->appendChild(
+        id(new AphrontFormSubmitControl())
+          ->setValue(pht('Submit')));
 
     $control_map = array(
       ManiphestTransaction::TYPE_STATUS   => 'resolution',
@@ -377,6 +364,8 @@ final class ManiphestTaskDetailController extends ManiphestController {
         ->setFlush(true)
         ->setHeaderText($comment_header)
         ->appendChild($comment_form);
+      $timeline->setQuoteTargetID('transaction-comments');
+      $timeline->setQuoteRef($object_name);
     }
 
     $object_box = id(new PHUIObjectBoxView())
@@ -439,7 +428,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
     $view->addAction(
       id(new PhabricatorActionView())
         ->setName(pht('Edit Task'))
-        ->setIcon('edit')
+        ->setIcon('fa-pencil')
         ->setHref($this->getApplicationURI("/task/edit/{$id}/"))
         ->setDisabled(!$can_edit)
         ->setWorkflow(!$can_edit));
@@ -449,11 +438,11 @@ final class ManiphestTaskDetailController extends ManiphestController {
         id(new PhabricatorActionView())
           ->setName(pht('Automatically Subscribed'))
           ->setDisabled(true)
-          ->setIcon('enable'));
+          ->setIcon('fa-check-circle'));
     } else {
       $action = $viewer_is_cc ? 'rem' : 'add';
       $name   = $viewer_is_cc ? pht('Unsubscribe') : pht('Subscribe');
-      $icon   = $viewer_is_cc ? 'disable' : 'check';
+      $icon   = $viewer_is_cc ? 'fa-minus-circle' : 'fa-plus-circle';
 
       $view->addAction(
         id(new PhabricatorActionView())
@@ -469,7 +458,7 @@ final class ManiphestTaskDetailController extends ManiphestController {
         ->setName(pht('Merge Duplicates In'))
         ->setHref("/search/attach/{$phid}/TASK/merge/")
         ->setWorkflow(true)
-        ->setIcon('merge')
+        ->setIcon('fa-compress')
         ->setDisabled(!$can_edit)
         ->setWorkflow(true));
 
@@ -477,14 +466,14 @@ final class ManiphestTaskDetailController extends ManiphestController {
       id(new PhabricatorActionView())
         ->setName(pht('Create Subtask'))
         ->setHref($this->getApplicationURI("/task/create/?parent={$id}"))
-        ->setIcon('fork'));
+        ->setIcon('fa-level-down'));
 
     $view->addAction(
       id(new PhabricatorActionView())
-        ->setName(pht('Edit Dependencies'))
-        ->setHref("/search/attach/{$phid}/TASK/dependencies/")
+        ->setName(pht('Edit Blocking Tasks'))
+        ->setHref("/search/attach/{$phid}/TASK/blocks/")
         ->setWorkflow(true)
-        ->setIcon('link')
+        ->setIcon('fa-link')
         ->setDisabled(!$can_edit)
         ->setWorkflow(true));
 
@@ -604,9 +593,9 @@ final class ManiphestTaskDetailController extends ManiphestController {
 
     $edge_types = array(
       PhabricatorEdgeConfig::TYPE_TASK_DEPENDED_ON_BY_TASK
-      => pht('Dependent Tasks'),
+      => pht('Blocks'),
       PhabricatorEdgeConfig::TYPE_TASK_DEPENDS_ON_TASK
-      => pht('Depends On'),
+      => pht('Blocked By'),
       PhabricatorEdgeConfig::TYPE_TASK_HAS_RELATED_DREV
       => pht('Differential Revisions'),
       PhabricatorEdgeConfig::TYPE_TASK_HAS_MOCK

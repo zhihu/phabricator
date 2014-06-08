@@ -30,7 +30,8 @@ final class ConduitAPI_diffusion_diffquery_Method
 
     return array(
       'changes' => mpull($result, 'toDictionary'),
-      'effectiveCommit' => $this->getEffectiveCommit($request));
+      'effectiveCommit' => $this->getEffectiveCommit($request),
+    );
   }
 
   protected function getGitResult(ConduitAPIRequest $request) {
@@ -55,7 +56,7 @@ final class ConduitAPI_diffusion_diffquery_Method
     }
 
     $drequest = clone $drequest;
-    $drequest->setCommit($effective_commit);
+    $drequest->updateSymbolicCommit($effective_commit);
 
     $path_change_query = DiffusionPathChangeQuery::newFromDiffusionRequest(
       $drequest);
@@ -160,26 +161,19 @@ final class ConduitAPI_diffusion_diffquery_Method
   private function getEffectiveCommit(ConduitAPIRequest $request) {
     if ($this->effectiveCommit === null) {
       $drequest = $this->getDiffusionRequest();
-      $user = $request->getUser();
-      $commit = null;
 
-      $conduit_result = DiffusionQuery::callConduitWithDiffusionRequest(
-        $user,
+      $path = $drequest->getPath();
+      $result = DiffusionQuery::callConduitWithDiffusionRequest(
+        $request->getUser(),
         $drequest,
         'diffusion.lastmodifiedquery',
         array(
-          'commit' => $drequest->getCommit(),
-          'path' => $drequest->getPath()));
-      $c_dict = $conduit_result['commit'];
-      if ($c_dict) {
-        $commit = PhabricatorRepositoryCommit::newFromDictionary($c_dict);
-      }
-      if (!$commit) {
-        // TODO: Improve error messages here.
-        return null;
-      }
-      $this->effectiveCommit = $commit->getCommitIdentifier();
+          'paths' => array($path => $drequest->getStableCommit()),
+        ));
+
+      $this->effectiveCommit = idx($result, $path);
     }
+
     return $this->effectiveCommit;
   }
 
@@ -205,10 +199,10 @@ final class ConduitAPI_diffusion_diffquery_Method
     if (!$effective_commit) {
       return $this->getEmptyResult(1);
     }
-    // TODO: This side effect is kind of sketchy.
-    $drequest->setCommit($effective_commit);
 
-    $raw_query = DiffusionRawDiffQuery::newFromDiffusionRequest($drequest);
+    $raw_query = DiffusionRawDiffQuery::newFromDiffusionRequest($drequest)
+      ->setAnchorCommit($effective_commit);
+
     $raw_diff = $raw_query->loadRawDiff();
     if (!$raw_diff) {
       return $this->getEmptyResult(2);

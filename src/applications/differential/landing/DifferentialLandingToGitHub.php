@@ -70,7 +70,7 @@ final class DifferentialLandingToGitHub
     }
 
     return $this->createActionView($revision, pht('Land to GitHub'))
-      ->setIcon('octocat');
+      ->setIcon('fa-cloud-upload');
   }
 
   public function pushWorkspaceRepository(
@@ -172,6 +172,7 @@ final class DifferentialLandingToGitHub
             'stronger GitHub token.'))
         ->setSubmitURI($refresh_token_uri)
         ->addCancelButton('/D'.$revision->getId())
+        ->setDisableWorkflowOnSubmit(true)
         ->addSubmitButton(pht('Refresh Account Link'));
     }
   }

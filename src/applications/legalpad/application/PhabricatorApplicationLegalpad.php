@@ -7,7 +7,7 @@ final class PhabricatorApplicationLegalpad extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return pht('Legal Documents');
+    return pht('Agreements and Signatures');
   }
 
   public function getIconName() {
@@ -23,7 +23,7 @@ final class PhabricatorApplicationLegalpad extends PhabricatorApplication {
   }
 
   public function getApplicationGroup() {
-    return self::GROUP_COMMUNICATION;
+    return self::GROUP_UTILITIES;
   }
 
   public function isBeta() {

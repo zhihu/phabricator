@@ -3,15 +3,11 @@
 final class PHUIIconView extends AphrontTagView {
 
   const SPRITE_MINICONS = 'minicons';
-  const SPRITE_ACTIONS = 'actions';
   const SPRITE_APPS = 'apps';
   const SPRITE_TOKENS = 'tokens';
   const SPRITE_PAYMENTS = 'payments';
-  const SPRITE_ICONS = 'icons';
   const SPRITE_LOGIN = 'login';
-  const SPRITE_STATUS = 'status';
   const SPRITE_PROJECTS = 'projects';
-  const SPRITE_BUTTONBAR = 'buttonbar';
 
   const HEAD_SMALL = 'phuihead-small';
   const HEAD_MEDIUM = 'phuihead-medium';
@@ -101,6 +97,7 @@ final class PHUIIconView extends AphrontTagView {
     return array(
       'href' => $this->href,
       'style' => $style,
+      'aural' => false,
       'class' => $classes,
     );
   }

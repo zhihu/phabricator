@@ -14,8 +14,8 @@ final class PhabricatorApplicationManiphest extends PhabricatorApplication {
     return 'maniphest';
   }
 
-  public function getApplicationGroup() {
-    return self::GROUP_CORE;
+  public function isPinnedByDefault(PhabricatorUser $viewer) {
+    return true;
   }
 
   public function getApplicationOrder() {
@@ -91,7 +91,7 @@ final class PhabricatorApplicationManiphest extends PhabricatorApplication {
 
     $item = id(new PHUIListItemView())
       ->setName(pht('Maniphest Task'))
-      ->setAppIcon('maniphest-dark')
+      ->setIcon('fa-anchor')
       ->setHref($this->getBaseURI().'task/create/');
     $items[] = $item;
 

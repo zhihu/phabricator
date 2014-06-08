@@ -198,7 +198,7 @@ final class PhabricatorTypeaheadCommonDatasourceController
           ->setURI('/p/'.$user->getUsername())
           ->setPHID($user->getPHID())
           ->setPriorityString($user->getUsername().' '.GetPinyin($user->getRealName()))  // search user by Pinyin
-          ->setIcon('policy-all')
+          ->setIcon('fa-user bluegrey')
           ->setPriorityType('user')
           ->setClosed($closed);
 
@@ -288,7 +288,8 @@ final class PhabricatorTypeaheadCommonDatasourceController
           ->setDisplayType("Project")
           ->setURI('/project/view/'.$proj->getID().'/')
           ->setPHID($proj->getPHID())
-          ->setIcon('policy-project')
+          ->setIcon($proj->getIcon().' bluegrey')
+          ->setPriorityType('proj')
           ->setClosed($closed);
 
         $proj_result->setImageURI($proj->getProfileImageURI());

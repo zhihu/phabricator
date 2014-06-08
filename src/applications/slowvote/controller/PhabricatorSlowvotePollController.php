@@ -41,13 +41,14 @@ final class PhabricatorSlowvotePollController
           ));
     }
 
-    $header_icon = $poll->getIsClosed() ? 'oh-closed' : 'open';
+    $header_icon = $poll->getIsClosed() ? 'fa-ban' : 'fa-circle-o';
     $header_name = $poll->getIsClosed() ? pht('Closed') : pht('Open');
+    $header_color = $poll->getIsClosed() ? 'dark' : 'bluegrey';
 
     $header = id(new PHUIHeaderView())
       ->setHeader($poll->getQuestion())
       ->setUser($user)
-      ->setStatus($header_icon, '', $header_name)
+      ->setStatus($header_icon, $header_color, $header_name)
       ->setPolicyObject($poll);
 
     $actions = $this->buildActionView($poll);
@@ -97,12 +98,12 @@ final class PhabricatorSlowvotePollController
 
     $is_closed = $poll->getIsClosed();
     $close_poll_text = $is_closed ? pht('Reopen Poll') : pht('Close Poll');
-    $close_poll_icon = $is_closed ? 'enable' : 'disable';
+    $close_poll_icon = $is_closed ? 'fa-play-circle-o' : 'fa-ban';
 
     $view->addAction(
       id(new PhabricatorActionView())
         ->setName(pht('Edit Poll'))
-        ->setIcon('edit')
+        ->setIcon('fa-pencil')
         ->setHref($this->getApplicationURI('edit/'.$poll->getID().'/'))
         ->setDisabled(!$can_edit)
         ->setWorkflow(!$can_edit));

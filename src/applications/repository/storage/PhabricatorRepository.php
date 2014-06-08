@@ -7,7 +7,8 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   implements
     PhabricatorPolicyInterface,
     PhabricatorFlaggableInterface,
-    PhabricatorMarkupInterface {
+    PhabricatorMarkupInterface,
+    PhabricatorDestructableInterface {
 
   /**
    * Shortest hash we'll recognize in raw "a829f32" form.
@@ -25,6 +26,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   const TABLE_SUMMARY = 'repository_summary';
   const TABLE_BADCOMMIT = 'repository_badcommit';
   const TABLE_LINTMESSAGE = 'repository_lintmessage';
+  const TABLE_PARENTS = 'repository_parents';
 
   const SERVE_OFF = 'off';
   const SERVE_READONLY = 'readonly';
@@ -1190,6 +1192,10 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     return Filesystem::isDescendant($this->getLocalPath(), $default_path);
   }
 
+  public function canUsePathTree() {
+    return !$this->isSVN();
+  }
+
   public function canMirror() {
     if ($this->isGit() || $this->isHg()) {
       return true;
@@ -1315,6 +1321,17 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
 
   public function shouldUseMarkupCache($field) {
     return true;
+  }
+
+
+/* -(  PhabricatorDestructableInterface  )----------------------------------- */
+
+  public function destroyObjectPermanently(
+    PhabricatorDestructionEngine $engine) {
+
+    $this->openTransaction();
+    $this->delete();
+    $this->saveTransaction();
   }
 
 }

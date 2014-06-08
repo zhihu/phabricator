@@ -6,12 +6,18 @@ final class PhabricatorApplicationApplications extends PhabricatorApplication {
     return false;
   }
 
+  public function isLaunchable() {
+    // This application is launchable in the traditional sense, but showing it
+    // on the application launch list is confusing.
+    return false;
+  }
+
   public function getBaseURI() {
     return '/applications/';
   }
 
   public function getShortDescription() {
-    return 'Installed Applications';
+    return pht('Explore More Applications');
   }
 
   public function getIconName() {
@@ -22,11 +28,7 @@ final class PhabricatorApplicationApplications extends PhabricatorApplication {
     return "\xE0\xBC\x84";
   }
 
-  public function getApplicationGroup() {
-    return self::GROUP_ADMIN;
-  }
-
- public function getRoutes() {
+  public function getRoutes() {
     return array(
       '/applications/' => array(
         '(?:query/(?P<queryKey>[^/]+)/)?' =>
@@ -38,7 +40,6 @@ final class PhabricatorApplicationApplications extends PhabricatorApplication {
         '(?P<application>\w+)/(?P<action>install|uninstall)/' =>
           'PhabricatorApplicationUninstallController',
         ),
-
     );
   }
 

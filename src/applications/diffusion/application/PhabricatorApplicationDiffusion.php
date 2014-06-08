@@ -3,7 +3,7 @@
 final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
 
   public function getShortDescription() {
-    return pht('Repository Browser');
+    return pht('Host and Browse Repositories');
   }
 
   public function getBaseURI() {
@@ -12,6 +12,10 @@ final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
 
   public function getIconName() {
     return 'diffusion';
+  }
+
+  public function isPinnedByDefault(PhabricatorUser $viewer) {
+    return true;
   }
 
   public function getHelpURI() {
@@ -85,6 +89,7 @@ final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
             'hosting/' => 'DiffusionRepositoryEditHostingController',
             '(?P<serve>serve)/' => 'DiffusionRepositoryEditHostingController',
           ),
+          'pathtree/(?P<dblob>.*)' => 'DiffusionPathTreeController',
           'mirror/' => array(
             'edit/(?:(?P<id>\d+)/)?' => 'DiffusionMirrorEditController',
             'delete/(?P<id>\d+)/' => 'DiffusionMirrorDeleteController',
@@ -113,10 +118,6 @@ final class PhabricatorApplicationDiffusion extends PhabricatorApplication {
         'lint/' => 'DiffusionLintController',
       ),
     );
-  }
-
-  public function getApplicationGroup() {
-    return self::GROUP_CORE;
   }
 
   public function getApplicationOrder() {

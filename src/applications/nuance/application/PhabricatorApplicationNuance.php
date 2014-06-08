@@ -14,7 +14,7 @@ final class PhabricatorApplicationNuance extends PhabricatorApplication {
     return true;
   }
 
-  public function shouldAppearInLaunchView() {
+  public function isLaunchable() {
     // try to hide this even more for now
     return false;
   }
@@ -25,6 +25,10 @@ final class PhabricatorApplicationNuance extends PhabricatorApplication {
 
   public function getBaseURI() {
     return '/nuance/';
+  }
+
+  public function getShortDescription() {
+    return pht('High-Volume Task Queues');
   }
 
   public function getRoutes() {

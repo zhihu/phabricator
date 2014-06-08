@@ -256,6 +256,11 @@ final class DifferentialRevisionViewController extends DifferentialController {
       $target,
       $all_changesets);
 
+    if (!$viewer_is_anonymous) {
+      $comment_view->setQuoteRef('D'.$revision->getID());
+      $comment_view->setQuoteTargetID('comment-content');
+    }
+
     $wrap_id = celerity_generate_unique_node_id();
     $comment_view = phutil_tag(
       'div',
@@ -373,8 +378,6 @@ final class DifferentialRevisionViewController extends DifferentialController {
         $comment_form->setErrorView($review_warnings_panel);
       }
 
-      // TODO: Restore the ability for fields to add accept warnings.
-
       $comment_form->setActions($this->getRevisionCommentActions($revision));
       $action_uri = $this->getApplicationURI(
         'comment/save/'.$revision->getID().'/');
@@ -415,6 +418,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
         $changeset_view,
       ));
     if ($comment_form) {
+
       $page_pane->appendChild($comment_form);
     } else {
       // TODO: For now, just use this to get "Login to Comment".
@@ -484,7 +488,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
     $actions = array();
 
     $actions[] = id(new PhabricatorActionView())
-      ->setIcon('edit')
+      ->setIcon('fa-pencil')
       ->setHref("/differential/revision/edit/{$revision_id}/")
       ->setName(pht('Edit Revision'))
       ->setDisabled(!$can_edit)
@@ -494,7 +498,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
     $this->requireResource('javelin-behavior-phabricator-object-selector');
 
     $actions[] = id(new PhabricatorActionView())
-      ->setIcon('link')
+      ->setIcon('fa-link')
       ->setName(pht('Edit Dependencies'))
       ->setHref("/search/attach/{$revision_phid}/DREV/dependencies/")
       ->setWorkflow(true)
@@ -503,7 +507,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
     $maniphest = 'PhabricatorApplicationManiphest';
     if (PhabricatorApplication::isClassInstalled($maniphest)) {
       $actions[] = id(new PhabricatorActionView())
-        ->setIcon('attach')
+        ->setIcon('fa-anchor')
         ->setName(pht('Edit Maniphest Tasks'))
         ->setHref("/search/attach/{$revision_phid}/TASK/")
         ->setWorkflow(true)
@@ -512,7 +516,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
     $request_uri = $this->getRequest()->getRequestURI();
     $actions[] = id(new PhabricatorActionView())
-      ->setIcon('download')
+      ->setIcon('fa-download')
       ->setName(pht('Download Raw Diff'))
       ->setHref($request_uri->alter('download', 'true'));
 
@@ -549,6 +553,8 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
     $allow_self_accept = PhabricatorEnv::getEnvConfig(
       'differential.allow-self-accept');
+    $always_allow_abandon = PhabricatorEnv::getEnvConfig(
+      'differential.always-allow-abandon');
     $always_allow_close = PhabricatorEnv::getEnvConfig(
       'differential.always-allow-close');
     $allow_reopen = PhabricatorEnv::getEnvConfig(
@@ -582,17 +588,20 @@ final class DifferentialRevisionViewController extends DifferentialController {
     } else {
       switch ($status) {
         case ArcanistDifferentialRevisionStatus::NEEDS_REVIEW:
+          $actions[DifferentialAction::ACTION_ABANDON] = $always_allow_abandon;
           $actions[DifferentialAction::ACTION_ACCEPT] = true;
           $actions[DifferentialAction::ACTION_REJECT] = true;
           $actions[DifferentialAction::ACTION_RESIGN] = $viewer_is_reviewer;
           break;
         case ArcanistDifferentialRevisionStatus::NEEDS_REVISION:
         case ArcanistDifferentialRevisionStatus::CHANGES_PLANNED:
+          $actions[DifferentialAction::ACTION_ABANDON] = $always_allow_abandon;
           $actions[DifferentialAction::ACTION_ACCEPT] = true;
           $actions[DifferentialAction::ACTION_REJECT] = !$viewer_has_rejected;
           $actions[DifferentialAction::ACTION_RESIGN] = $viewer_is_reviewer;
           break;
         case ArcanistDifferentialRevisionStatus::ACCEPTED:
+          $actions[DifferentialAction::ACTION_ABANDON] = $always_allow_abandon;
           $actions[DifferentialAction::ACTION_ACCEPT] = !$viewer_has_accepted;
           $actions[DifferentialAction::ACTION_REJECT] = true;
           $actions[DifferentialAction::ACTION_RESIGN] = $viewer_is_reviewer;
@@ -835,9 +844,11 @@ final class DifferentialRevisionViewController extends DifferentialController {
 
     $viewer = $this->getRequest()->getUser();
 
-    foreach ($changesets as $changeset) {
-      $changeset->attachHunks($changeset->loadHunks());
-    }
+    id(new DifferentialHunkQuery())
+      ->setViewer($viewer)
+      ->withChangesets($changesets)
+      ->needAttachToChangesets(true)
+      ->execute();
 
     $diff = new DifferentialDiff();
     $diff->attachChangesets($changesets);

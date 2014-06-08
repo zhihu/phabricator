@@ -7,16 +7,6 @@ final class PhabricatorApplicationSearchController
   private $navigation;
   private $queryKey;
   private $preface;
-  private $useOffsetPaging;
-
-  public function setUseOffsetPaging($use_offset_paging) {
-    $this->useOffsetPaging = $use_offset_paging;
-    return $this;
-  }
-
-  public function getUseOffsetPaging() {
-    return $this->useOffsetPaging;
-  }
 
   public function setPreface($preface) {
     $this->preface = $preface;
@@ -78,11 +68,6 @@ final class PhabricatorApplicationSearchController
     $engine->setViewer($this->getRequest()->getUser());
 
     $parent = $this->getDelegatingController();
-    $interface = 'PhabricatorApplicationSearchResultsControllerInterface';
-    if (!$parent instanceof $interface) {
-      throw new Exception(
-        "Delegating controller must implement '{$interface}'.");
-    }
   }
 
   public function processRequest() {
@@ -105,7 +90,7 @@ final class PhabricatorApplicationSearchController
 
     if ($request->isFormPost()) {
       $saved_query = $engine->buildSavedQueryFromRequest($request);
-      $this->saveQuery($saved_query);
+      $engine->saveQuery($saved_query);
       return id(new AphrontRedirectResponse())->setURI(
         $engine->getQueryResultsPageURI($saved_query->getQueryKey()).'#R');
     }
@@ -160,7 +145,7 @@ final class PhabricatorApplicationSearchController
 
       // Save the query to generate a query key, so "Save Custom Query..." and
       // other features like Maniphest's "Export..." work correctly.
-      $this->saveQuery($saved_query);
+      $engine->saveQuery($saved_query);
     }
 
     $nav->selectFilter(
@@ -223,33 +208,24 @@ final class PhabricatorApplicationSearchController
 
       $query = $engine->buildQueryFromSavedQuery($saved_query);
 
-      $use_offset_paging = $this->getUseOffsetPaging();
-      if ($use_offset_paging) {
-        $pager = new AphrontPagerView();
-      } else {
-        $pager = new AphrontCursorPagerView();
-      }
+      $pager = $engine->newPagerForSavedQuery($saved_query);
       $pager->readFromRequest($request);
-      $page_size = $engine->getPageSize($saved_query);
-      if (is_finite($page_size)) {
-        $pager->setPageSize($page_size);
+
+      $objects = $engine->executeQuery($query, $pager);
+
+      // TODO: To support Dashboard panels, rendering is moving into
+      // SearchEngines. Move it all the way in and then get rid of this.
+
+      $interface = 'PhabricatorApplicationSearchResultsControllerInterface';
+      if ($parent instanceof $interface) {
+        $list = $parent->renderResultsList($objects, $saved_query);
       } else {
-        // Consider an INF pagesize to mean a large finite pagesize.
+        $engine->setRequest($request);
 
-        // TODO: It would be nice to handle this more gracefully, but math
-        // with INF seems to vary across PHP versions, systems, and runtimes.
-        $pager->setPageSize(0xFFFF);
+        $list = $engine->renderResults(
+          $objects,
+          $saved_query);
       }
-
-      $query->setViewer($request->getUser());
-
-      if ($use_offset_paging) {
-        $objects = $query->executeWithOffsetPager($pager);
-      } else {
-        $objects = $query->executeWithCursorPager($pager);
-      }
-
-      $list = $parent->renderResultsList($objects, $saved_query);
 
       $nav->appendChild($list);
 
@@ -324,9 +300,9 @@ final class PhabricatorApplicationSearchController
         ->setHref($engine->getQueryResultsPageURI($key));
 
       if ($named_query->getIsBuiltin() && $named_query->getIsDisabled()) {
-        $icon = 'new';
+        $icon = 'fa-plus';
       } else {
-        $icon = 'delete';
+        $icon = 'fa-times';
       }
 
       $item->addAction(
@@ -337,15 +313,15 @@ final class PhabricatorApplicationSearchController
 
       if ($named_query->getIsBuiltin()) {
         if ($named_query->getIsDisabled()) {
-          $item->addIcon('delete-grey', pht('Disabled'));
+          $item->addIcon('fa-times lightgreytext', pht('Disabled'));
           $item->setDisabled(true);
         } else {
-          $item->addIcon('lock-grey', pht('Builtin'));
+          $item->addIcon('fa-lock lightgreytext', pht('Builtin'));
         }
       } else {
         $item->addAction(
           id(new PHUIListItemView())
-            ->setIcon('edit')
+            ->setIcon('fa-pencil')
             ->setHref('/search/edit/'.$key.'/'));
       }
 
@@ -375,18 +351,6 @@ final class PhabricatorApplicationSearchController
         'title' => pht("Saved Queries"),
         'device' => true,
       ));
-  }
-
-  private function saveQuery(PhabricatorSavedQuery $query) {
-    $query->setEngineClassName(get_class($this->getSearchEngine()));
-
-    $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
-    try {
-      $query->save();
-    } catch (AphrontQueryDuplicateKeyException $ex) {
-      // Ignore, this is just a repeated search.
-    }
-    unset($unguarded);
   }
 
   protected function buildApplicationMenu() {

@@ -163,6 +163,10 @@ abstract class PhabricatorApplicationTransactionEditor
       $types[] = PhabricatorTransactions::TYPE_TOKEN;
     }
 
+    if ($this->object instanceof PhabricatorProjectInterface) {
+      $types[] = PhabricatorTransactions::TYPE_EDGE;
+    }
+
     return $types;
   }
 
@@ -1079,6 +1083,7 @@ abstract class PhabricatorApplicationTransactionEditor
 
     // TODO: For now, this is just a placeholder.
     $engine = PhabricatorMarkupEngine::getEngine('extract');
+    $engine->setConfig('viewer', $this->requireActor());
 
     $block_xactions = $this->expandRemarkupBlockTransactions(
       $object,
@@ -1098,11 +1103,41 @@ abstract class PhabricatorApplicationTransactionEditor
     array $xactions,
     $blocks,
     PhutilMarkupEngine $engine) {
-    return $this->expandCustomRemarkupBlockTransactions(
+
+    $block_xactions = $this->expandCustomRemarkupBlockTransactions(
       $object,
       $xactions,
       $blocks,
       $engine);
+
+    if ($object instanceof PhabricatorProjectInterface) {
+      $phids = array();
+      foreach ($blocks as $key => $xaction_blocks) {
+        foreach ($xaction_blocks as $block) {
+          $engine->markupText($block);
+          $phids += $engine->getTextMetadata(
+            PhabricatorRemarkupRuleObject::KEY_MENTIONED_OBJECTS,
+            array());
+        }
+      }
+
+      $project_type = PhabricatorProjectPHIDTypeProject::TYPECONST;
+      foreach ($phids as $key => $phid) {
+        if (phid_get_type($phid) != $project_type) {
+          unset($phids[$key]);
+        }
+      }
+
+      if ($phids) {
+        $edge_type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_PROJECT;
+        $block_xactions[] = newv(get_class(head($xactions)), array())
+          ->setTransactionType(PhabricatorTransactions::TYPE_EDGE)
+          ->setMetadataValue('edge:type', $edge_type)
+          ->setNewValue(array('+' => $phids));
+      }
+    }
+
+    return $block_xactions;
   }
 
   protected function expandCustomRemarkupBlockTransactions(
@@ -1891,10 +1926,67 @@ abstract class PhabricatorApplicationTransactionEditor
    * @task mail
    */
   protected function getMailCC(PhabricatorLiskDAO $object) {
+    $phids = array();
+    $has_support = false;
+
     if ($object instanceof PhabricatorSubscribableInterface) {
-      return $this->subscribers;
+      $phids[] = $this->subscribers;
+      $has_support = true;
     }
-    throw new Exception("Capability not supported.");
+
+    // TODO: The Maniphest legacy stuff should get cleaned up here.
+
+    if (($object instanceof ManiphestTask) ||
+        ($object instanceof PhabricatorProjectInterface)) {
+
+      if ($object instanceof PhabricatorProjectInterface) {
+        $project_phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
+          $object->getPHID(),
+          PhabricatorEdgeConfig::TYPE_OBJECT_HAS_PROJECT);
+      } else {
+        $project_phids = $object->getProjectPHIDs();
+      }
+
+      if ($project_phids) {
+        $watcher_type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_WATCHER;
+
+        $query = id(new PhabricatorEdgeQuery())
+          ->withSourcePHIDs($project_phids)
+          ->withEdgeTypes(array($watcher_type));
+        $query->execute();
+
+        $watcher_phids = $query->getDestinationPHIDs();
+        if ($watcher_phids) {
+          // We need to do a visibility check for all the watchers, as
+          // watching a project is not a guarantee that you can see objects
+          // associated with it.
+          $users = id(new PhabricatorPeopleQuery())
+            ->setViewer($this->requireActor())
+            ->withPHIDs($watcher_phids)
+            ->execute();
+
+          $watchers = array();
+          foreach ($users as $user) {
+            $can_see = PhabricatorPolicyFilter::hasCapability(
+              $user,
+              $object,
+              PhabricatorPolicyCapability::CAN_VIEW);
+            if ($can_see) {
+              $watchers[] = $user->getPHID();
+            }
+          }
+          $phids[] = $watchers;
+        }
+      }
+
+      $has_support = true;
+    }
+
+    if (!$has_support) {
+      throw new Exception('Capability not supported.');
+    }
+
+    return array_mergev($phids);
   }
 
 

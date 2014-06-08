@@ -11,7 +11,7 @@ final class PhabricatorApplicationOwners extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return pht('Group Source Code');
+    return pht('Own Source Code');
   }
 
   public function getTitleGlyph() {
@@ -27,7 +27,7 @@ final class PhabricatorApplicationOwners extends PhabricatorApplication {
   }
 
   public function getApplicationGroup() {
-    return self::GROUP_ORGANIZATION;
+    return self::GROUP_UTILITIES;
   }
 
   public function getRoutes() {

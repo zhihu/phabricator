@@ -7,7 +7,7 @@ final class PhabricatorApplicationNotifications extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return pht('Beep Beep Bloop');
+    return pht('Real-Time Updates and Alerts');
   }
 
   public function getRoutes() {
@@ -24,7 +24,7 @@ final class PhabricatorApplicationNotifications extends PhabricatorApplication {
     );
   }
 
-  public function shouldAppearInLaunchView() {
+  public function isLaunchable() {
     return false;
   }
 

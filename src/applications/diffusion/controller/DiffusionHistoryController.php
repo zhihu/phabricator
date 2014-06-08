@@ -113,7 +113,7 @@ final class DiffusionHistoryController extends DiffusionController {
       id(new PhabricatorActionView())
         ->setName(pht('Browse Content'))
         ->setHref($browse_uri)
-        ->setIcon('file'));
+        ->setIcon('fa-files-o'));
 
     // TODO: Sometimes we do have a change view, we need to look at the most
     // recent history entry to figure it out.
@@ -152,7 +152,7 @@ final class DiffusionHistoryController extends DiffusionController {
       ->setUser($viewer)
       ->setActionList($actions);
 
-    $stable_commit = $drequest->getStableCommitName();
+    $stable_commit = $drequest->getStableCommit();
     $callsign = $drequest->getRepository()->getCallsign();
 
     $view->addProperty(

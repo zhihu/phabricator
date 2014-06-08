@@ -142,9 +142,8 @@ JX.install('Event', {
      * @task info
      */
     isNormalMouseEvent : function() {
-      var supportedEvents = ['click', 'mouseup', 'mousedown'];
-
-      if (supportedEvents.indexOf(this.getType()) == -1) {
+      var supportedEvents = {'click': 1, 'mouseup': 1, 'mousedown': 1};
+      if (!(this.getType() in supportedEvents)) {
         return false;
       }
 
@@ -159,7 +158,12 @@ JX.install('Event', {
       }
 
       if (('button' in r) && r.button) {
-        return false;
+        if ('which' in r) {
+          return false;
+        // IE won't have which and has left click == 1 here
+        } else if (r.button != 1) {
+          return false;
+        }
       }
 
       return true;

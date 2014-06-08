@@ -2,7 +2,7 @@
 
 final class PhabricatorApplicationTransactions extends PhabricatorApplication {
 
-  public function shouldAppearInLaunchView() {
+  public function isLaunchable() {
     return false;
   }
 
@@ -15,8 +15,12 @@ final class PhabricatorApplicationTransactions extends PhabricatorApplication {
       '/transactions/' => array(
         'edit/(?<phid>[^/]+)/'
           => 'PhabricatorApplicationTransactionCommentEditController',
+        'remove/(?<phid>[^/]+)/'
+          => 'PhabricatorApplicationTransactionCommentRemoveController',
         'history/(?<phid>[^/]+)/'
           => 'PhabricatorApplicationTransactionCommentHistoryController',
+        'quote/(?<phid>[^/]+)/'
+          => 'PhabricatorApplicationTransactionCommentQuoteController',
         'detail/(?<phid>[^/]+)/'
           => 'PhabricatorApplicationTransactionDetailController',
         '(?P<value>old|new)/(?<phid>[^/]+)/'

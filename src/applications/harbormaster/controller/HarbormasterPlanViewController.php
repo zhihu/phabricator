@@ -118,7 +118,7 @@ final class HarbormasterPlanViewController
             $step->getClassName()))
           ->addAction(
             id(new PHUIListItemView())
-              ->setIcon('delete')
+              ->setIcon('fa-times')
               ->addSigil('harbormaster-build-step-delete')
               ->setWorkflow(true)
               ->setRenderNameAsTooltip(true)
@@ -152,7 +152,7 @@ final class HarbormasterPlanViewController
         ->setHref($edit_uri)
         ->addAction(
           id(new PHUIListItemView())
-            ->setIcon('delete')
+            ->setIcon('fa-times')
             ->addSigil('harbormaster-build-step-delete')
             ->setWorkflow(true)
             ->setDisabled(!$can_edit)
@@ -224,7 +224,7 @@ final class HarbormasterPlanViewController
         ->setHref($this->getApplicationURI("plan/edit/{$id}/"))
         ->setWorkflow(!$can_edit)
         ->setDisabled(!$can_edit)
-        ->setIcon('edit'));
+        ->setIcon('fa-pencil'));
 
     if ($plan->isDisabled()) {
       $list->addAction(
@@ -233,7 +233,7 @@ final class HarbormasterPlanViewController
           ->setHref($this->getApplicationURI("plan/disable/{$id}/"))
           ->setWorkflow(true)
           ->setDisabled(!$can_edit)
-          ->setIcon('enable'));
+          ->setIcon('fa-check'));
     } else {
       $list->addAction(
         id(new PhabricatorActionView())
@@ -241,7 +241,7 @@ final class HarbormasterPlanViewController
           ->setHref($this->getApplicationURI("plan/disable/{$id}/"))
           ->setWorkflow(true)
           ->setDisabled(!$can_edit)
-          ->setIcon('disable'));
+          ->setIcon('fa-ban'));
     }
 
     $list->addAction(
@@ -250,7 +250,7 @@ final class HarbormasterPlanViewController
         ->setHref($this->getApplicationURI("step/add/{$id}/"))
         ->setWorkflow(true)
         ->setDisabled(!$can_edit)
-        ->setIcon('new'));
+        ->setIcon('fa-plus'));
 
     $list->addAction(
       id(new PhabricatorActionView())
@@ -258,7 +258,7 @@ final class HarbormasterPlanViewController
         ->setHref($this->getApplicationURI("plan/run/{$id}/"))
         ->setWorkflow(true)
         ->setDisabled(!$can_edit)
-        ->setIcon('start-sandcastle'));
+        ->setIcon('fa-play-circle'));
 
     return $list;
   }
@@ -314,14 +314,16 @@ final class HarbormasterPlanViewController
         $bound = phutil_tag('em', array(), pht('(null)'));
         if ($is_input) {
           // This is an unbound input. For now, all inputs are always required.
-          $icon = 'warning-red';
+          $icon = PHUIStatusItemView::ICON_WARNING;
+          $color = 'red';
           $icon_label = pht('Required Input');
           $has_conflicts = true;
           $error = pht('This input is required, but not configured.');
         } else {
           // This is an unnamed output. Outputs do not necessarily need to be
           // named.
-          $icon = 'open';
+          $icon = PHUIStatusItemView::ICON_OPEN;
+          $color = 'bluegrey';
           $icon_label = pht('Unused Output');
         }
       } else {
@@ -329,10 +331,12 @@ final class HarbormasterPlanViewController
         if ($is_input) {
           if (isset($available_artifacts[$key])) {
             if ($available_artifacts[$key] == idx($artifact, 'type')) {
-              $icon = 'accept-green';
+              $icon = PHUIStatusItemView::ICON_ACCEPT;
+              $color = 'green';
               $icon_label = pht('Valid Input');
             } else {
-              $icon = 'warning-red';
+              $icon = PHUIStatusItemView::ICON_WARNING;
+              $color = 'red';
               $icon_label = pht('Bad Input Type');
               $has_conflicts = true;
               $error = pht(
@@ -342,7 +346,8 @@ final class HarbormasterPlanViewController
                 idx($artifact, 'type'));
             }
           } else {
-            $icon = 'question-red';
+            $icon = PHUIStatusItemView::ICON_QUESTION;
+            $color = 'red';
             $icon_label = pht('Unknown Input');
             $has_conflicts = true;
             $error = pht(
@@ -351,7 +356,8 @@ final class HarbormasterPlanViewController
               $key);
           }
         } else {
-          $icon = 'down-green';
+          $icon = PHUIStatusItemView::ICON_DOWN;
+          $color = 'green';
           $icon_label = pht('Valid Output');
         }
       }
@@ -367,7 +373,7 @@ final class HarbormasterPlanViewController
 
       $list->addItem(
         id(new PHUIStatusItemView())
-          ->setIcon($icon, $icon_label)
+          ->setIcon($icon, $color, $icon_label)
           ->setTarget($artifact['name'])
           ->setNote($note));
     }

@@ -63,7 +63,6 @@ if (process.getuid() !== 0) {
 var net = require('net');
 var http  = require('http');
 var url = require('url');
-var querystring = require('querystring');
 
 process.on('uncaughtException', function (err) {
   debug.log("\n<<< UNCAUGHT EXCEPTION! >>>\n\n" + err);
@@ -121,9 +120,9 @@ var receive_server = http.createServer(function(request, response) {
     request.on('end', function () {
       ++messages_in;
 
-      var data = querystring.parse(body);
-      debug.log('notification: ' + JSON.stringify(data));
-      broadcast(data);
+      var msg = JSON.parse(body);
+      debug.log('notification: ' + JSON.stringify(msg));
+      broadcast(msg.data);
       response.end();
     });
   } else if (request.url == '/status/') {
@@ -140,7 +139,7 @@ var receive_server = http.createServer(function(request, response) {
         'messages.in': messages_in,
         'messages.out': messages_out,
         'log': config.log,
-        'version': 3
+        'version': 5
       };
 
       response.write(JSON.stringify(status));

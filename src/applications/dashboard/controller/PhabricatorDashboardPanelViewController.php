@@ -41,14 +41,21 @@ final class PhabricatorDashboardPanelViewController
     $rendered_panel = id(new PhabricatorDashboardPanelRenderingEngine())
       ->setViewer($viewer)
       ->setPanel($panel)
+      ->setParentPanelPHIDs(array())
       ->renderPanel();
+
+    $view = id(new PHUIBoxView())
+      ->addMargin(PHUI::MARGIN_LARGE_LEFT)
+      ->addMargin(PHUI::MARGIN_LARGE_RIGHT)
+      ->addMargin(PHUI::MARGIN_LARGE_TOP)
+      ->appendChild($rendered_panel);
 
     return $this->buildApplicationPage(
       array(
         $crumbs,
         $box,
+        $view,
         $timeline,
-        $rendered_panel,
       ),
       array(
         'title' => $title,
@@ -81,7 +88,7 @@ final class PhabricatorDashboardPanelViewController
     $actions->addAction(
       id(new PhabricatorActionView())
         ->setName(pht('Edit Panel'))
-        ->setIcon('edit')
+        ->setIcon('fa-pencil')
         ->setHref($this->getApplicationURI("panel/edit/{$id}/"))
         ->setDisabled(!$can_edit)
         ->setWorkflow(!$can_edit));
@@ -89,7 +96,7 @@ final class PhabricatorDashboardPanelViewController
     $actions->addAction(
       id(new PhabricatorActionView())
         ->setName(pht('View Standalone'))
-        ->setIcon('preview')
+        ->setIcon('fa-eye')
         ->setHref($this->getApplicationURI("panel/render/{$id}/")));
 
     return $actions;
@@ -149,6 +156,7 @@ final class PhabricatorDashboardPanelViewController
 
     $timeline = id(new PhabricatorApplicationTransactionView())
       ->setUser($viewer)
+      ->setShouldTerminate(true)
       ->setObjectPHID($panel->getPHID())
       ->setTransactions($xactions);
 

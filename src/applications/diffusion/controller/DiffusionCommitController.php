@@ -21,6 +21,7 @@ final class DiffusionCommitController extends DiffusionController {
 
   public function processRequest() {
     $drequest = $this->getDiffusionRequest();
+
     $request = $this->getRequest();
     $user = $request->getUser();
 
@@ -32,7 +33,6 @@ final class DiffusionCommitController extends DiffusionController {
     $callsign = $repository->getCallsign();
 
     $content = array();
-
     $commit = id(new DiffusionCommitQuery())
       ->setViewer($request->getUser())
       ->withRepository($repository)
@@ -252,8 +252,7 @@ final class DiffusionCommitController extends DiffusionController {
       if ($count > self::CHANGES_LIMIT && !$show_all_details) {
 
         $icon = id(new PHUIIconView())
-          ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
-          ->setSpriteIcon('transcript');
+          ->setIconFont('fa-files-o');
 
         $button = id(new PHUIButtonView())
           ->setText(pht('Show All Changes'))
@@ -987,7 +986,7 @@ final class DiffusionCommitController extends DiffusionController {
     $action = id(new PhabricatorActionView())
       ->setName(pht('Edit Commit'))
       ->setHref($uri)
-      ->setIcon('edit')
+      ->setIcon('fa-pencil')
       ->setDisabled(!$can_edit)
       ->setWorkflow(!$can_edit);
     $actions->addAction($action);
@@ -999,7 +998,7 @@ final class DiffusionCommitController extends DiffusionController {
     if (PhabricatorApplication::isClassInstalled($maniphest)) {
       $action = id(new PhabricatorActionView())
         ->setName(pht('Edit Maniphest Tasks'))
-        ->setIcon('attach')
+        ->setIcon('fa-anchor')
         ->setHref('/search/attach/'.$commit->getPHID().'/TASK/edge/')
         ->setWorkflow(true)
         ->setDisabled(!$can_edit);
@@ -1009,7 +1008,7 @@ final class DiffusionCommitController extends DiffusionController {
     $action = id(new PhabricatorActionView())
       ->setName(pht('Download Raw Diff'))
       ->setHref($request->getRequestURI()->alter('diff', true))
-      ->setIcon('download');
+      ->setIcon('fa-download');
     $actions->addAction($action);
 
     return $actions;
@@ -1074,32 +1073,57 @@ final class DiffusionCommitController extends DiffusionController {
 
       switch ($request->getAuditStatus()) {
         case PhabricatorAuditStatusConstants::AUDIT_NOT_REQUIRED:
-          $item->setIcon('open-blue', pht('Commented'));
+          $item->setIcon(
+            PHUIStatusItemView::ICON_OPEN,
+            'blue',
+            pht('Commented'));
           break;
         case PhabricatorAuditStatusConstants::AUDIT_REQUIRED:
-          $item->setIcon('warning-blue', pht('Audit Required'));
+          $item->setIcon(
+            PHUIStatusItemView::ICON_WARNING,
+            'blue',
+            pht('Audit Required'));
           break;
         case PhabricatorAuditStatusConstants::CONCERNED:
-          $item->setIcon('reject-red', pht('Concern Raised'));
+          $item->setIcon(
+            PHUIStatusItemView::ICON_REJECT,
+            'red',
+            pht('Concern Raised'));
           break;
         case PhabricatorAuditStatusConstants::ACCEPTED:
-          $item->setIcon('accept-green', pht('Accepted'));
+          $item->setIcon(
+            PHUIStatusItemView::ICON_ACCEPT,
+            'green',
+            pht('Accepted'));
           break;
         case PhabricatorAuditStatusConstants::AUDIT_REQUESTED:
-          $item->setIcon('warning-dark', pht('Audit Requested'));
+          $item->setIcon(
+            PHUIStatusItemView::ICON_WARNING,
+            'dark',
+            pht('Audit Requested'));
           break;
         case PhabricatorAuditStatusConstants::RESIGNED:
-          $item->setIcon('open-dark', pht('Resigned'));
+          $item->setIcon(
+            PHUIStatusItemView::ICON_OPEN,
+            'dark',
+            pht('Resigned'));
           break;
         case PhabricatorAuditStatusConstants::CLOSED:
-          $item->setIcon('accept-blue', pht('Closed'));
+          $item->setIcon(
+            PHUIStatusItemView::ICON_ACCEPT,
+            'blue',
+            pht('Closed'));
           break;
         case PhabricatorAuditStatusConstants::CC:
-          $item->setIcon('info-dark', pht('Subscribed'));
+          $item->setIcon(
+            PHUIStatusItemView::ICON_INFO,
+            'dark',
+            pht('Subscribed'));
           break;
         default:
           $item->setIcon(
-            'question-dark',
+            PHUIStatusItemView::ICON_QUESTION,
+            'dark',
             pht('%s?', $request->getAuditStatus()));
           break;
       }

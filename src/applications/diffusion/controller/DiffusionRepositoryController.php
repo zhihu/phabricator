@@ -83,22 +83,23 @@ final class DiffusionRepositoryController extends DiffusionController {
       $readme = $this->callConduitWithDiffusionRequest(
         'diffusion.readmequery',
         array(
-         'paths' => $browse_results->getPathDicts()
+         'paths' => $browse_results->getPathDicts(),
+         'commit' => $drequest->getStableCommit(),
         ));
     } else {
       $readme = null;
     }
 
-    $content[] = $this->buildHistoryTable(
-      $history_results,
-      $history,
-      $history_exception,
-      $handles);
-
     $content[] = $this->buildBrowseTable(
       $browse_results,
       $browse_paths,
       $browse_exception,
+      $handles);
+
+    $content[] = $this->buildHistoryTable(
+      $history_results,
+      $history,
+      $history_exception,
       $handles);
 
     try {
@@ -149,11 +150,11 @@ final class DiffusionRepositoryController extends DiffusionController {
       ->setPolicyObject($repository);
 
     if (!$repository->isTracked()) {
-      $header->setStatus('policy-noone', '', pht('Inactive'));
+      $header->setStatus('fa-ban', 'dark', pht('Inactive'));
     } else if ($repository->isImporting()) {
-      $header->setStatus('time', 'red', pht('Importing...'));
+      $header->setStatus('fa-clock-o', 'indigo', pht('Importing...'));
     } else {
-      $header->setStatus('oh-ok', '', pht('Active'));
+      $header->setStatus('fa-check', 'bluegrey', pht('Active'));
     }
 
 
@@ -161,7 +162,6 @@ final class DiffusionRepositoryController extends DiffusionController {
 
     $view = id(new PHUIPropertyListView())
       ->setUser($user);
-    $view->addProperty(pht('Callsign'), $repository->getCallsign());
 
     $project_phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
       $repository->getPHID(),
@@ -287,8 +287,7 @@ final class DiffusionRepositoryController extends DiffusionController {
     }
 
     $icon = id(new PHUIIconView())
-      ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
-      ->setSpriteIcon('fork');
+      ->setIconFont('fa-fork');
 
     $button = new PHUIButtonView();
     $button->setText(pht("Show All Branches"));
@@ -360,17 +359,16 @@ final class DiffusionRepositoryController extends DiffusionController {
     }
 
     $icon = id(new PHUIIconView())
-      ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
-      ->setSpriteIcon('tag');
+      ->setIconFont('fa-tag');
 
     $button = new PHUIButtonView();
     $button->setText(pht("Show All Tags"));
     $button->setTag('a');
     $button->setIcon($icon);
     $button->setHref($drequest->generateURI(
-            array(
-              'action' => 'tags',
-            )));
+      array(
+        'action' => 'tags',
+      )));
 
     $header->addActionLink($button);
 
@@ -399,7 +397,7 @@ final class DiffusionRepositoryController extends DiffusionController {
     $view->addAction(
       id(new PhabricatorActionView())
         ->setName(pht('Edit Repository'))
-        ->setIcon('edit')
+        ->setIcon('fa-pencil')
         ->setHref($edit_uri)
         ->setWorkflow(!$can_edit)
         ->setDisabled(!$can_edit));
@@ -412,7 +410,7 @@ final class DiffusionRepositoryController extends DiffusionController {
       $view->addAction(
         id(new PhabricatorActionView())
           ->setName(pht('View Push Logs'))
-          ->setIcon('transcript')
+          ->setIcon('fa-list-alt')
           ->setHref($push_uri));
     }
 
@@ -461,8 +459,7 @@ final class DiffusionRepositoryController extends DiffusionController {
     $callsign = $drequest->getRepository()->getCallsign();
 
     $icon = id(new PHUIIconView())
-      ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
-      ->setSpriteIcon('transcript');
+      ->setIconFont('fa-list-alt');
 
     $button = id(new PHUIButtonView())
       ->setText(pht('View Full History'))
@@ -522,8 +519,7 @@ final class DiffusionRepositoryController extends DiffusionController {
       ->setHeader(pht('Repository'));
 
     $icon = id(new PHUIIconView())
-      ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
-      ->setSpriteIcon('data');
+      ->setIconFont('fa-folder-open');
 
     $button = new PHUIButtonView();
     $button->setText(pht('Browse Repository'));
@@ -533,6 +529,33 @@ final class DiffusionRepositoryController extends DiffusionController {
 
     $header->addActionLink($button);
     $browse_panel->setHeader($header);
+
+    if ($repository->canUsePathTree()) {
+      Javelin::initBehavior(
+        'diffusion-locate-file',
+        array(
+          'controlID' => 'locate-control',
+          'inputID' => 'locate-input',
+          'browseBaseURI' => (string)$drequest->generateURI(
+            array(
+              'action' => 'browse',
+            )),
+          'uri' => (string)$drequest->generateURI(
+            array(
+              'action' => 'pathtree',
+            )),
+        ));
+
+      $form = id(new AphrontFormView())
+        ->setUser($viewer)
+        ->appendChild(
+          id(new AphrontFormTypeaheadControl())
+            ->setHardpointID('locate-control')
+            ->setID('locate-input')
+            ->setLabel(pht('Locate File')));
+      $browse_panel->appendChild($form->buildLayoutView());
+    }
+
     $browse_panel->appendChild($browse_table);
 
     return $browse_panel;

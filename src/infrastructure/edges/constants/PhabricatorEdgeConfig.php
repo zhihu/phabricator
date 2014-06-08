@@ -72,6 +72,9 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
   const TYPE_DASHBOARD_HAS_PANEL        = 45;
   const TYPE_PANEL_HAS_DASHBOARD        = 46;
 
+  const TYPE_OBJECT_HAS_WATCHER         = 47;
+  const TYPE_WATCHER_HAS_OBJECT         = 48;
+
   const TYPE_TEST_NO_CYCLE              = 9000;
 
   const TYPE_PHOB_HAS_ASANATASK         = 80001;
@@ -159,6 +162,9 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
 
       self::TYPE_PANEL_HAS_DASHBOARD => self::TYPE_DASHBOARD_HAS_PANEL,
       self::TYPE_DASHBOARD_HAS_PANEL => self::TYPE_PANEL_HAS_DASHBOARD,
+
+      self::TYPE_OBJECT_HAS_WATCHER => self::TYPE_WATCHER_HAS_OBJECT,
+      self::TYPE_WATCHER_HAS_OBJECT => self::TYPE_OBJECT_HAS_WATCHER
     );
 
     return idx($map, $edge_type);
@@ -286,14 +292,15 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
       case self::TYPE_DREV_HAS_COMMIT:
         return '%s added %d commit(s): %s.';
       case self::TYPE_TASK_DEPENDS_ON_TASK:
+        return '%s added %d blocking task(s): %s.';
+      case self::TYPE_DREV_DEPENDS_ON_DREV:
         return '%s added %d dependencie(s): %s.';
       case self::TYPE_TASK_DEPENDED_ON_BY_TASK:
-        return '%s added %d dependent task(s): %s.';
+        return '%s added %d blocked task(s): %s.';
       case self::TYPE_COMMIT_HAS_TASK:
       case self::TYPE_DREV_HAS_RELATED_TASK:
       case self::TYPE_MOCK_HAS_TASK:
         return '%s added %d task(s): %s.';
-      case self::TYPE_DREV_DEPENDS_ON_DREV:
       case self::TYPE_DREV_DEPENDED_ON_BY_DREV:
       case self::TYPE_TASK_HAS_RELATED_DREV:
       case self::TYPE_COMMIT_HAS_DREV:
@@ -343,6 +350,8 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
         return '%s added %d panel(s): %s.';
       case self::TYPE_PANEL_HAS_DASHBOARD:
         return '%s added %d dashboard(s): %s.';
+      case self::TYPE_OBJECT_HAS_WATCHER:
+        return '%s added %d watcher(s): %s.';
       case self::TYPE_SUBSCRIBED_TO_OBJECT:
       case self::TYPE_UNSUBSCRIBED_FROM_OBJECT:
       case self::TYPE_FILE_HAS_OBJECT:
@@ -361,9 +370,9 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
       case self::TYPE_DREV_HAS_COMMIT:
         return '%s removed %d commit(s): %s.';
       case self::TYPE_TASK_DEPENDS_ON_TASK:
-        return '%s removed %d dependencie(s): %s.';
+        return '%s removed %d blocking task(s): %s.';
       case self::TYPE_TASK_DEPENDED_ON_BY_TASK:
-        return '%s removed %d dependent task(s): %s.';
+        return '%s removed %d blocked task(s): %s.';
       case self::TYPE_COMMIT_HAS_TASK:
       case self::TYPE_DREV_HAS_RELATED_TASK:
       case self::TYPE_MOCK_HAS_TASK:
@@ -418,6 +427,8 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
         return '%s removed %d panel(s): %s.';
       case self::TYPE_PANEL_HAS_DASHBOARD:
         return '%s removed %d dashboard(s): %s.';
+      case self::TYPE_OBJECT_HAS_WATCHER:
+        return '%s removed %d watcher(s): %s.';
       case self::TYPE_SUBSCRIBED_TO_OBJECT:
       case self::TYPE_UNSUBSCRIBED_FROM_OBJECT:
       case self::TYPE_FILE_HAS_OBJECT:
@@ -491,6 +502,8 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
         return '%s updated panels for %s.';
       case self::TYPE_PANEL_HAS_DASHBOARD:
         return '%s updated dashboards for %s.';
+      case self::TYPE_OBJECT_HAS_WATCHER:
+        return '%s updated watchers for %s.';
       case self::TYPE_SUBSCRIBED_TO_OBJECT:
       case self::TYPE_UNSUBSCRIBED_FROM_OBJECT:
       case self::TYPE_FILE_HAS_OBJECT:

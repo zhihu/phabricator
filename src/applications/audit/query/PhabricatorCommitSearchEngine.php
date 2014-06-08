@@ -113,6 +113,10 @@ final class PhabricatorCommitSearchEngine
 
     $names['open'] = pht('Open Audits');
 
+    if ($this->requireViewer()->isLoggedIn()) {
+      $names['authored'] = pht('Authored Commits');
+    }
+
     $names['all'] = pht('All Commits');
 
     return $names;
@@ -140,6 +144,9 @@ final class PhabricatorCommitSearchEngine
           'auditorPHIDs',
           PhabricatorAuditCommentEditor::loadAuditPHIDsForUser($viewer));
         return $query;
+      case 'authored':
+        $query->setParameter('commitAuthorPHIDs', array($viewer->getPHID()));
+        return $query;
       case 'problem':
         $query->setParameter('commitAuthorPHIDs', array($viewer->getPHID()));
         $query->setParameter(
@@ -157,6 +164,37 @@ final class PhabricatorCommitSearchEngine
       DiffusionCommitQuery::AUDIT_STATUS_OPEN => pht('Open'),
       DiffusionCommitQuery::AUDIT_STATUS_CONCERN => pht('Concern Raised'),
     );
+  }
+
+  protected function renderResultList(
+    array $commits,
+    PhabricatorSavedQuery $query,
+    array $handles) {
+
+    assert_instances_of($commits, 'PhabricatorRepositoryCommit');
+
+    $viewer = $this->requireViewer();
+    $nodata = pht('No matching audits.');
+    $view = id(new PhabricatorAuditListView())
+      ->setUser($viewer)
+      ->setCommits($commits)
+      ->setAuthorityPHIDs(
+        PhabricatorAuditCommentEditor::loadAuditPHIDsForUser($viewer))
+      ->setNoDataString($nodata);
+
+    $phids = $view->getRequiredHandlePHIDs();
+    if ($phids) {
+      $handles = id(new PhabricatorHandleQuery())
+        ->setViewer($viewer)
+        ->withPHIDs($phids)
+        ->execute();
+    } else {
+      $handles = array();
+    }
+
+    $view->setHandles($handles);
+
+    return $view->buildList();
   }
 
 }

@@ -248,6 +248,10 @@ abstract class PhabricatorApplicationTransaction
         break;
     }
 
+    if ($this->getComment()) {
+      $phids[] = array($this->getComment()->getAuthorPHID());
+    }
+
     return array_mergev($phids);
   }
 
@@ -336,6 +340,10 @@ abstract class PhabricatorApplicationTransaction
   public function getIcon() {
     switch ($this->getTransactionType()) {
       case PhabricatorTransactions::TYPE_COMMENT:
+        $comment = $this->getComment();
+        if ($comment && $comment->getIsRemoved()) {
+          return 'fa-eraser';
+        }
         return 'fa-comment';
       case PhabricatorTransactions::TYPE_SUBSCRIBERS:
         return 'fa-envelope';
@@ -348,11 +356,7 @@ abstract class PhabricatorApplicationTransaction
       case PhabricatorTransactions::TYPE_BUILDABLE:
         return 'fa-wrench';
       case PhabricatorTransactions::TYPE_TOKEN:
-        if ($this->getNewValue()) {
-          return 'fa-thumbs-o-up';
-        } else {
-          return 'fa-thumbs-o-down';
-        }
+        return 'fa-trophy';
     }
 
     return 'fa-pencil';
@@ -376,6 +380,12 @@ abstract class PhabricatorApplicationTransaction
 
   public function getColor() {
     switch ($this->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_COMMENT;
+        $comment = $this->getComment();
+        if ($comment && $comment->getIsRemoved()) {
+          return 'black';
+        }
+        break;
       case PhabricatorTransactions::TYPE_BUILDABLE:
         switch ($this->getNewValue()) {
           case HarbormasterBuildable::STATUS_PASSED:
@@ -438,12 +448,13 @@ abstract class PhabricatorApplicationTransaction
         return true;
       case PhabricatorTransactions::TYPE_BUILDABLE:
         switch ($this->getNewValue()) {
-          case HarbormasterBuildable::STATUS_PASSED:
-            // For now, just never send mail when builds pass. We might let
+          case HarbormasterBuildable::STATUS_FAILED:
+            // For now, only ever send mail when builds fail. We might let
             // you customize this later, but in most cases this is probably
             // completely uninteresting.
-            return true;
+            return false;
         }
+        return true;
     }
 
     return $this->shouldHide();
@@ -455,13 +466,14 @@ abstract class PhabricatorApplicationTransaction
         return true;
       case PhabricatorTransactions::TYPE_BUILDABLE:
         switch ($this->getNewValue()) {
-          case HarbormasterBuildable::STATUS_PASSED:
+          case HarbormasterBuildable::STATUS_FAILED:
             // For now, don't notify on build passes either. These are pretty
             // high volume and annoying, with very little present value. We
             // might want to turn them back on in the specific case of
             // build successes on the current document?
-            return true;
+            return false;
         }
+        return true;
     }
 
     return $this->shouldHide();
@@ -635,6 +647,12 @@ abstract class PhabricatorApplicationTransaction
 
       case PhabricatorTransactions::TYPE_BUILDABLE:
         switch ($this->getNewValue()) {
+          case HarbormasterBuildable::STATUS_BUILDING:
+            return pht(
+              '%s started building %s.',
+              $this->renderHandleLink($author_phid),
+              $this->renderHandleLink(
+                $this->getMetadataValue('harbormaster:buildablePHID')));
           case HarbormasterBuildable::STATUS_PASSED:
             return pht(
               '%s completed building %s.',
@@ -712,6 +730,13 @@ abstract class PhabricatorApplicationTransaction
         }
       case PhabricatorTransactions::TYPE_BUILDABLE:
         switch ($this->getNewValue()) {
+          case HarbormasterBuildable::STATUS_BUILDING:
+            return pht(
+              '%s started building %s for %s.',
+              $this->renderHandleLink($author_phid),
+              $this->renderHandleLink(
+                $this->getMetadataValue('harbormaster:buildablePHID')),
+              $this->renderHandleLink($object_phid));
           case HarbormasterBuildable::STATUS_PASSED:
             return pht(
               '%s completed building %s for %s.',
@@ -755,6 +780,33 @@ abstract class PhabricatorApplicationTransaction
     switch ($this->getTransactionType()) {
       case PhabricatorTransactions::TYPE_COMMENT:
         return 0.5;
+      case PhabricatorTransactions::TYPE_SUBSCRIBERS:
+        $old = $this->getOldValue();
+        $new = $this->getNewValue();
+
+        $add = array_diff($old, $new);
+        $rem = array_diff($new, $old);
+
+        // If this action is the actor subscribing or unsubscribing themselves,
+        // it is less interesting. In particular, if someone makes a comment and
+        // also implicitly subscribes themselves, we should treat the
+        // transaction group as "comment", not "subscribe". In this specific
+        // case (one affected user, and that affected user it the actor),
+        // decrease the action strength.
+
+        if ((count($add) + count($rem)) != 1) {
+          // Not exactly one CC change.
+          break;
+        }
+
+        $affected_phid = head(array_merge($add, $rem));
+        if ($affected_phid != $this->getAuthorPHID()) {
+          // Affected user is someone else.
+          break;
+        }
+
+        // Make this weaker than TYPE_COMMENT.
+        return 0.25;
     }
     return 1.0;
   }
@@ -822,7 +874,10 @@ abstract class PhabricatorApplicationTransaction
         break;
     }
 
-    return $this->renderTextCorpusChangeDetails();
+    return $this->renderTextCorpusChangeDetails(
+      $viewer,
+      $this->getOldValue(),
+      $this->getNewValue());
   }
 
   public function renderTextCorpusChangeDetails(

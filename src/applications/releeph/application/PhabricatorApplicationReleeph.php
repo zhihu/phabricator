@@ -7,7 +7,7 @@ final class PhabricatorApplicationReleeph extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return pht('Release Branches');
+    return pht('Pull Requests');
   }
 
   public function getBaseURI() {
@@ -16,10 +16,6 @@ final class PhabricatorApplicationReleeph extends PhabricatorApplication {
 
   public function getIconName() {
     return 'releeph';
-  }
-
-  public function getApplicationGroup() {
-    return self::GROUP_ORGANIZATION;
   }
 
   public function isInstalled() {

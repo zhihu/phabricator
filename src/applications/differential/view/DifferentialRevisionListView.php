@@ -75,7 +75,6 @@ final class DifferentialRevisionListView extends AphrontView {
     $this->requireResource('aphront-tooltip-css');
 
     $list = new PHUIObjectItemListView();
-    $list->setCards(true);
 
     foreach ($this->revisions as $revision) {
       $item = id(new PHUIObjectItemView())
@@ -128,8 +127,7 @@ final class DifferentialRevisionListView extends AphrontView {
 
       if (isset($icons['draft'])) {
         $draft = id(new PHUIIconView())
-          ->setSpriteSheet(PHUIIconView::SPRITE_ICONS)
-          ->setSpriteIcon('file-grey')
+          ->setIconFont('fa-comment-o lightgreytext')
           ->addSigil('has-tooltip')
           ->setMetadata(
             array(

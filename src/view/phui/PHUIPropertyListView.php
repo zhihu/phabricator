@@ -10,8 +10,8 @@ final class PHUIPropertyListView extends AphrontView {
   private $classes = array();
   private $stacked;
 
-  const ICON_SUMMARY = 'pl-summary';
-  const ICON_TESTPLAN = 'pl-testplan';
+  const ICON_SUMMARY = 'fa-align-left bluegrey';
+  const ICON_TESTPLAN = 'fa-file-text-o bluegrey';
 
   protected function canAppendChild() {
     return false;
@@ -109,7 +109,28 @@ final class PHUIPropertyListView extends AphrontView {
     require_celerity_resource('phui-property-list-view-css');
 
     $items = array();
-    foreach ($this->parts as $part) {
+
+    $parts = $this->parts;
+
+    // If we have an action list, make sure we render a property part, even
+    // if there are no properties. Otherwise, the action list won't render.
+    if ($this->actionList) {
+      $have_property_part = false;
+      foreach ($this->parts as $part) {
+        if ($part['type'] == 'property') {
+          $have_property_part = true;
+          break;
+        }
+      }
+      if (!$have_property_part) {
+        $parts[] = array(
+          'type' => 'property',
+          'list' => array(),
+        );
+      }
+    }
+
+    foreach ($parts as $part) {
       $type = $part['type'];
       switch ($type) {
         case 'property':
@@ -200,19 +221,18 @@ final class PHUIPropertyListView extends AphrontView {
     }
 
     return phutil_tag(
-        'div',
-        array(
-          'class' => 'phui-property-list-container grouped',
-        ),
-        array($action_list, $list));
+      'div',
+      array(
+        'class' => 'phui-property-list-container grouped',
+      ),
+      array($action_list, $list));
   }
 
   private function renderSectionPart(array $part) {
     $name = $part['name'];
     if ($part['icon']) {
       $icon = id(new PHUIIconView())
-        ->setSpriteSheet(PHUIIconView::SPRITE_STATUS)
-        ->setSpriteIcon($part['icon']);
+        ->setIconFont($part['icon']);
       $name = phutil_tag(
         'span',
         array(

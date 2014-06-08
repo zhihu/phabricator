@@ -7,7 +7,7 @@ final class PhabricatorApplicationFeed extends PhabricatorApplication {
   }
 
   public function getShortDescription() {
-    return pht('Review Activity');
+    return pht('Review Recent Activity');
   }
 
   public function getIconName() {
@@ -26,10 +26,6 @@ final class PhabricatorApplicationFeed extends PhabricatorApplication {
         '(?:query/(?P<queryKey>[^/]+)/)?' => 'PhabricatorFeedListController',
       ),
     );
-  }
-
-  public function getApplicationGroup() {
-    return self::GROUP_COMMUNICATION;
   }
 
 }

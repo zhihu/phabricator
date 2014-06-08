@@ -111,6 +111,17 @@ final class CelerityResourceTransformer {
 
   public function translateResourceURI(array $matches) {
     $uri = trim($matches[1], "'\" \r\t\n");
+    $tail = '';
+
+    // If the resource URI has a query string or anchor, strip it off before
+    // we go looking for the resource. We'll stitch it back on later. This
+    // primarily affects FontAwesome.
+
+    $parts = preg_split('/(?=[?#])/', $uri, 2);
+    if (count($parts) == 2) {
+      $uri = $parts[0];
+      $tail = $parts[1];
+    }
 
     $alternatives = array_unique(
       array(
@@ -142,7 +153,7 @@ final class CelerityResourceTransformer {
       }
     }
 
-    return 'url('.$uri.')';
+    return 'url('.$uri.$tail.')';
   }
 
   private function replaceCSSVariables($path, $data) {
@@ -182,6 +193,11 @@ final class CelerityResourceTransformer {
       'lightviolet'   => '#ecdff1',
       'charcoal'      => '#4b4d51',
       'backdrop'      => '#c4cde0',
+      'hovergrey'     => '#c5cbcf',
+      'hoverblue'     => '#eceff5',
+      'hoverborder'   => '#dfe1e9',
+      'hoverselectedgrey' => '#bbc4ca',
+      'hoverselectedblue' => '#e6e9ee',
 
       // Base Greys
       'lightgreyborder'     => '#C7CCD9',

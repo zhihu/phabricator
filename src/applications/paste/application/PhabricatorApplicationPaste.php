@@ -18,6 +18,10 @@ final class PhabricatorApplicationPaste extends PhabricatorApplication {
     return self::GROUP_UTILITIES;
   }
 
+  public function getShortDescription() {
+    return pht('Share Text Snippets');
+  }
+
   public function getRemarkupRules() {
     return array(
       new PhabricatorPasteRemarkupRule(),
@@ -51,7 +55,7 @@ final class PhabricatorApplicationPaste extends PhabricatorApplication {
 
     $item = id(new PHUIListItemView())
       ->setName(pht('Paste'))
-      ->setAppIcon('paste-dark')
+      ->setIcon('fa-clipboard')
       ->setHref($this->getBaseURI().'create/');
     $items[] = $item;
 

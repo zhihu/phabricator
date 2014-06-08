@@ -36,7 +36,6 @@ final class ManiphestTaskListView extends ManiphestView {
     $handles = $this->handles;
 
     $list = new PHUIObjectItemListView();
-    $list->setCards(true);
     $list->setFlush(true);
 
     $status_map = ManiphestTaskStatus::getTaskStatusMap();
@@ -91,7 +90,7 @@ final class ManiphestTaskListView extends ManiphestView {
       if ($this->showBatchControls) {
         $item->addAction(
           id(new PHUIListItemView())
-            ->setIcon('edit')
+            ->setIcon('fa-pencil')
             ->addSigil('maniphest-edit-task')
             ->setHref('/maniphest/task/edit/'.$task->getID().'/'));
       }
