@@ -20,20 +20,49 @@ final class PhabricatorDashboardPanelTypeQuery
   public function getFieldSpecifications() {
     return array(
       'class' => array(
-        'name' => pht('ApplicationSearch Class'),
-        'type' => 'text',
+        'name' => pht('Search For'),
+        'type' => 'search.application',
       ),
       'key' => array(
-        'name' => pht('ApplicationSearch Key'),
-        'type' => 'text',
+        'name' => pht('Query'),
+        'type' => 'search.query',
+        'control.application' => 'class',
       ),
       'limit' => array(
-        'name' => pht('Maximum Number of Items'),
-        'caption' => pht('Leave this blank for the default number of items'),
+        'name' => pht('Limit'),
+        'caption' => pht('Leave this blank for the default number of items.'),
         'type' => 'text',
       ),
     );
   }
+
+  public function initializeFieldsFromRequest(
+    PhabricatorDashboardPanel $panel,
+    PhabricatorCustomFieldList $field_list,
+    AphrontRequest $request) {
+
+    $map = array();
+    if (strlen($request->getStr('engine'))) {
+      $map['class'] = $request->getStr('engine');
+    }
+
+    if (strlen($request->getStr('query'))) {
+      $map['key'] = $request->getStr('query');
+    }
+
+    $full_map = array();
+    foreach ($map as $key => $value) {
+      $full_map["std:dashboard:core:{$key}"] = $value;
+    }
+
+    foreach ($field_list->getFields() as $field) {
+      $field_key = $field->getFieldKey();
+      if (isset($full_map[$field_key])) {
+        $field->setValueFromStorage($full_map[$field_key]);
+      }
+    }
+  }
+
 
   public function renderPanelContent(
     PhabricatorUser $viewer,
@@ -51,6 +80,7 @@ final class PhabricatorDashboardPanelTypeQuery
     }
 
     $engine->setViewer($viewer);
+    $engine->setContext(PhabricatorApplicationSearchEngine::CONTEXT_PANEL);
 
     $key = $panel->getProperty('key');
     if ($engine->isBuiltinQuery($key)) {

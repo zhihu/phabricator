@@ -23,7 +23,7 @@ final class HarbormasterBuildViewController
       return new Aphront404Response();
     }
 
-    $title = pht("Build %d", $id);
+    $title = pht('Build %d', $id);
 
     $header = id(new PHUIHeaderView())
       ->setHeader($title)
@@ -72,7 +72,7 @@ final class HarbormasterBuildViewController
         ->setHeader(pht(
           'Build Target %d (%s)',
           $build_target->getID(),
-          $build_target->getImplementation()->getName()))
+          $build_target->getName()))
         ->setUser($viewer);
       $properties = new PHUIPropertyListView();
 
@@ -121,7 +121,6 @@ final class HarbormasterBuildViewController
       ),
       array(
         'title' => $title,
-        'device' => true,
       ));
   }
 

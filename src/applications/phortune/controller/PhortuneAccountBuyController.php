@@ -144,7 +144,7 @@ final class PhortuneAccountBuyController
       $form
         ->appendChild(
           id(new AphrontFormSubmitControl())
-            ->setValue(pht("Submit Payment"))
+            ->setValue(pht('Submit Payment'))
             ->setDisabled(!$methods));
     }
 
@@ -176,7 +176,6 @@ final class PhortuneAccountBuyController
       ),
       array(
         'title'   => $title,
-        'device'  => true,
       ));
 
   }

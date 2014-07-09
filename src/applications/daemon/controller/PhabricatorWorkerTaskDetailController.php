@@ -71,7 +71,6 @@ final class PhabricatorWorkerTaskDetailController
       ),
       array(
         'title' => $title,
-        'device' => true,
       ));
   }
 
@@ -139,7 +138,7 @@ final class PhabricatorWorkerTaskDetailController
           $status = pht('Cancelled');
           break;
         default:
-          throw new Exception("Unknown task status!");
+          throw new Exception('Unknown task status!');
       }
     } else {
       $status = pht('Queued');

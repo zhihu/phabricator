@@ -41,7 +41,7 @@ final class PhabricatorFileInfoController extends PhabricatorFileController {
     if ($ttl !== null) {
       $ttl_tag = id(new PHUITagView())
         ->setType(PHUITagView::TYPE_OBJECT)
-        ->setName(pht("Temporary"));
+        ->setName(pht('Temporary'));
       $header->addTag($ttl_tag);
     }
 
@@ -66,7 +66,6 @@ final class PhabricatorFileInfoController extends PhabricatorFileController {
       ),
       array(
         'title' => $file->getName(),
-        'device'  => true,
         'pageObjects' => array($file->getPHID()),
       ));
   }

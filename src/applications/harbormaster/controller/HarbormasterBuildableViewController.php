@@ -36,7 +36,7 @@ final class HarbormasterBuildableViewController
 
     $build_list = $this->buildBuildList($buildable);
 
-    $title = pht("Buildable %d", $id);
+    $title = pht('Buildable %d', $id);
 
     $header = id(new PHUIHeaderView())
       ->setHeader($title)
@@ -70,7 +70,6 @@ final class HarbormasterBuildableViewController
       ),
       array(
         'title' => $title,
-        'device' => true,
       ));
   }
 
@@ -283,12 +282,7 @@ final class HarbormasterBuildableViewController
               break;
           }
 
-          try {
-            $impl = $target->getImplementation();
-            $name = $impl->getName();
-          } catch (Exception $ex) {
-            $name = $target->getClassName();
-          }
+          $name = $target->getName();
 
           $target_list->addItem(
             id(new PHUIStatusItemView())

@@ -3,7 +3,7 @@
 abstract class PhabricatorDaemonManagementWorkflow
   extends PhabricatorManagementWorkflow {
 
-  protected function loadAvailableDaemonClasses() {
+  protected final function loadAvailableDaemonClasses() {
     $loader = new PhutilSymbolLoader();
     return $loader
       ->setAncestorClass('PhutilDaemon')
@@ -11,12 +11,12 @@ abstract class PhabricatorDaemonManagementWorkflow
       ->selectSymbolsWithoutLoading();
   }
 
-  public function getPIDDirectory() {
+  protected final function getPIDDirectory() {
     $path = PhabricatorEnv::getEnvConfig('phd.pid-directory');
     return $this->getControlDirectory($path);
   }
 
-  public function getLogDirectory() {
+  protected final function getLogDirectory() {
     $path = PhabricatorEnv::getEnvConfig('phd.log-directory');
     return $this->getControlDirectory($path);
   }
@@ -35,29 +35,39 @@ abstract class PhabricatorDaemonManagementWorkflow
     return $path;
   }
 
-  public function loadRunningDaemons() {
-    $results = array();
+  protected final function loadRunningDaemons() {
+    $daemons = array();
 
     $pid_dir = $this->getPIDDirectory();
     $pid_files = Filesystem::listDirectory($pid_dir);
-    if (!$pid_files) {
-      return $results;
-    }
 
     foreach ($pid_files as $pid_file) {
-      $pid_data = Filesystem::readFile($pid_dir.'/'.$pid_file);
-      $dict = json_decode($pid_data, true);
-      if (!is_array($dict)) {
-        // Just return a hanging reference, since control code needs to be
-        // robust against unusual system states.
-        $dict = array();
-      }
-      $ref = PhabricatorDaemonReference::newFromDictionary($dict);
-      $ref->setPIDFile($pid_dir.'/'.$pid_file);
-      $results[] = $ref;
+      $daemons[] = PhabricatorDaemonReference::newFromFile(
+        $pid_dir.'/'.$pid_file);
     }
 
-    return $results;
+    return $daemons;
+  }
+
+  protected final function loadAllRunningDaemons() {
+    $local_daemons = $this->loadRunningDaemons();
+
+    $local_ids = array();
+    foreach ($local_daemons as $daemon) {
+      $daemon_log = $daemon->getDaemonLog();
+
+      if ($daemon_log) {
+        $local_ids[] = $daemon_log->getID();
+      }
+    }
+
+    $remote_daemons = id(new PhabricatorDaemonLogQuery())
+      ->setViewer(PhabricatorUser::getOmnipotentUser())
+      ->withoutIDs($local_ids)
+      ->withStatus(PhabricatorDaemonLogQuery::STATUS_ALIVE)
+      ->execute();
+
+    return array_merge($local_daemons, $remote_daemons);
   }
 
   private function findDaemonClass($substring) {
@@ -79,7 +89,7 @@ abstract class PhabricatorDaemonManagementWorkflow
     if (count($match) == 0) {
       throw new PhutilArgumentUsageException(
         pht(
-          "No daemons match '%s'! Use 'phd list' for a list of avialable ".
+          "No daemons match '%s'! Use 'phd list' for a list of available ".
           "daemons.",
           $substring));
     } else if (count($match) > 1) {
@@ -93,8 +103,7 @@ abstract class PhabricatorDaemonManagementWorkflow
     return head($match);
   }
 
-
-  protected function launchDaemon($class, array $argv, $debug) {
+  protected final function launchDaemon($class, array $argv, $debug) {
     $daemon = $this->findDaemonClass($class);
     $console = PhutilConsole::getConsole();
 
@@ -212,7 +221,7 @@ abstract class PhabricatorDaemonManagementWorkflow
     }
   }
 
-  protected function willLaunchDaemons() {
+  protected final function willLaunchDaemons() {
     $console = PhutilConsole::getConsole();
     $console->writeErr(pht('Preparing to launch daemons.')."\n");
 
@@ -224,7 +233,7 @@ abstract class PhabricatorDaemonManagementWorkflow
 /* -(  Commands  )----------------------------------------------------------- */
 
 
-  protected function executeStartCommand($keep_leases = false) {
+  protected final function executeStartCommand($keep_leases = false) {
     $console = PhutilConsole::getConsole();
 
     $running = $this->loadRunningDaemons();
@@ -273,13 +282,11 @@ abstract class PhabricatorDaemonManagementWorkflow
       $this->launchDaemon($name, $argv, $is_debug = false);
     }
 
-    $console->writeErr(pht("Done.")."\n");
-
+    $console->writeErr(pht('Done.')."\n");
     return 0;
   }
 
-
-  protected function executeStopCommand(array $pids) {
+  protected final function executeStopCommand(array $pids) {
     $console = PhutilConsole::getConsole();
 
     $daemons = $this->loadRunningDaemons();
@@ -313,7 +320,7 @@ abstract class PhabricatorDaemonManagementWorkflow
     }
 
     if (empty($running)) {
-      $console->writeErr(pht("No daemons to kill.")."\n");
+      $console->writeErr(pht('No daemons to kill.')."\n");
       return 0;
     }
 
@@ -324,7 +331,7 @@ abstract class PhabricatorDaemonManagementWorkflow
 
       $console->writeErr(pht("Stopping daemon '%s' (%s)...", $name, $pid)."\n");
       if (!$daemon->isRunning()) {
-        $console->writeErr(pht("Daemon is not running.")."\n");
+        $console->writeErr(pht('Daemon is not running.')."\n");
         unset($running[$key]);
         $daemon->updateStatus(PhabricatorDaemonLog::STATUS_EXITED);
       } else {

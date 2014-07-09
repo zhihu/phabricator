@@ -101,7 +101,7 @@ final class PhabricatorStandardPageView extends PhabricatorBarePageView {
     if (!$this->getRequest()) {
       throw new Exception(
         pht(
-          "You must set the Request to render a PhabricatorStandardPageView."));
+          'You must set the Request to render a PhabricatorStandardPageView.'));
     }
 
     $console = $this->getConsole();
@@ -373,19 +373,26 @@ final class PhabricatorStandardPageView extends PhabricatorBarePageView {
         }
 
         $map = CelerityResourceMap::getNamedInstance('phabricator');
-        $swf_uri = $response->getURI($map, 'rsrc/swf/aphlict.swf');
+        $swf_uri = $response->getURI($map, 'rsrc/swf/aphlict.swf', true);
 
         $enable_debug = PhabricatorEnv::getEnvConfig('notification.debug');
+
+        $subscriptions = $this->pageObjects;
+        if ($user) {
+          $subscriptions[] = $user->getPHID();
+        }
+
         Javelin::initBehavior(
           'aphlict-listen',
           array(
-            'id'           => $aphlict_object_id,
-            'containerID'  => $aphlict_container_id,
-            'server'       => $client_uri->getDomain(),
-            'port'         => $client_uri->getPort(),
-            'debug'        => $enable_debug,
-            'swfURI'       => $swf_uri,
-            'pageObjects'  => array_fill_keys($this->pageObjects, true),
+            'id'            => $aphlict_object_id,
+            'containerID'   => $aphlict_container_id,
+            'server'        => $client_uri->getDomain(),
+            'port'          => $client_uri->getPort(),
+            'debug'         => $enable_debug,
+            'swfURI'        => $swf_uri,
+            'pageObjects'   => array_fill_keys($this->pageObjects, true),
+            'subscriptions' => $subscriptions,
           ));
 
         $tail[] = phutil_tag(

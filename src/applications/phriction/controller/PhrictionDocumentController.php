@@ -236,7 +236,6 @@ final class PhrictionDocumentController
       array(
         'pageObjects' => array($document->getPHID()),
         'title'   => $page_title,
-        'device'  => true,
       ));
 
   }
@@ -289,7 +288,7 @@ final class PhrictionDocumentController
     } else if ($age == 1) {
       $when = pht('Yesterday');
     } else {
-      $when = pht("%d Days Ago", $age);
+      $when = pht('%d Days Ago', $age);
     }
     $view->addProperty(pht('Last Updated'), $when);
 

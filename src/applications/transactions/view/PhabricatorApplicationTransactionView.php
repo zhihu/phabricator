@@ -148,7 +148,7 @@ class PhabricatorApplicationTransactionView extends AphrontView {
 
   public function render() {
     if (!$this->getObjectPHID()) {
-      throw new Exception("Call setObjectPHID() before render()!");
+      throw new Exception('Call setObjectPHID() before render()!');
     }
 
     $view = new PHUITimelineView();
@@ -261,6 +261,7 @@ class PhabricatorApplicationTransactionView extends AphrontView {
         return javelin_tag(
           'span',
           array(
+            'class' => 'transaction-comment',
             'sigil' => 'transaction-comment',
             'meta'  => array('phid' => $comment->getTransactionPHID()),
           ),

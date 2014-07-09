@@ -4,6 +4,10 @@ final class LegalpadDocumentListController extends LegalpadController {
 
   private $queryKey;
 
+  public function shouldAllowPublic() {
+    return true;
+  }
+
   public function willProcessRequest(array $data) {
     $this->queryKey = idx($data, 'queryKey');
   }
@@ -16,6 +20,24 @@ final class LegalpadDocumentListController extends LegalpadController {
       ->setNavigation($this->buildSideNav());
 
     return $this->delegateToController($controller);
+  }
+
+  public function buildApplicationCrumbs() {
+    $crumbs = parent::buildApplicationCrumbs();
+
+    $can_create = $this->hasApplicationCapability(
+      LegalpadCapabilityCreateDocuments::CAPABILITY);
+
+    $crumbs->addAction(
+      id(new PHUIListItemView())
+        ->setName(pht('Create Document'))
+        ->setHref($this->getApplicationURI('create/'))
+        ->setIcon('fa-plus-square')
+        ->setDisabled(!$can_create)
+        ->setWorkflow(!$can_create));
+
+
+    return $crumbs;
   }
 
 }

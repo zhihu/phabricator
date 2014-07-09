@@ -50,19 +50,19 @@ final class PhabricatorApplicationSearchController
 
     if (!$parent) {
       throw new Exception(
-        "You must delegate to this controller, not invoke it directly.");
+        'You must delegate to this controller, not invoke it directly.');
     }
 
     $engine = $this->getSearchEngine();
     if (!$engine) {
       throw new Exception(
-        "Call setEngine() before delegating to this controller!");
+        'Call setEngine() before delegating to this controller!');
     }
 
     $nav = $this->getNavigation();
     if (!$nav) {
       throw new Exception(
-        "Call setNavigation() before delegating to this controller!");
+        'Call setNavigation() before delegating to this controller!');
     }
 
     $engine->setViewer($this->getRequest()->getUser());
@@ -174,6 +174,9 @@ final class PhabricatorApplicationSearchController
         pht('Save Custom Query...'));
     }
 
+    // TODO: A "Create Dashboard Panel" action goes here somewhere once
+    // we sort out T5307.
+
     $form->appendChild($submit);
     $filter_view = id(new AphrontListFilterView())->appendChild($form);
 
@@ -231,7 +234,7 @@ final class PhabricatorApplicationSearchController
 
       // TODO: This is a bit hacky.
       if ($list instanceof PHUIObjectItemListView) {
-        $list->setNoDataString(pht("No results found for this query."));
+        $list->setNoDataString(pht('No results found for this query.'));
         $list->setPager($pager);
       } else {
         if ($pager->willShowPagingControls()) {
@@ -265,7 +268,6 @@ final class PhabricatorApplicationSearchController
       $nav,
       array(
         'title' => $title,
-        'device' => true,
       ));
   }
 
@@ -339,7 +341,7 @@ final class PhabricatorApplicationSearchController
 
     $crumbs = $parent
       ->buildApplicationCrumbs()
-      ->addTextCrumb(pht("Saved Queries"), $engine->getQueryManagementURI());
+      ->addTextCrumb(pht('Saved Queries'), $engine->getQueryManagementURI());
 
     $nav->selectFilter('query/edit');
     $nav->setCrumbs($crumbs);
@@ -348,8 +350,7 @@ final class PhabricatorApplicationSearchController
     return $parent->buildApplicationPage(
       $nav,
       array(
-        'title' => pht("Saved Queries"),
-        'device' => true,
+        'title' => pht('Saved Queries'),
       ));
   }
 

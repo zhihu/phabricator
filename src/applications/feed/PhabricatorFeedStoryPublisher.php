@@ -65,7 +65,7 @@ final class PhabricatorFeedStoryPublisher {
   public function publish() {
     $class = $this->storyType;
     if (!$class) {
-      throw new Exception("Call setStoryType() before publishing!");
+      throw new Exception('Call setStoryType() before publishing!');
     }
 
     if (!class_exists($class)) {
@@ -112,9 +112,7 @@ final class PhabricatorFeedStoryPublisher {
     }
 
     $this->insertNotifications($chrono_key);
-    if (PhabricatorEnv::getEnvConfig('notification.enabled')) {
-      $this->sendNotification($chrono_key);
-    }
+    $this->sendNotification($chrono_key);
 
     PhabricatorWorker::scheduleTask(
       'FeedPublisherWorker',
@@ -140,7 +138,7 @@ final class PhabricatorFeedStoryPublisher {
 
     if (!$this->primaryObjectPHID) {
       throw new Exception(
-        "You must call setPrimaryObjectPHID() if you setSubscribedPHIDs()!");
+        'You must call setPrimaryObjectPHID() if you setSubscribedPHIDs()!');
     }
 
     $notif = new PhabricatorFeedStoryNotification();
@@ -176,18 +174,12 @@ final class PhabricatorFeedStoryPublisher {
 
   private function sendNotification($chrono_key) {
     $data = array(
-      'data' => array(
-        'key'  => (string)$chrono_key,
-        'type' => 'notification',
-      ),
+      'key'         => (string)$chrono_key,
+      'type'        => 'notification',
       'subscribers' => $this->subscribedPHIDs,
     );
 
-    try {
-      PhabricatorNotificationClient::postMessage($data);
-    } catch (Exception $ex) {
-      // Ignore, these are not critical.
-    }
+    PhabricatorNotificationClient::tryToPostMessage($data);
   }
 
   /**

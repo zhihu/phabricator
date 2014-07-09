@@ -92,9 +92,9 @@ final class HeraldRuleController extends HeraldController {
     if ($rule->getConfigVersion() > $local_version) {
       throw new Exception(
         pht(
-          "This rule was created with a newer version of Herald. You can not ".
-          "view or edit it in this older version. Upgrade your Phabricator ".
-          "deployment."));
+          'This rule was created with a newer version of Herald. You can not '.
+          'view or edit it in this older version. Upgrade your Phabricator '.
+          'deployment.'));
     }
 
     // Upgrade rule version to our version, since we might add newly-defined
@@ -165,7 +165,7 @@ final class HeraldRuleController extends HeraldController {
       ->appendChild(
         id(new AphrontFormMarkupControl())
           ->setValue(pht(
-            "This %s rule triggers for %s.",
+            'This %s rule triggers for %s.',
             phutil_tag('strong', array(), $rule_type_name),
             phutil_tag('strong', array(), $content_type_name))))
       ->appendChild($trigger_object_control)
@@ -239,7 +239,6 @@ final class HeraldRuleController extends HeraldController {
       ),
       array(
         'title' => pht('Edit Rule'),
-        'device' => true,
       ));
   }
 
@@ -256,15 +255,15 @@ final class HeraldRuleController extends HeraldController {
     $errors = array();
 
     if (!strlen($rule->getName())) {
-      $e_name = pht("Required");
-      $errors[] = pht("Rule must have a name.");
+      $e_name = pht('Required');
+      $errors[] = pht('Rule must have a name.');
     }
 
     $data = json_decode($request->getStr('rule'), true);
     if (!is_array($data) ||
         !$data['conditions'] ||
         !$data['actions']) {
-      throw new Exception("Failed to decode rule data.");
+      throw new Exception('Failed to decode rule data.');
     }
 
     $conditions = array();
@@ -336,8 +335,8 @@ final class HeraldRuleController extends HeraldController {
         $rule->saveTransaction();
 
       } catch (AphrontQueryDuplicateKeyException $ex) {
-        $e_name = pht("Not Unique");
-        $errors[] = pht("Rule name is not unique. Choose a unique name.");
+        $e_name = pht('Not Unique');
+        $errors[] = pht('Rule name is not unique. Choose a unique name.');
       }
     }
 
@@ -398,11 +397,15 @@ final class HeraldRuleController extends HeraldController {
             $current_value = $action->getTarget();
             break;
           default:
-            $target_map = array();
-            foreach ((array)$action->getTarget() as $fbid) {
-              $target_map[$fbid] = $handles[$fbid]->getName();
+            if (is_array($action->getTarget())) {
+              $target_map = array();
+              foreach ((array)$action->getTarget() as $fbid) {
+                $target_map[$fbid] = $handles[$fbid]->getName();
+              }
+              $current_value = $target_map;
+            } else {
+              $current_value = $action->getTarget();
             }
-            $current_value = $target_map;
             break;
         }
 
@@ -596,6 +599,7 @@ final class HeraldRuleController extends HeraldController {
         'buildplan'     => '/typeahead/common/buildplans/',
         'taskpriority'  => '/typeahead/common/taskpriority/',
         'arcanistprojects' => '/typeahead/common/arcanistprojects/',
+        'legaldocuments' => '/typeahead/common/legalpaddocuments/',
       ),
       'username' => $this->getRequest()->getUser()->getUserName(),
       'icons' => mpull($handles, 'getTypeIcon', 'getPHID'),
@@ -643,7 +647,7 @@ final class HeraldRuleController extends HeraldController {
     foreach ($all_rules as $current_rule) {
       if ($current_rule->getIsDisabled()) {
         $current_rule->makeEphemeral();
-        $current_rule->setName($rule->getName(). ' '.pht('(Disabled)'));
+        $current_rule->setName($rule->getName().' '.pht('(Disabled)'));
       }
     }
 

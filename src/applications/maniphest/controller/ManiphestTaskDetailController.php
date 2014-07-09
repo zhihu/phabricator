@@ -388,7 +388,6 @@ final class ManiphestTaskDetailController extends ManiphestController {
       array(
         'title' => 'T'.$task->getID().' '.$task->getTitle(),
         'pageObjects' => array($task->getPHID()),
-        'device' => true,
       ));
   }
 
@@ -554,37 +553,33 @@ final class ManiphestTaskDetailController extends ManiphestController {
 
       $column_groups = mgroup($columns, 'getProjectPHID');
 
-      $project_rows = array();
+      $project_handles = array();
+      $project_annotations = array();
       foreach ($project_phids as $project_phid) {
-        $row = array();
-
         $handle = $this->getHandle($project_phid);
-        $row[] = $handle->renderLink();
+        $project_handles[] = $handle;
 
         $columns = idx($column_groups, $project_phid, array());
         $column = head(array_intersect_key($columns, $in_column_phids));
         if ($column) {
           $column_name = pht('(%s)', $column->getDisplayName());
-          // TODO: This is really hacky but there's no cleaner way to do it
-          // right now, T4022 should give us better tools for this.
-          $column_href = str_replace(
-            'project/view',
-            'project/board',
-            $handle->getURI());
           $column_link = phutil_tag(
             'a',
             array(
-              'href' => $column_href,
+              'href' => $handle->getURI().'board/',
               'class' => 'maniphest-board-link',
             ),
             $column_name);
 
-          $row[] = ' ';
-          $row[] = $column_link;
+          $project_annotations[$project_phid] = array(
+            ' ',
+            $column_link);
         }
-
-        $project_rows[] = phutil_tag('div', array(), $row);
       }
+
+      $project_rows = id(new PHUIHandleTagListView())
+        ->setHandles($project_handles)
+        ->setAnnotations($project_annotations);
     } else {
       $project_rows = phutil_tag('em', array(), pht('None'));
     }

@@ -83,7 +83,7 @@ final class PhrictionHistoryController
           $color = 'green';
           break;
         default:
-          throw new Exception("Unknown change type!");
+          throw new Exception('Unknown change type!');
           break;
       }
 
@@ -162,7 +162,6 @@ final class PhrictionHistoryController
       ),
       array(
         'title'     => pht('Document History'),
-        'device'    => true,
       ));
 
   }

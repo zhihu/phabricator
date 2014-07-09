@@ -3,6 +3,10 @@
 final class PhrequentSearchEngine
   extends PhabricatorApplicationSearchEngine {
 
+  public function getResultTypeDescription() {
+    return pht('Phrequent Time');
+  }
+
   public function getApplicationClassName() {
     return 'PhabricatorApplicationPhrequent';
   }
@@ -186,7 +190,7 @@ final class PhrequentSearchEngine
               ->addSigil('phrequent-stop-tracking')
               ->setWorkflow(true)
               ->setRenderNameAsTooltip(true)
-              ->setName(pht("Stop"))
+              ->setName(pht('Stop'))
               ->setHref(
                 '/phrequent/track/stop/'.
                 $usertime->getObjectPHID().'/'));

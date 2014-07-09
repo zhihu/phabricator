@@ -22,6 +22,10 @@ abstract class PhabricatorApplicationSearchEngine {
   private $errors = array();
   private $customFields = false;
   private $request;
+  private $context;
+
+  const CONTEXT_LIST  = 'list';
+  const CONTEXT_PANEL = 'panel';
 
   public function setViewer(PhabricatorUser $viewer) {
     $this->viewer = $viewer;
@@ -30,9 +34,18 @@ abstract class PhabricatorApplicationSearchEngine {
 
   protected function requireViewer() {
     if (!$this->viewer) {
-      throw new Exception("Call setViewer() before using an engine!");
+      throw new Exception('Call setViewer() before using an engine!');
     }
     return $this->viewer;
+  }
+
+  public function setContext($context) {
+    $this->context = $context;
+    return $this;
+  }
+
+  public function isPanelContext() {
+    return ($this->context == self::CONTEXT_PANEL);
   }
 
   public function saveQuery(PhabricatorSavedQuery $query) {
@@ -118,6 +131,18 @@ abstract class PhabricatorApplicationSearchEngine {
    * @task uri
    */
   abstract protected function getURI($path);
+
+
+  /**
+   * Return a human readable description of the type of objects this query
+   * searches for.
+   *
+   * For example, "Tasks" or "Commits".
+   *
+   * @return string Human-readable description of what this engine is used to
+   *   find.
+   */
+  abstract public function getResultTypeDescription();
 
 
   public function newSavedQuery() {

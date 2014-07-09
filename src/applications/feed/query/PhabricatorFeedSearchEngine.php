@@ -3,6 +3,10 @@
 final class PhabricatorFeedSearchEngine
   extends PhabricatorApplicationSearchEngine {
 
+  public function getResultTypeDescription() {
+    return pht('Feed Stories');
+  }
+
   public function buildSavedQueryFromRequest(AphrontRequest $request) {
     $saved = new PhabricatorSavedQuery();
 
@@ -130,7 +134,13 @@ final class PhabricatorFeedSearchEngine
     array $handles) {
 
     $builder = new PhabricatorFeedBuilder($objects);
-    $builder->setShowHovercards(true);
+
+    if ($this->isPanelContext()) {
+      $builder->setShowHovercards(false);
+    } else {
+      $builder->setShowHovercards(true);
+    }
+
     $builder->setUser($this->requireViewer());
     $view = $builder->buildView();
 

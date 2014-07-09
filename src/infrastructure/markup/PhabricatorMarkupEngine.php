@@ -41,7 +41,7 @@ final class PhabricatorMarkupEngine {
 
   private $objects = array();
   private $viewer;
-  private $version = 8;
+  private $version = 12;
 
 
 /* -(  Markup Pipeline  )---------------------------------------------------- */
@@ -190,7 +190,7 @@ final class PhabricatorMarkupEngine {
 
     if (!isset($this->objects[$key]['output'])) {
       throw new Exception(
-        "Call process() before using results.");
+        'Call process() before using results.');
     }
   }
 

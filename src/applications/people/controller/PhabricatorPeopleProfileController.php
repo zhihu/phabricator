@@ -156,7 +156,6 @@ final class PhabricatorPeopleProfileController
       ),
       array(
         'title' => $user->getFullName(),
-        'device' => true,
       ));
   }
 

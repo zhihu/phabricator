@@ -15,15 +15,16 @@ final class PhabricatorConfigIssueListController
       PhabricatorSetupCheck::countUnignoredIssues($issues));
 
     $list = $this->buildIssueList($issues);
-    $list->setNoDataString(pht("There are no open setup issues."));
+    $list->setNoDataString(pht('There are no open setup issues.'));
+    $list->setStackable(true);
 
-    $header = id(new PHUIHeaderView())
-      ->setHeader(pht('Open Phabricator Setup Issues'));
+    $box = id(new PHUIObjectBoxView())
+      ->setHeaderText(pht('Open Phabricator Setup Issues'))
+      ->appendChild($list);
 
     $nav->appendChild(
       array(
-        $header,
-        $list,
+        $box,
       ));
 
     $title = pht('Setup Issues');
@@ -38,7 +39,6 @@ final class PhabricatorConfigIssueListController
       $nav,
       array(
         'title' => $title,
-        'device' => true,
       ));
   }
 

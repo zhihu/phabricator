@@ -3,8 +3,15 @@
 final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
   private $disableMacro = false;
 
+  private $disableFullScreen = false;
+
   public function setDisableMacros($disable) {
     $this->disableMacro = $disable;
+    return $this;
+  }
+
+  public function setDisableFullScreen($disable) {
+    $this->disableFullScreen = $disable;
     return $this;
   }
 
@@ -91,15 +98,17 @@ final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
           'usage/formatting_reference'),
       );
 
-    $actions[] = array(
-      'spacer' => true,
-      'align' => 'right',
-    );
+    if (!$this->disableFullScreen) {
+      $actions[] = array(
+        'spacer' => true,
+        'align' => 'right',
+      );
 
-    $actions['fa-arrows-alt'] = array(
-      'tip' => pht('Fullscreen Mode'),
-      'align' => 'right',
-    );
+      $actions['fa-arrows-alt'] = array(
+        'tip' => pht('Fullscreen Mode'),
+        'align' => 'right',
+      );
+    }
 
     $buttons = array();
     foreach ($actions as $action => $spec) {

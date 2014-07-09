@@ -151,6 +151,17 @@ JX.install('DraggableList', {
         return;
       }
 
+      if (e.getNode('tag:a')) {
+        // Never start a drag if we're somewhere inside an <a> tag. This makes
+        // links unclickable in Firefox.
+        return;
+      }
+
+      if (JX.Stratcom.pass()) {
+        // Let other handlers deal with this event before we do.
+        return;
+      }
+
       e.kill();
 
       this._dragging = e.getNode(this._sigil);
@@ -249,7 +260,6 @@ JX.install('DraggableList', {
 
     _getCurrentTarget : function(p) {
       var ghost = this.getGhostNode();
-      var target = this._target;
       var targets = this._targets;
       var dragging = this._dragging;
 
@@ -444,7 +454,7 @@ JX.install('DraggableList', {
     _unlock : function() {
       if (__DEV__) {
         if (!this._locked) {
-          JX.$E("JX.Draggable.unlock(): Draggable is not locked!");
+          JX.$E('JX.Draggable.unlock(): Draggable is not locked!');
         }
       }
       this._locked--;

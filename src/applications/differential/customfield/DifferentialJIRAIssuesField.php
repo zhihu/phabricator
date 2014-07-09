@@ -26,7 +26,11 @@ final class DifferentialJIRAIssuesField
   }
 
   public function setValueFromStorage($value) {
-    $this->setValue(phutil_json_decode($value));
+    try {
+      $this->setValue(phutil_json_decode($value));
+    } catch (PhutilJSONParserException $ex) {
+      $this->setValue(array());
+    }
     return $this;
   }
 
@@ -183,8 +187,8 @@ final class DifferentialJIRAIssuesField
           $type,
           pht('Invalid'),
           pht(
-            "Some JIRA issues could not be loaded. They may not exist, or ".
-            "you may not have permission to view them: %s",
+            'Some JIRA issues could not be loaded. They may not exist, or '.
+            'you may not have permission to view them: %s',
             $bad),
           $xaction);
       }

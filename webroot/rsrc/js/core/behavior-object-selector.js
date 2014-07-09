@@ -65,7 +65,7 @@ JX.behavior('phabricator-object-selector', function(config) {
       'span',
       {className: 'phui-icon-view phui-font-fa ' +
         'fa-external-link phabricator-object-selector-popicon'},
-      "");
+      '');
 
     var view_object_link = JX.$N(
       'a',
@@ -182,7 +182,7 @@ JX.behavior('phabricator-object-selector', function(config) {
     JX.$(config.query),
     ['change', 'keydown', 'keyup', 'keypress'],
     null,
-    function(e) {
+    function() {
       var cur_value = JX.$(config.query).value;
       if (last_value == cur_value) {
         return;

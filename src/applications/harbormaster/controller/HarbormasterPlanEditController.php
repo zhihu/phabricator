@@ -97,7 +97,7 @@ final class HarbormasterPlanEditController
     } else {
       $id = $plan->getID();
       $crumbs->addTextCrumb(
-        pht("Plan %d", $id),
+        pht('Plan %d', $id),
         $this->getApplicationURI("plan/{$id}/"));
       $crumbs->addTextCrumb(pht('Edit'));
     }
@@ -109,7 +109,6 @@ final class HarbormasterPlanEditController
       ),
       array(
         'title' => $title,
-        'device' => true,
       ));
   }
 

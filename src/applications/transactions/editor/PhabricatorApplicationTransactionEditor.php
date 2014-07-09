@@ -252,13 +252,13 @@ abstract class PhabricatorApplicationTransactionEditor
   protected function getCustomTransactionOldValue(
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
-    throw new Exception("Capability not supported!");
+    throw new Exception('Capability not supported!');
   }
 
   protected function getCustomTransactionNewValue(
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
-    throw new Exception("Capability not supported!");
+    throw new Exception('Capability not supported!');
   }
 
   protected function transactionHasEffect(
@@ -854,7 +854,7 @@ abstract class PhabricatorApplicationTransactionEditor
 
     if (!$this->getContentSource()) {
       throw new Exception(
-        "Call setContentSource() before applyTransactions()!");
+        'Call setContentSource() before applyTransactions()!');
     }
 
     // Do a bunch of sanity checks that the incoming transactions are fresh.
@@ -869,13 +869,13 @@ abstract class PhabricatorApplicationTransactionEditor
         throw new PhabricatorApplicationTransactionStructureException(
           $xaction,
           pht(
-            "You can not apply transactions which already have IDs/PHIDs!"));
+            'You can not apply transactions which already have IDs/PHIDs!'));
       }
       if ($xaction->getObjectPHID()) {
         throw new PhabricatorApplicationTransactionStructureException(
           $xaction,
           pht(
-            "You can not apply transactions which already have objectPHIDs!"));
+            'You can not apply transactions which already have objectPHIDs!'));
       }
       if ($xaction->getAuthorPHID()) {
         throw new PhabricatorApplicationTransactionStructureException(
@@ -1131,6 +1131,7 @@ abstract class PhabricatorApplicationTransactionEditor
       if ($phids) {
         $edge_type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_PROJECT;
         $block_xactions[] = newv(get_class(head($xactions)), array())
+          ->setIgnoreOnNoEffect(true)
           ->setTransactionType(PhabricatorTransactions::TYPE_EDGE)
           ->setMetadataValue('edge:type', $edge_type)
           ->setNewValue(array('+' => $phids));
@@ -1869,7 +1870,7 @@ abstract class PhabricatorApplicationTransactionEditor
    * @task mail
    */
   protected function buildReplyHandler(PhabricatorLiskDAO $object) {
-    throw new Exception("Capability not supported.");
+    throw new Exception('Capability not supported.');
   }
 
 
@@ -1877,7 +1878,7 @@ abstract class PhabricatorApplicationTransactionEditor
    * @task mail
    */
   protected function getMailSubjectPrefix() {
-    throw new Exception("Capability not supported.");
+    throw new Exception('Capability not supported.');
   }
 
 
@@ -1910,7 +1911,7 @@ abstract class PhabricatorApplicationTransactionEditor
    * @task mail
    */
   protected function buildMailTemplate(PhabricatorLiskDAO $object) {
-    throw new Exception("Capability not supported.");
+    throw new Exception('Capability not supported.');
   }
 
 
@@ -1918,7 +1919,7 @@ abstract class PhabricatorApplicationTransactionEditor
    * @task mail
    */
   protected function getMailTo(PhabricatorLiskDAO $object) {
-    throw new Exception("Capability not supported.");
+    throw new Exception('Capability not supported.');
   }
 
 
@@ -2196,7 +2197,9 @@ abstract class PhabricatorApplicationTransactionEditor
     $this->setHeraldAdapter($adapter);
     $this->setHeraldTranscript($xscript);
 
-    return $this->didApplyHeraldRules($object, $adapter, $xscript);
+    return array_merge(
+      $this->didApplyHeraldRules($object, $adapter, $xscript),
+      $adapter->getQueuedTransactions());
   }
 
   protected function didApplyHeraldRules(

@@ -5,6 +5,10 @@ final class PhabricatorDashboardViewController
 
   private $id;
 
+  public function shouldAllowPublic() {
+    return true;
+  }
+
   public function willProcessRequest(array $data) {
     $this->id = $data['id'];
   }
@@ -42,7 +46,6 @@ final class PhabricatorDashboardViewController
       ),
       array(
         'title' => $title,
-        'device' => true,
       ));
   }
 
@@ -70,7 +73,7 @@ final class PhabricatorDashboardViewController
           'yet. Use %s to add panels.',
           phutil_tag(
             'a',
-            array('href'=>$manage_uri),
+            array('href' => $manage_uri),
             pht('Manage Dashboard'))));
   }
 

@@ -10,7 +10,8 @@ final class DifferentialRevision extends DifferentialDAO
     PhabricatorSubscribableInterface,
     PhabricatorCustomFieldInterface,
     PhabricatorApplicationTransactionInterface,
-    PhabricatorDestructableInterface {
+    PhabricatorDestructableInterface,
+    PhabricatorProjectInterface {
 
   protected $title = '';
   protected $originalTitle;
@@ -359,6 +360,14 @@ final class DifferentialRevision extends DifferentialDAO
 
   public function getHarbormasterContainerPHID() {
     return $this->getPHID();
+  }
+
+  public function getBuildVariables() {
+    return array();
+  }
+
+  public function getAvailableBuildVariables() {
+    return array();
   }
 
 

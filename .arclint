@@ -1,7 +1,8 @@
 {
   "exclude": [
     "(^externals/)",
-    "(\\.lint-test$)"
+    "(^webroot/rsrc/externals/)",
+    "(/__tests__/data/)"
   ],
   "linters": {
     "chmod": {
@@ -10,32 +11,40 @@
     "filename": {
       "type": "filename"
     },
+    "generated": {
+      "type": "generated"
+    },
     "javelin": {
       "type": "javelin",
       "include": "(\\.js$)",
       "exclude": [
-        "(^externals/JsShrink/)",
-        "(^support/aphlict/)",
-        "(^webroot/rsrc/externals/raphael/)"
+        "(^support/aphlict/)"
       ]
     },
     "jshint": {
       "type": "jshint",
       "include": "(\\.js$)",
-      "exclude": [
-        "(^externals/JsShrink/)",
-        "(^webroot/rsrc/externals/raphael/)"
-      ],
-      "flags": ["--config=support/jshint/jshintconfig"]
+      "jshint.jshintrc": "support/jshint/jshintconfig"
     },
-    "generated": {
-      "type": "generated"
+    "json": {
+      "type": "json",
+      "include": [
+        "(^src/docs/book/.*\\.book$)",
+        "(^support/jshint/jshintconfig$)",
+        "(^\\.arcconfig$)",
+        "(^\\.arclint$)",
+        "(\\.json$)"
+      ]
     },
     "merge-conflict": {
       "type": "merge-conflict"
     },
     "nolint": {
       "type": "nolint"
+    },
+    "phutil-library": {
+      "type": "phutil-library",
+      "include": "(\\.php$)"
     },
     "phutil-xhpast": {
       "type": "phutil-xhpast",
@@ -44,9 +53,8 @@
         "phutil_escape_html": "The phutil_escape_html() function is deprecated. Raw strings passed to phutil_tag() or hsprintf() are escaped automatically."
       }
     },
-    "phutil-library": {
-      "type": "phutil-library",
-      "include": "(\\.php$)"
+    "spelling": {
+      "type": "spelling"
     },
     "text": {
       "type": "text",
@@ -63,20 +71,16 @@
         "(^\\.arclint)"
       ]
     },
-    "spelling": {
-      "type": "spelling"
-    },
     "xhpast": {
       "type": "xhpast",
       "include": "(\\.php$)",
       "severity": {
         "16": "advice",
-        "29": "warning",
-        "31": "error",
-        "34": "error",
-        "35": "error"
+        "34": "error"
       },
-      "xhpast.naminghook": "PhabricatorSymbolNameLinter"
+      "xhpast.naminghook": "PhabricatorSymbolNameLinter",
+      "xhpast.php-version": "5.2.3",
+      "xhpast.php-version.windows": "5.3.0"
     }
   }
 }

@@ -3,6 +3,10 @@
 final class HarbormasterBuildableSearchEngine
   extends PhabricatorApplicationSearchEngine {
 
+  public function getResultTypeDescription() {
+    return pht('Harbormaster Buildables');
+  }
+
   public function getApplicationClassName() {
     return 'PhabricatorApplicationHarbormaster';
   }
@@ -205,21 +209,10 @@ final class HarbormasterBuildableSearchEngine
         $item->addIcon('fa-wrench grey', pht('Manual'));
       }
 
-      switch ($buildable->getBuildableStatus()) {
-        case HarbormasterBuildable::STATUS_PASSED:
-          $item->setBarColor('green');
-          $item->addByline(pht('Build Passed'));
-          break;
-        case HarbormasterBuildable::STATUS_FAILED:
-          $item->setBarColor('red');
-          $item->addByline(pht('Build Failed'));
-          break;
-        case HarbormasterBuildable::STATUS_BUILDING:
-          $item->setBarColor('red');
-          $item->addByline(pht('Building'));
-          break;
-
-      }
+      $item->setBarColor(HarbormasterBuildable::getBuildableStatusColor(
+        $buildable->getBuildableStatus()));
+      $item->addByline(HarbormasterBuildable::getBuildableStatusName(
+        $buildable->getBuildableStatus()));
 
       $list->addItem($item);
 

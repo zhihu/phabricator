@@ -75,6 +75,45 @@ final class HarbormasterBuild extends HarbormasterDAO
     }
   }
 
+  public static function getBuildStatusIcon($status) {
+    switch ($status) {
+      case self::STATUS_INACTIVE:
+      case self::STATUS_PENDING:
+        return PHUIStatusItemView::ICON_OPEN;
+      case self::STATUS_BUILDING:
+        return PHUIStatusItemView::ICON_RIGHT;
+      case self::STATUS_PASSED:
+        return PHUIStatusItemView::ICON_ACCEPT;
+      case self::STATUS_FAILED:
+        return PHUIStatusItemView::ICON_REJECT;
+      case self::STATUS_ERROR:
+        return PHUIStatusItemView::ICON_MINUS;
+      case self::STATUS_STOPPED:
+        return PHUIStatusItemView::ICON_MINUS;
+      default:
+        return PHUIStatusItemView::ICON_QUESTION;
+    }
+  }
+
+  public static function getBuildStatusColor($status) {
+    switch ($status) {
+      case self::STATUS_INACTIVE:
+        return 'dark';
+      case self::STATUS_PENDING:
+      case self::STATUS_BUILDING:
+        return 'blue';
+      case self::STATUS_PASSED:
+        return 'green';
+      case self::STATUS_FAILED:
+      case self::STATUS_ERROR:
+        return 'red';
+      case self::STATUS_STOPPED:
+        return 'dark';
+      default:
+        return 'bluegrey';
+    }
+  }
+
   public static function initializeNewBuild(PhabricatorUser $actor) {
     return id(new HarbormasterBuild())
       ->setBuildStatus(self::STATUS_INACTIVE);
@@ -176,7 +215,7 @@ final class HarbormasterBuild extends HarbormasterDAO
         array($name))
       ->executeOne();
     if ($artifact === null) {
-      throw new Exception("Artifact not found!");
+      throw new Exception('Artifact not found!');
     }
     return $artifact;
   }
@@ -196,22 +235,9 @@ final class HarbormasterBuild extends HarbormasterDAO
     $buildable = $this->getBuildable();
     $object = $buildable->getBuildableObject();
 
-    $repo = null;
-    if ($object instanceof DifferentialDiff) {
-      $results['buildable.diff'] = $object->getID();
-      $revision = $object->getRevision();
-      $results['buildable.revision'] = $revision->getID();
-      $repo = $revision->getRepository();
-    } else if ($object instanceof PhabricatorRepositoryCommit) {
-      $results['buildable.commit'] = $object->getCommitIdentifier();
-      $repo = $object->getRepository();
-    }
+    $object_variables = $object->getBuildVariables();
 
-    if ($repo) {
-      $results['repository.callsign'] = $repo->getCallsign();
-      $results['repository.vcs'] = $repo->getVersionControlSystem();
-      $results['repository.uri'] = $repo->getPublicCloneURI();
-    }
+    $results = $object_variables + $results;
 
     $results['step.timestamp'] = time();
     $results['build.id'] = $this->getID();
@@ -220,22 +246,23 @@ final class HarbormasterBuild extends HarbormasterDAO
   }
 
   public static function getAvailableBuildVariables() {
-    return array(
-      'buildable.diff' =>
-        pht('The differential diff ID, if applicable.'),
-      'buildable.revision' =>
-        pht('The differential revision ID, if applicable.'),
-      'buildable.commit' => pht('The commit identifier, if applicable.'),
-      'repository.callsign' =>
-        pht('The callsign of the repository in Phabricator.'),
-      'repository.vcs' =>
-        pht('The version control system, either "svn", "hg" or "git".'),
-      'repository.uri' =>
-        pht('The URI to clone or checkout the repository from.'),
+    $objects = id(new PhutilSymbolLoader())
+      ->setAncestorClass('HarbormasterBuildableInterface')
+      ->loadObjects();
+
+    $variables = array();
+    $variables[] = array(
       'step.timestamp' => pht('The current UNIX timestamp.'),
       'build.id' => pht('The ID of the current build.'),
       'target.phid' => pht('The PHID of the current build target.'),
     );
+
+    foreach ($objects as $object) {
+      $variables[] = $object->getAvailableBuildVariables();
+    }
+
+    $variables = array_mergev($variables);
+    return $variables;
   }
 
   public function isComplete() {

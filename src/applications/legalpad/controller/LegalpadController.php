@@ -19,19 +19,10 @@ abstract class LegalpadController extends PhabricatorController {
       ->setViewer($user)
       ->addNavigationItems($nav->getMenu());
 
+    $nav->addLabel(pht('Signatures'));
+    $nav->addFilter('signatures/', pht('Find Signatures'));
+
     return $nav;
-  }
-
-  public function buildApplicationCrumbs() {
-    $crumbs = parent::buildApplicationCrumbs();
-
-    $crumbs->addAction(
-      id(new PHUIListItemView())
-        ->setName(pht('Create Document'))
-        ->setHref($this->getApplicationURI('create/'))
-        ->setIcon('fa-plus-square'));
-
-    return $crumbs;
   }
 
   public function buildApplicationMenu() {

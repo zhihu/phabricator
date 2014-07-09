@@ -13,6 +13,7 @@ final class PhabricatorDashboardPanel
   protected $panelType;
   protected $viewPolicy;
   protected $editPolicy;
+  protected $isArchived = 0;
   protected $properties = array();
 
   private $customFields = self::ATTACHABLE;
@@ -22,6 +23,17 @@ final class PhabricatorDashboardPanel
       ->setName('')
       ->setViewPolicy(PhabricatorPolicies::POLICY_USER)
       ->setEditPolicy($actor->getPHID());
+  }
+
+  public static function copyPanel(
+    PhabricatorDashboardPanel $dst,
+    PhabricatorDashboardPanel $src) {
+
+    $dst->name = $src->name;
+    $dst->panelType = $src->panelType;
+    $dst->properties = $src->properties;
+
+    return $dst;
   }
 
   public function getConfiguration() {

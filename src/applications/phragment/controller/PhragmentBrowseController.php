@@ -9,7 +9,7 @@ final class PhragmentBrowseController extends PhragmentController {
   }
 
   public function willProcessRequest(array $data) {
-    $this->dblob = idx($data, "dblob", "");
+    $this->dblob = idx($data, 'dblob', '');
   }
 
   public function processRequest() {
@@ -91,7 +91,7 @@ final class PhragmentBrowseController extends PhragmentController {
         $list),
       array(
         'title' => pht('Browse Fragments'),
-        'device' => true));
+      ));
   }
 
 }

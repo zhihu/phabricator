@@ -11,11 +11,11 @@ final class ConduitAPI_repository_create_Method
   }
 
   public function getMethodStatusDescription() {
-    return "Repository methods are new and subject to change.";
+    return 'Repository methods are new and subject to change.';
   }
 
   public function getMethodDescription() {
-    return "Create a new repository (Admin Only).";
+    return 'Create a new repository (Admin Only).';
   }
 
   public function defineParamTypes() {
@@ -30,7 +30,6 @@ final class ConduitAPI_repository_create_Method
       'tracking'            => 'optional bool',
       'uri'                 => 'optional string',
       'credentialPHID'      => 'optional string',
-      'localPath'           => 'optional string',
       'svnSubpath'          => 'optional string',
       'branchFilter'        => 'optional list<string>',
       'closeCommitsFilter'  => 'optional list<string>',
@@ -100,12 +99,14 @@ final class ConduitAPI_repository_create_Method
 
     $repository->setCredentialPHID($request->getValue('credentialPHID'));
 
+    $remote_uri = $request->getValue('uri');
+    PhabricatorRepository::assertValidRemoteURI($remote_uri);
+
     $details = array(
       'encoding'          => $request->getValue('encoding'),
       'description'       => $request->getValue('description'),
       'tracking-enabled'  => (bool)$request->getValue('tracking', true),
-      'remote-uri'        => $request->getValue('uri'),
-      'local-path'        => $request->getValue('localPath'),
+      'remote-uri'        => $remote_uri,
       'branch-filter'     => array_fill_keys(
         $request->getValue('branchFilter', array()),
         true),

@@ -32,7 +32,7 @@ final class PhabricatorFactChartController extends PhabricatorFactController {
 
     if (!$points) {
       // NOTE: Raphael crashes Safari if you hand it series with no points.
-      throw new Exception("No data to show!");
+      throw new Exception('No data to show!');
     }
 
     // Limit amount of data passed to browser.
@@ -90,6 +90,7 @@ final class PhabricatorFactChartController extends PhabricatorFactController {
       ),
       array(
         'title' => 'Chart',
+        'device' => false,
       ));
   }
 

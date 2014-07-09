@@ -114,7 +114,7 @@ final class PhrictionDiffController
       pht('History'),
       PhrictionDocument::getSlugURI($slug, 'history'));
 
-    $title = pht("Version %s vs %s", $l, $r);
+    $title = pht('Version %s vs %s', $l, $r);
 
     $header = id(new PHUIHeaderView())
       ->setHeader($title);
@@ -208,7 +208,6 @@ final class PhrictionDiffController
       ),
       array(
         'title'     => pht('Document History'),
-        'device'    => true,
       ));
 
   }

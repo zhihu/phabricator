@@ -27,8 +27,8 @@ final class PhortunePaymentMethodEditController
     $providers = PhortunePaymentProvider::getProvidersForAddPaymentMethod();
     if (!$providers) {
       throw new Exception(
-        "There are no payment providers enabled that can add payment ".
-        "methods.");
+        'There are no payment providers enabled that can add payment '.
+        'methods.');
     }
 
     $provider_key = $request->getStr('providerKey');
@@ -170,7 +170,6 @@ final class PhortunePaymentMethodEditController
       ),
       array(
         'title' => $title,
-        'device' => true,
       ));
   }
 

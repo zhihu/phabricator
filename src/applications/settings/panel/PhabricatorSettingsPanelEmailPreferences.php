@@ -58,6 +58,11 @@ final class PhabricatorSettingsPanelEmailPreferences
         $all_tags = array_diff_key($all_tags, $this->getManiphestMailTags());
       }
 
+      $pholio = 'PhabricatorApplicationPholio';
+      if (!PhabricatorApplication::isClassInstalled($pholio)) {
+        $all_tags = array_diff_key($all_tags, $this->getPholioMailTags());
+      }
+
       foreach ($all_tags as $key => $label) {
         $mailtags[$key] = (bool)idx($new_tags, $key, false);
       }
@@ -180,20 +185,32 @@ final class PhabricatorSettingsPanelEmailPreferences
         "\n\n".
         '**Phabricator will send an email to your primary account when:**'));
 
-    $form
-      ->appendChild(
-        $this->buildMailTagCheckboxes(
-          $this->getDifferentialMailTags(),
-          $mailtags)
-          ->setLabel(pht('Differential')));
+    if (PhabricatorApplication::isClassInstalledForViewer(
+      'PhabricatorApplicationDifferential', $user)) {
+      $form
+        ->appendChild(
+          $this->buildMailTagCheckboxes(
+            $this->getDifferentialMailTags(),
+            $mailtags)
+            ->setLabel(pht('Differential')));
+    }
 
-    $maniphest = 'PhabricatorApplicationManiphest';
-    if (PhabricatorApplication::isClassInstalled($maniphest)) {
+    if (PhabricatorApplication::isClassInstalledForViewer(
+      'PhabricatorApplicationManiphest', $user)) {
       $form->appendChild(
         $this->buildMailTagCheckboxes(
           $this->getManiphestMailTags(),
           $mailtags)
           ->setLabel(pht('Maniphest')));
+    }
+
+    if (PhabricatorApplication::isClassInstalledForViewer(
+      'PhabricatorApplicationPholio', $user)) {
+      $form->appendChild(
+        $this->buildMailTagCheckboxes(
+          $this->getPholioMailTags(),
+          $mailtags)
+          ->setLabel(pht('Pholio')));
     }
 
     $form
@@ -217,25 +234,25 @@ final class PhabricatorSettingsPanelEmailPreferences
   private function getMailTags() {
     return array(
       MetaMTANotificationType::TYPE_DIFFERENTIAL_REVIEW_REQUEST =>
-        pht("A revision is created."),
+        pht('A revision is created.'),
       MetaMTANotificationType::TYPE_DIFFERENTIAL_UPDATED =>
-        pht("A revision is updated."),
+        pht('A revision is updated.'),
       MetaMTANotificationType::TYPE_DIFFERENTIAL_COMMENT =>
-        pht("Someone comments on a revision."),
+        pht('Someone comments on a revision.'),
       MetaMTANotificationType::TYPE_DIFFERENTIAL_REVIEWERS =>
         pht("A revision's reviewers change."),
       MetaMTANotificationType::TYPE_DIFFERENTIAL_CLOSED =>
-        pht("A revision is closed."),
+        pht('A revision is closed.'),
       MetaMTANotificationType::TYPE_DIFFERENTIAL_CC =>
         pht("A revision's CCs change."),
       MetaMTANotificationType::TYPE_DIFFERENTIAL_OTHER =>
-        pht("Other revision activity not listed above occurs."),
+        pht('Other revision activity not listed above occurs.'),
       MetaMTANotificationType::TYPE_MANIPHEST_STATUS =>
         pht("A task's status changes."),
       MetaMTANotificationType::TYPE_MANIPHEST_OWNER =>
         pht("A task's owner changes."),
       MetaMTANotificationType::TYPE_MANIPHEST_COMMENT =>
-        pht("Someone comments on a task."),
+        pht('Someone comments on a task.'),
       MetaMTANotificationType::TYPE_MANIPHEST_PRIORITY =>
         pht("A task's priority changes."),
       MetaMTANotificationType::TYPE_MANIPHEST_CC =>
@@ -243,8 +260,15 @@ final class PhabricatorSettingsPanelEmailPreferences
       MetaMTANotificationType::TYPE_MANIPHEST_PROJECTS =>
         pht("A task's associated projects change."),
       MetaMTANotificationType::TYPE_MANIPHEST_OTHER =>
-        pht("Other task activity not listed above occurs."),
-
+        pht('Other task activity not listed above occurs.'),
+      MetaMTANotificationType::TYPE_PHOLIO_STATUS =>
+        pht("A mock's status changes."),
+      MetaMTANotificationType::TYPE_PHOLIO_COMMENT =>
+        pht('Someone comments on a mock.'),
+      MetaMTANotificationType::TYPE_PHOLIO_UPDATED =>
+        pht('Mock images or descriptions change.'),
+      MetaMTANotificationType::TYPE_PHOLIO_OTHER =>
+        pht('Other mock activity not listed above occurs.'),
     );
   }
 
@@ -273,6 +297,17 @@ final class PhabricatorSettingsPanelEmailPreferences
         MetaMTANotificationType::TYPE_DIFFERENTIAL_REVIEWERS,
         MetaMTANotificationType::TYPE_DIFFERENTIAL_CC,
         MetaMTANotificationType::TYPE_DIFFERENTIAL_OTHER,
+      ));
+  }
+
+  private function getPholioMailTags() {
+    return array_select_keys(
+      $this->getMailTags(),
+      array(
+        MetaMTANotificationType::TYPE_PHOLIO_STATUS,
+        MetaMTANotificationType::TYPE_PHOLIO_COMMENT,
+        MetaMTANotificationType::TYPE_PHOLIO_UPDATED,
+        MetaMTANotificationType::TYPE_PHOLIO_OTHER,
       ));
   }
 

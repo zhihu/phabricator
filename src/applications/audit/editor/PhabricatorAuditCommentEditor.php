@@ -145,7 +145,7 @@ final class PhabricatorAuditCommentEditor extends PhabricatorEditor {
         $actor_request = id(new PhabricatorRepositoryAuditRequest())
           ->setCommitPHID($commit->getPHID())
           ->setAuditorPHID($actor->getPHID())
-          ->setAuditReasons(array("Resigned"));
+          ->setAuditReasons(array('Resigned'));
       }
 
       $actor_request
@@ -220,7 +220,7 @@ final class PhabricatorAuditCommentEditor extends PhabricatorEditor {
           ->setCommitPHID($commit->getPHID())
           ->setAuditorPHID($actor->getPHID())
           ->setAuditStatus($new_status)
-          ->setAuditReasons(array("Voluntary Participant"))
+          ->setAuditReasons(array('Voluntary Participant'))
           ->save();
         $requests[] = $request;
       }
@@ -261,7 +261,7 @@ final class PhabricatorAuditCommentEditor extends PhabricatorEditor {
           ->setAuditorPHID($auditor_phid)
           ->setAuditStatus($audit_requested)
           ->setAuditReasons(
-            array('Added by ' . $actor->getUsername()))
+            array('Added by '.$actor->getUsername()))
           ->save();
       }
     }
@@ -274,7 +274,7 @@ final class PhabricatorAuditCommentEditor extends PhabricatorEditor {
           ->setAuditorPHID($cc_phid)
           ->setAuditStatus($audit_cc)
           ->setAuditReasons(
-            array('Added by ' . $actor->getUsername()))
+            array('Added by '.$actor->getUsername()))
           ->save();
       }
     }

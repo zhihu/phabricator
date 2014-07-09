@@ -96,8 +96,6 @@ final class PhabricatorRemarkupRuleEmbedFile
         case 'full':
           $attrs += array(
             'src' => $file->getBestURI(),
-            'width' => $file->getImageWidth(),
-            'height' => $file->getImageHeight(),
           );
           $image_class = 'phabricator-remarkup-embed-image-full';
           break;
@@ -182,7 +180,7 @@ final class PhabricatorRemarkupRuleEmbedFile
       $autoplay = null;
     }
 
-    return phutil_tag(
+    return $this->newTag(
       'audio',
       array(
         'controls' => 'controls',
@@ -190,7 +188,7 @@ final class PhabricatorRemarkupRuleEmbedFile
         'autoplay' => $autoplay,
         'loop' => idx($options, 'loop') ? 'loop' : null,
       ),
-      phutil_tag(
+      $this->newTag(
         'source',
         array(
           'src' => $file->getBestURI(),
@@ -205,10 +203,10 @@ final class PhabricatorRemarkupRuleEmbedFile
 
     return id(new PhabricatorFileLinkView())
       ->setFilePHID($file->getPHID())
-      ->setFileName($options['name'])
+      ->setFileName($this->assertFlatText($options['name']))
       ->setFileDownloadURI($file->getDownloadURI())
       ->setFileViewURI($file->getBestURI())
-      ->setFileViewable($options['viewable']);
+      ->setFileViewable((bool)$options['viewable']);
   }
 
   private function parseDimension($string) {

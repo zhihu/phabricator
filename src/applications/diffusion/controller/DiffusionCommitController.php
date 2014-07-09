@@ -67,6 +67,7 @@ final class DiffusionCommitController extends DiffusionController {
         ),
         array(
           'title' => pht('Commit Still Parsing'),
+          'device' => false,
         ));
     }
 
@@ -247,7 +248,7 @@ final class DiffusionCommitController extends DiffusionController {
 
       $change_panel = new PHUIObjectBoxView();
       $header = new PHUIHeaderView();
-      $header->setHeader("Changes (".number_format($count).")");
+      $header->setHeader('Changes ('.number_format($count).')');
       $change_panel->setID('toc');
       if ($count > self::CHANGES_LIMIT && !$show_all_details) {
 
@@ -264,7 +265,7 @@ final class DiffusionCommitController extends DiffusionController {
           ->setSeverity(AphrontErrorView::SEVERITY_WARNING)
           ->setTitle('Very Large Commit')
           ->appendChild(
-            pht("This commit is very large. Load each file individually."));
+            pht('This commit is very large. Load each file individually.'));
 
         $change_panel->setErrorView($warning_view);
         $header->addActionLink($button);
@@ -288,7 +289,7 @@ final class DiffusionCommitController extends DiffusionController {
           $vcs_supports_directory_changes = false;
           break;
         default:
-          throw new Exception("Unknown VCS.");
+          throw new Exception('Unknown VCS.');
       }
 
       $references = array();
@@ -400,6 +401,7 @@ final class DiffusionCommitController extends DiffusionController {
       array(
         'title' => $commit_id,
         'pageObjects' => array($commit->getPHID()),
+        'device' => false,
       ));
   }
 

@@ -90,7 +90,6 @@ final class DiffusionHistoryController extends DiffusionController {
         $content,
       ),
       array(
-        'device' => true,
         'title' => array(
           pht('History'),
           pht('%s Repository', $drequest->getRepository()->getCallsign()),
@@ -121,13 +120,11 @@ final class DiffusionHistoryController extends DiffusionController {
     $request = $this->getRequest();
     if ($request->getBool('copies')) {
       $branch_name = pht('Hide Copies/Branches');
-      $branch_icon = 'fork-grey';
       $branch_uri = $request->getRequestURI()
         ->alter('offset', null)
         ->alter('copies', null);
     } else {
       $branch_name = pht('Show Copies/Branches');
-      $branch_icon = 'fork';
       $branch_uri = $request->getRequestURI()
         ->alter('offset', null)
         ->alter('copies', true);
@@ -136,7 +133,7 @@ final class DiffusionHistoryController extends DiffusionController {
     $view->addAction(
       id(new PhabricatorActionView())
         ->setName($branch_name)
-        ->setIcon($branch_icon)
+        ->setIcon('fa-code-fork')
         ->setHref($branch_uri));
 
     return $view;

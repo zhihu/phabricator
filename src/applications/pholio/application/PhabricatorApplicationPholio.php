@@ -22,10 +22,6 @@ final class PhabricatorApplicationPholio extends PhabricatorApplication {
     return pht('Things before they were cool.');
   }
 
-  public function isBeta() {
-    return true;
-  }
-
   public function getEventListeners() {
     return array(
       new PholioActionMenuEventListener(),
@@ -47,16 +43,12 @@ final class PhabricatorApplicationPholio extends PhabricatorApplication {
         'edit/(?P<id>\d+)/'     => 'PholioMockEditController',
         'comment/(?P<id>\d+)/'  => 'PholioMockCommentController',
         'inline/' => array(
-          '(?P<id>\d+)/' => 'PholioInlineController',
-          'save/' => 'PholioInlineSaveController',
-          'delete/(?P<id>\d+)/' => 'PholioInlineDeleteController',
-          'view/(?P<id>\d+)/' => 'PholioInlineViewController',
-          'edit/(?P<id>\d+)/' => 'PholioInlineEditController',
+          '(?:(?P<id>\d+)/)?' => 'PholioInlineController',
+          'list/(?P<id>\d+)/' => 'PholioInlineListController',
           'thumb/(?P<imageid>\d+)/' => 'PholioInlineThumbController'
         ),
         'image/' => array(
           'upload/' => 'PholioImageUploadController',
-          'history/(?P<id>\d+)/' => 'PholioImageHistoryController',
         ),
       ),
     );
@@ -76,8 +68,8 @@ final class PhabricatorApplicationPholio extends PhabricatorApplication {
 
   protected function getCustomCapabilities() {
     return array(
-      PholioCapabilityDefaultView::CAPABILITY => array(
-      ),
+      PholioCapabilityDefaultView::CAPABILITY => array(),
+      PholioCapabilityDefaultEdit::CAPABILITY => array(),
     );
   }
 

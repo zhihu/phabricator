@@ -4,6 +4,10 @@ final class DifferentialDiffViewController extends DifferentialController {
 
   private $id;
 
+  public function shouldAllowPublic() {
+    return true;
+  }
+
   public function willProcessRequest(array $data) {
     $this->id = $data['id'];
   }
@@ -138,7 +142,6 @@ final class DifferentialDiffViewController extends DifferentialController {
       ),
       array(
         'title' => pht('Diff View'),
-        'device' => true,
       ));
   }
 

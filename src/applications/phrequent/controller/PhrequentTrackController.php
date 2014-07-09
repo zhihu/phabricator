@@ -23,7 +23,7 @@ final class PhrequentTrackController
 
     if (!$this->isStartingTracking() &&
         !$this->isStoppingTracking()) {
-      throw new Exception('Unrecognized verb: ' . $this->verb);
+      throw new Exception('Unrecognized verb: '.$this->verb);
     }
 
     switch ($this->verb) {
@@ -81,7 +81,7 @@ final class PhrequentTrackController
     $form = new PHUIFormLayoutView();
     $form
       ->appendChild(hsprintf(
-        "<p>%s</p><br />", $inner_text));
+        '<p>%s</p><br />', $inner_text));
 
     $form->appendChild($epoch_control);
 

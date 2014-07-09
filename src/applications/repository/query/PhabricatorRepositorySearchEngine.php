@@ -3,6 +3,10 @@
 final class PhabricatorRepositorySearchEngine
   extends PhabricatorApplicationSearchEngine {
 
+  public function getResultTypeDescription() {
+    return pht('Repositories');
+  }
+
   public function getApplicationClassName() {
     return 'PhabricatorApplicationDiffusion';
   }
@@ -282,7 +286,8 @@ final class PhabricatorRepositorySearchEngine
         $repository->getProjectPHIDs());
       if ($project_handles) {
         $item->addAttribute(
-          id(new ManiphestTaskProjectsView())
+          id(new PHUIHandleTagListView())
+            ->setSlim(true)
             ->setHandles($project_handles));
       }
 

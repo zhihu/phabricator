@@ -143,4 +143,22 @@ final class DifferentialRepositoryField
     return $this->renderHandleList($handles);
   }
 
+  public function shouldAppearInTransactionMail() {
+    return true;
+  }
+
+  public function updateTransactionMailBody(
+    PhabricatorMetaMTAMailBody $body,
+    PhabricatorApplicationTransactionEditor $editor,
+    array $xactions) {
+
+    $repository = $this->getObject()->getRepository();
+    if ($repository === null) {
+      return;
+    }
+
+    $body->addTextSection(pht('REPOSITORY'),
+      $repository->getMonogram().' '.$repository->getName());
+  }
+
 }

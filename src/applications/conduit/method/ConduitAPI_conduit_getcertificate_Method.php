@@ -15,7 +15,7 @@ final class ConduitAPI_conduit_getcertificate_Method extends ConduitAPIMethod {
   }
 
   public function getMethodDescription() {
-    return "Retrieve certificate information for a user.";
+    return 'Retrieve certificate information for a user.';
   }
 
   public function defineParamTypes() {
@@ -31,16 +31,14 @@ final class ConduitAPI_conduit_getcertificate_Method extends ConduitAPIMethod {
 
   public function defineErrorTypes() {
     return array(
-      "ERR-BAD-TOKEN" => "Token does not exist or has expired.",
-      "ERR-RATE-LIMIT" =>
-        "You have made too many invalid token requests recently. Wait before ".
-        "making more.",
+      'ERR-BAD-TOKEN' => 'Token does not exist or has expired.',
+      'ERR-RATE-LIMIT' =>
+        'You have made too many invalid token requests recently. Wait before '.
+        'making more.',
     );
   }
 
   protected function execute(ConduitAPIRequest $request) {
-    $this->validateHost($request->getValue('host'));
-
     $failed_attempts = PhabricatorUserLog::loadRecentEventsFromThisIP(
       PhabricatorUserLog::ACTION_CONDUIT_CERTIFICATE_FAILURE,
       60 * 5);
@@ -70,7 +68,7 @@ final class ConduitAPI_conduit_getcertificate_Method extends ConduitAPIMethod {
       'phid = %s',
       $info->getUserPHID());
     if (!$user) {
-      throw new Exception("Certificate token points to an invalid user!");
+      throw new Exception('Certificate token points to an invalid user!');
     }
 
     return array(

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group markup
- */
 abstract class PhabricatorRemarkupRuleObject
   extends PhutilRemarkupRule {
 
@@ -11,6 +8,10 @@ abstract class PhabricatorRemarkupRuleObject
 
   abstract protected function getObjectNamePrefix();
   abstract protected function loadObjects(array $ids);
+
+  public function getPriority() {
+    return 200.0;
+  }
 
   protected function getObjectNamePrefixBeginsWithWordCharacter() {
     $prefix = $this->getObjectNamePrefix();
@@ -40,8 +41,12 @@ abstract class PhabricatorRemarkupRuleObject
     return $result;
   }
 
+  protected function getObjectHref($object, $handle, $id) {
+    return $handle->getURI();
+  }
+
   protected function renderObjectRef($object, $handle, $anchor, $id) {
-    $href = $handle->getURI();
+    $href = $this->getObjectHref($object, $handle, $id);
     $text = $this->getObjectNamePrefix().$id;
 
     if ($anchor) {
@@ -111,12 +116,14 @@ abstract class PhabricatorRemarkupRuleObject
       $boundary = '\\B';
     }
 
-    // NOTE: The "(?<!#)" prevents us from linking "#abcdef" or similar. The
-    // "\b" allows us to link "(abcdef)" or similar without linking things
+    // NOTE: The "(?<!#)" prevents us from linking "#abcdef" or similar.
+    // The "(?<!/)" prevents us from linking things in URIs.
+    // The "(?<!;)" prevents linking Diffusion URIs to commits.
+    // The "\b" allows us to link "(abcdef)" or similar without linking things
     // in the middle of words.
 
     $text = preg_replace_callback(
-      '((?<!#)'.$boundary.$prefix.'('.$id.')(?:#([-\w\d]+))?\b)',
+      '((?<!#)(?<!/)(?<!;)'.$boundary.$prefix.'('.$id.')(?:#([-\w\d]+))?\b)',
       array($this, 'markupObjectReference'),
       $text);
 
@@ -124,6 +131,10 @@ abstract class PhabricatorRemarkupRuleObject
   }
 
   public function markupObjectEmbed($matches) {
+    if (!$this->isFlatText($matches[0])) {
+      return $matches[0];
+    }
+
     return $this->markupObject(array(
       'type' => 'embed',
       'id' => $matches[1],
@@ -133,6 +144,10 @@ abstract class PhabricatorRemarkupRuleObject
   }
 
   public function markupObjectReference($matches) {
+    if (!$this->isFlatText($matches[0])) {
+      return $matches[0];
+    }
+
     return $this->markupObject(array(
       'type' => 'ref',
       'id' => $matches[1],
@@ -208,6 +223,7 @@ abstract class PhabricatorRemarkupRuleObject
             $spec['id']);
           break;
         case 'embed':
+          $spec['options'] = $this->assertFlatText($spec['options']);
           $view = $this->renderObjectEmbed($object, $handle, $spec['options']);
           break;
       }
