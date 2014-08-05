@@ -8,7 +8,7 @@ final class DifferentialRevisionSearchEngine
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorApplicationDifferential';
+    return 'PhabricatorDifferentialApplication';
   }
 
   public function getPageSize(PhabricatorSavedQuery $saved) {
@@ -35,7 +35,7 @@ final class DifferentialRevisionSearchEngine
         $request,
         'reviewers',
         array(
-          PhabricatorProjectPHIDTypeProject::TYPECONST,
+          PhabricatorProjectProjectPHIDType::TYPECONST,
         )));
 
     $saved->setParameter(
@@ -143,31 +143,31 @@ final class DifferentialRevisionSearchEngine
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Responsible Users'))
           ->setName('responsibles')
-          ->setDatasource('/typeahead/common/accounts/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setValue(array_select_keys($handles, $responsible_phids)))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Authors'))
           ->setName('authors')
-          ->setDatasource('/typeahead/common/accounts/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setValue(array_select_keys($handles, $author_phids)))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Reviewers'))
           ->setName('reviewers')
-          ->setDatasource('/typeahead/common/accountsorprojects/')
+          ->setDatasource(new PhabricatorProjectOrUserDatasource())
           ->setValue(array_select_keys($handles, $reviewer_phids)))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Subscribers'))
           ->setName('subscribers')
-          ->setDatasource('/typeahead/common/allmailable/')
+          ->setDatasource(new PhabricatorMetaMTAMailableDatasource())
           ->setValue(array_select_keys($handles, $subscriber_phids)))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Repositories'))
           ->setName('repositories')
-          ->setDatasource('/typeahead/common/repositories/')
+          ->setDatasource(new DiffusionRepositoryDatasource())
           ->setValue(array_select_keys($handles, $repository_phids)))
       ->appendChild(
         id(new AphrontFormSelectControl())
@@ -194,7 +194,6 @@ final class DifferentialRevisionSearchEngine
           ->setName('order')
           ->setOptions($this->getOrderOptions())
           ->setValue($saved->getParameter('order')));
-
   }
 
   protected function getURI($path) {
@@ -237,10 +236,13 @@ final class DifferentialRevisionSearchEngine
 
   private function getStatusOptions() {
     return array(
-      DifferentialRevisionQuery::STATUS_ANY       => pht('All'),
-      DifferentialRevisionQuery::STATUS_OPEN      => pht('Open'),
-      DifferentialRevisionQuery::STATUS_CLOSED    => pht('Closed'),
-      DifferentialRevisionQuery::STATUS_ABANDONED => pht('Abandoned'),
+      DifferentialRevisionQuery::STATUS_ANY            => pht('All'),
+      DifferentialRevisionQuery::STATUS_OPEN           => pht('Open'),
+      DifferentialRevisionQuery::STATUS_ACCEPTED       => pht('Accepted'),
+      DifferentialRevisionQuery::STATUS_NEEDS_REVIEW   => pht('Needs Review'),
+      DifferentialRevisionQuery::STATUS_NEEDS_REVISION => pht('Needs Revision'),
+      DifferentialRevisionQuery::STATUS_CLOSED         => pht('Closed'),
+      DifferentialRevisionQuery::STATUS_ABANDONED      => pht('Abandoned'),
     );
   }
 

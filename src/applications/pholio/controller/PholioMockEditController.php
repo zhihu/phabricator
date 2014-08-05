@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group pholio
- */
 final class PholioMockEditController extends PholioController {
 
   private $id;
@@ -52,7 +49,7 @@ final class PholioMockEditController extends PholioController {
     } else {
       $v_projects = PhabricatorEdgeQuery::loadDestinationPHIDs(
         $mock->getPHID(),
-        PhabricatorEdgeConfig::TYPE_OBJECT_HAS_PROJECT);
+        PhabricatorProjectObjectHasProjectEdgeType::EDGECONST);
       $v_projects = array_reverse($v_projects);
     }
 
@@ -208,7 +205,7 @@ final class PholioMockEditController extends PholioController {
       }
 
       if (!$errors) {
-        $proj_edge_type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_PROJECT;
+        $proj_edge_type = PhabricatorProjectObjectHasProjectEdgeType::EDGECONST;
         $xactions[] = id(new PholioTransaction())
           ->setTransactionType(PhabricatorTransactions::TYPE_EDGE)
           ->setMetadataValue('edge:type', $proj_edge_type)
@@ -344,40 +341,41 @@ final class PholioMockEditController extends PholioController {
       $form->addHiddenInput('status', 'open');
     }
 
-    $form->appendChild(
+    $form
+      ->appendChild(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Projects'))
           ->setName('projects')
           ->setValue($project_handles)
-          ->setDatasource('/typeahead/common/projects/'))
+          ->setDatasource(new PhabricatorProjectDatasource()))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-        ->setLabel(pht('CC'))
-        ->setName('cc')
-        ->setValue($handles)
-        ->setUser($user)
-        ->setDatasource('/typeahead/common/mailable/'))
+          ->setLabel(pht('CC'))
+          ->setName('cc')
+          ->setValue($handles)
+          ->setUser($user)
+          ->setDatasource(new PhabricatorMetaMTAMailableDatasource()))
       ->appendChild(
         id(new AphrontFormPolicyControl())
-        ->setUser($user)
-        ->setCapability(PhabricatorPolicyCapability::CAN_VIEW)
-        ->setPolicyObject($mock)
-        ->setPolicies($policies)
-        ->setName('can_view'))
+          ->setUser($user)
+          ->setCapability(PhabricatorPolicyCapability::CAN_VIEW)
+          ->setPolicyObject($mock)
+          ->setPolicies($policies)
+          ->setName('can_view'))
       ->appendChild(
         id(new AphrontFormPolicyControl())
-        ->setUser($user)
-        ->setCapability(PhabricatorPolicyCapability::CAN_EDIT)
-        ->setPolicyObject($mock)
-        ->setPolicies($policies)
-        ->setName('can_edit'))
+          ->setUser($user)
+          ->setCapability(PhabricatorPolicyCapability::CAN_EDIT)
+          ->setPolicyObject($mock)
+          ->setPolicies($policies)
+          ->setName('can_edit'))
       ->appendChild(
         id(new AphrontFormMarkupControl())
-        ->setValue($list_control))
+          ->setValue($list_control))
       ->appendChild(
         id(new AphrontFormMarkupControl())
-        ->setValue($drop_control)
-        ->setError($e_images))
+          ->setValue($drop_control)
+          ->setError($e_images))
       ->appendChild($submit);
 
     $form_box = id(new PHUIObjectBoxView())

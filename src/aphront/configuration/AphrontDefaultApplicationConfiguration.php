@@ -4,14 +4,11 @@
  * NOTE: Do not extend this!
  *
  * @concrete-extensible
- * @group aphront
  */
 class AphrontDefaultApplicationConfiguration
   extends AphrontApplicationConfiguration {
 
-  public function __construct() {
-
-  }
+  public function __construct() {}
 
   public function getApplicationName() {
     return 'aphront-default';
@@ -173,7 +170,6 @@ class AphrontDefaultApplicationConfiguration
     }
 
     if ($ex instanceof PhabricatorPolicyException) {
-
       if (!$user->isLoggedIn()) {
         // If the user isn't logged in, just give them a login form. This is
         // probably a generally more useful response than a policy dialog that
@@ -183,7 +179,7 @@ class AphrontDefaultApplicationConfiguration
         // the thing you are trying to look at".
         $login_controller = new PhabricatorAuthStartController($request);
 
-        $auth_app_class = 'PhabricatorApplicationAuth';
+        $auth_app_class = 'PhabricatorAuthApplication';
         $auth_app = PhabricatorApplication::getByClass($auth_app_class);
         $login_controller->setCurrentApplication($auth_app);
 
@@ -247,7 +243,6 @@ class AphrontDefaultApplicationConfiguration
 
       return $response;
     }
-
 
     // Always log the unhandled exception.
     phlog($ex);

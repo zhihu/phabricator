@@ -2,8 +2,6 @@
 
 /**
  * @task markup Markup Interface
- *
- * @group phriction
  */
 final class PhrictionContent extends PhrictionDAO
   implements PhabricatorMarkupInterface {
@@ -71,7 +69,7 @@ final class PhrictionContent extends PhrictionDAO
     $output,
     PhutilMarkupEngine $engine) {
 
-    $toc = PhutilRemarkupEngineRemarkupHeaderBlockRule::renderTableOfContents(
+    $toc = PhutilRemarkupHeaderBlockRule::renderTableOfContents(
       $engine);
 
     if ($toc) {

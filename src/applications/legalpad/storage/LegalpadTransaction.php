@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group legalpad
- */
 final class LegalpadTransaction extends PhabricatorApplicationTransaction {
 
   public function getApplicationName() {
@@ -10,7 +7,7 @@ final class LegalpadTransaction extends PhabricatorApplicationTransaction {
   }
 
   public function getApplicationTransactionType() {
-    return PhabricatorLegalpadPHIDTypeDocument::TYPECONST;
+    return PhabricatorLegalpadDocumentPHIDType::TYPECONST;
   }
 
   public function getApplicationTransactionCommentObject() {

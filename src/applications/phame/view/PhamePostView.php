@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group phame
- */
 final class PhamePostView extends AphrontView {
 
   private $post;
@@ -150,7 +147,7 @@ final class PhamePostView extends AphrontView {
   }
 
   private function renderFacebookComments() {
-    $fb_id = PhabricatorAuthProviderOAuthFacebook::getFacebookApplicationID();
+    $fb_id = PhabricatorFacebookAuthProvider::getFacebookApplicationID();
     if (!$fb_id) {
       return null;
     }

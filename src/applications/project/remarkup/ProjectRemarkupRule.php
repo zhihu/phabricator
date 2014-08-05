@@ -1,7 +1,6 @@
 <?php
 
-final class ProjectRemarkupRule
-  extends PhabricatorRemarkupRuleObject {
+final class ProjectRemarkupRule extends PhabricatorObjectRemarkupRule {
 
   protected function getObjectNamePrefix() {
     return '#';
@@ -28,7 +27,7 @@ final class ProjectRemarkupRule
     // accept some false negatives -- like `#1` or `#dot.` -- in order to avoid
     // a bunch of false positives on general use of the `#` character.
 
-    // In other contexts, the PhabricatorProjectPHIDTypeProject pattern is
+    // In other contexts, the PhabricatorProjectProjectPHIDType pattern is
     // controlling and these names should parse correctly.
 
     return '[^\s.!,:;{}#]*[^\s\d!,:;{}#]+(?:[^\s.!,:;{}#][^\s!,:;{}#]*)*';

@@ -8,7 +8,7 @@ final class PhabricatorMacroSearchEngine
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorApplicationMacro';
+    return 'PhabricatorMacroApplication';
   }
 
   public function buildSavedQueryFromRequest(AphrontRequest $request) {
@@ -93,7 +93,7 @@ final class PhabricatorMacroSearchEngine
           ->setValue($status))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource('/typeahead/common/users/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setName('authors')
           ->setLabel(pht('Authors'))
           ->setValue($author_handles))
@@ -141,7 +141,6 @@ final class PhabricatorMacroSearchEngine
   }
 
   public function buildSavedQueryFromBuiltin($query_key) {
-
     $query = $this->newSavedQuery();
     $query->setQueryKey($query_key);
 

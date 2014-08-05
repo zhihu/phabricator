@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group phriction
- */
 final class PhabricatorMacroQuery
   extends PhabricatorCursorPagedPolicyAwareQuery {
 
@@ -29,7 +26,6 @@ final class PhabricatorMacroQuery
   }
 
   public static function getFlagColorsOptions() {
-
     $options = array(
       '-1' => pht('(No Filtering)'),
       '-2' => pht('(Marked With Any Flag)'),
@@ -179,7 +175,7 @@ final class PhabricatorMacroQuery
       }
       $flags = id(new PhabricatorFlagQuery())
         ->withOwnerPHIDs(array($this->getViewer()->getPHID()))
-        ->withTypes(array(PhabricatorMacroPHIDTypeMacro::TYPECONST))
+        ->withTypes(array(PhabricatorMacroMacroPHIDType::TYPECONST))
         ->withColors($flag_colors)
         ->setViewer($this->getViewer())
         ->execute();
@@ -225,7 +221,7 @@ final class PhabricatorMacroQuery
   }
 
   public function getQueryApplicationClass() {
-    return 'PhabricatorApplicationMacro';
+    return 'PhabricatorMacroApplication';
   }
 
 }

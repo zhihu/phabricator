@@ -24,6 +24,23 @@ JX.behavior('project-boards', function(config) {
     JX.DOM.replace(item, JX.$H(response.task));
   }
 
+  function colsort(u, v) {
+    var ud = JX.Stratcom.getData(u).sort || [];
+    var vd = JX.Stratcom.getData(v).sort || [];
+
+    for (var ii = 0; ii < ud.length; ii++) {
+
+      if (parseInt(ud[ii]) < parseInt(vd[ii])) {
+        return 1;
+      }
+      if (parseInt(ud[ii]) > parseInt(vd[ii])) {
+        return -1;
+      }
+    }
+
+    return 0;
+  }
+
   function ondrop(list, item, after) {
     list.lock();
     JX.DOM.alterClass(item, 'drag-sending', true);
@@ -92,31 +109,36 @@ JX.behavior('project-boards', function(config) {
     lists[ii].setGroup(lists);
   }
 
-  var onedit = function(card, column, r) {
-    var new_card = JX.$H(r.tasks);
+  var onedit = function(column, r) {
+    var new_card = JX.$H(r.tasks).getNode();
+    var new_data = JX.Stratcom.getData(new_card);
     var items = finditems(column);
-    var insert_after = r.data.insertAfterPHID;
-    if (!insert_after) {
-      JX.DOM.prependContent(column, new_card);
-      if (card) {
-        JX.DOM.remove(card);
+    var edited = false;
+
+    for (var ii = 0; ii < items.length; ii++) {
+      var item = items[ii];
+
+      var data = JX.Stratcom.getData(item);
+      var phid = data.objectPHID;
+
+      if (phid == new_data.objectPHID) {
+        items[ii] = new_card;
+        data = new_data;
+        edited = true;
       }
-      return;
+
+      data.sort = r.data.sortMap[data.objectPHID] || data.sort;
     }
-    var ii;
-    var item;
-    var item_phid;
-    for (ii = 0; ii< items.length; ii++) {
-      item = items[ii];
-      item_phid = JX.Stratcom.getData(item).objectPHID;
-      if (item_phid == insert_after) {
-        JX.DOM.replace(item, [item, new_card]);
-        if (card) {
-          JX.DOM.remove(card);
-        }
-        return;
-      }
+
+    // this is an add then...!
+    if (!edited) {
+      items[items.length + 1] = new_card;
+      new_data.sort = r.data.sortMap[new_data.objectPHID] || new_data.sort;
     }
+
+    items.sort(colsort);
+
+    JX.DOM.setContent(column, items);
   };
 
   JX.Stratcom.listen(
@@ -124,13 +146,12 @@ JX.behavior('project-boards', function(config) {
     ['edit-project-card'],
     function(e) {
       e.kill();
-      var card = e.getNode('project-card');
       var column = e.getNode('project-column');
       var request_data = {
         'responseType' : 'card',
         'columnPHID'   : JX.Stratcom.getData(column).columnPHID };
       new JX.Workflow(e.getNode('tag:a').href, request_data)
-      .setHandler(JX.bind(null, onedit, card, column))
+      .setHandler(JX.bind(null, onedit, column))
       .start();
     });
 
@@ -154,7 +175,7 @@ JX.behavior('project-boards', function(config) {
         }
       }
       new JX.Workflow(config.createURI, request_data)
-      .setHandler(JX.bind(null, onedit, null, column))
+      .setHandler(JX.bind(null, onedit, column))
       .start();
     });
 });

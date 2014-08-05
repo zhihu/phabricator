@@ -9,7 +9,7 @@ final class PholioMock extends PholioDAO
     PhabricatorFlaggableInterface,
     PhabricatorApplicationTransactionInterface,
     PhabricatorProjectInterface,
-    PhabricatorDestructableInterface {
+    PhabricatorDestructibleInterface {
 
   const MARKUP_FIELD_DESCRIPTION  = 'markup:description';
 
@@ -32,11 +32,11 @@ final class PholioMock extends PholioDAO
   public static function initializeNewMock(PhabricatorUser $actor) {
     $app = id(new PhabricatorApplicationQuery())
       ->setViewer($actor)
-      ->withClasses(array('PhabricatorApplicationPholio'))
+      ->withClasses(array('PhabricatorPholioApplication'))
       ->executeOne();
 
-    $view_policy = $app->getPolicy(PholioCapabilityDefaultView::CAPABILITY);
-    $edit_policy = $app->getPolicy(PholioCapabilityDefaultEdit::CAPABILITY);
+    $view_policy = $app->getPolicy(PholioDefaultViewCapability::CAPABILITY);
+    $edit_policy = $app->getPolicy(PholioDefaultEditCapability::CAPABILITY);
 
     return id(new PholioMock())
       ->setAuthorPHID($actor->getPHID())
@@ -258,7 +258,7 @@ final class PholioMock extends PholioDAO
   }
 
 
-/* -(  PhabricatorDestructableInterface  )----------------------------------- */
+/* -(  PhabricatorDestructibleInterface  )----------------------------------- */
 
 
   public function destroyObjectPermanently(

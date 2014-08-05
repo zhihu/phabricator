@@ -9,7 +9,7 @@ final class PhabricatorUser
     PhutilPerson,
     PhabricatorPolicyInterface,
     PhabricatorCustomFieldInterface,
-    PhabricatorDestructableInterface {
+    PhabricatorDestructibleInterface {
 
   const SESSION_TABLE = 'phabricator_session';
   const NAMETOKEN_TABLE = 'user_nametoken';
@@ -106,20 +106,19 @@ final class PhabricatorUser
    *              a normal session.
    */
   public function getIsStandardUser() {
-    $type_user = PhabricatorPeoplePHIDTypeUser::TYPECONST;
+    $type_user = PhabricatorPeopleUserPHIDType::TYPECONST;
     return $this->getPHID() && (phid_get_type($this->getPHID()) == $type_user);
   }
 
   public function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID => true,
-      self::CONFIG_PARTIAL_OBJECTS => true,
     ) + parent::getConfiguration();
   }
 
   public function generatePHID() {
     return PhabricatorPHID::generateNewPHID(
-      PhabricatorPeoplePHIDTypeUser::TYPECONST);
+      PhabricatorPeopleUserPHIDType::TYPECONST);
   }
 
   public function setPassword(PhutilOpaqueEnvelope $envelope) {
@@ -340,6 +339,10 @@ final class PhabricatorUser
       $vec = $this->getAlternateCSRFString();
     }
 
+    if ($this->hasSession()) {
+      $vec = $vec.$this->getSession()->getSessionKey();
+    }
+
     $time_block = floor($epoch / $frequency);
     $vec = $vec.$key.$time_block;
 
@@ -460,32 +463,17 @@ final class PhabricatorUser
     return $this;
   }
 
-  private static function tokenizeName($name) {
-    if (function_exists('mb_strtolower')) {
-      $name = mb_strtolower($name, 'UTF-8');
-    } else {
-      $name = strtolower($name);
-    }
-    $name = trim($name);
-    if (!strlen($name)) {
-      return array();
-    }
-    return preg_split('/\s+/', $name);
-  }
-
   /**
    * Populate the nametoken table, which used to fetch typeahead results. When
    * a user types "linc", we want to match "Abraham Lincoln" from on-demand
    * typeahead sources. To do this, we need a separate table of name fragments.
    */
   public function updateNameTokens() {
-    $tokens = array_merge(
-      self::tokenizeName(GetPinyin($this->getRealName())),
-      self::tokenizeName($this->getRealName()),
-      self::tokenizeName($this->getUserName()));
-    $tokens = array_unique($tokens);
     $table  = self::NAMETOKEN_TABLE;
     $conn_w = $this->establishConnection('w');
+
+    $tokens = PhabricatorTypeaheadDatasource::tokenizeString(
+      $this->getUserName().' '.$this->getRealName().' '.GetPinyin($this->getRealName()));
 
     $sql = array();
     foreach ($tokens as $token) {
@@ -569,7 +557,7 @@ EOBODY;
     $new_username = $this->getUserName();
 
     $password_instructions = null;
-    if (PhabricatorAuthProviderPassword::getPasswordProvider()) {
+    if (PhabricatorPasswordAuthProvider::getPasswordProvider()) {
       $engine = new PhabricatorAuthSessionEngine();
       $uri = $engine->getOneTimeLoginURI(
         $this,
@@ -840,7 +828,7 @@ EOBODY;
   }
 
 
-/* -(  PhabricatorDestructableInterface  )----------------------------------- */
+/* -(  PhabricatorDestructibleInterface  )----------------------------------- */
 
 
   public function destroyObjectPermanently(

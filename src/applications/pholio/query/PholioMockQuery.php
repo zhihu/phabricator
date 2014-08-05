@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group pholio
- */
 final class PholioMockQuery
   extends PhabricatorCursorPagedPolicyAwareQuery {
 
@@ -175,7 +172,7 @@ final class PholioMockQuery
   }
 
   public function getQueryApplicationClass() {
-    return 'PhabricatorApplicationPholio';
+    return 'PhabricatorPholioApplication';
   }
 
 }

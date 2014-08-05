@@ -19,7 +19,7 @@
 /**
  * @group markup
  */
-final class PhabricatorRemarkupRuleEmoji
+final class PhabricatorEmojiRemarkupRule
   extends PhutilRemarkupRule {
 
   const REGEX = '/:([a-z0-9\+\-_]+):/';

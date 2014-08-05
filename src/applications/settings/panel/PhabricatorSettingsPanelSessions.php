@@ -25,6 +25,11 @@ final class PhabricatorSettingsPanelSessions
     $accounts = id(new PhabricatorExternalAccountQuery())
       ->setViewer($viewer)
       ->withUserPHIDs(array($viewer->getPHID()))
+      ->requireCapabilities(
+        array(
+          PhabricatorPolicyCapability::CAN_VIEW,
+          PhabricatorPolicyCapability::CAN_EDIT,
+        ))
       ->execute();
 
     $identity_phids = mpull($accounts, 'getPHID');
@@ -73,7 +78,7 @@ final class PhabricatorSettingsPanelSessions
         substr($session->getSessionKey(), 0, 6),
         $session->getType(),
         ($hisec > 0)
-          ? phabricator_format_relative_time($hisec)
+          ? phutil_format_relative_time($hisec)
           : null,
         phabricator_datetime($session->getSessionStart(), $viewer),
         phabricator_date($session->getSessionExpires(), $viewer),

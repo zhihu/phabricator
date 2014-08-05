@@ -9,21 +9,20 @@ final class ManiphestTaskEditController extends ManiphestController {
   }
 
   public function processRequest() {
-
     $request = $this->getRequest();
     $user = $request->getUser();
     $response_type = $request->getStr('responseType', 'task');
 
     $can_edit_assign = $this->hasApplicationCapability(
-      ManiphestCapabilityEditAssign::CAPABILITY);
+      ManiphestEditAssignCapability::CAPABILITY);
     $can_edit_policies = $this->hasApplicationCapability(
-      ManiphestCapabilityEditPolicies::CAPABILITY);
+      ManiphestEditPoliciesCapability::CAPABILITY);
     $can_edit_priority = $this->hasApplicationCapability(
-      ManiphestCapabilityEditPriority::CAPABILITY);
+      ManiphestEditPriorityCapability::CAPABILITY);
     $can_edit_projects = $this->hasApplicationCapability(
-      ManiphestCapabilityEditProjects::CAPABILITY);
+      ManiphestEditProjectsCapability::CAPABILITY);
     $can_edit_status = $this->hasApplicationCapability(
-      ManiphestCapabilityEditStatus::CAPABILITY);
+      ManiphestEditStatusCapability::CAPABILITY);
 
     $parent_task = null;
     $template_id = null;
@@ -58,7 +57,7 @@ final class ManiphestTaskEditController extends ManiphestController {
           if ($projects) {
             $tokens = $request->getStrList('projects');
 
-            $type_project = PhabricatorProjectPHIDTypeProject::TYPECONST;
+            $type_project = PhabricatorProjectProjectPHIDType::TYPECONST;
             foreach ($tokens as $key => $token) {
               if (phid_get_type($token) == $type_project) {
                 // If this is formatted like a PHID, leave it as-is.
@@ -81,7 +80,7 @@ final class ManiphestTaskEditController extends ManiphestController {
             $default_projects = mpull($default_projects, 'getPHID');
 
             if ($default_projects) {
-              $task->setProjectPHIDs($default_projects);
+              $task->attachProjectPHIDs($default_projects);
             }
           }
         }
@@ -215,7 +214,7 @@ final class ManiphestTaskEditController extends ManiphestController {
         $task->setPriority($request->getInt('priority'));
         $task->setOwnerPHID($owner_phid);
         $task->setCCPHIDs($request->getArr('cc'));
-        $task->setProjectPHIDs($request->getArr('projects'));
+        $task->attachProjectPHIDs($request->getArr('projects'));
       } else {
 
         if ($can_edit_priority) {
@@ -269,6 +268,17 @@ final class ManiphestTaskEditController extends ManiphestController {
           if ($type == ManiphestTransaction::TYPE_PROJECT_COLUMN) {
             $transaction->setNewValue($value['new']);
             $transaction->setOldValue($value['old']);
+          } else if ($type == ManiphestTransaction::TYPE_PROJECTS) {
+            // TODO: Gross.
+            $project_type =
+              PhabricatorProjectObjectHasProjectEdgeType::EDGECONST;
+            $transaction
+              ->setTransactionType(PhabricatorTransactions::TYPE_EDGE)
+              ->setMetadataValue('edge:type', $project_type)
+              ->setNewValue(
+                array(
+                  '=' => array_fuse($value),
+                ));
           } else {
             $transaction->setNewValue($value);
           }
@@ -330,7 +340,6 @@ final class ManiphestTaskEditController extends ManiphestController {
 
         if ($parent_task) {
           id(new PhabricatorEdgeEditor())
-            ->setActor($user)
             ->addEdge(
               $parent_task->getPHID(),
               PhabricatorEdgeConfig::TYPE_TASK_DEPENDS_ON_TASK,
@@ -365,8 +374,6 @@ final class ManiphestTaskEditController extends ManiphestController {
                 $potential_col_tasks = id(new ManiphestTaskQuery())
                   ->setViewer($user)
                   ->withAllProjects(array($column->getProjectPHID()))
-                  ->withStatuses(ManiphestTaskStatus::getOpenStatusConstants())
-                  ->setOrderBy(ManiphestTaskQuery::ORDER_PRIORITY)
                   ->execute();
                 $potential_col_tasks = mpull(
                   $potential_col_tasks,
@@ -395,21 +402,17 @@ final class ManiphestTaskEditController extends ManiphestController {
                 $column_tasks = id(new ManiphestTaskQuery())
                   ->setViewer($user)
                   ->withPHIDs($column_task_phids)
-                  ->withStatuses(ManiphestTaskStatus::getOpenStatusConstants())
-                  ->setOrderBy(ManiphestTaskQuery::ORDER_PRIORITY)
                   ->execute();
               }
-              $column_task_phids = mpull($column_tasks, 'getPHID');
-              $task_phid = $task->getPHID();
-              $after_phid = null;
-              foreach ($column_task_phids as $phid) {
-                if ($phid == $task_phid) {
-                  break;
-                }
-                $after_phid = $phid;
-              }
+
+              $sort_map = mpull(
+                $column_tasks,
+                'getPrioritySortVector',
+                'getPHID');
+
               $data = array(
-                'insertAfterPHID' => $after_phid);
+                'sortMap' => $sort_map,
+              );
               break;
             case 'task':
             default:
@@ -445,7 +448,7 @@ final class ManiphestTaskEditController extends ManiphestController {
             ->executeOne();
           if ($template_task) {
             $task->setCCPHIDs($template_task->getCCPHIDs());
-            $task->setProjectPHIDs($template_task->getProjectPHIDs());
+            $task->attachProjectPHIDs($template_task->getProjectPHIDs());
             $task->setOwnerPHID($template_task->getOwnerPHID());
             $task->setPriority($template_task->getPriority());
             $task->setViewPolicy($template_task->getViewPolicy());
@@ -598,7 +601,7 @@ final class ManiphestTaskEditController extends ManiphestController {
           ->setName('assigned_to')
           ->setValue($assigned_value)
           ->setUser($user)
-          ->setDatasource('/typeahead/common/users/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setLimit(1));
     }
 
@@ -609,7 +612,7 @@ final class ManiphestTaskEditController extends ManiphestController {
           ->setName('cc')
           ->setValue($cc_value)
           ->setUser($user)
-          ->setDatasource('/typeahead/common/mailable/'));
+          ->setDatasource(new PhabricatorMetaMTAMailableDatasource()));
 
     if ($can_edit_priority) {
       $form
@@ -656,7 +659,7 @@ final class ManiphestTaskEditController extends ManiphestController {
                   'sigil'       => 'project-create',
                 ),
                 pht('Create New Project')))
-            ->setDatasource('/typeahead/common/projects/'));
+            ->setDatasource(new PhabricatorProjectDatasource()));
     }
 
     $field_list->appendFieldsToForm($form);
@@ -746,4 +749,5 @@ final class ManiphestTaskEditController extends ManiphestController {
         'pageObjects' => $page_objects,
       ));
   }
+
 }

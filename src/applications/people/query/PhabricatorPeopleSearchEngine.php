@@ -8,7 +8,7 @@ final class PhabricatorPeopleSearchEngine
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorApplicationPeople';
+    return 'PhabricatorPeopleApplication';
   }
 
   public function getCustomFieldObject() {
@@ -46,7 +46,7 @@ final class PhabricatorPeopleSearchEngine
     $can_browse = PhabricatorPolicyFilter::hasCapability(
       $viewer,
       $this->getApplication(),
-      PeopleCapabilityBrowseUserDirectory::CAPABILITY);
+      PeopleBrowseUserDirectoryCapability::CAPABILITY);
     if (!$can_browse) {
       $query->withPHIDs(array($viewer->getPHID()));
     }

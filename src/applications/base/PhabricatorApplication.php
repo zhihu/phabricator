@@ -6,10 +6,8 @@
  * @task  uri   URI Routing
  * @task  fact  Fact Integration
  * @task  meta  Application Management
- * @group apps
  */
-abstract class PhabricatorApplication
-  implements PhabricatorPolicyInterface {
+abstract class PhabricatorApplication implements PhabricatorPolicyInterface {
 
   const GROUP_CORE            = 'core';
   const GROUP_UTILITIES       = 'util';
@@ -29,8 +27,21 @@ abstract class PhabricatorApplication
 /* -(  Application Information  )-------------------------------------------- */
 
 
+  /**
+   * TODO: This should be abstract, but is not for historical reasons.
+   */
   public function getName() {
-    return substr(get_class($this), strlen('PhabricatorApplication'));
+    phutil_deprecated(
+      'Automatic naming of `PhabricatorApplication` classes.',
+      'You should override the `getName` method.');
+
+    $match = null;
+    $regex = '/^PhabricatorApplication([A-Z][a-zA-Z]*)$/';
+    if (preg_match($regex, get_class($this), $match)) {
+      return $match[1];
+    }
+
+    throw new PhutilMethodNotImplementedException();
   }
 
   public function getShortDescription() {

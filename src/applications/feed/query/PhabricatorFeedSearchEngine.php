@@ -78,13 +78,13 @@ final class PhabricatorFeedSearchEngine
     $form
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource('/typeahead/common/users/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setName('users')
           ->setLabel(pht('Include Users'))
           ->setValue($user_handles))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource('/typeahead/common/projects/')
+          ->setDatasource(new PhabricatorProjectDatasource())
           ->setName('projectPHIDs')
           ->setLabel(pht('Include Projects'))
           ->setValue($proj_handles))

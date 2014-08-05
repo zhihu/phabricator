@@ -38,6 +38,8 @@ empty lines:
 
   == Smaller Header ==
 
+  ## This is a Header As Well
+
   Also a Large Header
   ===================
 
@@ -556,6 +558,6 @@ Some general notes about this syntax:
 
 = Fullscreen Mode =
 
-Remarkup editors provide a fullscreen composition mode.  This can make it easier
+Remarkup editors provide a fullscreen composition mode. This can make it easier
 to edit large blocks of text, or improve focus by removing distractions. You can
 exit **Fullscreen** mode by clicking the button again or by pressing escape.

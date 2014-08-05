@@ -13,12 +13,11 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
   }
 
   public function getAdapterApplicationClass() {
-    return 'PhabricatorApplicationManiphest';
+    return 'PhabricatorManiphestApplication';
   }
 
   public function getAdapterContentDescription() {
-    return pht(
-      'React to tasks being created or updated.');
+    return pht('React to tasks being created or updated.');
   }
 
   public function getRepetitionOptions() {
@@ -141,7 +140,9 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
       case self::FIELD_CC:
         return $this->getTask()->getCCPHIDs();
       case self::FIELD_PROJECTS:
-        return $this->getTask()->getProjectPHIDs();
+        return PhabricatorEdgeQuery::loadDestinationPHIDs(
+          $this->getTask()->getPHID(),
+          PhabricatorProjectObjectHasProjectEdgeType::EDGECONST);
       case self::FIELD_TASK_PRIORITY:
         return $this->getTask()->getPriority();
     }

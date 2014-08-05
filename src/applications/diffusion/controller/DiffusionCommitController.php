@@ -100,7 +100,6 @@ final class DiffusionCommitController extends DiffusionController {
       $engine = PhabricatorMarkupEngine::newDifferentialMarkupEngine();
       $engine->setConfig('viewer', $user);
 
-      require_celerity_resource('diffusion-commit-view-css');
       require_celerity_resource('phabricator-remarkup-css');
 
       $parents = $this->callConduitWithDiffusionRequest(
@@ -323,10 +322,9 @@ final class DiffusionCommitController extends DiffusionController {
         $visible_changesets = $changesets;
       } else {
         $visible_changesets = array();
-        $inlines = id(new PhabricatorAuditInlineComment())->loadAllWhere(
-          'commitPHID = %s AND (auditCommentID IS NOT NULL OR authorPHID = %s)',
-          $commit->getPHID(),
-          $user->getPHID());
+        $inlines = PhabricatorAuditInlineComment::loadDraftAndPublishedComments(
+          $user,
+          $commit->getPHID());
         $path_ids = mpull($inlines, null, 'getPathID');
         foreach ($changesets as $key => $changeset) {
           if (array_key_exists($changeset->getID(), $path_ids)) {
@@ -420,7 +418,7 @@ final class DiffusionCommitController extends DiffusionController {
     $edge_query = id(new PhabricatorEdgeQuery())
       ->withSourcePHIDs(array($commit_phid))
       ->withEdgeTypes(array(
-        PhabricatorEdgeConfig::TYPE_COMMIT_HAS_TASK,
+        DiffusionCommitHasTaskEdgeType::EDGECONST,
         PhabricatorEdgeConfig::TYPE_COMMIT_HAS_PROJECT,
         PhabricatorEdgeConfig::TYPE_COMMIT_HAS_DREV,
       ));
@@ -428,7 +426,7 @@ final class DiffusionCommitController extends DiffusionController {
     $edges = $edge_query->execute();
 
     $task_phids = array_keys(
-      $edges[$commit_phid][PhabricatorEdgeConfig::TYPE_COMMIT_HAS_TASK]);
+      $edges[$commit_phid][DiffusionCommitHasTaskEdgeType::EDGECONST]);
     $proj_phids = array_keys(
       $edges[$commit_phid][PhabricatorEdgeConfig::TYPE_COMMIT_HAS_PROJECT]);
     $revision_phid = key(
@@ -643,16 +641,23 @@ final class DiffusionCommitController extends DiffusionController {
   }
 
   private function buildComments(PhabricatorRepositoryCommit $commit) {
-    $user = $this->getRequest()->getUser();
-    $comments = id(new PhabricatorAuditComment())->loadAllWhere(
-      'targetPHID = %s ORDER BY dateCreated ASC',
-      $commit->getPHID());
+    $viewer = $this->getRequest()->getUser();
 
-    $inlines = id(new PhabricatorAuditInlineComment())->loadAllWhere(
-      'commitPHID = %s AND auditCommentID IS NOT NULL',
-      $commit->getPHID());
+    $xactions = id(new PhabricatorAuditTransactionQuery())
+      ->setViewer($viewer)
+      ->withObjectPHIDs(array($commit->getPHID()))
+      ->needComments(true)
+      ->execute();
 
-    $path_ids = mpull($inlines, 'getPathID');
+    $path_ids = array();
+    foreach ($xactions as $xaction) {
+      if ($xaction->hasComment()) {
+        $path_id = $xaction->getComment()->getPathID();
+        if ($path_id) {
+          $path_ids[] = $path_id;
+        }
+      }
+    }
 
     $path_map = array();
     if ($path_ids) {
@@ -662,35 +667,11 @@ final class DiffusionCommitController extends DiffusionController {
       $path_map = ipull($path_map, 'path', 'id');
     }
 
-    $engine = new PhabricatorMarkupEngine();
-    $engine->setViewer($user);
-
-    foreach ($comments as $comment) {
-      $engine->addObject(
-        $comment,
-        PhabricatorAuditComment::MARKUP_FIELD_BODY);
-    }
-
-    foreach ($inlines as $inline) {
-      $engine->addObject(
-        $inline,
-        PhabricatorInlineCommentInterface::MARKUP_FIELD_BODY);
-    }
-
-    $engine->process();
-
-    $view = new DiffusionCommentListView();
-    $view->setMarkupEngine($engine);
-    $view->setUser($user);
-    $view->setComments($comments);
-    $view->setInlineComments($inlines);
-    $view->setPathMap($path_map);
-
-    $phids = $view->getRequiredHandlePHIDs();
-    $handles = $this->loadViewerHandles($phids);
-    $view->setHandles($handles);
-
-    return $view;
+    return id(new PhabricatorAuditTransactionView())
+      ->setUser($viewer)
+      ->setObjectPHID($commit->getPHID())
+      ->setPathMap($path_map)
+      ->setTransactions($xactions);
   }
 
   private function renderAddCommentPanel(
@@ -771,21 +752,24 @@ final class DiffusionCommitController extends DiffusionController {
 
     require_celerity_resource('phabricator-transaction-view-css');
 
+    $mailable_source = new PhabricatorMetaMTAMailableDatasource();
+    $auditor_source = new DiffusionAuditorDatasource();
+
     Javelin::initBehavior(
       'differential-add-reviewers-and-ccs',
       array(
         'dynamic' => array(
           'add-auditors-tokenizer' => array(
             'actions' => array('add_auditors' => 1),
-            'src' => '/typeahead/common/usersprojectsorpackages/',
+            'src' => $auditor_source->getDatasourceURI(),
             'row' => 'add-auditors',
-            'placeholder' => pht('Type a user, project, or package name...'),
+            'placeholder' => $auditor_source->getPlaceholderText(),
           ),
           'add-ccs-tokenizer' => array(
             'actions' => array('add_ccs' => 1),
-            'src' => '/typeahead/common/mailable/',
+            'src' => $mailable_source->getDatasourceURI(),
             'row' => 'add-ccs',
-            'placeholder' => pht('Type a user or mailing list...'),
+            'placeholder' => $mailable_source->getPlaceholderText(),
           ),
         ),
         'select' => 'audit-action',
@@ -996,7 +980,7 @@ final class DiffusionCommitController extends DiffusionController {
     require_celerity_resource('phabricator-object-selector-css');
     require_celerity_resource('javelin-behavior-phabricator-object-selector');
 
-    $maniphest = 'PhabricatorApplicationManiphest';
+    $maniphest = 'PhabricatorManiphestApplication';
     if (PhabricatorApplication::isClassInstalled($maniphest)) {
       $action = id(new PhabricatorActionView())
         ->setName(pht('Edit Maniphest Tasks'))
@@ -1116,12 +1100,6 @@ final class DiffusionCommitController extends DiffusionController {
             'blue',
             pht('Closed'));
           break;
-        case PhabricatorAuditStatusConstants::CC:
-          $item->setIcon(
-            PHUIStatusItemView::ICON_INFO,
-            'dark',
-            pht('Subscribed'));
-          break;
         default:
           $item->setIcon(
             PHUIStatusItemView::ICON_QUESTION,
@@ -1172,6 +1150,5 @@ final class DiffusionCommitController extends DiffusionController {
 
     return $parser->processCorpus($corpus);
   }
-
 
 }

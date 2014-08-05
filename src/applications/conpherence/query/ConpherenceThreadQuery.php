@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group conpherence
- */
 final class ConpherenceThreadQuery
   extends PhabricatorCursorPagedPolicyAwareQuery {
 
@@ -291,7 +288,7 @@ final class ConpherenceThreadQuery
   }
 
   public function getQueryApplicationClass() {
-    return 'PhabricatorApplicationConpherence';
+    return 'PhabricatorConpherenceApplication';
   }
 
 }

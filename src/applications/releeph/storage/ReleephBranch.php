@@ -33,7 +33,7 @@ final class ReleephBranch extends ReleephDAO
   }
 
   public function generatePHID() {
-    return PhabricatorPHID::generateNewPHID(ReleephPHIDTypeBranch::TYPECONST);
+    return PhabricatorPHID::generateNewPHID(ReleephBranchPHIDType::TYPECONST);
   }
 
   public function getDetail($key, $default = null) {
@@ -49,7 +49,7 @@ final class ReleephBranch extends ReleephDAO
     // If symbolicName is omitted, set it to the basename.
     //
     // This means that we can enforce symbolicName as a UNIQUE column in the
-    // DB.  We'll interpret symbolicName === basename as meaning "no symbolic
+    // DB. We'll interpret symbolicName === basename as meaning "no symbolic
     // name".
     //
     // SYMBOLIC_NAME_NOTE

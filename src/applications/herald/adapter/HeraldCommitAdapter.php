@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group herald
- */
 final class HeraldCommitAdapter extends HeraldAdapter {
 
   const FIELD_NEED_AUDIT_FOR_PACKAGE      = 'need-audit-for-package';
@@ -27,7 +24,7 @@ final class HeraldCommitAdapter extends HeraldAdapter {
   protected $auditNeededPackages;
 
   public function getAdapterApplicationClass() {
-    return 'PhabricatorApplicationDiffusion';
+    return 'PhabricatorDiffusionApplication';
   }
 
   public function getObject() {
@@ -80,8 +77,7 @@ final class HeraldCommitAdapter extends HeraldAdapter {
   }
 
   public function explainValidTriggerObjects() {
-    return pht(
-      'This rule can trigger for **repositories** and **projects**.');
+    return pht('This rule can trigger for **repositories** and **projects**.');
   }
 
   public function getFieldNameMap() {
@@ -559,4 +555,5 @@ final class HeraldCommitAdapter extends HeraldAdapter {
     }
     return $result;
   }
+
 }

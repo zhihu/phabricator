@@ -9,14 +9,13 @@ final class ManiphestTransactionEditor
     $types = parent::getTransactionTypes();
 
     $types[] = PhabricatorTransactions::TYPE_COMMENT;
+    $types[] = PhabricatorTransactions::TYPE_EDGE;
     $types[] = ManiphestTransaction::TYPE_PRIORITY;
     $types[] = ManiphestTransaction::TYPE_STATUS;
     $types[] = ManiphestTransaction::TYPE_TITLE;
     $types[] = ManiphestTransaction::TYPE_DESCRIPTION;
     $types[] = ManiphestTransaction::TYPE_OWNER;
     $types[] = ManiphestTransaction::TYPE_CCS;
-    $types[] = ManiphestTransaction::TYPE_PROJECTS;
-    $types[] = ManiphestTransaction::TYPE_EDGE;
     $types[] = ManiphestTransaction::TYPE_SUBPRIORITY;
     $types[] = ManiphestTransaction::TYPE_PROJECT_COLUMN;
     $types[] = ManiphestTransaction::TYPE_UNBLOCK;
@@ -55,16 +54,12 @@ final class ManiphestTransactionEditor
         return nonempty($object->getOwnerPHID(), null);
       case ManiphestTransaction::TYPE_CCS:
         return array_values(array_unique($object->getCCPHIDs()));
-      case ManiphestTransaction::TYPE_PROJECTS:
-        return array_values(array_unique($object->getProjectPHIDs()));
-      case ManiphestTransaction::TYPE_EDGE:
       case ManiphestTransaction::TYPE_PROJECT_COLUMN:
         // These are pre-populated.
         return $xaction->getOldValue();
       case ManiphestTransaction::TYPE_SUBPRIORITY:
         return $object->getSubpriority();
     }
-
   }
 
   protected function getCustomTransactionNewValue(
@@ -75,21 +70,18 @@ final class ManiphestTransactionEditor
       case ManiphestTransaction::TYPE_PRIORITY:
         return (int)$xaction->getNewValue();
       case ManiphestTransaction::TYPE_CCS:
-      case ManiphestTransaction::TYPE_PROJECTS:
         return array_values(array_unique($xaction->getNewValue()));
       case ManiphestTransaction::TYPE_OWNER:
         return nonempty($xaction->getNewValue(), null);
       case ManiphestTransaction::TYPE_STATUS:
       case ManiphestTransaction::TYPE_TITLE:
       case ManiphestTransaction::TYPE_DESCRIPTION:
-      case ManiphestTransaction::TYPE_EDGE:
       case ManiphestTransaction::TYPE_SUBPRIORITY:
       case ManiphestTransaction::TYPE_PROJECT_COLUMN:
       case ManiphestTransaction::TYPE_UNBLOCK:
         return $xaction->getNewValue();
     }
   }
-
 
   protected function transactionHasEffect(
     PhabricatorLiskDAO $object,
@@ -99,7 +91,6 @@ final class ManiphestTransactionEditor
     $new = $xaction->getNewValue();
 
     switch ($xaction->getTransactionType()) {
-      case ManiphestTransaction::TYPE_PROJECTS:
       case ManiphestTransaction::TYPE_CCS:
         sort($old);
         sort($new);
@@ -151,12 +142,6 @@ final class ManiphestTransactionEditor
         return $object->setOwnerPHID($phid);
       case ManiphestTransaction::TYPE_CCS:
         return $object->setCCPHIDs($xaction->getNewValue());
-      case ManiphestTransaction::TYPE_PROJECTS:
-        return $object->setProjectPHIDs($xaction->getNewValue());
-      case ManiphestTransaction::TYPE_EDGE:
-        // These are a weird, funky mess and are already being applied by the
-        // time we reach this.
-        return;
       case ManiphestTransaction::TYPE_SUBPRIORITY:
         $data = $xaction->getNewValue();
         $new_sub = $this->getNextSubpriority(
@@ -169,7 +154,6 @@ final class ManiphestTransactionEditor
         // these do external (edge) updates
         return;
     }
-
   }
 
   protected function expandTransaction(
@@ -229,10 +213,7 @@ final class ManiphestTransactionEditor
           return;
         }
 
-        $editor = id(new PhabricatorEdgeEditor())
-          ->setActor($this->getActor())
-          ->setSuppressEvents(true);
-
+        $editor = new PhabricatorEdgeEditor();
         foreach ($add as $phid) {
           $editor->addEdge($src, $edge_type, $phid);
         }
@@ -277,9 +258,9 @@ final class ManiphestTransactionEditor
         $new = $unblock_xaction->getNewValue();
 
         foreach ($blocked_tasks as $blocked_task) {
-          $xactions = array();
+          $unblock_xactions = array();
 
-          $xactions[] = id(new ManiphestTransaction())
+          $unblock_xactions[] = id(new ManiphestTransaction())
             ->setTransactionType(ManiphestTransaction::TYPE_UNBLOCK)
             ->setOldValue(array($object->getPHID() => $old))
             ->setNewValue(array($object->getPHID() => $new));
@@ -294,14 +275,13 @@ final class ManiphestTransactionEditor
             ->setContentSource($this->getContentSource())
             ->setContinueOnNoEffect(true)
             ->setContinueOnMissingFields(true)
-            ->applyTransactions($blocked_task, $xactions);
+            ->applyTransactions($blocked_task, $unblock_xactions);
         }
       }
     }
 
     return $xactions;
   }
-
 
   protected function shouldSendMail(
     PhabricatorLiskDAO $object,
@@ -415,19 +395,6 @@ final class ManiphestTransactionEditor
       $existing_cc = $object->getCCPHIDs();
       $new_cc = array_unique(array_merge($cc_phids, $existing_cc));
       $object->setCCPHIDs($new_cc);
-      $save_again = true;
-    }
-
-    $project_phids = $adapter->getProjectPHIDs();
-    if ($project_phids) {
-      $existing_projects = $object->getProjectPHIDs();
-      $new_projects = array_unique(
-        array_merge($project_phids, $existing_projects));
-      $object->setProjectPHIDs($new_projects);
-      $save_again = true;
-    }
-
-    if ($save_again) {
       $object->save();
     }
 
@@ -442,6 +409,18 @@ final class ManiphestTransactionEditor
         ->setNewValue($assign_phid);
     }
 
+    $project_phids = $adapter->getProjectPHIDs();
+    if ($project_phids) {
+      $project_type = PhabricatorProjectObjectHasProjectEdgeType::EDGECONST;
+      $xactions[] = id(new ManiphestTransaction())
+        ->setTransactionType(PhabricatorTransactions::TYPE_EDGE)
+        ->setMetadataValue('edge:type', $project_type)
+        ->setNewValue(
+          array(
+            '+' => array_fuse($project_phids),
+          ));
+    }
+
     return $xactions;
   }
 
@@ -453,26 +432,35 @@ final class ManiphestTransactionEditor
 
     $app_capability_map = array(
       ManiphestTransaction::TYPE_PRIORITY =>
-        ManiphestCapabilityEditPriority::CAPABILITY,
+        ManiphestEditPriorityCapability::CAPABILITY,
       ManiphestTransaction::TYPE_STATUS =>
-        ManiphestCapabilityEditStatus::CAPABILITY,
-      ManiphestTransaction::TYPE_PROJECTS =>
-        ManiphestCapabilityEditProjects::CAPABILITY,
+        ManiphestEditStatusCapability::CAPABILITY,
       ManiphestTransaction::TYPE_OWNER =>
-        ManiphestCapabilityEditAssign::CAPABILITY,
+        ManiphestEditAssignCapability::CAPABILITY,
       PhabricatorTransactions::TYPE_EDIT_POLICY =>
-        ManiphestCapabilityEditPolicies::CAPABILITY,
+        ManiphestEditPoliciesCapability::CAPABILITY,
       PhabricatorTransactions::TYPE_VIEW_POLICY =>
-        ManiphestCapabilityEditPolicies::CAPABILITY,
+        ManiphestEditPoliciesCapability::CAPABILITY,
     );
 
+
     $transaction_type = $xaction->getTransactionType();
-    $app_capability = idx($app_capability_map, $transaction_type);
+
+    $app_capability = null;
+    if ($transaction_type == PhabricatorTransactions::TYPE_EDGE) {
+      switch ($xaction->getMetadataValue('edge:type')) {
+        case PhabricatorProjectObjectHasProjectEdgeType::EDGECONST:
+          $app_capability = ManiphestEditProjectsCapability::CAPABILITY;
+          break;
+      }
+    } else {
+      $app_capability = idx($app_capability_map, $transaction_type);
+    }
 
     if ($app_capability) {
       $app = id(new PhabricatorApplicationQuery())
         ->setViewer($this->getActor())
-        ->withClasses(array('PhabricatorApplicationManiphest'))
+        ->withClasses(array('PhabricatorManiphestApplication'))
         ->executeOne();
       PhabricatorPolicyFilter::requireCapability(
         $this->getActor(),
@@ -500,7 +488,6 @@ final class ManiphestTransactionEditor
   }
 
   private function getNextSubpriority($pri, $sub, $dir = '>') {
-
     switch ($dir) {
       case '>':
         $order = 'ASC';

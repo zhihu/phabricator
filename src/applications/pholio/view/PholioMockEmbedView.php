@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group pholio
- */
 final class PholioMockEmbedView extends AphrontView {
 
   private $mock;
@@ -29,6 +26,9 @@ final class PholioMockEmbedView extends AphrontView {
     if (!empty($this->images)) {
       $images_to_show = array_intersect_key(
         $this->mock->getImages(), array_flip($this->images));
+    }
+
+    if ($images_to_show) {
       foreach ($images_to_show as $image) {
         $thumbfile = $image->getFile();
         $thumbnail = $thumbfile->getThumb280x210URI();
@@ -53,4 +53,5 @@ final class PholioMockEmbedView extends AphrontView {
 
     return $item;
   }
+
 }

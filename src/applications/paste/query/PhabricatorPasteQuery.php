@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group paste
- */
 final class PhabricatorPasteQuery
   extends PhabricatorCursorPagedPolicyAwareQuery {
 
@@ -239,7 +236,6 @@ final class PhabricatorPasteQuery
     return $results;
   }
 
-
   private function buildContent(PhabricatorPaste $paste) {
     $language = $paste->getLanguage();
     $source = $paste->getRawContent();
@@ -255,9 +251,8 @@ final class PhabricatorPasteQuery
     }
   }
 
-
   public function getQueryApplicationClass() {
-    return 'PhabricatorApplicationPaste';
+    return 'PhabricatorPasteApplication';
   }
 
 }

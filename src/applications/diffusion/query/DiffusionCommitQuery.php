@@ -16,10 +16,10 @@ final class DiffusionCommitQuery
   private $auditorPHIDs;
   private $auditAwaitingUser;
   private $auditStatus;
+
   const AUDIT_STATUS_ANY       = 'audit-status-any';
   const AUDIT_STATUS_OPEN      = 'audit-status-open';
   const AUDIT_STATUS_CONCERN   = 'audit-status-concern';
-  private $loadAuditIds;
 
   private $needCommitData;
 
@@ -89,17 +89,14 @@ final class DiffusionCommitQuery
   }
 
   /**
-   * Retuns true if we should join the audit table, either because we're
-   * interested in the information if it's available or because matching
-   * rows must always have it.
+   * Returns true if we should join the audit table, either because we're
+   * interested in the information if it's available or because matching rows
+   * must always have it.
    */
   private function shouldJoinAudits() {
-    return
-      $this->needAuditRequests ||
-      $this->auditStatus ||
-      $this->rowsMustHaveAudits();
+    return $this->auditStatus ||
+           $this->rowsMustHaveAudits();
   }
-
 
   /**
    * Return true if we should `JOIN` (vs `LEFT JOIN`) the audit table, because
@@ -156,29 +153,15 @@ final class DiffusionCommitQuery
 
     $data = queryfx_all(
       $conn_r,
-      'SELECT commit.* %Q FROM %T commit %Q %Q %Q %Q',
-      $this->buildAuditSelect($conn_r),
+      'SELECT commit.* FROM %T commit %Q %Q %Q %Q %Q',
       $table->getTableName(),
       $this->buildJoinClause($conn_r),
       $this->buildWhereClause($conn_r),
+      $this->buildGroupClause($conn_r),
       $this->buildOrderClause($conn_r),
       $this->buildLimitClause($conn_r));
 
-    if ($this->shouldJoinAudits()) {
-      $this->loadAuditIds = ipull($data, 'audit_id');
-    }
-
     return $table->loadAllFromArray($data);
-  }
-
-  private function buildAuditSelect($conn_r) {
-    if ($this->shouldJoinAudits()) {
-      return qsprintf(
-        $conn_r,
-        ', audit.id as audit_id');
-    }
-
-    return '';
   }
 
   protected function willFilterPage(array $commits) {
@@ -211,7 +194,7 @@ final class DiffusionCommitQuery
             $result[$prefix.$suffix][] = $commit;
           }
         } else {
-          // This awkward contruction is so we can link the commits up in O(N)
+          // This awkward construction is so we can link the commits up in O(N)
           // time instead of O(N^2).
           for ($ii = $min_qualified; $ii <= strlen($suffix); $ii++) {
             $part = substr($suffix, 0, $ii);
@@ -230,7 +213,7 @@ final class DiffusionCommitQuery
           $result[$identifier] = head($matching_commits);
         } else {
           // This reference is ambiguous (it matches more than one commit) so
-          // don't link it
+          // don't link it.
           unset($result[$identifier]);
         }
       }
@@ -242,7 +225,6 @@ final class DiffusionCommitQuery
   }
 
   protected function didFilterPage(array $commits) {
-
     if ($this->needCommitData) {
       $data = id(new PhabricatorRepositoryCommitData())->loadAllWhere(
         'commitID in (%Ld)',
@@ -257,14 +239,13 @@ final class DiffusionCommitQuery
       }
     }
 
-    if ($this->shouldJoinAudits()) {
-      $load_ids = array_filter($this->loadAuditIds);
-      if ($load_ids) {
-        $requests = id(new PhabricatorRepositoryAuditRequest())
-          ->loadAllWhere('id IN (%Ld)', $this->loadAuditIds);
-      } else {
-        $requests = array();
-      }
+    // TODO: This should just be `needAuditRequests`, not `shouldJoinAudits()`,
+    // but leave that for a future diff.
+
+    if ($this->needAuditRequests || $this->shouldJoinAudits()) {
+      $requests = id(new PhabricatorRepositoryAuditRequest())->loadAllWhere(
+        'commitPHID IN (%Ls)',
+        mpull($commits, 'getPHID'));
 
       $requests = mgroup($requests, 'getCommitPHID');
       foreach ($commits as $commit) {
@@ -508,8 +489,25 @@ final class DiffusionCommitQuery
     }
   }
 
+  private function buildGroupClause(AphrontDatabaseConnection $conn_r) {
+    $should_group = $this->shouldJoinAudits();
+
+    // TODO: Currently, the audit table is missing a unique key, so we may
+    // require a GROUP BY if we perform this join. See T1768. This can be
+    // removed once the table has the key.
+    if ($this->auditAwaitingUser) {
+      $should_group = true;
+    }
+
+    if ($should_group) {
+      return 'GROUP BY commit.id';
+    } else {
+      return '';
+    }
+  }
+
   public function getQueryApplicationClass() {
-    return 'PhabricatorApplicationDiffusion';
+    return 'PhabricatorDiffusionApplication';
   }
 
 }

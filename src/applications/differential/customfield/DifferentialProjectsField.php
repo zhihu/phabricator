@@ -35,7 +35,7 @@ final class DifferentialProjectsField
 
     $projects = PhabricatorEdgeQuery::loadDestinationPHIDs(
       $revision->getPHID(),
-      PhabricatorEdgeConfig::TYPE_OBJECT_HAS_PROJECT);
+      PhabricatorProjectObjectHasProjectEdgeType::EDGECONST);
     $projects = array_reverse($projects);
 
     return $projects;
@@ -56,7 +56,7 @@ final class DifferentialProjectsField
   public function renderEditControl(array $handles) {
     return id(new AphrontFormTokenizerControl())
       ->setName($this->getFieldKey())
-      ->setDatasource('/typeahead/common/projects/')
+      ->setDatasource(new PhabricatorProjectDatasource())
       ->setValue($handles)
       ->setLabel($this->getFieldName());
   }
@@ -97,14 +97,16 @@ final class DifferentialProjectsField
   }
 
   public function getApplicationTransactionMetadata() {
-    return array('edge:type' => PhabricatorEdgeConfig::TYPE_OBJECT_HAS_PROJECT);
+    return array(
+      'edge:type' => PhabricatorProjectObjectHasProjectEdgeType::EDGECONST,
+    );
   }
 
   public function parseValueFromCommitMessage($value) {
     return $this->parseObjectList(
       $value,
       array(
-        PhabricatorProjectPHIDTypeProject::TYPECONST,
+        PhabricatorProjectProjectPHIDType::TYPECONST,
       ));
   }
 

@@ -14,13 +14,13 @@ final class DrydockBlueprint extends DrydockDAO
   public static function initializeNewBlueprint(PhabricatorUser $actor) {
     $app = id(new PhabricatorApplicationQuery())
       ->setViewer($actor)
-      ->withClasses(array('PhabricatorApplicationDrydock'))
+      ->withClasses(array('PhabricatorDrydockApplication'))
       ->executeOne();
 
     $view_policy = $app->getPolicy(
-      DrydockCapabilityDefaultView::CAPABILITY);
+      DrydockDefaultViewCapability::CAPABILITY);
     $edit_policy = $app->getPolicy(
-      DrydockCapabilityDefaultEdit::CAPABILITY);
+      DrydockDefaultEditCapability::CAPABILITY);
 
     return id(new DrydockBlueprint())
       ->setViewPolicy($view_policy)
@@ -39,7 +39,7 @@ final class DrydockBlueprint extends DrydockDAO
 
   public function generatePHID() {
     return PhabricatorPHID::generateNewPHID(
-      DrydockPHIDTypeBlueprint::TYPECONST);
+      DrydockBlueprintPHIDType::TYPECONST);
   }
 
   public function getImplementation() {
@@ -85,4 +85,5 @@ final class DrydockBlueprint extends DrydockDAO
   public function describeAutomaticCapability($capability) {
     return null;
   }
+
 }

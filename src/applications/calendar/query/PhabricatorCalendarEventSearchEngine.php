@@ -8,7 +8,7 @@ final class PhabricatorCalendarEventSearchEngine
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorApplicationCalendar';
+    return 'PhabricatorCalendarApplication';
   }
 
   public function buildSavedQueryFromRequest(AphrontRequest $request) {
@@ -106,13 +106,13 @@ final class PhabricatorCalendarEventSearchEngine
     $form
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource('/typeahead/common/accounts/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setName('creators')
           ->setLabel(pht('Created By'))
           ->setValue($creator_handles))
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource('/typeahead/common/accounts/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setName('invited')
           ->setLabel(pht('Invited'))
           ->setValue($invited_handles))
@@ -137,7 +137,6 @@ final class PhabricatorCalendarEventSearchEngine
             1,
             pht('Show only upcoming events.'),
             $upcoming));
-
   }
 
   protected function getURI($path) {
@@ -147,14 +146,13 @@ final class PhabricatorCalendarEventSearchEngine
   public function getBuiltinQueryNames() {
     $names = array(
       'upcoming' => pht('Upcoming Events'),
-      'all' => pht('All Events'),
+      'all'      => pht('All Events'),
     );
 
     return $names;
   }
 
   public function buildSavedQueryFromBuiltin($query_key) {
-
     $query = $this->newSavedQuery();
     $query->setQueryKey($query_key);
 

@@ -6,7 +6,7 @@ final class HeraldPholioMockAdapter extends HeraldAdapter {
   private $ccPHIDs = array();
 
   public function getAdapterApplicationClass() {
-    return 'PhabricatorApplicationPholio';
+    return 'PhabricatorPholioApplication';
   }
 
   public function getAdapterContentDescription() {
@@ -103,7 +103,7 @@ final class HeraldPholioMockAdapter extends HeraldAdapter {
       case self::FIELD_PROJECTS:
         return PhabricatorEdgeQuery::loadDestinationPHIDs(
           $this->getMock()->getPHID(),
-          PhabricatorEdgeConfig::TYPE_OBJECT_HAS_PROJECT);
+          PhabricatorProjectObjectHasProjectEdgeType::EDGECONST);
     }
 
     return parent::getHeraldField($field);
@@ -148,4 +148,5 @@ final class HeraldPholioMockAdapter extends HeraldAdapter {
     }
     return $result;
   }
+
 }

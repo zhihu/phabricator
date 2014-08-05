@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group pholio
- */
 final class PholioImage extends PholioDAO
   implements
     PhabricatorMarkupInterface,
@@ -29,7 +26,7 @@ final class PholioImage extends PholioDAO
   }
 
   public function generatePHID() {
-    return PhabricatorPHID::generateNewPHID(PholioPHIDTypeImage::TYPECONST);
+    return PhabricatorPHID::generateNewPHID(PholioImagePHIDType::TYPECONST);
   }
 
   public function attachFile(PhabricatorFile $file) {

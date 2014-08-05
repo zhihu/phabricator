@@ -25,7 +25,7 @@ final class ManiphestTransaction
   }
 
   public function getApplicationTransactionType() {
-    return ManiphestPHIDTypeTask::TYPECONST;
+    return ManiphestTaskPHIDType::TYPECONST;
   }
 
   public function getApplicationTransactionCommentObject() {
@@ -41,6 +41,18 @@ final class ManiphestTransaction
     }
 
     return parent::shouldGenerateOldValue();
+  }
+
+  public function getRemarkupBlocks() {
+    $blocks = parent::getRemarkupBlocks();
+
+    switch ($this->getTransactionType()) {
+      case self::TYPE_DESCRIPTION:
+        $blocks[] = $this->getNewValue();
+        break;
+    }
+
+    return $blocks;
   }
 
   public function getRequiredHandlePHIDs() {
@@ -788,8 +800,15 @@ final class ManiphestTransaction
       case self::TYPE_CCS:
         $tags[] = MetaMTANotificationType::TYPE_MANIPHEST_CC;
         break;
-      case self::TYPE_PROJECTS:
-        $tags[] = MetaMTANotificationType::TYPE_MANIPHEST_PROJECTS;
+      case PhabricatorTransactions::TYPE_EDGE:
+        switch ($this->getMetadataValue('edge:type')) {
+          case PhabricatorProjectObjectHasProjectEdgeType::EDGECONST:
+            $tags[] = MetaMTANotificationType::TYPE_MANIPHEST_PROJECTS;
+            break;
+          default:
+            $tags[] = MetaMTANotificationType::TYPE_MANIPHEST_OTHER;
+            break;
+        }
         break;
       case self::TYPE_PRIORITY:
         $tags[] = MetaMTANotificationType::TYPE_MANIPHEST_PRIORITY;

@@ -12,11 +12,11 @@ final class PhabricatorCountdown
   public static function initializeNewCountdown(PhabricatorUser $actor) {
     $app = id(new PhabricatorApplicationQuery())
       ->setViewer($actor)
-      ->withClasses(array('PhabricatorApplicationCountdown'))
+      ->withClasses(array('PhabricatorCountdownApplication'))
       ->executeOne();
 
     $view_policy = $app->getPolicy(
-      PhabricatorCountdownCapabilityDefaultView::CAPABILITY);
+      PhabricatorCountdownDefaultViewCapability::CAPABILITY);
 
     return id(new PhabricatorCountdown())
       ->setAuthorPHID($actor->getPHID())
@@ -32,7 +32,7 @@ final class PhabricatorCountdown
 
   public function generatePHID() {
     return PhabricatorPHID::generateNewPHID(
-      PhabricatorCountdownPHIDTypeCountdown::TYPECONST);
+      PhabricatorCountdownCountdownPHIDType::TYPECONST);
   }
 
 

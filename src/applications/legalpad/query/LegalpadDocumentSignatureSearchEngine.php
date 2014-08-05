@@ -10,7 +10,7 @@ final class LegalpadDocumentSignatureSearchEngine
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorApplicationLegalpad';
+    return 'PhabricatorLegalpadApplication';
   }
 
   public function setDocument(LegalpadDocument $document) {
@@ -31,7 +31,7 @@ final class LegalpadDocumentSignatureSearchEngine
         $request,
         'documents',
         array(
-          PhabricatorLegalpadPHIDTypeDocument::TYPECONST,
+          PhabricatorLegalpadDocumentPHIDType::TYPECONST,
         )));
 
     $saved->setParameter('nameContains', $request->getStr('nameContains'));
@@ -99,7 +99,7 @@ final class LegalpadDocumentSignatureSearchEngine
     $form
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource('/typeahead/common/users/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setName('signers')
           ->setLabel(pht('Signers'))
           ->setValue(array_select_keys($handles, $signer_phids)))

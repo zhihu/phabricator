@@ -2,8 +2,9 @@
 
 final class PhabricatorProjectColumn
   extends PhabricatorProjectDAO
-  implements PhabricatorPolicyInterface,
-  PhabricatorDestructableInterface {
+  implements
+    PhabricatorPolicyInterface,
+    PhabricatorDestructibleInterface {
 
   const STATUS_ACTIVE = 0;
   const STATUS_HIDDEN = 1;
@@ -29,7 +30,7 @@ final class PhabricatorProjectColumn
 
   public function generatePHID() {
     return PhabricatorPHID::generateNewPHID(
-      PhabricatorProjectPHIDTypeColumn::TYPECONST);
+      PhabricatorProjectColumnPHIDType::TYPECONST);
   }
 
   public function attachProject(PhabricatorProject $project) {
@@ -99,7 +100,7 @@ final class PhabricatorProjectColumn
   }
 
 
-/* -(  PhabricatorDestructableInterface  )----------------------------------- */
+/* -(  PhabricatorDestructibleInterface  )----------------------------------- */
 
   public function destroyObjectPermanently(
     PhabricatorDestructionEngine $engine) {

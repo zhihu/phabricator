@@ -1,14 +1,13 @@
 <?php
 
-final class PhrequentSearchEngine
-  extends PhabricatorApplicationSearchEngine {
+final class PhrequentSearchEngine extends PhabricatorApplicationSearchEngine {
 
   public function getResultTypeDescription() {
     return pht('Phrequent Time');
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorApplicationPhrequent';
+    return 'PhabricatorPhrequentApplication';
   }
 
   public function getPageSize(PhabricatorSavedQuery $saved) {
@@ -69,7 +68,7 @@ final class PhrequentSearchEngine
     $form
       ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource('/typeahead/common/users/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setName('users')
           ->setLabel(pht('Users'))
           ->setValue($handles))
@@ -92,16 +91,13 @@ final class PhrequentSearchEngine
   }
 
   public function getBuiltinQueryNames() {
-    $names = array(
+    return array(
       'tracking' => pht('Currently Tracking'),
       'all' => pht('All Tracked'),
     );
-
-    return $names;
   }
 
   public function buildSavedQueryFromBuiltin($query_key) {
-
     $query = $this->newSavedQuery();
     $query->setQueryKey($query_key);
 
@@ -166,7 +162,7 @@ final class PhrequentSearchEngine
       }
 
       $time_spent = $time_spent == 0 ? 'none' :
-        phabricator_format_relative_time_detailed($time_spent);
+        phutil_format_relative_time_detailed($time_spent);
 
       if ($usertime->getDateEnded() !== null) {
         $item->addAttribute(
@@ -186,7 +182,7 @@ final class PhrequentSearchEngine
             $usertime->getUserPHID() === $viewer->getPHID()) {
           $item->addAction(
             id(new PHUIListItemView())
-              ->setIcon('fa-time-o')
+              ->setIcon('fa-stop')
               ->addSigil('phrequent-stop-tracking')
               ->setWorkflow(true)
               ->setRenderNameAsTooltip(true)
@@ -203,4 +199,5 @@ final class PhrequentSearchEngine
 
     return $view;
   }
+
 }

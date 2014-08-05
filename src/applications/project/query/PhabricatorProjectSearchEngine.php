@@ -8,7 +8,7 @@ final class PhabricatorProjectSearchEngine
   }
 
   public function getApplicationClassName() {
-    return 'PhabricatorApplicationProject';
+    return 'PhabricatorProjectApplication';
   }
 
   public function getCustomFieldObject() {
@@ -21,7 +21,9 @@ final class PhabricatorProjectSearchEngine
     $saved->setParameter(
       'memberPHIDs',
       $this->readUsersFromRequest($request, 'members'));
+
     $saved->setParameter('status', $request->getStr('status'));
+    $saved->setParameter('name', $request->getStr('name'));
 
     $this->readCustomFieldsFromRequest($request, $saved);
 
@@ -43,6 +45,11 @@ final class PhabricatorProjectSearchEngine
       $query->withStatus($status);
     }
 
+    $name = $saved->getParameter('name');
+    if (strlen($name)) {
+      $query->withDatasourceQuery($name);
+    }
+
     $this->applyCustomFieldsToQuery($query, $saved);
 
     return $query;
@@ -59,11 +66,17 @@ final class PhabricatorProjectSearchEngine
       ->execute();
 
     $status = $saved->getParameter('status');
+    $name = $saved->getParameter('name');
 
     $form
       ->appendChild(
+        id(new AphrontFormTextControl())
+          ->setName('name')
+          ->setLabel(pht('Name'))
+          ->setValue($name))
+      ->appendChild(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource('/typeahead/common/users/')
+          ->setDatasource(new PhabricatorPeopleDatasource())
           ->setName('members')
           ->setLabel(pht('Members'))
           ->setValue($member_handles))
@@ -95,7 +108,6 @@ final class PhabricatorProjectSearchEngine
   }
 
   public function buildSavedQueryFromBuiltin($query_key) {
-
     $query = $this->newSavedQuery();
     $query->setQueryKey($query_key);
 

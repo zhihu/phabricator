@@ -244,7 +244,6 @@ final class PhabricatorRepositoryCommitHeraldWorker
 
     $maps = array(
       PhabricatorAuditStatusConstants::AUDIT_REQUIRED => $map,
-      PhabricatorAuditStatusConstants::CC => $ccmap,
     );
 
     foreach ($maps as $status => $map) {
@@ -281,6 +280,14 @@ final class PhabricatorRepositoryCommitHeraldWorker
 
     $commit->updateAuditStatus($requests);
     $commit->save();
+
+    if ($ccmap) {
+      id(new PhabricatorSubscriptionsEditor())
+        ->setActor(PhabricatorUser::getOmnipotentUser())
+        ->setObject($commit)
+        ->subscribeExplicit(array_keys($ccmap))
+        ->save();
+    }
   }
 
 
@@ -304,8 +311,8 @@ final class PhabricatorRepositoryCommitHeraldWorker
       ->setAllowPartialResults(true)
       ->setAllowedTypes(
         array(
-          PhabricatorPeoplePHIDTypeUser::TYPECONST,
-          PhabricatorProjectPHIDTypeProject::TYPECONST,
+          PhabricatorPeopleUserPHIDType::TYPECONST,
+          PhabricatorProjectProjectPHIDType::TYPECONST,
         ))
       ->setObjectList($matches[1])
       ->execute();
@@ -469,8 +476,8 @@ final class PhabricatorRepositoryCommitHeraldWorker
 
     $size = strlen($raw_diff);
     if ($byte_limit && $size > $byte_limit) {
-      $pretty_size = phabricator_format_bytes($size);
-      $pretty_limit = phabricator_format_bytes($byte_limit);
+      $pretty_size = phutil_format_bytes($size);
+      $pretty_limit = phutil_format_bytes($byte_limit);
       throw new Exception(
         "Patch size of {$pretty_size} exceeds configured byte size limit of ".
         "{$pretty_limit}.");

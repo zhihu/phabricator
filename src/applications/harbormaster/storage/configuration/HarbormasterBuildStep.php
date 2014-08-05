@@ -6,10 +6,11 @@ final class HarbormasterBuildStep extends HarbormasterDAO
     PhabricatorCustomFieldInterface {
 
   protected $name;
+  protected $description;
   protected $buildPlanPHID;
   protected $className;
   protected $details = array();
-  protected $sequence;
+  protected $sequence = 0;
 
   private $buildPlan = self::ATTACHABLE;
   private $customFields = self::ATTACHABLE;
@@ -30,7 +31,7 @@ final class HarbormasterBuildStep extends HarbormasterDAO
 
   public function generatePHID() {
     return PhabricatorPHID::generateNewPHID(
-      HarbormasterPHIDTypeBuildStep::TYPECONST);
+      HarbormasterBuildStepPHIDType::TYPECONST);
   }
 
   public function attachBuildPlan(HarbormasterBuildPlan $plan) {

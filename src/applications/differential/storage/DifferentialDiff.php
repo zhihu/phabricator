@@ -6,7 +6,7 @@ final class DifferentialDiff
     PhabricatorPolicyInterface,
     HarbormasterBuildableInterface,
     PhabricatorApplicationTransactionInterface,
-    PhabricatorDestructableInterface {
+    PhabricatorDestructibleInterface {
 
   protected $revisionID;
   protected $authorPHID;
@@ -47,7 +47,7 @@ final class DifferentialDiff
 
   public function generatePHID() {
     return PhabricatorPHID::generateNewPHID(
-      DifferentialPHIDTypeDiff::TYPECONST);
+      DifferentialDiffPHIDType::TYPECONST);
   }
 
   public function addUnsavedChangeset(DifferentialChangeset $changeset) {
@@ -392,7 +392,7 @@ final class DifferentialDiff
   }
 
 
-/* -(  PhabricatorDestructableInterface  )----------------------------------- */
+/* -(  PhabricatorDestructibleInterface  )----------------------------------- */
 
 
   public function destroyObjectPermanently(

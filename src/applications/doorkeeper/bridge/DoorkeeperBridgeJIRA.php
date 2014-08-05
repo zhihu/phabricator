@@ -22,7 +22,7 @@ final class DoorkeeperBridgeJIRA extends DoorkeeperBridge {
     $id_map = mpull($refs, 'getObjectID', 'getObjectKey');
     $viewer = $this->getViewer();
 
-    $provider = PhabricatorAuthProviderOAuth1JIRA::getJIRAProvider();
+    $provider = PhabricatorJIRAAuthProvider::getJIRAProvider();
     if (!$provider) {
       return;
     }
@@ -31,6 +31,11 @@ final class DoorkeeperBridgeJIRA extends DoorkeeperBridge {
       ->setViewer($viewer)
       ->withUserPHIDs(array($viewer->getPHID()))
       ->withAccountTypes(array($provider->getProviderType()))
+      ->requireCapabilities(
+        array(
+          PhabricatorPolicyCapability::CAN_VIEW,
+          PhabricatorPolicyCapability::CAN_EDIT,
+        ))
       ->execute();
 
     if (!$accounts) {

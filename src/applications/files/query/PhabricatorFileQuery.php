@@ -1,8 +1,5 @@
 <?php
 
-/**
- * @group file
- */
 final class PhabricatorFileQuery
   extends PhabricatorCursorPagedPolicyAwareQuery {
 
@@ -140,10 +137,16 @@ final class PhabricatorFileQuery
 
     $objects = array();
     if ($object_phids) {
+      // NOTE: We're explicitly turning policy exceptions off, since the rule
+      // here is "you can see the file if you can see ANY associated object".
+      // Without this explicit flag, we'll incorrectly throw unless you can
+      // see ALL associated objects.
+
       $objects = id(new PhabricatorObjectQuery())
         ->setParentQuery($this)
         ->setViewer($this->getViewer())
         ->withPHIDs($object_phids)
+        ->setRaisePolicyExceptions(false)
         ->execute();
       $objects = mpull($objects, null, 'getPHID');
     }
@@ -248,9 +251,8 @@ final class PhabricatorFileQuery
     return 'f.id';
   }
 
-
   public function getQueryApplicationClass() {
-    return 'PhabricatorApplicationFiles';
+    return 'PhabricatorFilesApplication';
   }
 
 }
