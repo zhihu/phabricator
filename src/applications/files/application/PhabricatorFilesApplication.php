@@ -42,7 +42,7 @@ final class PhabricatorFilesApplication extends PhabricatorApplication {
 
   public function getRoutes() {
     return array(
-      '/F(?P<id>[1-9]\d*)' => 'PhabricatorFileShortcutController',
+      '/F(?P<id>[1-9]\d*)' => 'PhabricatorFileInfoController',
       '/file/' => array(
         '(query/(?P<key>[^/]+)/)?' => 'PhabricatorFileListController',
         'upload/' => 'PhabricatorFileUploadController',
@@ -52,6 +52,8 @@ final class PhabricatorFilesApplication extends PhabricatorApplication {
         'delete/(?P<id>[1-9]\d*)/' => 'PhabricatorFileDeleteController',
         'edit/(?P<id>[1-9]\d*)/' => 'PhabricatorFileEditController',
         'info/(?P<phid>[^/]+)/' => 'PhabricatorFileInfoController',
+        'data/(?P<key>[^/]+)/(?P<phid>[^/]+)/(?P<token>[^/]+)/.*'
+          => 'PhabricatorFileDataController',
         'data/(?P<key>[^/]+)/(?P<phid>[^/]+)/.*'
           => 'PhabricatorFileDataController',
         'proxy/' => 'PhabricatorFileProxyController',

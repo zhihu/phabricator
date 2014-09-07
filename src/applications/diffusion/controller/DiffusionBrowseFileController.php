@@ -613,7 +613,6 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
 
       foreach ($this->lintMessages as $message) {
         $inline = id(new PhabricatorAuditInlineComment())
-          ->setID($message['id'])
           ->setSyntheticAuthor(
             ArcanistLintSeverity::getStringForSeverity($message['severity']).
             ' '.$message['code'].' ('.$message['name'].')')
@@ -685,7 +684,10 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
                 'size'  => 600,
               ),
             ),
-            phutil_utf8_shorten($line['commit'], 9, ''));
+            id(new PhutilUTF8StringTruncator())
+            ->setMaximumGlyphs(9)
+            ->setTerminator('')
+            ->truncateString($line['commit']));
 
           $revision_id = null;
           if (idx($commits, $commit)) {
@@ -879,7 +881,6 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
 
     $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
       $file->attachToObject(
-        $this->getRequest()->getUser(),
         $this->getDiffusionRequest()->getRepository()->getPHID());
     unset($unguarded);
 
@@ -888,7 +889,7 @@ final class DiffusionBrowseFileController extends DiffusionBrowseController {
 
   private function buildRawResponse($path, $data) {
     $file = $this->loadFileForData($path, $data);
-    return id(new AphrontRedirectResponse())->setURI($file->getBestURI());
+    return $file->getRedirectResponse();
   }
 
   private function buildImageCorpus($file_uri) {

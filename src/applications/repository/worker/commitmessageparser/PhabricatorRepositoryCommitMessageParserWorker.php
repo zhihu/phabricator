@@ -18,6 +18,10 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
     }
     $data->setCommitID($commit->getID());
     $data->setAuthorName((string)$author);
+
+    $data->setCommitDetail('authorName', $ref->getAuthorName());
+    $data->setCommitDetail('authorEmail', $ref->getAuthorEmail());
+
     $data->setCommitDetail(
       'authorPHID',
       $this->resolveUserPHID($commit, $author));
@@ -26,6 +30,10 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
 
     if (strlen($committer)) {
       $data->setCommitDetail('committer', $committer);
+
+      $data->setCommitDetail('committerName', $ref->getCommitterName());
+      $data->setCommitDetail('committerEmail', $ref->getCommitterEmail());
+
       $data->setCommitDetail(
         'committerPHID',
         $this->resolveUserPHID($commit, $committer));
@@ -43,19 +51,23 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
         $author_phid);
     }
 
-    $field_values = id(new DiffusionLowLevelCommitFieldsQuery())
-      ->setRepository($repository)
-      ->withCommitRef($ref)
-      ->execute();
-    $revision_id = idx($field_values, 'revisionID');
+    $differential_app = 'PhabricatorDifferentialApplication';
+    $revision_id = null;
+    if (PhabricatorApplication::isClassInstalled($differential_app)) {
+      $field_values = id(new DiffusionLowLevelCommitFieldsQuery())
+        ->setRepository($repository)
+        ->withCommitRef($ref)
+        ->execute();
+      $revision_id = idx($field_values, 'revisionID');
 
-    if (!empty($field_values['reviewedByPHIDs'])) {
-      $data->setCommitDetail(
-        'reviewerPHID',
-        reset($field_values['reviewedByPHIDs']));
+      if (!empty($field_values['reviewedByPHIDs'])) {
+        $data->setCommitDetail(
+          'reviewerPHID',
+          reset($field_values['reviewedByPHIDs']));
+      }
+
+      $data->setCommitDetail('differential.revisionID', $revision_id);
     }
-
-    $data->setCommitDetail('differential.revisionID', $revision_id);
 
     if ($author_phid != $commit->getAuthorPHID()) {
       $commit->setAuthorPHID($author_phid);
@@ -63,6 +75,27 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
 
     $commit->setSummary($data->getSummary());
     $commit->save();
+
+    // Figure out if we're going to try to "autoclose" related objects (e.g.,
+    // close linked tasks and related revisions) and, if not, record why we
+    // aren't. Autoclose can be disabled for various reasons at the repository
+    // or commit levels.
+
+    $autoclose_reason = $repository->shouldSkipAutocloseCommit($commit);
+    $data->setCommitDetail('autocloseReason', $autoclose_reason);
+    $should_autoclose = $repository->shouldAutocloseCommit($commit);
+
+
+    // When updating related objects, we'll act under an omnipotent user to
+    // ensure we can see them, but take actions as either the committer or
+    // author (if we recognize their accounts) or the Diffusion application
+    // (if we do not).
+
+    $actor = PhabricatorUser::getOmnipotentUser();
+    $acting_as_phid = nonempty(
+      $committer_phid,
+      $author_phid,
+      id(new PhabricatorDiffusionApplication())->getPHID());
 
     $conn_w = id(new DifferentialRevision())->establishConnection('w');
 
@@ -75,19 +108,21 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
     // someone probably did something very silly, though.)
 
     $revision = null;
-    $should_autoclose = $repository->shouldAutocloseCommit($commit, $data);
-
     if ($revision_id) {
-      // TODO: Check if a more restrictive viewer could be set here
       $revision_query = id(new DifferentialRevisionQuery())
         ->withIDs(array($revision_id))
-        ->setViewer(PhabricatorUser::getOmnipotentUser())
+        ->setViewer($actor)
         ->needReviewerStatus(true)
         ->needActiveDiffs(true);
 
       $revision = $revision_query->executeOne();
 
       if ($revision) {
+        if (!$data->getCommitDetail('precommitRevisionStatus')) {
+          $data->setCommitDetail(
+            'precommitRevisionStatus',
+            $revision->getStatus());
+        }
         $commit_drev = PhabricatorEdgeConfig::TYPE_COMMIT_HAS_DREV;
         id(new PhabricatorEdgeEditor())
           ->addEdge($commit->getPHID(), $commit_drev, $revision->getPHID())
@@ -105,14 +140,6 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
                         $should_autoclose;
 
         if ($should_close) {
-          $actor_phid = nonempty(
-            $committer_phid,
-            $author_phid,
-            $revision->getAuthorPHID());
-
-          $actor = id(new PhabricatorUser())
-            ->loadOneWhere('phid = %s', $actor_phid);
-
           $commit_name = $repository->formatCommitName(
             $commit->getCommitIdentifier());
 
@@ -139,7 +166,7 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
               $author_name);
           }
 
-          $diff = $this->generateFinalDiff($revision, $actor_phid);
+          $diff = $this->generateFinalDiff($revision, $acting_as_phid);
 
           $vs_diff = $this->loadChangedByCommit($revision, $diff);
           $changed_uri = null;
@@ -177,6 +204,7 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
 
           $editor = id(new DifferentialTransactionEditor())
             ->setActor($actor)
+            ->setActingAsPHID($acting_as_phid)
             ->setContinueOnMissingFields(true)
             ->setContentSource($content_source)
             ->setChangedPriorToCommitURI($changed_uri)
@@ -195,10 +223,12 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
     }
 
     if ($should_autoclose) {
-      // TODO: This isn't as general as it could be.
-      if ($user->getPHID()) {
-        $this->closeTasks($user, $repository, $commit, $message);
-      }
+      $this->closeTasks(
+        $actor,
+        $acting_as_phid,
+        $repository,
+        $commit,
+        $message);
     }
 
     $data->save();
@@ -405,6 +435,7 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
 
   private function closeTasks(
     PhabricatorUser $actor,
+    $acting_as,
     PhabricatorRepository $repository,
     PhabricatorRepositoryCommit $commit,
     $message) {
@@ -487,6 +518,7 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
 
       $editor = id(new ManiphestTransactionEditor())
         ->setActor($actor)
+        ->setActingAsPHID($acting_as)
         ->setContinueOnNoEffect(true)
         ->setContinueOnMissingFields(true)
         ->setContentSource($content_source);

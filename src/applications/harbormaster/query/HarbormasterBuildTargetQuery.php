@@ -6,6 +6,7 @@ final class HarbormasterBuildTargetQuery
   private $ids;
   private $phids;
   private $buildPHIDs;
+  private $buildGenerations;
   private $needBuildSteps;
 
   public function withIDs(array $ids) {
@@ -20,6 +21,11 @@ final class HarbormasterBuildTargetQuery
 
   public function withBuildPHIDs(array $build_phids) {
     $this->buildPHIDs = $build_phids;
+    return $this;
+  }
+
+  public function withBuildGenerations(array $build_generations) {
+    $this->buildGenerations = $build_generations;
     return $this;
   }
 
@@ -67,6 +73,13 @@ final class HarbormasterBuildTargetQuery
         $this->buildPHIDs);
     }
 
+    if ($this->buildGenerations) {
+      $where[] = qsprintf(
+        $conn_r,
+        'buildGeneration in (%Ld)',
+        $this->buildGenerations);
+    }
+
     $where[] = $this->buildPagingClause($conn_r);
 
     return $this->formatWhereClause($where);
@@ -90,7 +103,7 @@ final class HarbormasterBuildTargetQuery
 
       foreach ($page as $target) {
         $target->attachBuildStep(
-          $steps[$target->getBuildStepPHID()]);
+          idx($steps, $target->getBuildStepPHID()));
       }
     }
 

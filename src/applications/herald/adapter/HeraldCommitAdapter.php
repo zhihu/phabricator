@@ -443,7 +443,10 @@ final class HeraldCommitAdapter extends HeraldAdapter {
           return null;
         }
 
-        switch ($revision->getStatus()) {
+        $status = $data->getCommitDetail(
+          'precommitRevisionStatus',
+          $revision->getStatus());
+        switch ($status) {
           case ArcanistDifferentialRevisionStatus::ACCEPTED:
           case ArcanistDifferentialRevisionStatus::CLOSED:
             return $revision->getPHID();
@@ -475,9 +478,7 @@ final class HeraldCommitAdapter extends HeraldAdapter {
         $refs = DiffusionRepositoryRef::loadAllFromDictionaries($result);
         return mpull($refs, 'getShortName');
       case self::FIELD_REPOSITORY_AUTOCLOSE_BRANCH:
-        return $this->repository->shouldAutocloseCommit(
-          $this->commit,
-          $this->commitData);
+        return $this->repository->shouldAutocloseCommit($this->commit);
     }
 
     return parent::getHeraldField($field);
@@ -546,7 +547,9 @@ final class HeraldCommitAdapter extends HeraldAdapter {
         default:
           $custom_result = parent::handleCustomHeraldEffect($effect);
           if ($custom_result === null) {
-            throw new Exception("No rules to handle action '{$action}'.");
+            throw new Exception(pht(
+              "No rules to handle action '%s'.",
+              $action));
           }
 
           $result[] = $custom_result;

@@ -22,6 +22,7 @@ final class DiffusionQueryCommitsConduitAPIMethod
       'names'             => 'optional list<string>',
       'repositoryPHID'    => 'optional phid',
       'needMessages'      => 'optional bool',
+      'bypassCache'       => 'optional bool',
     ) + $this->getPagerParamTypes();
   }
 
@@ -31,13 +32,11 @@ final class DiffusionQueryCommitsConduitAPIMethod
 
   protected function execute(ConduitAPIRequest $request) {
     $need_messages = $request->getValue('needMessages');
+    $bypass_cache = $request->getValue('bypassCache');
 
     $query = id(new DiffusionCommitQuery())
-      ->setViewer($request->getUser());
-
-    if ($need_messages) {
-      $query->needCommitData(true);
-    }
+      ->setViewer($request->getUser())
+      ->needCommitData(true);
 
     $repository_phid = $request->getValue('repositoryPHID');
     if ($repository_phid) {
@@ -73,6 +72,8 @@ final class DiffusionQueryCommitsConduitAPIMethod
 
     $data = array();
     foreach ($commits as $commit) {
+      $commit_data = $commit->getCommitData();
+
       $callsign = $commit->getRepository()->getCallsign();
       $identifier = $commit->getCommitIdentifier();
       $uri = '/r'.$callsign.$identifier;
@@ -87,15 +88,43 @@ final class DiffusionQueryCommitsConduitAPIMethod
         'uri' => $uri,
         'isImporting' => !$commit->isImported(),
         'summary' => $commit->getSummary(),
+        'authorPHID' => $commit->getAuthorPHID(),
+        'committerPHID' => $commit_data->getCommitDetail('committerPHID'),
+        'author' => $commit_data->getAuthorName(),
+        'authorName' => $commit_data->getCommitDetail('authorName'),
+        'authorEmail' => $commit_data->getCommitDetail('authorEmail'),
+        'committer' => $commit_data->getCommitDetail('committer'),
+        'committerName' => $commit_data->getCommitDetail('committerName'),
+        'committerEmail' => $commit_data->getCommitDetail('committerEmail'),
+        'hashes' => array(),
       );
 
-      if ($need_messages) {
-        $commit_data = $commit->getCommitData();
-        if ($commit_data) {
-          $dict['message'] = $commit_data->getCommitMessage();
-        } else {
-          $dict['message'] = null;
+      if ($bypass_cache) {
+        $lowlevel_commitref = id(new DiffusionLowLevelCommitQuery())
+          ->setRepository($commit->getRepository())
+          ->withIdentifier($commit->getCommitIdentifier())
+          ->execute();
+
+        $dict['author'] = $lowlevel_commitref->getAuthor();
+        $dict['authorName'] = $lowlevel_commitref->getAuthorName();
+        $dict['authorEmail'] = $lowlevel_commitref->getAuthorEmail();
+        $dict['committer'] = $lowlevel_commitref->getCommitter();
+        $dict['committerName'] = $lowlevel_commitref->getCommitterName();
+        $dict['committerEmail'] = $lowlevel_commitref->getCommitterEmail();
+
+        if ($need_messages) {
+          $dict['message'] = $lowlevel_commitref->getMessage();
         }
+
+        foreach ($lowlevel_commitref->getHashes() as $hash) {
+          $dict['hashes'][] = array(
+            'type' => $hash->getHashType(),
+            'value' => $hash->getHashValue());
+        }
+      }
+
+      if ($need_messages && !$bypass_cache) {
+        $dict['message'] = $commit_data->getCommitMessage();
       }
 
       $data[$commit->getPHID()] = $dict;

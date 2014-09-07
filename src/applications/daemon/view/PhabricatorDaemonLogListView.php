@@ -17,8 +17,8 @@ final class PhabricatorDaemonLogListView extends AphrontView {
       throw new Exception('Call setUser() before rendering!');
     }
 
-    $list = id(new PHUIObjectItemListView())
-      ->setFlush(true);
+    $env_hash = PhabricatorEnv::calculateEnvironmentHash();
+    $list = new PHUIObjectItemListView();
     foreach ($this->daemonLogs as $log) {
       $id = $log->getID();
       $epoch = $log->getDateCreated();
@@ -32,8 +32,15 @@ final class PhabricatorDaemonLogListView extends AphrontView {
       $status = $log->getStatus();
       switch ($status) {
         case PhabricatorDaemonLog::STATUS_RUNNING:
-          $item->setBarColor('green');
-          $item->addAttribute(pht('This daemon is running.'));
+          if ($env_hash != $log->getEnvHash()) {
+            $item->setBarColor('yellow');
+            $item->addAttribute(pht(
+              'This daemon is running with an out of date configuration and '.
+              'should be restarted.'));
+          } else {
+            $item->setBarColor('green');
+            $item->addAttribute(pht('This daemon is running.'));
+          }
           break;
         case PhabricatorDaemonLog::STATUS_DEAD:
           $item->setBarColor('red');
@@ -42,6 +49,10 @@ final class PhabricatorDaemonLogListView extends AphrontView {
               'This daemon is lost or exited uncleanly, and is presumed '.
               'dead.'));
           $item->addIcon('fa-times grey', pht('Dead'));
+          break;
+        case PhabricatorDaemonLog::STATUS_EXITING:
+          $item->addAttribute(pht('This daemon is exiting.'));
+          $item->addIcon('fa-check', pht('Exiting'));
           break;
         case PhabricatorDaemonLog::STATUS_EXITED:
           $item->setDisabled(true);

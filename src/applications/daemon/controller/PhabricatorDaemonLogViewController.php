@@ -53,6 +53,10 @@ final class PhabricatorDaemonLogViewController
         $tag->setBackgroundColor(PHUITagView::COLOR_BLUE);
         $tag->setName(pht('Waiting'));
         break;
+      case PhabricatorDaemonLog::STATUS_EXITING:
+        $tag->setBackgroundColor(PHUITagView::COLOR_YELLOW);
+        $tag->setName(pht('Exiting'));
+        break;
       case PhabricatorDaemonLog::STATUS_EXITED:
         $tag->setBackgroundColor(PHUITagView::COLOR_GREY);
         $tag->setName(pht('Exited'));
@@ -60,6 +64,14 @@ final class PhabricatorDaemonLogViewController
     }
 
     $header->addTag($tag);
+    $env_hash = PhabricatorEnv::calculateEnvironmentHash();
+    if ($log->getEnvHash() != $env_hash) {
+      $tag = id(new PHUITagView())
+        ->setType(PHUITagView::TYPE_STATE)
+        ->setBackgroundColor(PHUITagView::COLOR_YELLOW)
+        ->setName(pht('Stale Config'));
+      $header->addTag($tag);
+    }
 
     $properties = $this->buildPropertyListView($log);
 
@@ -136,6 +148,10 @@ final class PhabricatorDaemonLogViewController
           phutil_format_relative_time($unknown_time),
           phutil_format_relative_time($wait_time));
         break;
+      case PhabricatorDaemonLog::STATUS_EXITING:
+        $details = pht(
+          'This daemon is shutting down gracefully.');
+        break;
       case PhabricatorDaemonLog::STATUS_EXITED:
         $details = pht(
           'This daemon exited normally and is no longer running.');
@@ -174,7 +190,7 @@ final class PhabricatorDaemonLogViewController
       phutil_tag(
         'tt',
         array(),
-        "phabricator/ $ ./bin/phd log {$id}"));
+        "phabricator/ $ ./bin/phd log --id {$id}"));
 
 
     return $view;

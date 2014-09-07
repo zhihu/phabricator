@@ -1037,12 +1037,10 @@ final class DiffusionCommitController extends DiffusionController {
       ));
 
     $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
-      $file->attachToObject(
-        $this->getRequest()->getUser(),
-        $drequest->getRepository()->getPHID());
+      $file->attachToObject($drequest->getRepository()->getPHID());
     unset($unguarded);
 
-    return id(new AphrontRedirectResponse())->setURI($file->getBestURI());
+    return $file->getRedirectResponse();
   }
 
   private function renderAuditStatusView(array $audit_requests) {

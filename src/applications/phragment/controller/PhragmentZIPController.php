@@ -114,7 +114,7 @@ final class PhragmentZIPController extends PhragmentController {
       ));
 
     $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
-      $file->attachToObject($viewer, $fragment->getPHID());
+      $file->attachToObject($fragment->getPHID());
     unset($unguarded);
 
     $return = $fragment->getURI();
@@ -123,6 +123,7 @@ final class PhragmentZIPController extends PhragmentController {
     }
 
     return id(new AphrontRedirectResponse())
+      ->setIsExternal(true)
       ->setURI($file->getDownloadURI($return));
   }
 

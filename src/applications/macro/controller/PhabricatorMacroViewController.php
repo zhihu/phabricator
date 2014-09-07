@@ -9,6 +9,10 @@ final class PhabricatorMacroViewController
     $this->id = $data['id'];
   }
 
+  public function shouldAllowPublic() {
+    return true;
+  }
+
   public function processRequest() {
     $request = $this->getRequest();
     $user = $request->getUser();
@@ -16,6 +20,7 @@ final class PhabricatorMacroViewController
     $macro = id(new PhabricatorMacroQuery())
       ->setViewer($user)
       ->withIDs(array($this->id))
+      ->needFiles(true)
       ->executeOne();
     if (!$macro) {
       return new Aphront404Response();

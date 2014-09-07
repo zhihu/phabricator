@@ -10,12 +10,16 @@ final class HarbormasterBuildTarget extends HarbormasterDAO
   protected $details;
   protected $variables;
   protected $targetStatus;
+  protected $dateStarted;
+  protected $dateCompleted;
+  protected $buildGeneration;
 
   const STATUS_PENDING = 'target/pending';
   const STATUS_BUILDING = 'target/building';
   const STATUS_WAITING = 'target/waiting';
   const STATUS_PASSED = 'target/passed';
   const STATUS_FAILED = 'target/failed';
+  const STATUS_ABORTED = 'target/aborted';
 
   private $build = self::ATTACHABLE;
   private $buildStep = self::ATTACHABLE;
@@ -33,6 +37,8 @@ final class HarbormasterBuildTarget extends HarbormasterDAO
         return pht('Passed');
       case self::STATUS_FAILED:
         return pht('Failed');
+      case self::STATUS_ABORTED:
+        return pht('Aborted');
       default:
         return pht('Unknown');
     }
@@ -49,6 +55,8 @@ final class HarbormasterBuildTarget extends HarbormasterDAO
         return PHUIStatusItemView::ICON_ACCEPT;
       case self::STATUS_FAILED:
         return PHUIStatusItemView::ICON_REJECT;
+      case self::STATUS_ABORTED:
+        return PHUIStatusItemView::ICON_MINUS;
       default:
         return PHUIStatusItemView::ICON_QUESTION;
     }
@@ -63,6 +71,7 @@ final class HarbormasterBuildTarget extends HarbormasterDAO
       case self::STATUS_PASSED:
         return 'green';
       case self::STATUS_FAILED:
+      case self::STATUS_ABORTED:
         return 'red';
       default:
         return 'bluegrey';
@@ -80,7 +89,8 @@ final class HarbormasterBuildTarget extends HarbormasterDAO
       ->setClassName($build_step->getClassName())
       ->setDetails($build_step->getDetails())
       ->setTargetStatus(self::STATUS_PENDING)
-      ->setVariables($variables);
+      ->setVariables($variables)
+      ->setBuildGeneration($build->getBuildGeneration());
   }
 
   public function getConfiguration() {
@@ -107,7 +117,7 @@ final class HarbormasterBuildTarget extends HarbormasterDAO
     return $this->assertAttached($this->build);
   }
 
-  public function attachBuildStep(HarbormasterBuildStep $step) {
+  public function attachBuildStep(HarbormasterBuildStep $step = null) {
     $this->buildStep = $step;
     return $this;
   }
@@ -175,6 +185,7 @@ final class HarbormasterBuildTarget extends HarbormasterDAO
     switch ($this->getTargetStatus()) {
       case self::STATUS_PASSED:
       case self::STATUS_FAILED:
+      case self::STATUS_ABORTED:
         return true;
     }
 

@@ -26,7 +26,12 @@ final class PhabricatorSetupIssueView extends AphrontView {
 
     $configs = $issue->getPHPConfig();
     if ($configs) {
-      $description[] = $this->renderPHPConfig($configs);
+      $description[] = $this->renderPHPConfig($configs, $issue);
+    }
+
+    $configs = $issue->getMySQLConfig();
+    if ($configs) {
+      $description[] = $this->renderMySQLConfig($configs);
     }
 
     $configs = $issue->getPhabricatorConfig();
@@ -102,12 +107,66 @@ final class PhabricatorSetupIssueView extends AphrontView {
 
     }
 
-    $next = phutil_tag(
-      'div',
-      array(
-        'class' => 'setup-issue-next',
-      ),
-      pht('To continue, resolve this problem and reload the page.'));
+    $actions = array();
+    if (!$issue->getIsFatal()) {
+      if ($issue->getIsIgnored()) {
+        $actions[] = javelin_tag(
+          'a',
+          array(
+            'href' => '/config/unignore/'.$issue->getIssueKey().'/',
+            'sigil' => 'workflow',
+            'class' => 'button grey',
+          ),
+          pht('Unignore Setup Issue'));
+      } else {
+        $actions[] = javelin_tag(
+          'a',
+          array(
+            'href' => '/config/ignore/'.$issue->getIssueKey().'/',
+            'sigil' => 'workflow',
+            'class' => 'button grey',
+          ),
+          pht('Ignore Setup Issue'));
+      }
+
+      $actions[] = javelin_tag(
+        'a',
+        array(
+          'href' => '/config/issue/'.$issue->getIssueKey().'/',
+          'class' => 'button grey',
+          'style' => 'float: right',
+        ),
+        pht('Reload Page'));
+    }
+
+    if ($actions) {
+      $actions = phutil_tag(
+        'div',
+        array(
+          'class' => 'setup-issue-actions',
+        ),
+        $actions);
+    }
+
+    if ($issue->getIsIgnored()) {
+      $status = phutil_tag(
+        'div',
+        array(
+          'class' => 'setup-issue-status',
+        ),
+        pht(
+          'This issue is currently ignored, and does not show a global '.
+          'warning.'));
+      $next = null;
+    } else {
+      $status = null;
+      $next = phutil_tag(
+        'div',
+        array(
+          'class' => 'setup-issue-next',
+        ),
+        pht('To continue, resolve this problem and reload the page.'));
+    }
 
     $name = phutil_tag(
       'div',
@@ -116,15 +175,29 @@ final class PhabricatorSetupIssueView extends AphrontView {
       ),
       $issue->getName());
 
+    $head = phutil_tag(
+      'div',
+      array(
+        'class' => 'setup-issue-head',
+      ),
+      array($name, $status));
+
+    $tail = phutil_tag(
+      'div',
+      array(
+        'class' => 'setup-issue-tail',
+      ),
+      array($actions, $next));
+
     $issue = phutil_tag(
       'div',
       array(
         'class' => 'setup-issue',
       ),
       array(
-        $name,
+        $head,
         $description,
-        $next,
+        $tail,
       ));
 
     $debug_info = phutil_tag(
@@ -238,7 +311,7 @@ final class PhabricatorSetupIssueView extends AphrontView {
       ));
   }
 
-  private function renderPHPConfig(array $configs) {
+  private function renderPHPConfig(array $configs, $issue) {
     $table_info = phutil_tag(
       'p',
       array(),
@@ -248,7 +321,9 @@ final class PhabricatorSetupIssueView extends AphrontView {
 
     $dict = array();
     foreach ($configs as $key) {
-      $dict[$key] = ini_get($key);
+      $dict[$key] = $issue->getPHPConfigOriginalValue(
+        $key,
+        ini_get($key));
     }
 
     $table = $this->renderValueTable($dict);
@@ -347,6 +422,58 @@ final class PhabricatorSetupIssueView extends AphrontView {
       ));
   }
 
+  private function renderMySQLConfig(array $config) {
+    $values = array();
+    foreach ($config as $key) {
+      $value = PhabricatorSetupCheckMySQL::loadRawConfigValue($key);
+      if ($value === null) {
+        $value = phutil_tag(
+          'em',
+          array(),
+          pht('(Not Supported)'));
+      }
+      $values[$key] = $value;
+    }
+
+    $table = $this->renderValueTable($values);
+
+    $doc_href = PhabricatorEnv::getDoclink('User Guide: Amazon RDS');
+    $doc_link = phutil_tag(
+      'a',
+      array(
+        'href' => $doc_href,
+        'target' => '_blank',
+      ),
+      pht('User Guide: Amazon RDS'));
+
+    $info = array();
+    $info[] = phutil_tag(
+      'p',
+      array(),
+      pht(
+        'If you are using Amazon RDS, some of the instructions above may '.
+        'not apply to you. See %s for discussion of Amazon RDS.',
+        $doc_link));
+
+    $table_info = phutil_tag(
+      'p',
+      array(),
+      pht(
+        'The current MySQL configuration has these %d value(s):',
+        count($config)));
+
+    return phutil_tag(
+      'div',
+      array(
+        'class' => 'setup-issue-config',
+      ),
+      array(
+        $table_info,
+        $table,
+        $info,
+      ));
+  }
+
   private function renderValueTable(array $dict, array $hidden = array()) {
     $rows = array();
     foreach ($dict as $key => $value) {
@@ -374,6 +501,8 @@ final class PhabricatorSetupIssueView extends AphrontView {
       return phutil_tag('em', array(), 'true');
     } else if ($value === '') {
       return phutil_tag('em', array(), 'empty string');
+    } else if ($value instanceof PhutilSafeHTML) {
+      return $value;
     } else {
       return PhabricatorConfigJSON::prettyPrintJSON($value);
     }

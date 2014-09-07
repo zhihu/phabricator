@@ -53,6 +53,7 @@ final class PhabricatorPeopleProfilePictureController
             $_FILES['picture'],
             array(
               'authorPHID' => $viewer->getPHID(),
+              'canCDN' => true,
             ));
         } else {
           $e_file = pht('Required');
@@ -82,7 +83,7 @@ final class PhabricatorPeopleProfilePictureController
           $user->setProfileImagePHID(null);
         } else {
           $user->setProfileImagePHID($xformed->getPHID());
-          $xformed->attachToObject($viewer, $user->getPHID());
+          $xformed->attachToObject($user->getPHID());
         }
         $user->save();
         return id(new AphrontRedirectResponse())->setURI($profile_uri);
