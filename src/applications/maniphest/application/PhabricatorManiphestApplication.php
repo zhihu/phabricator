@@ -102,9 +102,25 @@ final class PhabricatorManiphestApplication extends PhabricatorApplication {
     # Add special Zhihu menu items
     array_push($items,
                id(new PHUIListItemView())
-                 ->setName(pht('Report Bugs'))
+                 ->setName(pht('反馈 Web Bug 以及可用性问题'))
                  ->setAppIcon('maniphest-dark')
-                 ->setHref($this->getBaseURI().'task/create/?projects=PHID-PROJ-ng2ucirw6embkz22vruj'),
+                 ->setHref($this->getBaseURI().'task/create/?title=「%20知乎%20Web%20Bug%20」&projects=PHID-PROJ-ng2ucirw6embkz22vruj&assign=gcj&priority=50&description=NOTE%3A%20请参照%20%5B%5Bindex_qa/regulation/about_bugs/%20%7C%20Bug%20相关%5D%5D%20来填写%20task%20描述%0A%0A%3D%20Info%0A%0A%3E%20系统版本：%0A%3E%20操作系统：%0A%3E%20用户主页链接：%0A%3E%20出现频率：%0A%0A%3D%20重现步骤%0A%0A%3E%20具体的页面和操作%0A%0A%3D%20期望的结果%0A%0A%3D%20实际的结果%0A%0A%3D%20附加信息（log，截屏，其它信息）'),
+               id(new PHUIListItemView())
+                 ->setName(pht('反馈知乎 Android Bug'))
+                 ->setAppIcon('maniphest-dark')
+                 ->setHref($this->getBaseURI().'task/create/?title=「%20知乎%20Android%20Bug%20」&projects=PHID-PROJ-xuykevhhyppli7r6okqo&assign=joosun&priority=50&description=NOTE%3A%20请参照%20%5B%5Bindex_qa/regulation/about_bugs/%20%7C%20Bug%20相关%5D%5D%20来填写%20task%20描述%0A%0A%3D%20Info%0A%0A%3E%20系统版本：%0A%3E%20操作系统：%0A%3E%20App%20的版本号：%0A%3E%20用户主页链接：%0A%3E%20出现频率：%0A%0A%3D%20重现步骤%0A%0A%3E%20具体的页面和操作%0A%0A%3D%20期望的结果%0A%0A%3D%20实际的结果%0A%0A%3D%20附加信息（log，截屏，其它信息）'),
+               id(new PHUIListItemView())
+                 ->setName(pht('反馈知乎 iOS Bug'))
+                 ->setAppIcon('maniphest-dark')
+                 ->setHref($this->getBaseURI().'task/create/?title=「%20知乎%20iOS%20Bug%20」&projects=PHID-PROJ-7ol45igp2m3i6r3md5fe&assign=botao&priority=50&description=NOTE%3A%20请参照%20%5B%5Bindex_qa/regulation/about_bugs/%20%7C%20Bug%20相关%5D%5D%20来填写%20task%20描述%0A%0A%3D%20Info%0A%0A%3E%20系统版本：%0A%3E%20操作系统：%0A%3E%20App%20的版本号：%0A%3E%20用户主页链接：%0A%3E%20出现频率：%0A%0A%3D%20重现步骤%0A%0A%3E%20具体的页面和操作%0A%0A%3D%20期望的结果%0A%0A%3D%20实际的结果%0A%0A%3D%20附加信息（log，截屏，其它信息）'),
+               id(new PHUIListItemView())
+                 ->setName(pht('反馈日报 Android Bug'))
+                 ->setAppIcon('maniphest-dark')
+                 ->setHref($this->getBaseURI().'task/create/?title=「%20日报%20Android%20Bug%20」&projects=PHID-PROJ-hnbu6cweou7akqmly2p7&assign=yu&priority=50&description=NOTE%3A%20 请参照%20%5B%5Bindex_qa/regulation/about_bugs/%20%7C%20Bug%20相关%5D%5D%20来填写%20task%20描述%0A%0A%3D%20Info%0A%0A%3E%20系统版本：%0A%3E%20操作系统：%0A%3E%20App%20的版本号：%0A%3E%20用户主页链接：%0A%3E%20出现频率：%0A%0A%3D%20重现步骤%0A%0A%3E%20具体的页面和操作%0A%0A%3D%20期望的结果%0A%0A%3D%20实际的结果%0A%0A%3D%20附加信息（log，截屏，其它信息）'),
+               id(new PHUIListItemView())
+                 ->setName(pht('反馈日报 iOS Bug'))
+                 ->setAppIcon('maniphest-dark')
+                 ->setHref($this->getBaseURI().'task/create/?title=「%20日报%20iOS%20Bug%20」&projects=PHID-PROJ-hnbu6cweou7akqmly2p7&assign=sgl&priority=50&description=NOTE%3A%20 请参照%20%5B%5Bindex_qa/regulation/about_bugs/%20%7C%20Bug%20相关%5D%5D%20来填写%20task%20描述%0A%0A%3D%20Info%0A%0A%3E%20系统版本：%0A%3E%20操作系统：%0A%3E%20App%20的版本号：%0A%3E%20用户主页链接：%0A%3E%20出现频率：%0A%0A%3D%20重现步骤%0A%0A%3E%20具体的页面和操作%0A%0A%3D%20期望的结果%0A%0A%3D%20实际的结果%0A%0A%3D%20附加信息（log，截屏，其它信息）'),
                id(new PHUIListItemView())
                  ->setName(pht('Feature Request'))
                  ->setAppIcon('maniphest-dark')
