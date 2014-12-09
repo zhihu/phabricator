@@ -107,6 +107,17 @@ abstract class PhabricatorApplicationTransaction
         'newValue' => self::SERIALIZATION_JSON,
         'metadata' => self::SERIALIZATION_JSON,
       ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'commentPHID' => 'phid?',
+        'commentVersion' => 'uint32',
+        'contentSource' => 'text',
+        'transactionType' => 'text32',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_object' => array(
+          'columns' => array('objectPHID'),
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 
@@ -438,6 +449,27 @@ abstract class PhabricatorApplicationTransaction
         if ($field) {
           return $field->shouldHideInApplicationTransactions($this);
         }
+      case PhabricatorTransactions::TYPE_EDGE:
+        $edge_type = $this->getMetadataValue('edge:type');
+        switch ($edge_type) {
+          case PhabricatorObjectMentionsObject::EDGECONST:
+            return true;
+            break;
+          case PhabricatorObjectMentionedByObject::EDGECONST:
+            $new = ipull($this->getNewValue(), 'dst');
+            $old = ipull($this->getOldValue(), 'dst');
+            $add = array_diff($new, $old);
+            $add_value = reset($add);
+            $add_handle = $this->getHandle($add_value);
+            if ($add_handle->getPolicyFiltered()) {
+              return true;
+            }
+            return false;
+            break;
+          default:
+            break;
+        }
+        break;
     }
 
     return false;
@@ -456,6 +488,17 @@ abstract class PhabricatorApplicationTransaction
             return false;
         }
         return true;
+     case PhabricatorTransactions::TYPE_EDGE:
+        $edge_type = $this->getMetadataValue('edge:type');
+        switch ($edge_type) {
+          case PhabricatorObjectMentionsObject::EDGECONST:
+          case PhabricatorObjectMentionedByObject::EDGECONST:
+            return true;
+            break;
+          default:
+            break;
+        }
+        break;
     }
 
     return $this->shouldHide();
@@ -475,6 +518,17 @@ abstract class PhabricatorApplicationTransaction
             return false;
         }
         return true;
+     case PhabricatorTransactions::TYPE_EDGE:
+        $edge_type = $this->getMetadataValue('edge:type');
+        switch ($edge_type) {
+          case PhabricatorObjectMentionsObject::EDGECONST:
+          case PhabricatorObjectMentionedByObject::EDGECONST:
+            return true;
+            break;
+          default:
+            break;
+        }
+        break;
     }
 
     return $this->shouldHide();
@@ -1023,6 +1077,44 @@ abstract class PhabricatorApplicationTransaction
 
     return null;
   }
+
+  public function renderAsTextForDoorkeeper(
+    DoorkeeperFeedStoryPublisher $publisher,
+    PhabricatorFeedStory $story,
+    array $xactions) {
+
+    $text = array();
+    $body = array();
+
+    foreach ($xactions as $xaction) {
+      $xaction_body = $xaction->getBodyForMail();
+      if ($xaction_body !== null) {
+        $body[] = $xaction_body;
+      }
+
+      if ($xaction->shouldHideForMail($xactions)) {
+        continue;
+      }
+
+      $old_target = $xaction->getRenderingTarget();
+      $new_target = PhabricatorApplicationTransaction::TARGET_TEXT;
+      $xaction->setRenderingTarget($new_target);
+
+      if ($publisher->getRenderWithImpliedContext()) {
+        $text[] = $xaction->getTitle();
+      } else {
+        $text[] = $xaction->getTitleForFeed($story);
+      }
+
+      $xaction->setRenderingTarget($old_target);
+    }
+
+    $text = implode("\n", $text);
+    $body = implode("\n\n", $body);
+
+    return rtrim($text."\n\n".$body);
+  }
+
 
 
 /* -(  PhabricatorPolicyInterface Implementation  )-------------------------- */

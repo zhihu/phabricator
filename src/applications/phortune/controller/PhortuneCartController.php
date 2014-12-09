@@ -3,21 +3,16 @@
 abstract class PhortuneCartController
   extends PhortuneController {
 
-  protected function buildCartContents(PhortuneCart $cart) {
+  protected function buildCartContentTable(PhortuneCart $cart) {
 
     $rows = array();
-    $total = 0;
     foreach ($cart->getPurchases() as $purchase) {
       $rows[] = array(
         $purchase->getFullDisplayName(),
-        PhortuneCurrency::newFromUSDCents($purchase->getBasePriceInCents())
-          ->formatForDisplay(),
+        $purchase->getBasePriceAsCurrency()->formatForDisplay(),
         $purchase->getQuantity(),
-        PhortuneCurrency::newFromUSDCents($purchase->getTotalPriceInCents())
-          ->formatForDisplay(),
+        $purchase->getTotalPriceAsCurrency()->formatForDisplay(),
       );
-
-      $total += $purchase->getTotalPriceInCents();
     }
 
     $rows[] = array(
@@ -25,7 +20,7 @@ abstract class PhortuneCartController
       '',
       '',
       phutil_tag('strong', array(),
-        PhortuneCurrency::newFromUSDCents($total)->formatForDisplay()),
+        $cart->getTotalPriceAsCurrency()->formatForDisplay()),
     );
 
     $table = new AphrontTableView($rows);
@@ -44,9 +39,7 @@ abstract class PhortuneCartController
         'right',
       ));
 
-    return id(new PHUIObjectBoxView())
-      ->setHeaderText(pht('Cart Contents'))
-      ->appendChild($table);
+    return $table;
   }
 
 }

@@ -14,7 +14,7 @@ final class PhabricatorPhrequentApplication extends PhabricatorApplication {
     return '/phrequent/';
   }
 
-  public function isBeta() {
+  public function isPrototype() {
     return true;
   }
 
@@ -41,7 +41,7 @@ final class PhabricatorPhrequentApplication extends PhabricatorApplication {
       '/phrequent/' => array(
         '(?:query/(?P<queryKey>[^/]+)/)?' => 'PhrequentListController',
         'track/(?P<verb>[a-z]+)/(?P<phid>[^/]+)/'
-          => 'PhrequentTrackController'
+          => 'PhrequentTrackController',
       ),
     );
   }

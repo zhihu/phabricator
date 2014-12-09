@@ -6,6 +6,7 @@ final class ManiphestTask extends ManiphestDAO
     PhabricatorPolicyInterface,
     PhabricatorTokenReceiverInterface,
     PhabricatorFlaggableInterface,
+    PhabricatorMentionableInterface,
     PhrequentTrackableInterface,
     PhabricatorCustomFieldInterface,
     PhabricatorDestructibleInterface,
@@ -65,6 +66,57 @@ final class ManiphestTask extends ManiphestDAO
         'ccPHIDs' => self::SERIALIZATION_JSON,
         'attached' => self::SERIALIZATION_JSON,
         'projectPHIDs' => self::SERIALIZATION_JSON,
+      ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'ownerPHID' => 'phid?',
+        'status' => 'text12',
+        'priority' => 'uint32',
+        'title' => 'sort',
+        'originalTitle' => 'text',
+        'description' => 'text',
+        'mailKey' => 'bytes20',
+        'ownerOrdering' => 'text64?',
+        'originalEmailSource' => 'text255?',
+        'subpriority' => 'double',
+
+        // T6203/NULLABILITY
+        // This should not be nullable. It's going away soon anyway.
+        'ccPHIDs' => 'text?',
+
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_phid' => null,
+        'phid' => array(
+          'columns' => array('phid'),
+          'unique' => true,
+        ),
+        'priority' => array(
+          'columns' => array('priority', 'status'),
+        ),
+        'status' => array(
+          'columns' => array('status'),
+        ),
+        'ownerPHID' => array(
+          'columns' => array('ownerPHID', 'status'),
+        ),
+        'authorPHID' => array(
+          'columns' => array('authorPHID', 'status'),
+        ),
+        'ownerOrdering' => array(
+          'columns' => array('ownerOrdering'),
+        ),
+        'priority_2' => array(
+          'columns' => array('priority', 'subpriority'),
+        ),
+        'key_dateCreated' => array(
+          'columns' => array('dateCreated'),
+        ),
+        'key_dateModified' => array(
+          'columns' => array('dateModified'),
+        ),
+        'key_title' => array(
+          'columns' => array('title(64)'),
+        ),
       ),
     ) + parent::getConfiguration();
   }
@@ -320,6 +372,13 @@ final class ManiphestTask extends ManiphestDAO
 
   public function getApplicationTransactionTemplate() {
     return new ManiphestTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 }

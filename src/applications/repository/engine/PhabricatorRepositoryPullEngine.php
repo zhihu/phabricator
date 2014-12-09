@@ -88,6 +88,7 @@ final class PhabricatorRepositoryPullEngine
               "Updating the working copy for repository '%s'.",
               $callsign));
           if ($is_git) {
+            $this->verifyGitOrigin($repository);
             $this->executeGitUpdate();
           } else if ($is_hg) {
             $this->executeMercurialUpdate();
@@ -151,7 +152,7 @@ final class PhabricatorRepositoryPullEngine
       PhabricatorRepositoryStatusMessage::TYPE_INIT,
       $code,
       array(
-        'message' => $message
+        'message' => $message,
       ));
   }
 

@@ -11,7 +11,6 @@ abstract class AphrontApplicationConfiguration {
   private $console;
 
   abstract public function getApplicationName();
-  abstract public function getURIMap();
   abstract public function buildRequest();
   abstract public function build404Controller();
   abstract public function buildRedirectController($uri, $external);
@@ -52,8 +51,7 @@ abstract class AphrontApplicationConfiguration {
     return $this->path;
   }
 
-  public function willBuildRequest() {
-  }
+  public function willBuildRequest() {}
 
 
 /* -(  URI Routing  )-------------------------------------------------------- */
@@ -65,8 +63,8 @@ abstract class AphrontApplicationConfiguration {
    * first test if the HTTP_HOST is configured as a valid Phabricator URI. If
    * it isn't, we do a special check to see if it's a custom domain for a blog
    * in the Phame application and if that fails we error. Otherwise, we test
-   * the URI against all builtin routes from @{method:getURIMap}, then against
-   * all application routes from installed @{class:PhabricatorApplication}s.
+   * against all application routes from installed
+   * @{class:PhabricatorApplication}s.
    *
    * If we match a route, we construct the controller it points at, build it,
    * and return it.
@@ -214,7 +212,6 @@ abstract class AphrontApplicationConfiguration {
    */
   final public function buildControllerForPath($path) {
     $maps = array();
-    $maps[] = array(null, $this->getURIMap());
 
     $applications = PhabricatorApplication::getAllInstalledApplications();
     foreach ($applications as $application) {
@@ -243,7 +240,7 @@ abstract class AphrontApplicationConfiguration {
 
     $request = $this->getRequest();
 
-    $controller = newv($controller_class, array($request));
+    $controller = newv($controller_class, array());
     if ($current_application) {
       $controller->setCurrentApplication($current_application);
     }

@@ -88,6 +88,40 @@ final class PhamePost extends PhameDAO
       self::CONFIG_SERIALIZATION => array(
         'configData' => self::SERIALIZATION_JSON,
       ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'title' => 'text255',
+        'phameTitle' => 'sort64',
+        'visibility' => 'uint32',
+
+        // T6203/NULLABILITY
+        // These seem like they should always be non-null?
+        'blogPHID' => 'phid?',
+        'body' => 'text?',
+        'configData' => 'text?',
+
+        // T6203/NULLABILITY
+        // This one probably should be nullable?
+        'datePublished' => 'epoch',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_phid' => null,
+        'phid' => array(
+          'columns' => array('phid'),
+          'unique' => true,
+        ),
+        'phameTitle' => array(
+          'columns' => array('bloggerPHID', 'phameTitle'),
+          'unique' => true,
+        ),
+        'bloggerPosts' => array(
+          'columns' => array(
+            'bloggerPHID',
+            'visibility',
+            'datePublished',
+            'id',
+          ),
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 

@@ -17,7 +17,9 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
       $data = new PhabricatorRepositoryCommitData();
     }
     $data->setCommitID($commit->getID());
-    $data->setAuthorName((string)$author);
+    $data->setAuthorName(id(new PhutilUTF8StringTruncator())
+      ->setMaximumCodepoints(255)
+      ->truncateString((string)$author));
 
     $data->setCommitDetail('authorName', $ref->getAuthorName());
     $data->setCommitDetail('authorEmail', $ref->getAuthorEmail());
@@ -53,11 +55,12 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
 
     $differential_app = 'PhabricatorDifferentialApplication';
     $revision_id = null;
+    $low_level_query = null;
     if (PhabricatorApplication::isClassInstalled($differential_app)) {
-      $field_values = id(new DiffusionLowLevelCommitFieldsQuery())
+      $low_level_query = id(new DiffusionLowLevelCommitFieldsQuery())
         ->setRepository($repository)
-        ->withCommitRef($ref)
-        ->execute();
+        ->withCommitRef($ref);
+      $field_values = $low_level_query->execute();
       $revision_id = idx($field_values, 'revisionID');
 
       if (!empty($field_values['reviewedByPHIDs'])) {
@@ -140,30 +143,34 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
                         $should_autoclose;
 
         if ($should_close) {
-          $commit_name = $repository->formatCommitName(
-            $commit->getCommitIdentifier());
+           $commit_close_xaction = id(new DifferentialTransaction())
+            ->setTransactionType(DifferentialTransaction::TYPE_ACTION)
+            ->setNewValue(DifferentialAction::ACTION_CLOSE)
+            ->setMetadataValue('isCommitClose', true);
 
-          $committer_name = $this->loadUserName(
-            $committer_phid,
-            $data->getCommitDetail('committer'),
-            $actor);
+          $commit_close_xaction->setMetadataValue(
+            'commitPHID',
+            $commit->getPHID());
+          $commit_close_xaction->setMetadataValue(
+            'committerPHID',
+            $committer_phid);
+          $commit_close_xaction->setMetadataValue(
+            'committerName',
+            $data->getCommitDetail('committer'));
+          $commit_close_xaction->setMetadataValue(
+            'authorPHID',
+            $author_phid);
+          $commit_close_xaction->setMetadataValue(
+            'authorName',
+            $data->getAuthorName());
 
-          $author_name = $this->loadUserName(
-            $author_phid,
-            $data->getAuthorName(),
-            $actor);
-
-          if ($committer_name && ($committer_name != $author_name)) {
-            $revision_update_comment = pht(
-              'Closed by commit %s (authored by %s, committed by %s).',
-              $commit_name,
-              $author_name,
-              $committer_name);
-          } else {
-            $revision_update_comment = pht(
-              'Closed by commit %s (authored by %s).',
-              $commit_name,
-              $author_name);
+          if ($low_level_query) {
+            $commit_close_xaction->setMetadataValue(
+              'revisionMatchData',
+              $low_level_query->getRevisionMatchData());
+            $data->setCommitDetail(
+              'revisionMatchData',
+              $low_level_query->getRevisionMatchData());
           }
 
           $diff = $this->generateFinalDiff($revision, $acting_as_phid);
@@ -181,22 +188,12 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
           }
 
           $xactions = array();
-
-          $xactions[] = id(new DifferentialTransaction())
-            ->setTransactionType(DifferentialTransaction::TYPE_ACTION)
-            ->setNewValue(DifferentialAction::ACTION_CLOSE);
-
           $xactions[] = id(new DifferentialTransaction())
             ->setTransactionType(DifferentialTransaction::TYPE_UPDATE)
             ->setIgnoreOnNoEffect(true)
-            ->setNewValue($diff->getPHID());
-
-          $xactions[] = id(new DifferentialTransaction())
-            ->setTransactionType(PhabricatorTransactions::TYPE_COMMENT)
-            ->setIgnoreOnNoEffect(true)
-            ->attachComment(
-              id(new DifferentialTransactionComment())
-                ->setContent($revision_update_comment));
+            ->setNewValue($diff->getPHID())
+            ->setMetadataValue('isCommitUpdate', true);
+          $xactions[] = $commit_close_xaction;
 
           $content_source = PhabricatorContentSource::newForSource(
             PhabricatorContentSource::SOURCE_DAEMON,
@@ -237,18 +234,6 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
       PhabricatorRepositoryCommit::IMPORTED_MESSAGE);
   }
 
-  private function loadUserName($user_phid, $default, PhabricatorUser $actor) {
-    if (!$user_phid) {
-      return $default;
-    }
-    $handle = id(new PhabricatorHandleQuery())
-      ->setViewer($actor)
-      ->withPHIDs(array($user_phid))
-      ->executeOne();
-
-    return '@'.$handle->getName();
-  }
-
   private function generateFinalDiff(
     DifferentialRevision $revision,
     $actor_phid) {
@@ -280,13 +265,13 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
       $changes = array();
     }
 
-    $diff = DifferentialDiff::newFromRawChanges($changes)
+    $diff = DifferentialDiff::newFromRawChanges($viewer, $changes)
       ->setRepositoryPHID($this->repository->getPHID())
       ->setAuthorPHID($actor_phid)
       ->setCreationMethod('commit')
       ->setSourceControlSystem($this->repository->getVersionControlSystem())
-      ->setLintStatus(DifferentialLintStatus::LINT_SKIP)
-      ->setUnitStatus(DifferentialUnitStatus::UNIT_SKIP)
+      ->setLintStatus(DifferentialLintStatus::LINT_AUTO_SKIP)
+      ->setUnitStatus(DifferentialUnitStatus::UNIT_AUTO_SKIP)
       ->setDateCreated($this->commit->getEpoch())
       ->setDescription(
         'Commit r'.
@@ -521,6 +506,8 @@ abstract class PhabricatorRepositoryCommitMessageParserWorker
         ->setActingAsPHID($acting_as)
         ->setContinueOnNoEffect(true)
         ->setContinueOnMissingFields(true)
+        ->setUnmentionablePHIDMap(
+          array($commit->getPHID() => $commit->getPHID()))
         ->setContentSource($content_source);
 
       $editor->applyTransactions($task, $xactions);

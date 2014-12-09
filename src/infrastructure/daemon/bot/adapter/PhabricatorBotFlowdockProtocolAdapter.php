@@ -21,7 +21,8 @@ final class PhabricatorBotFlowdockProtocolAdapter
     $ssl = $this->getConfig('ssl');
 
     $url = ($ssl) ? 'https://' : 'http://';
-    $url .= "{$this->authtoken}@stream.flowdock.com/flows/{$organization}/{$channel}";
+    $url .= "{$this->authtoken}@stream.flowdock.com";
+    $url .= "/flows/{$organization}/{$channel}";
     return $url;
   }
 
@@ -75,7 +76,8 @@ final class PhabricatorBotFlowdockProtocolAdapter
         array(
           'flow' => $flow->getName(),
           'event' => 'message',
-          'content' => $body));
+          'content' => $body,
+        ));
     }
 
   public function __destruct() {

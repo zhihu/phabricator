@@ -6,6 +6,7 @@ final class DifferentialTransactionEditor
   private $heraldEmailPHIDs;
   private $changedPriorToCommitURI;
   private $isCloseByCommit;
+  private $repositoryPHIDOverride = false;
 
   public function getEditorApplicationClass() {
     return 'PhabricatorDifferentialApplication';
@@ -43,6 +44,11 @@ final class DifferentialTransactionEditor
 
   public function getChangedPriorToCommitURI() {
     return $this->changedPriorToCommitURI;
+  }
+
+  public function setRepositoryPHIDOverride($phid_or_null) {
+    $this->repositoryPHIDOverride = $phid_or_null;
+    return $this;
   }
 
   public function getTransactionTypes() {
@@ -205,7 +211,11 @@ final class DifferentialTransactionEditor
         $diff = $this->requireDiff($xaction->getNewValue());
 
         $object->setLineCount($diff->getLineCount());
-        $object->setRepositoryPHID($diff->getRepositoryPHID());
+        if ($this->repositoryPHIDOverride !== false) {
+          $object->setRepositoryPHID($this->repositoryPHIDOverride);
+        } else {
+          $object->setRepositoryPHID($diff->getRepositoryPHID());
+        }
         $object->setArcanistProjectPHID($diff->getArcanistProjectPHID());
         $object->attachActiveDiff($diff);
 
@@ -1040,8 +1050,7 @@ final class DifferentialTransactionEditor
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
 
-    switch ($xaction->getTransactionType()) {
-    }
+    switch ($xaction->getTransactionType()) {}
 
     return parent::requireCapabilities($object, $xaction);
   }
@@ -1141,7 +1150,7 @@ final class DifferentialTransactionEditor
 
     $changed_uri = $this->getChangedPriorToCommitURI();
     if ($changed_uri) {
-      $body->addTextSection(
+      $body->addLinkSection(
         pht('CHANGED PRIOR TO COMMIT'),
         $changed_uri);
     }
@@ -1152,7 +1161,7 @@ final class DifferentialTransactionEditor
         $this->renderInlineCommentsForMail($object, $inlines));
     }
 
-    $body->addTextSection(
+    $body->addLinkSection(
       pht('REVISION DETAIL'),
       PhabricatorEnv::getProductionURI('/D'.$object->getID()));
 
@@ -1271,8 +1280,10 @@ final class DifferentialTransactionEditor
         ->execute();
 
       if ($tasks) {
+        $phid_map = mpull($tasks, 'getPHID', 'getPHID');
         $edge_related = DifferentialRevisionHasTaskEdgeType::EDGECONST;
-        $edges[$edge_related] = mpull($tasks, 'getPHID', 'getPHID');
+        $edges[$edge_related] = $phid_map;
+        $this->setUnmentionablePHIDMap($phid_map);
       }
     }
 
@@ -1521,8 +1532,6 @@ final class DifferentialTransactionEditor
     $adapter->setExplicitCCs($subscribed_phids);
     $adapter->setExplicitReviewers($reviewer_phids);
     $adapter->setForbiddenCCs($unsubscribed_phids);
-
-    $adapter->setIsNewObject($this->getIsNewObject());
 
     return $adapter;
   }

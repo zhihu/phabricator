@@ -18,6 +18,7 @@
  */
 final class PhabricatorFile extends PhabricatorFileDAO
   implements
+    PhabricatorApplicationTransactionInterface,
     PhabricatorTokenReceiverInterface,
     PhabricatorSubscribableInterface,
     PhabricatorFlaggableInterface,
@@ -53,7 +54,16 @@ final class PhabricatorFile extends PhabricatorFileDAO
   private $originalFile = self::ATTACHABLE;
 
   public static function initializeNewFile() {
+    $app = id(new PhabricatorApplicationQuery())
+      ->setViewer(PhabricatorUser::getOmnipotentUser())
+      ->withClasses(array('PhabricatorFilesApplication'))
+      ->executeOne();
+
+    $view_policy = $app->getPolicy(
+      FilesDefaultViewCapability::CAPABILITY);
+
     return id(new PhabricatorFile())
+      ->setViewPolicy($view_policy)
       ->attachOriginalFile(null)
       ->attachObjects(array())
       ->attachObjectPHIDs(array());
@@ -64,6 +74,39 @@ final class PhabricatorFile extends PhabricatorFileDAO
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_SERIALIZATION => array(
         'metadata' => self::SERIALIZATION_JSON,
+      ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'name' => 'text255?',
+        'mimeType' => 'text255?',
+        'byteSize' => 'uint64',
+        'storageEngine' => 'text32',
+        'storageFormat' => 'text32',
+        'storageHandle' => 'text255',
+        'authorPHID' => 'phid?',
+        'secretKey' => 'bytes20?',
+        'contentHash' => 'bytes40?',
+        'ttl' => 'epoch?',
+        'isExplicitUpload' => 'bool?',
+        'mailKey' => 'bytes20',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_phid' => null,
+        'phid' => array(
+          'columns' => array('phid'),
+          'unique' => true,
+        ),
+        'authorPHID' => array(
+          'columns' => array('authorPHID'),
+        ),
+        'contentHash' => array(
+          'columns' => array('contentHash'),
+        ),
+        'key_ttl' => array(
+          'columns' => array('ttl'),
+        ),
+        'key_dateCreated' => array(
+          'columns' => array('dateCreated'),
+        ),
       ),
     ) + parent::getConfiguration();
   }
@@ -1034,6 +1077,29 @@ final class PhabricatorFile extends PhabricatorFileDAO
     return id(new AphrontRedirectResponse())
       ->setIsExternal($is_external)
       ->setURI($uri);
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new PhabricatorFileEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new PhabricatorFileTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

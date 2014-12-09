@@ -13,6 +13,8 @@ final class ManiphestTransaction
   const TYPE_EDGE = 'edge';
   const TYPE_SUBPRIORITY = 'subpriority';
   const TYPE_PROJECT_COLUMN = 'projectcolumn';
+  const TYPE_MERGED_INTO = 'mergedinto';
+  const TYPE_MERGED_FROM = 'mergedfrom';
 
   const TYPE_UNBLOCK = 'unblock';
 
@@ -95,6 +97,12 @@ final class ManiphestTransaction
       case self::TYPE_PROJECT_COLUMN:
         $phids[] = $new['projectPHID'];
         $phids[] = head($new['columnPHIDs']);
+        break;
+      case self::TYPE_MERGED_INTO:
+        $phids[] = $new;
+        break;
+      case self::TYPE_MERGED_FROM:
+        $phids = array_merge($phids, $new);
         break;
       case self::TYPE_EDGE:
         $phids = array_mergev(
@@ -205,6 +213,11 @@ final class ManiphestTransaction
           return 'yellow';
         }
 
+      case self::TYPE_MERGED_FROM:
+        return 'orange';
+
+      case self::TYPE_MERGED_INTO:
+        return 'black';
     }
 
     return parent::getColor();
@@ -290,6 +303,10 @@ final class ManiphestTransaction
           return pht('Blocker');
         }
 
+      case self::TYPE_MERGED_INTO:
+      case self::TYPE_MERGED_FROM:
+        return pht('Merged');
+
     }
 
     return parent::getActionName();
@@ -333,6 +350,11 @@ final class ManiphestTransaction
 
       case self::TYPE_PROJECT_COLUMN:
         return 'fa-columns';
+
+      case self::TYPE_MERGED_INTO:
+        return 'fa-check';
+      case self::TYPE_MERGED_FROM:
+        return 'fa-compress';
 
       case self::TYPE_PRIORITY:
         if ($old == ManiphestTaskPriority::getDefaultPriority()) {
@@ -571,7 +593,22 @@ final class ManiphestTransaction
           $this->renderHandleLink($author_phid),
           $this->renderHandleLink($column_phid),
           $this->renderHandleLink($project_phid));
-       break;
+        break;
+
+      case self::TYPE_MERGED_INTO:
+        return pht(
+          '%s closed this task as a duplicate of %s.',
+          $this->renderHandleLink($author_phid),
+          $this->renderHandleLink($new));
+        break;
+
+      case self::TYPE_MERGED_FROM:
+        return pht(
+          '%s merged %d task(s): %s.',
+          $this->renderHandleLink($author_phid),
+          count($new),
+          $this->renderHandleList($new));
+        break;
 
 
     }
@@ -815,7 +852,22 @@ final class ManiphestTransaction
           $this->renderHandleLink($object_phid),
           $this->renderHandleLink($column_phid),
           $this->renderHandleLink($project_phid));
-       break;
+
+      case self::TYPE_MERGED_INTO:
+        return pht(
+          '%s merged task %s into %s.',
+          $this->renderHandleLink($author_phid),
+          $this->renderHandleLink($object_phid),
+          $this->renderHandleLink($new));
+
+      case self::TYPE_MERGED_FROM:
+        return pht(
+          '%s merged %d task(s) %s into %s.',
+          $this->renderHandleLink($author_phid),
+          count($new),
+          $this->renderHandleList($new),
+          $this->renderHandleLink($object_phid));
+
     }
 
     return parent::getTitleForFeed($story);

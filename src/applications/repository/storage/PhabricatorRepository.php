@@ -6,6 +6,7 @@
  */
 final class PhabricatorRepository extends PhabricatorRepositoryDAO
   implements
+    PhabricatorApplicationTransactionInterface,
     PhabricatorPolicyInterface,
     PhabricatorFlaggableInterface,
     PhabricatorMarkupInterface,
@@ -29,6 +30,7 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
   const TABLE_BADCOMMIT = 'repository_badcommit';
   const TABLE_LINTMESSAGE = 'repository_lintmessage';
   const TABLE_PARENTS = 'repository_parents';
+  const TABLE_COVERAGE = 'repository_coverage';
 
   const SERVE_OFF = 'off';
   const SERVE_READONLY = 'readonly';
@@ -76,6 +78,31 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_SERIALIZATION => array(
         'details' => self::SERIALIZATION_JSON,
+      ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'name' => 'sort255',
+        'callsign' => 'sort32',
+        'versionControlSystem' => 'text32',
+        'uuid' => 'text64?',
+        'pushPolicy' => 'policy',
+        'credentialPHID' => 'phid?',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_phid' => null,
+        'phid' => array(
+          'columns' => array('phid'),
+          'unique' => true,
+        ),
+        'callsign' => array(
+          'columns' => array('callsign'),
+          'unique' => true,
+        ),
+        'key_name' => array(
+          'columns' => array('name(128)'),
+        ),
+        'key_vcs' => array(
+          'columns' => array('versionControlSystem'),
+        ),
       ),
     ) + parent::getConfiguration();
   }
@@ -1483,6 +1510,29 @@ final class PhabricatorRepository extends PhabricatorRepositoryDAO
     }
 
     return $smart_wait;
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new PhabricatorRepositoryEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new PhabricatorRepositoryTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

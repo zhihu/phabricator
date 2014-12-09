@@ -5,6 +5,7 @@
  */
 final class PhabricatorDashboard extends PhabricatorDashboardDAO
   implements
+    PhabricatorApplicationTransactionInterface,
     PhabricatorPolicyInterface,
     PhabricatorDestructibleInterface {
 
@@ -39,7 +40,11 @@ final class PhabricatorDashboard extends PhabricatorDashboardDAO
     return array(
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_SERIALIZATION => array(
-        'layoutConfig' => self::SERIALIZATION_JSON),
+        'layoutConfig' => self::SERIALIZATION_JSON,
+      ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'name' => 'text255',
+      ),
     ) + parent::getConfiguration();
   }
 
@@ -76,6 +81,29 @@ final class PhabricatorDashboard extends PhabricatorDashboardDAO
 
   public function getPanels() {
     return $this->assertAttached($this->panels);
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new PhabricatorDashboardTransactionEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new PhabricatorDashboardTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

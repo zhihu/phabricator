@@ -28,7 +28,29 @@ final class DifferentialChangeset extends DifferentialDAO
         'oldProperties' => self::SERIALIZATION_JSON,
         'newProperties' => self::SERIALIZATION_JSON,
         'awayPaths'     => self::SERIALIZATION_JSON,
-      )) + parent::getConfiguration();
+      ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'oldFile' => 'text255?',
+        'filename' => 'text255',
+        'changeType' => 'uint32',
+        'fileType' => 'uint32',
+        'addLines' => 'uint32',
+        'delLines' => 'uint32',
+
+        // T6203/NULLABILITY
+        // These should all be non-nullable, and store reasonable default
+        // JSON values if empty.
+        'awayPaths' => 'text?',
+        'metadata' => 'text?',
+        'oldProperties' => 'text?',
+        'newProperties' => 'text?',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'diffID' => array(
+          'columns' => array('diffID'),
+        ),
+      ),
+    ) + parent::getConfiguration();
   }
 
   public function getAffectedLineCount() {

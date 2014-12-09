@@ -251,6 +251,17 @@ abstract class PhabricatorFeedStory
   }
 
   abstract public function renderView();
+  public function renderAsTextForDoorkeeper(
+    DoorkeeperFeedStoryPublisher $publisher) {
+
+    // TODO: This (and text rendering) should be properly abstract and
+    // universal. However, this is far less bad than it used to be, and we
+    // need to clean up more old feed code to really make this reasonable.
+
+    return pht(
+      '(Unable to render story of class %s for Doorkeeper.)',
+      get_class($this));
+  }
 
   public function getRequiredHandlePHIDs() {
     return array();
@@ -376,7 +387,7 @@ abstract class PhabricatorFeedStory
     }
   }
 
-  final protected function renderSummary($text, $len = 128) {
+  final public function renderSummary($text, $len = 128) {
     if ($len) {
       $text = id(new PhutilUTF8StringTruncator())
         ->setMaximumGlyphs($len)

@@ -142,10 +142,12 @@ final class DiffusionPathChange {
     return array_select_keys($result, $direct);
   }
 
-  final public static function convertToDifferentialChangesets(array $changes) {
+  final public static function convertToDifferentialChangesets(
+    PhabricatorUser $user,
+    array $changes) {
     assert_instances_of($changes, 'DiffusionPathChange');
     $arcanist_changes = self::convertToArcanistChanges($changes);
-    $diff = DifferentialDiff::newFromRawChanges($arcanist_changes);
+    $diff = DifferentialDiff::newFromRawChanges($user, $arcanist_changes);
     return $diff->getChangesets();
   }
 
@@ -171,7 +173,8 @@ final class DiffusionPathChange {
       'changeType' => $this->getChangeType(),
       'targetPath' =>  $this->getTargetPath(),
       'targetCommitIdentifier' => $this->getTargetCommitIdentifier(),
-      'awayPaths' => $this->getAwayPaths());
+      'awayPaths' => $this->getAwayPaths(),
+    );
   }
 
   public static function newFromConduit(array $dicts) {

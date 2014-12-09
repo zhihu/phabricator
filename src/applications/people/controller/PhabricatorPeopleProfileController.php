@@ -133,15 +133,24 @@ final class PhabricatorPeopleProfileController
     $crumbs->addTextCrumb($user->getUsername());
     $crumbs->setActionList($actions);
     $feed = $this->renderUserFeed($user);
-    $calendar = $this->renderUserCalendar($user);
+    $cal_class = 'PhabricatorCalendarApplication';
+    $classes = array();
+    $classes[] = 'profile-activity-view';
+    if (PhabricatorApplication::isClassInstalledForViewer($cal_class, $user)) {
+      $calendar = $this->renderUserCalendar($user);
+      $classes[] = 'profile-has-calendar';
+      $classes[] = 'grouped';
+    } else {
+      $calendar = null;
+    }
     $activity = phutil_tag(
       'div',
       array(
-        'class' => 'profile-activity-view grouped'
+        'class' => implode($classes, ' '),
       ),
       array(
         $calendar,
-        $feed
+        $feed,
       ));
 
     $object_box = id(new PHUIObjectBoxView())
@@ -262,7 +271,7 @@ final class PhabricatorPeopleProfileController
       $header = phutil_tag(
         'a',
         array(
-          'href' => $this->getRequest()->getRequestURI().'calendar/'
+          'href' => $this->getRequest()->getRequestURI().'calendar/',
         ),
         $headertext);
 

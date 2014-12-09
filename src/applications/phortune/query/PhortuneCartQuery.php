@@ -6,6 +6,7 @@ final class PhortuneCartQuery
   private $ids;
   private $phids;
   private $accountPHIDs;
+  private $merchantPHIDs;
   private $statuses;
 
   private $needPurchases;
@@ -22,6 +23,11 @@ final class PhortuneCartQuery
 
   public function withAccountPHIDs(array $account_phids) {
     $this->accountPHIDs = $account_phids;
+    return $this;
+  }
+
+  public function withMerchantPHIDs(array $merchant_phids) {
+    $this->merchantPHIDs = $merchant_phids;
     return $this;
   }
 
@@ -64,6 +70,39 @@ final class PhortuneCartQuery
         continue;
       }
       $cart->attachAccount($account);
+    }
+
+    $merchants = id(new PhortuneMerchantQuery())
+      ->setViewer($this->getViewer())
+      ->withPHIDs(mpull($carts, 'getMerchantPHID'))
+      ->execute();
+    $merchants = mpull($merchants, null, 'getPHID');
+
+    foreach ($carts as $key => $cart) {
+      $merchant = idx($merchants, $cart->getMerchantPHID());
+      if (!$merchant) {
+        unset($carts[$key]);
+        continue;
+      }
+      $cart->attachMerchant($merchant);
+    }
+
+    $implementations = array();
+
+    $cart_map = mgroup($carts, 'getCartClass');
+    foreach ($cart_map as $class => $class_carts) {
+      $implementations += newv($class, array())->loadImplementationsForCarts(
+        $this->getViewer(),
+        $class_carts);
+    }
+
+    foreach ($carts as $key => $cart) {
+      $implementation = idx($implementations, $key);
+      if (!$implementation) {
+        unset($carts[$key]);
+        continue;
+      }
+      $cart->attachImplementation($implementation);
     }
 
     return $carts;
@@ -110,6 +149,13 @@ final class PhortuneCartQuery
         $conn,
         'cart.accountPHID IN (%Ls)',
         $this->accountPHIDs);
+    }
+
+    if ($this->merchantPHIDs !== null) {
+      $where[] = qsprintf(
+        $conn,
+        'cart.merchantPHID IN (%Ls)',
+        $this->merchantPHIDs);
     }
 
     if ($this->statuses !== null) {

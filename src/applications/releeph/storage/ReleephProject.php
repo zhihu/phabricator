@@ -1,7 +1,9 @@
 <?php
 
 final class ReleephProject extends ReleephDAO
-  implements PhabricatorPolicyInterface {
+  implements
+    PhabricatorApplicationTransactionInterface,
+    PhabricatorPolicyInterface {
 
   const DEFAULT_BRANCH_NAMESPACE = 'releeph-releases';
   const SYSTEM_AGENT_USERNAME_PREFIX = 'releeph-agent-';
@@ -29,6 +31,17 @@ final class ReleephProject extends ReleephDAO
       self::CONFIG_SERIALIZATION => array(
         'details' => self::SERIALIZATION_JSON,
       ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'name' => 'text128',
+        'trunkBranch' => 'text255',
+        'isActive' => 'bool',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'projectName' => array(
+          'columns' => array('name'),
+          'unique' => true,
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 
@@ -44,7 +57,7 @@ final class ReleephProject extends ReleephDAO
     $components = array(
       '/releeph/product',
       $this->getID(),
-      $path
+      $path,
     );
     return implode('/', $components);
   }
@@ -110,7 +123,32 @@ final class ReleephProject extends ReleephDAO
     return false;
   }
 
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new ReleephProductEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new ReleephProductTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
+  }
+
+
 /* -(  PhabricatorPolicyInterface  )----------------------------------------- */
+
 
   public function getCapabilities() {
     return array(

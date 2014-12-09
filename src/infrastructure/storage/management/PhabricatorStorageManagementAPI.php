@@ -8,6 +8,22 @@ final class PhabricatorStorageManagementAPI {
   private $password;
   private $namespace;
   private $conns = array();
+  private $disableUTF8MB4;
+
+  const CHARSET_DEFAULT = 'CHARSET';
+  const CHARSET_FULLTEXT = 'CHARSET_FULLTEXT';
+  const COLLATE_TEXT = 'COLLATE_TEXT';
+  const COLLATE_SORT = 'COLLATE_SORT';
+  const COLLATE_FULLTEXT = 'COLLATE_FULLTEXT';
+
+  public function setDisableUTF8MB4($disable_utf8_mb4) {
+    $this->disableUTF8MB4 = $disable_utf8_mb4;
+    return $this;
+  }
+
+  public function getDisableUTF8MB4() {
+    return $this->disableUTF8MB4;
+  }
 
   public function setNamespace($namespace) {
     $this->namespace = $namespace;
@@ -109,10 +125,13 @@ final class PhabricatorStorageManagementAPI {
   }
 
   public function createDatabase($fragment) {
+    $info = $this->getCharsetInfo();
+
     queryfx(
       $this->getConn(null),
-      'CREATE DATABASE IF NOT EXISTS %T COLLATE utf8_general_ci',
-      $this->getDatabaseName($fragment));
+      'CREATE DATABASE IF NOT EXISTS %T COLLATE %T',
+      $this->getDatabaseName($fragment),
+      $info[self::COLLATE_TEXT]);
   }
 
   public function createTable($fragment, $table, array $cols) {
@@ -182,8 +201,18 @@ final class PhabricatorStorageManagementAPI {
 
     $conn = $this->getConn(null);
 
+    $charset_info = $this->getCharsetInfo();
+    foreach ($charset_info as $key => $value) {
+      $charset_info[$key] = qsprintf($conn, '%T', $value);
+    }
+
     foreach ($queries as $query) {
       $query = str_replace('{$NAMESPACE}', $this->namespace, $query);
+
+      foreach ($charset_info as $key => $value) {
+        $query = str_replace('{$'.$key.'}', $value, $query);
+      }
+
       queryfx(
         $conn,
         '%Q',
@@ -194,6 +223,65 @@ final class PhabricatorStorageManagementAPI {
   public function applyPatchPHP($script) {
     $schema_conn = $this->getConn(null);
     require_once $script;
+  }
+
+  public function isCharacterSetAvailable($character_set) {
+    if ($character_set == 'utf8mb4') {
+      if ($this->getDisableUTF8MB4()) {
+        return false;
+      }
+    }
+
+    $conn = $this->getConn(null);
+
+    $result = queryfx_one(
+      $conn,
+      'SELECT CHARACTER_SET_NAME FROM INFORMATION_SCHEMA.CHARACTER_SETS
+        WHERE CHARACTER_SET_NAME = %s',
+      $character_set);
+
+    return (bool)$result;
+  }
+
+  public function getCharsetInfo() {
+    if ($this->isCharacterSetAvailable('utf8mb4')) {
+      // If utf8mb4 is available, we use it with the utf8mb4_unicode_ci
+      // collation. This is most correct, and will sort properly.
+
+      $charset = 'utf8mb4';
+      $charset_full = 'utf8mb4';
+      $collate_text = 'utf8mb4_bin';
+      $collate_sort = 'utf8mb4_unicode_ci';
+      $collate_full = 'utf8mb4_unicode_ci';
+    } else {
+      // If utf8mb4 is not available, we use binary. This allows us to store
+      // 4-byte unicode characters. This has some tradeoffs:
+      //
+      // Unicode characters won't sort correctly. There's nothing we can do
+      // about this while still supporting 4-byte characters.
+      //
+      // It's possible that strings will be truncated in the middle of a
+      // character on insert. We encourage users to set STRICT_ALL_TABLES
+      // to prevent this.
+      //
+      // There's no valid collation we can use to get a fulltext index on
+      // 4-byte unicode characters: we can't add a fulltext key to a binary
+      // column.
+
+      $charset = 'binary';
+      $charset_full = 'utf8';
+      $collate_text = 'binary';
+      $collate_sort = 'binary';
+      $collate_full = 'utf8_general_ci';
+    }
+
+    return array(
+      self::CHARSET_DEFAULT => $charset,
+      self::CHARSET_FULLTEXT => $charset_full,
+      self::COLLATE_TEXT => $collate_text,
+      self::COLLATE_SORT => $collate_sort,
+      self::COLLATE_FULLTEXT => $collate_full,
+    );
   }
 
 }

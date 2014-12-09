@@ -25,6 +25,7 @@ final class PhabricatorProjectTransactionEditor
     $types[] = PhabricatorProjectTransaction::TYPE_IMAGE;
     $types[] = PhabricatorProjectTransaction::TYPE_ICON;
     $types[] = PhabricatorProjectTransaction::TYPE_COLOR;
+    $types[] = PhabricatorProjectTransaction::TYPE_LOCKED;
 
     return $types;
   }
@@ -49,6 +50,8 @@ final class PhabricatorProjectTransactionEditor
         return $object->getIcon();
       case PhabricatorProjectTransaction::TYPE_COLOR:
         return $object->getColor();
+      case PhabricatorProjectTransaction::TYPE_LOCKED:
+        return (int) $object->getIsMembershipLocked();
     }
 
     return parent::getCustomTransactionOldValue($object, $xaction);
@@ -65,6 +68,7 @@ final class PhabricatorProjectTransactionEditor
       case PhabricatorProjectTransaction::TYPE_IMAGE:
       case PhabricatorProjectTransaction::TYPE_ICON:
       case PhabricatorProjectTransaction::TYPE_COLOR:
+      case PhabricatorProjectTransaction::TYPE_LOCKED:
         return $xaction->getNewValue();
     }
 
@@ -94,6 +98,9 @@ final class PhabricatorProjectTransactionEditor
       case PhabricatorProjectTransaction::TYPE_COLOR:
         $object->setColor($xaction->getNewValue());
         return;
+      case PhabricatorProjectTransaction::TYPE_LOCKED:
+        $object->setIsMembershipLocked($xaction->getNewValue());
+        return;
       case PhabricatorTransactions::TYPE_EDGE:
         return;
       case PhabricatorTransactions::TYPE_VIEW_POLICY:
@@ -120,7 +127,7 @@ final class PhabricatorProjectTransactionEditor
     switch ($xaction->getTransactionType()) {
       case PhabricatorProjectTransaction::TYPE_NAME:
         // First, remove the old and new slugs. Removing the old slug is
-        // important when changing the project's capitalization or puctuation.
+        // important when changing the project's capitalization or punctuation.
         // Removing the new slug is important when changing the project's name
         // so that one of its secondary slugs is now the primary slug.
         if ($old !== null) {
@@ -133,40 +140,6 @@ final class PhabricatorProjectTransactionEditor
           ->setProjectPHID($object->getPHID())
           ->save();
 
-        // TODO -- delete all of the below once we sever automagical project
-        // to phriction stuff
-        if ($xaction->getOldValue() === null) {
-          // Project was just created, we don't need to move anything.
-          return;
-        }
-
-        $clone_object = clone $object;
-        $clone_object->setPhrictionSlug($xaction->getOldValue());
-        $old_slug = $clone_object->getFullPhrictionSlug();
-
-        $old_document = id(new PhrictionDocument())
-          ->loadOneWhere('slug = %s', $old_slug);
-        if ($old_document && $old_document->getStatus() ==
-            PhrictionDocumentStatus::STATUS_EXISTS) {
-          $content = id(new PhrictionContent())
-            ->load($old_document->getContentID());
-          $from_editor = id(PhrictionDocumentEditor::newForSlug($old_slug))
-            ->setActor($this->getActor())
-            ->setTitle($content->getTitle())
-            ->setContent($content->getContent())
-            ->setDescription($content->getDescription());
-
-          $target_editor = id(PhrictionDocumentEditor::newForSlug(
-            $object->getFullPhrictionSlug()))
-            ->setActor($this->getActor())
-            ->setTitle($content->getTitle())
-            ->setContent($content->getContent())
-            ->setDescription($content->getDescription())
-            ->moveHere($old_document->getID(), $old_document->getPHID());
-
-          $target_document = $target_editor->getDocument();
-          $from_editor->moveAway($target_document->getID());
-        }
         return;
       case PhabricatorProjectTransaction::TYPE_SLUGS:
         $old = $xaction->getOldValue();
@@ -199,6 +172,7 @@ final class PhabricatorProjectTransactionEditor
       case PhabricatorProjectTransaction::TYPE_IMAGE:
       case PhabricatorProjectTransaction::TYPE_ICON:
       case PhabricatorProjectTransaction::TYPE_COLOR:
+      case PhabricatorProjectTransaction::TYPE_LOCKED:
         return;
       case PhabricatorTransactions::TYPE_EDGE:
         $edge_type = $xaction->getMetadataValue('edge:type');
@@ -360,6 +334,7 @@ final class PhabricatorProjectTransactionEditor
         }
 
         break;
+
     }
 
     return $errors;
@@ -380,6 +355,12 @@ final class PhabricatorProjectTransactionEditor
           $this->requireActor(),
           $object,
           PhabricatorPolicyCapability::CAN_EDIT);
+        return;
+      case PhabricatorProjectTransaction::TYPE_LOCKED:
+        PhabricatorPolicyFilter::requireCapability(
+          $this->requireActor(),
+          newv($this->getEditorApplicationClass(), array()),
+          ProjectCanLockProjectsCapability::CAPABILITY);
         return;
       case PhabricatorTransactions::TYPE_EDGE:
         switch ($xaction->getMetadataValue('edge:type')) {
@@ -402,7 +383,14 @@ final class PhabricatorProjectTransactionEditor
                 $object,
                 PhabricatorPolicyCapability::CAN_JOIN);
             } else if ($is_leave) {
-              // You don't need any capabilities to leave a project.
+              // You usually don't need any capabilities to leave a project.
+              if ($object->getIsMembershipLocked()) {
+                // you must be able to edit though to leave locked projects
+                PhabricatorPolicyFilter::requireCapability(
+                  $this->requireActor(),
+                  $object,
+                  PhabricatorPolicyCapability::CAN_EDIT);
+              }
             } else {
               // You need CAN_EDIT to change members other than yourself.
               PhabricatorPolicyFilter::requireCapability(

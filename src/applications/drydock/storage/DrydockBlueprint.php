@@ -2,6 +2,7 @@
 
 final class DrydockBlueprint extends DrydockDAO
   implements
+    PhabricatorApplicationTransactionInterface,
     PhabricatorPolicyInterface,
     PhabricatorCustomFieldInterface {
 
@@ -36,7 +37,11 @@ final class DrydockBlueprint extends DrydockDAO
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_SERIALIZATION => array(
         'details' => self::SERIALIZATION_JSON,
-      )
+      ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'className' => 'text255',
+        'blueprintName' => 'text255',
+      ),
     ) + parent::getConfiguration();
   }
 
@@ -68,6 +73,29 @@ final class DrydockBlueprint extends DrydockDAO
   public function setDetail($key, $value) {
     $this->details[$key] = $value;
     return $this;
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new DrydockBlueprintEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new DrydockBlueprintTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

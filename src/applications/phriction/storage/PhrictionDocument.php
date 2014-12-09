@@ -6,30 +6,92 @@ final class PhrictionDocument extends PhrictionDAO
     PhabricatorSubscribableInterface,
     PhabricatorFlaggableInterface,
     PhabricatorTokenReceiverInterface,
-    PhabricatorDestructibleInterface {
+    PhabricatorDestructibleInterface,
+    PhabricatorApplicationTransactionInterface {
 
   protected $slug;
   protected $depth;
   protected $contentID;
   protected $status;
+  protected $mailKey;
+  protected $viewPolicy;
+  protected $editPolicy;
 
   private $contentObject = self::ATTACHABLE;
   private $ancestors = array();
-
-  // TODO: This should be `self::ATTACHABLE`, but there are still a lot of call
-  // sites which load PhrictionDocuments directly.
-  private $project = null;
 
   public function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID   => true,
       self::CONFIG_TIMESTAMPS => false,
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'slug' => 'sort128',
+        'depth' => 'uint32',
+        'contentID' => 'id?',
+        'status' => 'uint32',
+        'mailKey' => 'bytes20',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_phid' => null,
+        'phid' => array(
+          'columns' => array('phid'),
+          'unique' => true,
+        ),
+        'slug' => array(
+          'columns' => array('slug'),
+          'unique' => true,
+        ),
+        'depth' => array(
+          'columns' => array('depth', 'slug'),
+          'unique' => true,
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 
   public function generatePHID() {
     return PhabricatorPHID::generateNewPHID(
       PhrictionDocumentPHIDType::TYPECONST);
+  }
+
+  public static function initializeNewDocument(PhabricatorUser $actor, $slug) {
+    $document = new PhrictionDocument();
+    $document->setSlug($slug);
+
+    $content  = new PhrictionContent();
+    $content->setSlug($slug);
+
+    $default_title = PhabricatorSlug::getDefaultTitle($slug);
+    $content->setTitle($default_title);
+    $document->attachContent($content);
+
+    $parent_doc = null;
+    $ancestral_slugs = PhabricatorSlug::getAncestry($slug);
+    if ($ancestral_slugs) {
+      $parent = end($ancestral_slugs);
+      $parent_doc = id(new PhrictionDocumentQuery())
+        ->setViewer($actor)
+        ->withSlugs(array($parent))
+        ->executeOne();
+    }
+
+    if ($parent_doc) {
+      $document->setViewPolicy($parent_doc->getViewPolicy());
+      $document->setEditPolicy($parent_doc->getEditPolicy());
+    } else {
+      $default_view_policy = PhabricatorPolicies::getMostOpenPolicy();
+      $document->setViewPolicy($default_view_policy);
+      $document->setEditPolicy(PhabricatorPolicies::POLICY_USER);
+    }
+
+    return $document;
+  }
+
+  public function save() {
+    if (!$this->getMailKey()) {
+      $this->setMailKey(Filesystem::readRandomCharacters(20));
+    }
+    return parent::save();
   }
 
   public static function getSlugURI($slug, $type = 'document') {
@@ -70,19 +132,6 @@ final class PhrictionDocument extends PhrictionDAO
     return $this->assertAttached($this->contentObject);
   }
 
-  public function getProject() {
-    return $this->assertAttached($this->project);
-  }
-
-  public function attachProject(PhabricatorProject $project = null) {
-    $this->project = $project;
-    return $this;
-  }
-
-  public function hasProject() {
-    return (bool)$this->getProject();
-  }
-
   public function getAncestors() {
     return $this->ancestors;
   }
@@ -94,26 +143,6 @@ final class PhrictionDocument extends PhrictionDAO
   public function attachAncestor($slug, $ancestor) {
     $this->ancestors[$slug] = $ancestor;
     return $this;
-  }
-
-  public static function isProjectSlug($slug) {
-    $slug = PhabricatorSlug::normalize($slug);
-    $prefix = 'projects/';
-    if ($slug == $prefix) {
-      // The 'projects/' document is not itself a project slug.
-      return false;
-    }
-    return !strncmp($slug, $prefix, strlen($prefix));
-  }
-
-  public static function getProjectSlugIdentifier($slug) {
-    if (!self::isProjectSlug($slug)) {
-      throw new Exception("Slug '{$slug}' is not a project slug!");
-    }
-
-    $slug = PhabricatorSlug::normalize($slug);
-    $parts = explode('/', $slug);
-    return $parts[1].'/';
   }
 
 
@@ -128,30 +157,28 @@ final class PhrictionDocument extends PhrictionDAO
   }
 
   public function getPolicy($capability) {
-    if ($this->hasProject()) {
-      return $this->getProject()->getPolicy($capability);
+    switch ($capability) {
+      case PhabricatorPolicyCapability::CAN_VIEW:
+        return $this->getViewPolicy();
+      case PhabricatorPolicyCapability::CAN_EDIT:
+        return $this->getEditPolicy();
     }
-
-    return PhabricatorPolicies::POLICY_USER;
   }
 
   public function hasAutomaticCapability($capability, PhabricatorUser $user) {
-    if ($this->hasProject()) {
-      return $this->getProject()->hasAutomaticCapability($capability, $user);
-    }
     return false;
   }
 
   public function describeAutomaticCapability($capability) {
-    if ($this->hasProject()) {
-      return pht(
-        "This is a project wiki page, and inherits the project's policies.");
-    }
 
     switch ($capability) {
       case PhabricatorPolicyCapability::CAN_VIEW:
         return pht(
           'To view a wiki document, you must also be able to view all '.
+          'of its parents.');
+      case PhabricatorPolicyCapability::CAN_EDIT:
+        return pht(
+          'To edit a wiki document, you must also be able to view all '.
           'of its parents.');
     }
 
@@ -172,6 +199,28 @@ final class PhrictionDocument extends PhrictionDAO
 
   public function shouldAllowSubscription($phid) {
     return true;
+  }
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new PhrictionTransactionEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new PhrictionTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

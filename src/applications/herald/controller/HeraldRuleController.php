@@ -169,7 +169,7 @@ final class HeraldRuleController extends HeraldController {
             phutil_tag('strong', array(), $content_type_name))))
       ->appendChild($trigger_object_control)
       ->appendChild(
-        id(new AphrontFormInsetView())
+        id(new PHUIFormInsetView())
           ->setTitle(pht('Conditions'))
           ->setRightButton(javelin_tag(
             'a',
@@ -177,7 +177,7 @@ final class HeraldRuleController extends HeraldController {
               'href' => '#',
               'class' => 'button green',
               'sigil' => 'create-condition',
-              'mustcapture' => true
+              'mustcapture' => true,
             ),
             pht('New Condition')))
           ->setDescription(
@@ -186,11 +186,11 @@ final class HeraldRuleController extends HeraldController {
             'table',
             array(
               'sigil' => 'rule-conditions',
-              'class' => 'herald-condition-table'
+              'class' => 'herald-condition-table',
             ),
             '')))
       ->appendChild(
-        id(new AphrontFormInsetView())
+        id(new PHUIFormInsetView())
           ->setTitle(pht('Action'))
           ->setRightButton(javelin_tag(
             'a',
@@ -322,21 +322,14 @@ final class HeraldRuleController extends HeraldController {
     $rule->attachActions($actions);
 
     if (!$errors) {
-      try {
+      $edit_action = $rule->getID() ? 'edit' : 'create';
 
-        $edit_action = $rule->getID() ? 'edit' : 'create';
-
-        $rule->openTransaction();
-          $rule->save();
-          $rule->saveConditions($conditions);
-          $rule->saveActions($actions);
-          $rule->logEdit($request->getUser()->getPHID(), $edit_action);
-        $rule->saveTransaction();
-
-      } catch (AphrontDuplicateKeyQueryException $ex) {
-        $e_name = pht('Not Unique');
-        $errors[] = pht('Rule name is not unique. Choose a unique name.');
-      }
+      $rule->openTransaction();
+        $rule->save();
+        $rule->saveConditions($conditions);
+        $rule->saveActions($actions);
+        $rule->logEdit($request->getUser()->getPHID(), $edit_action);
+      $rule->saveTransaction();
     }
 
     return array($e_name, $errors);
@@ -362,6 +355,14 @@ final class HeraldRuleController extends HeraldController {
             $priority_map = ManiphestTaskPriority::getTaskPriorityMap();
             foreach ($value as $priority) {
               $value_map[$priority] = idx($priority_map, $priority);
+            }
+            $value = $value_map;
+            break;
+          case HeraldAdapter::FIELD_TASK_STATUS:
+            $value_map = array();
+            $status_map = ManiphestTaskStatus::getTaskStatusMap();
+            foreach ($value as $status) {
+              $value_map[$status] = idx($status_map, $status);
             }
             $value = $value_map;
             break;
@@ -501,8 +502,10 @@ final class HeraldRuleController extends HeraldController {
         'template' => $this->buildTokenizerTemplates($handles) + array(
           'rules' => $all_rules,
         ),
-        'author' => array($rule->getAuthorPHID() =>
-                          $handles[$rule->getAuthorPHID()]->getName()),
+        'author' => array(
+          $rule->getAuthorPHID() =>
+            $handles[$rule->getAuthorPHID()]->getName(),
+        ),
         'info' => $config_info,
       ));
   }
@@ -591,6 +594,7 @@ final class HeraldRuleController extends HeraldController {
       'repository' => new DiffusionRepositoryDatasource(),
       'legaldocuments' => new LegalpadDocumentDatasource(),
       'taskpriority' => new ManiphestTaskPriorityDatasource(),
+      'taskstatus' => new ManiphestTaskStatusDatasource(),
       'buildplan' => new HarbormasterBuildPlanDatasource(),
       'arcanistprojects' => new DiffusionArcanistProjectDatasource(),
       'package' => new PhabricatorOwnersPackageDatasource(),

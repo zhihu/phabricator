@@ -48,7 +48,7 @@ Phabricator instance. e.g. by IP address.
 
 = Comment Widgets =
 
-Phame supports comment widgets from Facebook and Disqus. The adminstrator
+Phame supports comment widgets from Facebook and Disqus. The administrator
 of the Phabricator instance must properly configure Phabricator to enable
 this functionality.
 
@@ -59,4 +59,5 @@ of whether that post is being viewed in the context of a blog.
 = Next Steps =
 
  - Phame is extremely new and very basic for now. Give us feedback on
-what you'd like to see improve! See @{article:Give Feedback! Get Support!}.
+   what you'd like to see improve! See @{article:Give Feedback! Get
+   Support!}.

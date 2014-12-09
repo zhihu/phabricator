@@ -26,6 +26,28 @@ final class LegalpadDocumentSignature
       self::CONFIG_SERIALIZATION => array(
         'signatureData' => self::SERIALIZATION_JSON,
       ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'documentVersion' => 'uint32',
+        'signatureType' => 'text4',
+        'signerPHID' => 'phid?',
+        'signerName' => 'text255',
+        'signerEmail' => 'text255',
+        'secretKey' => 'bytes20',
+        'verified' => 'bool?',
+        'isExemption' => 'bool',
+        'exemptionPHID' => 'phid?',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_signer' => array(
+          'columns' => array('signerPHID', 'dateModified'),
+        ),
+        'secretKey' => array(
+          'columns' => array('secretKey'),
+        ),
+        'key_document' => array(
+          'columns' => array('documentPHID', 'signerPHID', 'documentVersion'),
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 

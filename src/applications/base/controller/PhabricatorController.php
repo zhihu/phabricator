@@ -137,11 +137,11 @@ abstract class PhabricatorController extends AphrontController {
 
     if ($this->shouldRequireEnabledUser()) {
       if ($user->isLoggedIn() && !$user->getIsApproved()) {
-        $controller = new PhabricatorAuthNeedsApprovalController($request);
+        $controller = new PhabricatorAuthNeedsApprovalController();
         return $this->delegateToController($controller);
       }
       if ($user->getIsDisabled()) {
-        $controller = new PhabricatorDisabledUserController($request);
+        $controller = new PhabricatorDisabledUserController();
         return $this->delegateToController($controller);
       }
     }
@@ -166,7 +166,7 @@ abstract class PhabricatorController extends AphrontController {
     if (!$this->shouldAllowPartialSessions()) {
       if ($user->hasSession() &&
           $user->getSession()->getIsPartial()) {
-        $login_controller = new PhabricatorAuthFinishController($request);
+        $login_controller = new PhabricatorAuthFinishController();
         $this->setCurrentApplication($auth_application);
         return $this->delegateToController($login_controller);
       }
@@ -180,8 +180,7 @@ abstract class PhabricatorController extends AphrontController {
       // and require MFA enrollment.
       $user->updateMultiFactorEnrollment();
       if (!$user->getIsEnrolledInMultiFactor()) {
-        $mfa_controller = new PhabricatorAuthNeedsMultiFactorController(
-          $request);
+        $mfa_controller = new PhabricatorAuthNeedsMultiFactorController();
         $this->setCurrentApplication($auth_application);
         return $this->delegateToController($mfa_controller);
       }
@@ -198,7 +197,7 @@ abstract class PhabricatorController extends AphrontController {
       // If this controller isn't public, and the user isn't logged in, require
       // login.
       if (!$allow_public && !$user->isLoggedIn()) {
-        $login_controller = new PhabricatorAuthStartController($request);
+        $login_controller = new PhabricatorAuthStartController();
         $this->setCurrentApplication($auth_application);
         return $this->delegateToController($login_controller);
       }
@@ -206,7 +205,7 @@ abstract class PhabricatorController extends AphrontController {
       if ($user->isLoggedIn()) {
         if ($this->shouldRequireEmailVerification()) {
           if (!$user->getIsEmailVerified()) {
-            $controller = new PhabricatorMustVerifyEmailController($request);
+            $controller = new PhabricatorMustVerifyEmailController();
             $this->setCurrentApplication($auth_application);
             return $this->delegateToController($controller);
           }
@@ -296,6 +295,7 @@ abstract class PhabricatorController extends AphrontController {
       $page->setDeviceReady(true);
     }
 
+    $page->setShowFooter(idx($options, 'showFooter', true));
     $page->setShowChrome(idx($options, 'chrome', true));
 
     $application_menu = $this->buildApplicationMenu();
@@ -517,13 +517,59 @@ abstract class PhabricatorController extends AphrontController {
    *
    * @return AphrontDialogView New dialog.
    */
-  protected function newDialog() {
+  public function newDialog() {
     $submit_uri = new PhutilURI($this->getRequest()->getRequestURI());
     $submit_uri = $submit_uri->getPath();
 
     return id(new AphrontDialogView())
       ->setUser($this->getRequest()->getUser())
       ->setSubmitURI($submit_uri);
+  }
+
+  protected function buildTransactionTimeline(
+    PhabricatorApplicationTransactionInterface $object,
+    PhabricatorApplicationTransactionQuery $query,
+    PhabricatorMarkupEngine $engine = null,
+    $render_data = array()) {
+
+    $viewer = $this->getRequest()->getUser();
+    $xaction = $object->getApplicationTransactionTemplate();
+    $view = $xaction->getApplicationTransactionViewObject();
+
+    $pager = id(new AphrontCursorPagerView())
+      ->readFromRequest($this->getRequest())
+      ->setURI(new PhutilURI(
+        '/transactions/showolder/'.$object->getPHID().'/'));
+
+    $xactions = $query
+      ->setViewer($viewer)
+      ->withObjectPHIDs(array($object->getPHID()))
+      ->needComments(true)
+      ->setReversePaging(false)
+      ->executeWithCursorPager($pager);
+    $xactions = array_reverse($xactions);
+
+    if ($engine) {
+      foreach ($xactions as $xaction) {
+        if ($xaction->getComment()) {
+          $engine->addObject(
+            $xaction->getComment(),
+            PhabricatorApplicationTransactionComment::MARKUP_FIELD_COMMENT);
+        }
+      }
+      $engine->process();
+      $view->setMarkupEngine($engine);
+    }
+
+    $timeline = $view
+      ->setUser($viewer)
+      ->setObjectPHID($object->getPHID())
+      ->setTransactions($xactions)
+      ->setPager($pager)
+      ->setRenderData($render_data);
+    $object->willRenderTimeline($timeline, $this->getRequest());
+
+    return $timeline;
   }
 
 }

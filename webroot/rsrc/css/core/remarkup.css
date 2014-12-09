@@ -71,7 +71,7 @@
   margin: 12px 0 12px 30px;
 }
 
-.phabricator-remarkup .remarkup-list-with-checkmarks {
+.phabricator-remarkup ul.remarkup-list-with-checkmarks {
   list-style: none;
   margin-left: 18px;
 }
@@ -157,6 +157,10 @@
   margin: 4px 0 12px 0;
   padding: 8px 12px;
   background-color: #F8F9FC;
+}
+
+.phabricator-remarkup blockquote blockquote {
+  background-color: rgba(175,175,175, .1);
 }
 
 .phabricator-remarkup blockquote em {

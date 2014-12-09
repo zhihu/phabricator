@@ -66,7 +66,7 @@ final class PhabricatorProjectProfileController
           ->setIconFont('fa-columns');
     $board_btn = id(new PHUIButtonView())
         ->setTag('a')
-        ->setText(pht('Workboards'))
+        ->setText(pht('Workboard'))
         ->setHref($this->getApplicationURI("board/{$id}/"))
         ->setIcon($icon);
 
@@ -261,6 +261,17 @@ final class PhabricatorProjectProfileController
       }
     }
 
+    $have_phriction = PhabricatorApplication::isClassInstalledForViewer(
+      'PhabricatorPhrictionApplication',
+      $viewer);
+    if ($have_phriction) {
+      $view->addAction(
+        id(new PhabricatorActionView())
+          ->setIcon('fa-book grey')
+          ->setName(pht('View Wiki'))
+          ->setWorkflow(true)
+          ->setHref('/project/wiki/'));
+    }
 
     return $view;
   }

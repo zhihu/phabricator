@@ -29,7 +29,7 @@ final class PonderAnswerCommentController extends PonderController {
 
     $qid = $answer->getQuestion()->getID();
     $aid = $answer->getID();
-    $view_uri = "Q{$qid}#A{$aid}";
+    $view_uri = "/Q{$qid}#A{$aid}";
 
     $xactions = array();
     $xactions[] = id(new PonderAnswerTransaction())
@@ -60,8 +60,7 @@ final class PonderAnswerCommentController extends PonderController {
       return id(new PhabricatorApplicationTransactionResponse())
         ->setViewer($viewer)
         ->setTransactions($xactions)
-        ->setIsPreview($is_preview)
-        ->setAnchorOffset($request->getStr('anchor'));
+        ->setIsPreview($is_preview);
     } else {
       return id(new AphrontRedirectResponse())
         ->setURI($view_uri);

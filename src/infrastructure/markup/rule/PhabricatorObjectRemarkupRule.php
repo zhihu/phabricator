@@ -44,7 +44,11 @@ abstract class PhabricatorObjectRemarkupRule extends PhutilRemarkupRule {
     return $handle->getURI();
   }
 
-  protected function renderObjectRef($object, $handle, $anchor, $id) {
+  protected function renderObjectRefForAnyMedia (
+      $object,
+      $handle,
+      $anchor,
+      $id) {
     $href = $this->getObjectHref($object, $handle, $id);
     $text = $this->getObjectNamePrefix().$id;
 
@@ -55,9 +59,24 @@ abstract class PhabricatorObjectRemarkupRule extends PhutilRemarkupRule {
 
     if ($this->getEngine()->isTextMode()) {
       return PhabricatorEnv::getProductionURI($href);
+    } else if ($this->getEngine()->isHTMLMailMode()) {
+      $href = PhabricatorEnv::getProductionURI($href);
+      return $this->renderObjectTagForMail($text, $href, $handle);
     }
 
+    return $this->renderObjectRef($object, $handle, $anchor, $id);
+
+  }
+
+  protected function renderObjectRef($object, $handle, $anchor, $id) {
+    $href = $this->getObjectHref($object, $handle, $id);
+    $text = $this->getObjectNamePrefix().$id;
     $status_closed = PhabricatorObjectHandleStatus::STATUS_CLOSED;
+
+    if ($anchor) {
+      $href = $href.'#'.$anchor;
+      $text = $text.'#'.$anchor;
+    }
 
     $attr = array(
       'phid'    => $handle->getPHID(),
@@ -67,21 +86,55 @@ abstract class PhabricatorObjectRemarkupRule extends PhutilRemarkupRule {
     return $this->renderHovertag($text, $href, $attr);
   }
 
+  protected function renderObjectEmbedForAnyMedia($object, $handle, $options) {
+    $name = $handle->getFullName();
+    $href = $handle->getURI();
+
+    if ($this->getEngine()->isTextMode()) {
+      return $name.' <'.PhabricatorEnv::getProductionURI($href).'>';
+    } else if ($this->getEngine()->isHTMLMailMode()) {
+      $href = PhabricatorEnv::getProductionURI($href);
+      return $this->renderObjectTagForMail($name, $href, $handle);
+    }
+
+    return $this->renderObjectEmbed($object, $handle, $options);
+  }
+
   protected function renderObjectEmbed($object, $handle, $options) {
     $name = $handle->getFullName();
     $href = $handle->getURI();
     $status_closed = PhabricatorObjectHandleStatus::STATUS_CLOSED;
-
-    if ($this->getEngine()->isTextMode()) {
-      return $name.' <'.PhabricatorEnv::getProductionURI($href).'>';
-    }
-
     $attr = array(
       'phid' => $handle->getPHID(),
       'closed'  => ($handle->getStatus() == $status_closed),
     );
 
     return $this->renderHovertag($name, $href, $attr);
+  }
+
+  protected function renderObjectTagForMail(
+    $text,
+    $href,
+    $handle) {
+
+    $status_closed = PhabricatorObjectHandleStatus::STATUS_CLOSED;
+    $strikethrough = $handle->getStatus() == $status_closed ?
+      'text-decoration: line-through;' :
+      'text-decoration: none;';
+
+    return phutil_tag(
+      'a',
+      array(
+        'href' => $href,
+        'style' => 'background-color: #e7e7e7;
+          border-color: #e7e7e7;
+          border-radius: 3px;
+          padding: 0 4px;
+          font-weight: bold;
+          color: black;'
+          .$strikethrough,
+      ),
+      $text);
   }
 
   protected function renderHovertag($name, $href, array $attr = array()) {
@@ -95,14 +148,32 @@ abstract class PhabricatorObjectRemarkupRule extends PhutilRemarkupRule {
   }
 
   public function apply($text) {
-    $prefix = $this->getObjectNamePrefix();
-    $prefix = preg_quote($prefix, '@');
-    $id = $this->getObjectIDPattern();
-
     $text = preg_replace_callback(
-      '@\B{'.$prefix.'('.$id.')((?:[^}\\\\]|\\\\.)*)}\B@',
+      $this->getObjectEmbedPattern(),
       array($this, 'markupObjectEmbed'),
       $text);
+
+    $text = preg_replace_callback(
+      $this->getObjectReferencePattern(),
+      array($this, 'markupObjectReference'),
+      $text);
+
+    return $text;
+  }
+
+  private function getObjectEmbedPattern() {
+    $prefix = $this->getObjectNamePrefix();
+    $prefix = preg_quote($prefix);
+    $id = $this->getObjectIDPattern();
+
+    return '(\B{'.$prefix.'('.$id.')([,\s](?:[^}\\\\]|\\\\.)*)?}\B)u';
+  }
+
+  private function getObjectReferencePattern() {
+    $prefix = $this->getObjectNamePrefix();
+    $prefix = preg_quote($prefix);
+
+    $id = $this->getObjectIDPattern();
 
     // If the prefix starts with a word character (like "D"), we want to
     // require a word boundary so that we don't match "XD1" as "D1". If the
@@ -115,16 +186,61 @@ abstract class PhabricatorObjectRemarkupRule extends PhutilRemarkupRule {
       $boundary = '\\B';
     }
 
-    // NOTE: The "(?<!#)" prevents us from linking "#abcdef" or similar.
+    // The "(?<![#-])" prevents us from linking "#abcdef" or similar, and
+    // "ABC-T1" (see T5714).
+
     // The "\b" allows us to link "(abcdef)" or similar without linking things
     // in the middle of words.
 
-    $text = preg_replace_callback(
-      '((?<!#)'.$boundary.$prefix.'('.$id.')(?:#([-\w\d]+))?\b)',
-      array($this, 'markupObjectReference'),
-      $text);
+    return '((?<![#-])'.$boundary.$prefix.'('.$id.')(?:#([-\w\d]+))?(?!\w))u';
+  }
 
-    return $text;
+
+  /**
+   * Extract matched object references from a block of text.
+   *
+   * This is intended to make it easy to write unit tests for object remarkup
+   * rules. Production code is not normally expected to call this method.
+   *
+   * @param   string  Text to match rules against.
+   * @return  wild    Matches, suitable for writing unit tests against.
+   */
+  public function extractReferences($text) {
+    $embed_matches = null;
+    preg_match_all(
+      $this->getObjectEmbedPattern(),
+      $text,
+      $embed_matches,
+      PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+
+    $ref_matches = null;
+    preg_match_all(
+      $this->getObjectReferencePattern(),
+      $text,
+      $ref_matches,
+      PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+
+    $results = array();
+    $sets = array(
+      'embed' => $embed_matches,
+      'ref' => $ref_matches,
+    );
+    foreach ($sets as $type => $matches) {
+      $formatted = array();
+      foreach ($matches as $match) {
+        $format = array(
+          'offset' => $match[1][1],
+          'id' => $match[1][0],
+        );
+        if (isset($match[2][0])) {
+          $format['tail'] = $match[2][0];
+        }
+        $formatted[] = $format;
+      }
+      $results[$type] = $formatted;
+    }
+
+    return $results;
   }
 
   public function markupObjectEmbed($matches) {
@@ -219,7 +335,8 @@ abstract class PhabricatorObjectRemarkupRule extends PhutilRemarkupRule {
       $object = $objects[$spec['id']];
       switch ($spec['type']) {
         case 'ref':
-          $view = $this->renderObjectRef(
+
+          $view = $this->renderObjectRefForAnyMedia(
             $object,
             $handle,
             $spec['anchor'],
@@ -227,7 +344,10 @@ abstract class PhabricatorObjectRemarkupRule extends PhutilRemarkupRule {
           break;
         case 'embed':
           $spec['options'] = $this->assertFlatText($spec['options']);
-          $view = $this->renderObjectEmbed($object, $handle, $spec['options']);
+          $view = $this->renderObjectEmbedForAnyMedia(
+            $object,
+            $handle,
+            $spec['options']);
           break;
       }
       $engine->overwriteStoredText($spec['token'], $view);

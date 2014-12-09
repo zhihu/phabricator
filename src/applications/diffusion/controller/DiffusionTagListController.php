@@ -19,7 +19,8 @@ final class DiffusionTagListController extends DiffusionController {
 
     $params = array(
       'limit' => $pager->getPageSize() + 1,
-      'offset' => $pager->getOffset());
+      'offset' => $pager->getOffset(),
+    );
 
     if ($drequest->getSymbolicCommit()) {
       $is_commit = true;
@@ -88,9 +89,8 @@ final class DiffusionTagListController extends DiffusionController {
       array(
         'title' => array(
           pht('Tags'),
-          $repository->getCallsign().' Repository',
+          pht('%s Repository', $repository->getCallsign()),
         ),
-        'device' => false,
       ));
   }
 
