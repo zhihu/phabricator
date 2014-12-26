@@ -35,6 +35,17 @@ final class AlmanacServiceViewController
       ->setHeader($header)
       ->addPropertyList($property_list);
 
+    $messages = $service->getServiceType()->getStatusMessages($service);
+    if ($messages) {
+      $box->setFormErrors($messages);
+    }
+
+    if ($service->getIsLocked()) {
+      $this->addLockMessage(
+        $box,
+        pht('This service is locked, and can not be edited.'));
+    }
+
     $bindings = $this->buildBindingList($service);
 
     $crumbs = $this->buildApplicationCrumbs();
@@ -64,6 +75,10 @@ final class AlmanacServiceViewController
     $properties = id(new PHUIPropertyListView())
       ->setUser($viewer)
       ->setObject($service);
+
+    $properties->addProperty(
+      pht('Service Type'),
+      $service->getServiceType()->getServiceTypeShortName());
 
     return $properties;
   }

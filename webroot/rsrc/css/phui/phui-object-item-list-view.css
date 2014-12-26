@@ -316,7 +316,7 @@ ul.phui-object-item-icons {
 .phui-object-item-icon {
   vertical-align: middle;
   font-size: 12px;
-  color: {$greytext};
+  color: {$lightgreytext};
   text-align: right;
   white-space: nowrap;
   overflow: hidden;
@@ -691,6 +691,11 @@ ul.phui-object-item-icons {
   border: none;
   border-bottom: 1px solid {$thinblueborder};
 }
+
+.device-desktop .aphront-multi-column-fluid .aphront-multi-column-2-up
+ .aphront-multi-column-column-outer.third .phui-object-item-col2 {
+   display: none;
+ }
 
 
 /* - Launcher List ---------------------------------------------------------- */

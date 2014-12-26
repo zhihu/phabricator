@@ -16,6 +16,7 @@ final class AlmanacQueryServicesConduitAPIMethod
       'ids' => 'optional list<id>',
       'phids' => 'optional list<phid>',
       'names' => 'optional list<phid>',
+      'serviceClasses' => 'optional list<string>',
     ) + self::getPagerParamTypes();
   }
 
@@ -31,7 +32,8 @@ final class AlmanacQueryServicesConduitAPIMethod
     $viewer = $request->getUser();
 
     $query = id(new AlmanacServiceQuery())
-      ->setViewer($viewer);
+      ->setViewer($viewer)
+      ->needBindings(true);
 
     $ids = $request->getValue('ids');
     if ($ids !== null) {
@@ -48,19 +50,14 @@ final class AlmanacQueryServicesConduitAPIMethod
       $query->withNames($names);
     }
 
+    $classes = $request->getValue('serviceClasses');
+    if ($classes !== null) {
+      $query->withServiceClasses($classes);
+    }
+
     $pager = $this->newPager($request);
 
     $services = $query->executeWithCursorPager($pager);
-
-    if ($services) {
-      $bindings = id(new AlmanacBindingQuery())
-        ->setViewer($viewer)
-        ->withServicePHIDs(mpull($services, 'getPHID'))
-        ->execute();
-      $bindings = mgroup($bindings, 'getServicePHID');
-    } else {
-      $bindings = array();
-    }
 
     $data = array();
     foreach ($services as $service) {
@@ -69,7 +66,7 @@ final class AlmanacQueryServicesConduitAPIMethod
       $properties = $service->getAlmanacProperties();
       $properties = mpull($properties, 'getFieldValue', 'getFieldName');
 
-      $service_bindings = idx($bindings, $phid, array());
+      $service_bindings = $service->getBindings();
       $service_bindings = array_values($service_bindings);
       foreach ($service_bindings as $key => $service_binding) {
         $service_bindings[$key] = $this->getBindingDictionary($service_binding);
@@ -93,6 +90,7 @@ final class AlmanacQueryServicesConduitAPIMethod
       'phid' => $service->getPHID(),
       'name' => $service->getName(),
       'uri' => PhabricatorEnv::getProductionURI($service->getURI()),
+      'serviceClass' => $service->getServiceClass(),
       'properties' => $this->getPropertiesDictionary($service),
     );
   }

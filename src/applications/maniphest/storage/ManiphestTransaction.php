@@ -7,21 +7,17 @@ final class ManiphestTransaction
   const TYPE_STATUS = 'status';
   const TYPE_DESCRIPTION = 'description';
   const TYPE_OWNER  = 'reassign';
-  const TYPE_CCS = 'ccs';
-  const TYPE_PROJECTS = 'projects';
   const TYPE_PRIORITY = 'priority';
   const TYPE_EDGE = 'edge';
   const TYPE_SUBPRIORITY = 'subpriority';
   const TYPE_PROJECT_COLUMN = 'projectcolumn';
   const TYPE_MERGED_INTO = 'mergedinto';
   const TYPE_MERGED_FROM = 'mergedfrom';
-
   const TYPE_UNBLOCK = 'unblock';
 
   // NOTE: this type is deprecated. Keep it around for legacy installs
   // so any transactions render correctly.
   const TYPE_ATTACH = 'attach';
-
 
   const MAILTAG_STATUS = 'maniphest-status';
   const MAILTAG_OWNER = 'maniphest-owner';
@@ -84,15 +80,6 @@ final class ManiphestTransaction
         if ($old) {
           $phids[] = $old;
         }
-        break;
-      case self::TYPE_CCS:
-      case self::TYPE_PROJECTS:
-        $phids = array_mergev(
-          array(
-            $phids,
-            nonempty($old, array()),
-            nonempty($new, array()),
-          ));
         break;
       case self::TYPE_PROJECT_COLUMN:
         $phids[] = $new['projectPHID'];
@@ -266,12 +253,6 @@ final class ManiphestTransaction
           return pht('Reassigned');
         }
 
-      case self::TYPE_CCS:
-        return pht('Changed CC');
-
-      case self::TYPE_PROJECTS:
-        return pht('Changed Projects');
-
       case self::TYPE_PROJECT_COLUMN:
         return pht('Changed Project Column');
 
@@ -320,9 +301,6 @@ final class ManiphestTransaction
       case self::TYPE_OWNER:
         return 'fa-user';
 
-      case self::TYPE_CCS:
-        return 'fa-envelope';
-
       case self::TYPE_TITLE:
         if ($old === null) {
           return 'fa-pencil';
@@ -344,9 +322,6 @@ final class ManiphestTransaction
 
       case self::TYPE_DESCRIPTION:
         return 'fa-pencil';
-
-      case self::TYPE_PROJECTS:
-        return 'fa-briefcase';
 
       case self::TYPE_PROJECT_COLUMN:
         return 'fa-columns';
@@ -488,36 +463,6 @@ final class ManiphestTransaction
             $this->renderHandleLink($new));
         }
 
-      case self::TYPE_PROJECTS:
-        $added = array_diff($new, $old);
-        $removed = array_diff($old, $new);
-        if ($added && !$removed) {
-          return pht(
-            '%s added %d project(s): %s',
-            $this->renderHandleLink($author_phid),
-            count($added),
-            $this->renderHandleList($added));
-        } else if ($removed && !$added) {
-          return pht(
-            '%s removed %d project(s): %s',
-            $this->renderHandleLink($author_phid),
-            count($removed),
-            $this->renderHandleList($removed));
-        } else if ($removed && $added) {
-          return pht(
-            '%s changed project(s), added %d: %s; removed %d: %s',
-            $this->renderHandleLink($author_phid),
-            count($added),
-            $this->renderHandleList($added),
-            count($removed),
-            $this->renderHandleList($removed));
-        } else {
-          // This is hit when rendering previews.
-          return pht(
-            '%s changed projects...',
-            $this->renderHandleLink($author_phid));
-        }
-
       case self::TYPE_PRIORITY:
         $old_name = ManiphestTaskPriority::getTaskPriorityName($old);
         $new_name = ManiphestTaskPriority::getTaskPriorityName($new);
@@ -540,13 +485,6 @@ final class ManiphestTransaction
             $old_name,
             $new_name);
         }
-
-      case self::TYPE_CCS:
-        // TODO: Remove this when we switch to subscribers. Just reuse the
-        // code in the parent.
-        $clone = clone $this;
-        $clone->setTransactionType(PhabricatorTransactions::TYPE_SUBSCRIBERS);
-        return $clone->getTitle();
 
       case self::TYPE_EDGE:
         // TODO: Remove this when we switch to real edges. Just reuse the
@@ -742,34 +680,6 @@ final class ManiphestTransaction
             $this->renderHandleLink($new));
         }
 
-      case self::TYPE_PROJECTS:
-        $added = array_diff($new, $old);
-        $removed = array_diff($old, $new);
-        if ($added && !$removed) {
-          return pht(
-            '%s added %d project(s) to %s: %s',
-            $this->renderHandleLink($author_phid),
-            count($added),
-            $this->renderHandleLink($object_phid),
-            $this->renderHandleList($added));
-        } else if ($removed && !$added) {
-          return pht(
-            '%s removed %d project(s) from %s: %s',
-            $this->renderHandleLink($author_phid),
-            count($removed),
-            $this->renderHandleLink($object_phid),
-            $this->renderHandleList($removed));
-        } else if ($removed && $added) {
-          return pht(
-            '%s changed project(s) of %s, added %d: %s; removed %d: %s',
-            $this->renderHandleLink($author_phid),
-            $this->renderHandleLink($object_phid),
-            count($added),
-            $this->renderHandleList($added),
-            count($removed),
-            $this->renderHandleList($removed));
-        }
-
       case self::TYPE_PRIORITY:
         $old_name = ManiphestTaskPriority::getTaskPriorityName($old);
         $new_name = ManiphestTaskPriority::getTaskPriorityName($new);
@@ -795,13 +705,6 @@ final class ManiphestTransaction
             $old_name,
             $new_name);
         }
-
-      case self::TYPE_CCS:
-        // TODO: Remove this when we switch to subscribers. Just reuse the
-        // code in the parent.
-        $clone = clone $this;
-        $clone->setTransactionType(PhabricatorTransactions::TYPE_SUBSCRIBERS);
-        return $clone->getTitleForFeed($story);
 
       case self::TYPE_EDGE:
         // TODO: Remove this when we switch to real edges. Just reuse the
@@ -897,7 +800,7 @@ final class ManiphestTransaction
       case self::TYPE_OWNER:
         $tags[] = self::MAILTAG_OWNER;
         break;
-      case self::TYPE_CCS:
+      case PhabricatorTransactions::TYPE_SUBSCRIBERS:
         $tags[] = self::MAILTAG_CC;
         break;
       case PhabricatorTransactions::TYPE_EDGE:
@@ -936,8 +839,6 @@ final class ManiphestTransaction
         return pht('The task already has the selected status.');
       case self::TYPE_OWNER:
         return pht('The task already has the selected owner.');
-      case self::TYPE_PROJECTS:
-        return pht('The task is already associated with those projects.');
       case self::TYPE_PRIORITY:
         return pht('The task already has the selected priority.');
     }
