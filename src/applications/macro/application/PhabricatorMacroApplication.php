@@ -45,7 +45,8 @@ final class PhabricatorMacroApplication extends PhabricatorApplication {
   public function getRemarkupRules() {
     return array(
       new PhabricatorIconRemarkupRule(),
-      new PhabricatorEmojiRemarkupRule(),
+      // new PhabricatorEmojiRemarkupRule(),
+      new PhabricatorEmojiImageRemarkupRule(),
     );
   }
 

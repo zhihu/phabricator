@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2012 Zhihu
+ * Copyright 2014 Zhihu Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,21 @@
  * limitations under the License.
  */
 
-/**
- * @group markup
- */
-final class PhabricatorEmojiRemarkupRule
-  extends PhutilRemarkupRule {
+final class PhabricatorEmojiImageRemarkupRule extends PhutilRemarkupRule {
 
-  const REGEX = '/:([a-z0-9\+\-_]+):/';
+  public function getPriority() {
+    return 200.0;
+  }
 
   public function apply($text) {
     return preg_replace_callback(
-      self::REGEX,
+      '(\B:(\S+):\B)',
+      // '/:([a-z0-9\+\-_]+):/',
       array($this, 'markupEmoji'),
       $text);
   }
 
-  private function markupEmoji($matches) {
+  public function markupEmoji($matches) {
     $name = $matches[1];
     if ($this->hasEmoji($name)) {
       $img = phutil_tag(
