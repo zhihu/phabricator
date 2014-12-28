@@ -7,7 +7,7 @@
  */
 return array(
   'names' => array(
-    'core.pkg.css' => '679c69f6',
+    'core.pkg.css' => 'fae50d51',
     'core.pkg.js' => '2d1f7db1',
     'darkconsole.pkg.js' => 'df001cab',
     'differential.pkg.css' => '8af45893',
@@ -36,7 +36,7 @@ return array(
     'rsrc/css/aphront/typeahead.css' => 'a989b5b3',
     'rsrc/css/application/almanac/almanac.css' => 'dbb9b3af',
     'rsrc/css/application/auth/auth.css' => '1e655982',
-    'rsrc/css/application/base/main-menu-view.css' => '33e5f2f6',
+    'rsrc/css/application/base/main-menu-view.css' => 'a228dbe9',
     'rsrc/css/application/base/notification-menu.css' => '6aa0a74b',
     'rsrc/css/application/base/phabricator-application-launch-view.css' => '5d71008f',
     'rsrc/css/application/base/standard-page-view.css' => '2c96cfb5',
@@ -103,8 +103,8 @@ return array(
     'rsrc/css/application/slowvote/slowvote.css' => '266df6a1',
     'rsrc/css/application/tokens/tokens.css' => '3d0f239e',
     'rsrc/css/application/uiexample/example.css' => '528b19de',
-    'rsrc/css/core/core.css' => 'ca42b69f',
-    'rsrc/css/core/remarkup.css' => 'a2d3f9c4',
+    'rsrc/css/core/core.css' => '465a8895',
+    'rsrc/css/core/remarkup.css' => 'dbc7cf13',
     'rsrc/css/core/syntax.css' => '56c1ba38',
     'rsrc/css/core/z-index.css' => '44e1d311',
     'rsrc/css/diviner/diviner-shared.css' => '38813222',
@@ -2435,7 +2435,7 @@ return array(
     'phabricator-hovercard-view-css' => '893f4783',
     'phabricator-keyboard-shortcut' => '1ae869f2',
     'phabricator-keyboard-shortcut-manager' => 'ad7a69ca',
-    'phabricator-main-menu-view' => '33e5f2f6',
+    'phabricator-main-menu-view' => 'a228dbe9',
     'phabricator-nav-view-css' => '9283c2df',
     'phabricator-notification' => '0c6946e7',
     'phabricator-notification-css' => '9c279160',
@@ -2444,7 +2444,7 @@ return array(
     'phabricator-phtize' => 'd254d646',
     'phabricator-prefab' => 'bbae734c',
     'phabricator-profile-css' => '28f433ef',
-    'phabricator-remarkup-css' => 'a2d3f9c4',
+    'phabricator-remarkup-css' => 'dbc7cf13',
     'phabricator-search-results-css' => 'f240504c',
     'phabricator-shaped-request' => '7cbe244b',
     'phabricator-side-menu-view-css' => 'a2ccd7bd',
@@ -3055,9 +3055,6 @@ return array(
     '7ee2b591' => array(
       'javelin-behavior',
       'javelin-history',
-    ),
-    '82ce2142' => array(
-      'aphront-typeahead-control-css',
     ),
     '84845b5b' => array(
       'javelin-behavior',

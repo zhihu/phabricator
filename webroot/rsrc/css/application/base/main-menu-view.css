@@ -55,30 +55,7 @@
   padding-left: 6px;
 }
 
-.phabricator-main-menu-phriction-logo,
-.phabricator-main-menu-maniphest-logo,
-.phabricator-main-menu-create-task-logo {
-  display: inline-block;
-  height: 48px;
-  width: 40px;
-  margin: 0 6px;
-  float: left;
-}
-
-.phabricator-main-menu-phriction-logo {
-  width: 48px;
-  background: 6px 12px url(/res/da055af1/rsrc/image/custom/wiki-header.png) no-repeat;
-}
-
-.phabricator-main-menu-maniphest-logo {
-  background: 6px 10px url(/res/da055af1/rsrc/image/custom/anchor-header.png) no-repeat;
-}
-
-.phabricator-main-menu-create-task-logo {
-  background: 6px 11px url(/res/da055af1/rsrc/image/custom/create-header.png) no-repeat;
-}
-
-.menu-logo-image {
+.phabricator-main-menu-logo {
   position: absolute;
   width: 96px;
   height: 26px;
