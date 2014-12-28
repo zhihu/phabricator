@@ -19,9 +19,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
   const TYPE_PROJ_MEMBER                = 13;
   const TYPE_MEMBER_OF_PROJ             = 14;
 
-  const TYPE_COMMIT_HAS_PROJECT         = 15;
-  const TYPE_PROJECT_HAS_COMMIT         = 16;
-
   const TYPE_QUESTION_HAS_VOTING_USER   = 17;
   const TYPE_VOTING_USER_HAS_QUESTION   = 18;
   const TYPE_ANSWER_HAS_VOTING_USER     = 19;
@@ -35,9 +32,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
 
   const TYPE_OBJECT_HAS_FILE            = 25;
   const TYPE_FILE_HAS_OBJECT            = 26;
-
-  const TYPE_ACCOUNT_HAS_MEMBER         = 27;
-  const TYPE_MEMBER_HAS_ACCOUNT         = 28;
 
   const TYPE_PURCAHSE_HAS_CHARGE        = 29;
   const TYPE_CHARGE_HAS_PURCHASE        = 30;
@@ -103,6 +97,12 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
       array(9000),
       range(80000, 80005));
 
+    $exclude[] = 15; // Was TYPE_COMMIT_HAS_PROJECT
+    $exclude[] = 16; // Was TYPE_PROJECT_HAS_COMMIT
+
+    $exclude[] = 27; // Was TYPE_ACCOUNT_HAS_MEMBER
+    $exclude[] = 28; // Was TYPE_MEMBER_HAS_ACCOUNT
+
     $exclude[] = 43; // Was TYPE_OBJECT_HAS_COLUMN
     $exclude[] = 44; // Was TYPE_COLUMN_HAS_OBJECT
 
@@ -145,9 +145,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
       self::TYPE_PROJ_MEMBER => self::TYPE_MEMBER_OF_PROJ,
       self::TYPE_MEMBER_OF_PROJ => self::TYPE_PROJ_MEMBER,
 
-      self::TYPE_COMMIT_HAS_PROJECT => self::TYPE_PROJECT_HAS_COMMIT,
-      self::TYPE_PROJECT_HAS_COMMIT => self::TYPE_COMMIT_HAS_PROJECT,
-
       self::TYPE_QUESTION_HAS_VOTING_USER =>
         self::TYPE_VOTING_USER_HAS_QUESTION,
       self::TYPE_VOTING_USER_HAS_QUESTION =>
@@ -163,9 +160,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
 
       self::TYPE_OBJECT_HAS_FILE => self::TYPE_FILE_HAS_OBJECT,
       self::TYPE_FILE_HAS_OBJECT => self::TYPE_OBJECT_HAS_FILE,
-
-      self::TYPE_ACCOUNT_HAS_MEMBER => self::TYPE_MEMBER_HAS_ACCOUNT,
-      self::TYPE_MEMBER_HAS_ACCOUNT => self::TYPE_ACCOUNT_HAS_MEMBER,
 
       self::TYPE_DREV_HAS_COMMIT => self::TYPE_COMMIT_HAS_DREV,
       self::TYPE_COMMIT_HAS_DREV => self::TYPE_DREV_HAS_COMMIT,
@@ -227,9 +221,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
 
     static $class_map = array(
       PhabricatorPHIDConstants::PHID_TYPE_TOBJ  => 'HarbormasterObject',
-      PhabricatorPHIDConstants::PHID_TYPE_ACNT  => 'PhortuneAccount',
-      PhabricatorPHIDConstants::PHID_TYPE_PRCH  => 'PhortunePurchase',
-      PhabricatorPHIDConstants::PHID_TYPE_CHRG  => 'PhortuneCharge',
       PhabricatorPHIDConstants::PHID_TYPE_XOBJ  => 'DoorkeeperExternalObject',
     );
 
@@ -245,7 +236,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
 
   public static function getEditStringForEdgeType($type) {
     switch ($type) {
-      case self::TYPE_PROJECT_HAS_COMMIT:
       case self::TYPE_DREV_HAS_COMMIT:
         return '%s edited commit(s), added %d: %s; removed %d: %s.';
       case self::TYPE_TASK_DEPENDS_ON_TASK:
@@ -267,7 +257,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
       case self::TYPE_PROJ_MEMBER:
         return '%s edited member(s), added %d: %s; removed %d: %s.';
       case self::TYPE_MEMBER_OF_PROJ:
-      case self::TYPE_COMMIT_HAS_PROJECT:
         return '%s edited project(s), added %d: %s; removed %d: %s.';
       case self::TYPE_QUESTION_HAS_VOTING_USER:
       case self::TYPE_ANSWER_HAS_VOTING_USER:
@@ -287,10 +276,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
         return '%s edited unsubcriber(s), added %d: %s; removed %d: %s.';
       case self::TYPE_OBJECT_HAS_FILE:
         return '%s edited file(s), added %d: %s; removed %d: %s.';
-      case self::TYPE_ACCOUNT_HAS_MEMBER:
-        return '%s edited member(s), added %d: %s; removed %d: %s.';
-      case self::TYPE_MEMBER_HAS_ACCOUNT:
-        return '%s edited account(s), added %d: %s; removed %d: %s.';
       case self::TYPE_PURCAHSE_HAS_CHARGE:
         return '%s edited charge(s), added %d: %s; removed %d: %s.';
       case self::TYPE_CHARGE_HAS_PURCHASE:
@@ -317,7 +302,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
 
   public static function getAddStringForEdgeType($type) {
     switch ($type) {
-      case self::TYPE_PROJECT_HAS_COMMIT:
       case self::TYPE_DREV_HAS_COMMIT:
         return '%s added %d commit(s): %s.';
       case self::TYPE_TASK_DEPENDS_ON_TASK:
@@ -342,7 +326,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
       case self::TYPE_PROJ_MEMBER:
         return '%s added %d member(s): %s.';
       case self::TYPE_MEMBER_OF_PROJ:
-      case self::TYPE_COMMIT_HAS_PROJECT:
         return '%s added %d project(s): %s.';
       case self::TYPE_QUESTION_HAS_VOTING_USER:
       case self::TYPE_ANSWER_HAS_VOTING_USER:
@@ -357,10 +340,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
         return '%s added %d unsubcriber(s): %s.';
       case self::TYPE_OBJECT_HAS_FILE:
         return '%s added %d file(s): %s.';
-      case self::TYPE_ACCOUNT_HAS_MEMBER:
-        return '%s added %d member(s): %s.';
-      case self::TYPE_MEMBER_HAS_ACCOUNT:
-        return '%s added %d account(s): %s.';
       case self::TYPE_PURCAHSE_HAS_CHARGE:
         return '%s added %d charge(s): %s.';
       case self::TYPE_CHARGE_HAS_PURCHASE:
@@ -391,7 +370,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
 
   public static function getRemoveStringForEdgeType($type) {
     switch ($type) {
-      case self::TYPE_PROJECT_HAS_COMMIT:
       case self::TYPE_DREV_HAS_COMMIT:
         return '%s removed %d commit(s): %s.';
       case self::TYPE_TASK_DEPENDS_ON_TASK:
@@ -415,7 +393,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
       case self::TYPE_PROJ_MEMBER:
         return '%s removed %d member(s): %s.';
       case self::TYPE_MEMBER_OF_PROJ:
-      case self::TYPE_COMMIT_HAS_PROJECT:
         return '%s removed %d project(s): %s.';
       case self::TYPE_QUESTION_HAS_VOTING_USER:
       case self::TYPE_ANSWER_HAS_VOTING_USER:
@@ -430,10 +407,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
         return '%s removed %d unsubcriber(s): %s.';
       case self::TYPE_OBJECT_HAS_FILE:
         return '%s removed %d file(s): %s.';
-      case self::TYPE_ACCOUNT_HAS_MEMBER:
-        return '%s removed %d member(s): %s.';
-      case self::TYPE_MEMBER_HAS_ACCOUNT:
-        return '%s removed %d account(s): %s.';
       case self::TYPE_PURCAHSE_HAS_CHARGE:
         return '%s removed %d charge(s): %s.';
       case self::TYPE_CHARGE_HAS_PURCHASE:
@@ -462,7 +435,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
 
   public static function getFeedStringForEdgeType($type) {
     switch ($type) {
-      case self::TYPE_PROJECT_HAS_COMMIT:
       case self::TYPE_DREV_HAS_COMMIT:
         return '%s updated commits of %s.';
       case self::TYPE_TASK_DEPENDS_ON_TASK:
@@ -484,7 +456,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
       case self::TYPE_PROJ_MEMBER:
         return '%s updated members of %s.';
       case self::TYPE_MEMBER_OF_PROJ:
-      case self::TYPE_COMMIT_HAS_PROJECT:
         return '%s updated projects of %s.';
       case self::TYPE_QUESTION_HAS_VOTING_USER:
       case self::TYPE_ANSWER_HAS_VOTING_USER:
@@ -499,10 +470,6 @@ final class PhabricatorEdgeConfig extends PhabricatorEdgeConstants {
         return '%s updated unsubcribers of %s.';
       case self::TYPE_OBJECT_HAS_FILE:
         return '%s updated files of %s.';
-      case self::TYPE_ACCOUNT_HAS_MEMBER:
-        return '%s updated members of %s.';
-      case self::TYPE_MEMBER_HAS_ACCOUNT:
-        return '%s updated accounts of %s.';
       case self::TYPE_PURCAHSE_HAS_CHARGE:
         return '%s updated charges of %s.';
       case self::TYPE_CHARGE_HAS_PURCHASE:

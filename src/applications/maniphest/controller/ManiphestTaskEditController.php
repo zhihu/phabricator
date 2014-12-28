@@ -38,6 +38,8 @@ final class ManiphestTaskEditController extends ManiphestController {
             PhabricatorPolicyCapability::CAN_EDIT,
           ))
         ->withIDs(array($this->id))
+        ->needSubscriberPHIDs(true)
+        ->needProjectPHIDs(true)
         ->executeOne();
       if (!$task) {
         return new Aphront404Response();
@@ -215,7 +217,7 @@ final class ManiphestTaskEditController extends ManiphestController {
         $task->setDescription($new_desc);
         $task->setPriority($request->getInt('priority'));
         $task->setOwnerPHID($owner_phid);
-        $task->setCCPHIDs($request->getArr('cc'));
+        $task->attachSubscriberPHIDs($request->getArr('cc'));
         $task->attachProjectPHIDs($request->getArr('projects'));
       } else {
 
@@ -227,11 +229,12 @@ final class ManiphestTaskEditController extends ManiphestController {
           $changes[ManiphestTransaction::TYPE_OWNER] = $owner_phid;
         }
 
-        $changes[ManiphestTransaction::TYPE_CCS] = $request->getArr('cc');
+        $changes[PhabricatorTransactions::TYPE_SUBSCRIBERS] =
+          array('=' => $request->getArr('cc'));
 
         if ($can_edit_projects) {
           $projects = $request->getArr('projects');
-          $changes[ManiphestTransaction::TYPE_PROJECTS] =
+          $changes[PhabricatorTransactions::TYPE_EDGE] =
             $projects;
           $column_phid = $request->getStr('columnPHID');
           // allow for putting a task in a project column at creation -only-
@@ -246,10 +249,13 @@ final class ManiphestTaskEditController extends ManiphestController {
                 array(
                   'new' => array(
                     'projectPHID' => $column->getProjectPHID(),
-                    'columnPHIDs' => array($column_phid)),
+                    'columnPHIDs' => array($column_phid),
+                  ),
                   'old' => array(
                     'projectPHID' => $column->getProjectPHID(),
-                    'columnPHIDs' => array()));
+                    'columnPHIDs' => array(),
+                  ),
+                );
             }
           }
         }
@@ -270,12 +276,10 @@ final class ManiphestTaskEditController extends ManiphestController {
           if ($type == ManiphestTransaction::TYPE_PROJECT_COLUMN) {
             $transaction->setNewValue($value['new']);
             $transaction->setOldValue($value['old']);
-          } else if ($type == ManiphestTransaction::TYPE_PROJECTS) {
-            // TODO: Gross.
+          } else if ($type == PhabricatorTransactions::TYPE_EDGE) {
             $project_type =
               PhabricatorProjectObjectHasProjectEdgeType::EDGECONST;
             $transaction
-              ->setTransactionType(PhabricatorTransactions::TYPE_EDGE)
               ->setMetadataValue('edge:type', $project_type)
               ->setNewValue(
                 array(
@@ -433,19 +437,21 @@ final class ManiphestTaskEditController extends ManiphestController {
       }
     } else {
       if (!$task->getID()) {
-        $task->setCCPHIDs(array(
+        $task->attachSubscriberPHIDs(array(
           $user->getPHID(),
         ));
         if ($template_id) {
           $template_task = id(new ManiphestTaskQuery())
             ->setViewer($user)
             ->withIDs(array($template_id))
+            ->needSubscriberPHIDs(true)
+            ->needProjectPHIDs(true)
             ->executeOne();
           if ($template_task) {
             $cc_phids = array_unique(array_merge(
-              $template_task->getCCPHIDs(),
+              $template_task->getSubscriberPHIDs(),
               array($user->getPHID())));
-            $task->setCCPHIDs($cc_phids);
+            $task->attachSubscriberPHIDs($cc_phids);
             $task->attachProjectPHIDs($template_task->getProjectPHIDs());
             $task->setOwnerPHID($template_task->getOwnerPHID());
             $task->setPriority($template_task->getPriority());
@@ -483,7 +489,7 @@ final class ManiphestTaskEditController extends ManiphestController {
 
     $phids = array_merge(
       array($task->getOwnerPHID()),
-      $task->getCCPHIDs(),
+      $task->getSubscriberPHIDs(),
       $task->getProjectPHIDs());
 
     if ($parent_task) {
@@ -509,8 +515,8 @@ final class ManiphestTaskEditController extends ManiphestController {
       $assigned_value = array();
     }
 
-    if ($task->getCCPHIDs()) {
-      $cc_value = array_select_keys($handles, $task->getCCPHIDs());
+    if ($task->getSubscriberPHIDs()) {
+      $cc_value = array_select_keys($handles, $task->getSubscriberPHIDs());
     } else {
       $cc_value = array();
     }

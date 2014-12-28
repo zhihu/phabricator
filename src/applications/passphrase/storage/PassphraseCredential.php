@@ -1,8 +1,10 @@
 <?php
 
 final class PassphraseCredential extends PassphraseDAO
-  implements PhabricatorPolicyInterface,
-  PhabricatorDestructibleInterface {
+  implements
+    PhabricatorApplicationTransactionInterface,
+    PhabricatorPolicyInterface,
+    PhabricatorDestructibleInterface {
 
   protected $name;
   protected $credentialType;
@@ -35,6 +37,29 @@ final class PassphraseCredential extends PassphraseDAO
   public function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID => true,
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'name' => 'text255',
+        'credentialType' => 'text64',
+        'providesType' => 'text64',
+        'description' => 'text',
+        'username' => 'text255',
+        'secretID' => 'id?',
+        'isDestroyed' => 'bool',
+        'isLocked' => 'bool',
+        'allowConduit' => 'bool',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_secret' => array(
+          'columns' => array('secretID'),
+          'unique' => true,
+        ),
+        'key_type' => array(
+          'columns' => array('credentialType'),
+        ),
+        'key_provides' => array(
+          'columns' => array('providesType'),
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 
@@ -55,6 +80,29 @@ final class PassphraseCredential extends PassphraseDAO
   public function getCredentialTypeImplementation() {
     $type = $this->getCredentialType();
     return PassphraseCredentialType::getTypeByConstant($type);
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new PassphraseCredentialTransactionEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new PassphraseCredentialTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

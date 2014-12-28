@@ -37,6 +37,17 @@ final class PhabricatorCalendarEvent
   public function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID => true,
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'dateFrom' => 'epoch',
+        'dateTo' => 'epoch',
+        'status' => 'uint32',
+        'description' => 'text',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'userPHID_dateFrom' => array(
+          'columns' => array('userPHID', 'dateTo'),
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 

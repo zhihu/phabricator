@@ -21,6 +21,7 @@ abstract class PhabricatorApplicationTransactionEditor
   private $heraldAdapter;
   private $heraldTranscript;
   private $subscribers;
+  private $unmentionablePHIDMap = array();
 
   private $isPreview;
   private $isHeraldEditor;
@@ -173,6 +174,15 @@ abstract class PhabricatorApplicationTransactionEditor
 
   public function getDisableEmail() {
     return $this->disableEmail;
+  }
+
+  public function setUnmentionablePHIDMap(array $map) {
+    $this->unmentionablePHIDMap = $map;
+    return $this;
+  }
+
+  public function getUnmentionablePHIDMap() {
+    return $this->unmentionablePHIDMap;
   }
 
   public function getTransactionTypes() {
@@ -723,6 +733,13 @@ abstract class PhabricatorApplicationTransactionEditor
       // We are the Herald editor, so stop work here and return the updated
       // transactions.
       return $xactions;
+    } else if ($this->getIsInverseEdgeEditor()) {
+      // If we're applying inverse edge transactions, don't trigger Herald.
+      // From a product perspective, the current set of inverse edges (most
+      // often, mentions) aren't things users would expect to trigger Herald.
+      // From a technical perspective, objects loaded by the inverse editor may
+      // not have enough data to execute rules. At least for now, just stop
+      // Herald from executing when applying inverse edges.
     } else if ($this->shouldApplyHeraldRules($object, $xactions)) {
       // We are not the Herald editor, so try to apply Herald rules.
       $herald_xactions = $this->applyHeraldRules($object, $xactions);
@@ -1013,7 +1030,7 @@ abstract class PhabricatorApplicationTransactionEditor
     }
   }
 
-  private function buildMentionTransaction(
+  private function buildSubscribeTransaction(
     PhabricatorLiskDAO $object,
     array $xactions,
     array $blocks) {
@@ -1107,6 +1124,29 @@ abstract class PhabricatorApplicationTransactionEditor
   }
 
 
+  public function getExpandedSupportTransactions(
+    PhabricatorLiskDAO $object,
+    PhabricatorApplicationTransaction $xaction) {
+
+    $xactions = array($xaction);
+    $xactions = $this->expandSupportTransactions(
+      $object,
+      $xactions);
+
+    if (count($xactions) == 1) {
+      return array();
+    }
+
+    foreach ($xactions as $index => $cxaction) {
+      if ($cxaction === $xaction) {
+        unset($xactions[$index]);
+        break;
+      }
+    }
+
+    return $xactions;
+  }
+
   private function expandSupportTransactions(
     PhabricatorLiskDAO $object,
     array $xactions) {
@@ -1119,12 +1159,12 @@ abstract class PhabricatorApplicationTransactionEditor
       $blocks[$key] = $this->getRemarkupBlocksFromTransaction($xaction);
     }
 
-    $mention_xaction = $this->buildMentionTransaction(
+    $subscribe_xaction = $this->buildSubscribeTransaction(
       $object,
       $xactions,
       $blocks);
-    if ($mention_xaction) {
-      $xactions[] = $mention_xaction;
+    if ($subscribe_xaction) {
+      $xactions[] = $subscribe_xaction;
     }
 
     // TODO: For now, this is just a placeholder.
@@ -1156,17 +1196,22 @@ abstract class PhabricatorApplicationTransactionEditor
       $blocks,
       $engine);
 
-    if ($object instanceof PhabricatorProjectInterface) {
-      $phids = array();
-      foreach ($blocks as $key => $xaction_blocks) {
-        foreach ($xaction_blocks as $block) {
-          $engine->markupText($block);
-          $phids += $engine->getTextMetadata(
-            PhabricatorObjectRemarkupRule::KEY_MENTIONED_OBJECTS,
-            array());
-        }
+    $mentioned_phids = array();
+    foreach ($blocks as $key => $xaction_blocks) {
+      foreach ($xaction_blocks as $block) {
+        $engine->markupText($block);
+        $mentioned_phids += $engine->getTextMetadata(
+          PhabricatorObjectRemarkupRule::KEY_MENTIONED_OBJECTS,
+          array());
       }
+    }
 
+    if (!$mentioned_phids) {
+      return $block_xactions;
+    }
+
+    if ($object instanceof PhabricatorProjectInterface) {
+      $phids = $mentioned_phids;
       $project_type = PhabricatorProjectProjectPHIDType::TYPECONST;
       foreach ($phids as $key => $phid) {
         if (phid_get_type($phid) != $project_type) {
@@ -1182,6 +1227,34 @@ abstract class PhabricatorApplicationTransactionEditor
           ->setMetadataValue('edge:type', $edge_type)
           ->setNewValue(array('+' => $phids));
       }
+    }
+
+    $mentioned_objects = id(new PhabricatorObjectQuery())
+      ->setViewer($this->getActor())
+      ->withPHIDs($mentioned_phids)
+      ->execute();
+
+    $mentionable_phids = array();
+    foreach ($mentioned_objects as $mentioned_object) {
+      if ($mentioned_object instanceof PhabricatorMentionableInterface) {
+        $mentioned_phid = $mentioned_object->getPHID();
+        if (idx($this->getUnmentionablePHIDMap(), $mentioned_phid)) {
+          continue;
+        }
+        // don't let objects mention themselves
+        if ($object->getPHID() && $mentioned_phid == $object->getPHID()) {
+          continue;
+        }
+        $mentionable_phids[$mentioned_phid] = $mentioned_phid;
+      }
+    }
+    if ($mentionable_phids) {
+      $edge_type = PhabricatorObjectMentionsObject::EDGECONST;
+      $block_xactions[] = newv(get_class(head($xactions)), array())
+        ->setIgnoreOnNoEffect(true)
+        ->setTransactionType(PhabricatorTransactions::TYPE_EDGE)
+        ->setMetadataValue('edge:type', $edge_type)
+        ->setNewValue(array('+' => $mentionable_phids));
     }
 
     return $block_xactions;
@@ -1856,6 +1929,8 @@ abstract class PhabricatorApplicationTransactionEditor
       $body->addReplySection($reply_section);
     }
 
+    $body->addEmailPreferenceSection();
+
     $template
       ->setFrom($this->getActingAsPHID())
       ->setSubjectPrefix($this->getMailSubjectPrefix())
@@ -1969,7 +2044,6 @@ abstract class PhabricatorApplicationTransactionEditor
   protected function buildReplyHandler(PhabricatorLiskDAO $object) {
     throw new Exception('Capability not supported.');
   }
-
 
   /**
    * @task mail
@@ -2116,10 +2190,11 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     $body = new PhabricatorMetaMTAMailBody();
+    $body->setViewer($this->requireActor());
     $body->addRawSection(implode("\n", $headers));
 
     foreach ($comments as $comment) {
-      $body->addRawSection($comment);
+      $body->addRemarkupSection($comment);
     }
 
     if ($object instanceof PhabricatorCustomFieldInterface) {

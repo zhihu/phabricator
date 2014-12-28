@@ -49,7 +49,7 @@ final class PhabricatorMailImplementationTestAdapter
     $this->guts['attachments'][] = array(
       'data' => $data,
       'filename' => $filename,
-      'mimetype' => $mimetype
+      'mimetype' => $mimetype,
     );
     return $this;
   }
@@ -75,7 +75,7 @@ final class PhabricatorMailImplementationTestAdapter
   }
 
   public function supportsMessageIDHeader() {
-    return $this->config['supportsMessageIDHeader'];
+    return idx($this->config, 'supportsMessageIDHeader', true);
   }
 
   public function send() {

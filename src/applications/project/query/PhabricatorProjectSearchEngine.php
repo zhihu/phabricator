@@ -193,13 +193,9 @@ final class PhabricatorProjectSearchEngine
     );
   }
 
-  private function getColorValues() {
+  private function getColorValues() {}
 
-  }
-
-  private function getIconValues() {
-
-  }
+  private function getIconValues() {}
 
   protected function getRequiredHandlePHIDsForResultList(
     array $projects,
@@ -223,14 +219,14 @@ final class PhabricatorProjectSearchEngine
       $workboards_url = phutil_tag(
         'a',
         array(
-          'href' => $workboards_uri
+          'href' => $workboards_uri,
         ),
-        pht('Workboards'));
+        pht('Workboard'));
 
       $members_url = phutil_tag(
         'a',
         array(
-          'href' => $members_uri
+          'href' => $members_uri,
         ),
         pht('Members'));
 

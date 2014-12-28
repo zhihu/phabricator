@@ -188,7 +188,9 @@ final class DiffusionCommitHookEngine extends Phobject {
           'emailPHIDs' => array_values($this->emailPHIDs),
           'info' => $this->loadCommitInfoForWorker($all_updates),
         ),
-        PhabricatorWorker::PRIORITY_ALERTS);
+        array(
+          'priority' => PhabricatorWorker::PRIORITY_ALERTS,
+        ));
     }
 
     return 0;
@@ -1115,7 +1117,8 @@ final class DiffusionCommitHookEngine extends Phobject {
 
     $parser = new ArcanistDiffParser();
     $changes = $parser->parseDiff($raw_diff);
-    $diff = DifferentialDiff::newFromRawChanges($changes);
+    $diff = DifferentialDiff::newEphemeralFromRawChanges(
+      $changes);
     return $diff->getChangesets();
   }
 

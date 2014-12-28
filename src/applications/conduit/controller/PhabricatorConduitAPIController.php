@@ -28,12 +28,9 @@ final class PhabricatorConduitAPIController
 
     try {
 
-      $params = $this->decodeConduitParams($request, $method);
-      $metadata = idx($params, '__conduit__', array());
-      unset($params['__conduit__']);
+      list($metadata, $params) = $this->decodeConduitParams($request, $method);
 
-      $call = new ConduitCall(
-        $method, $params, idx($metadata, 'isProxied', false));
+      $call = new ConduitCall($method, $params);
 
       $result = null;
 
@@ -209,9 +206,178 @@ final class PhabricatorConduitAPIController
         $request->getUser());
     }
 
+    $auth_type = idx($metadata, 'auth.type');
+    if ($auth_type === ConduitClient::AUTH_ASYMMETRIC) {
+      $host = idx($metadata, 'auth.host');
+      if (!$host) {
+        return array(
+          'ERR-INVALID-AUTH',
+          pht(
+            'Request is missing required "auth.host" parameter.'),
+        );
+      }
+
+      // TODO: Validate that we are the host!
+
+      $raw_key = idx($metadata, 'auth.key');
+      $public_key = PhabricatorAuthSSHPublicKey::newFromRawKey($raw_key);
+      $ssl_public_key = $public_key->toPKCS8();
+
+      // First, verify the signature.
+      try {
+        $protocol_data = $metadata;
+
+        // TODO: We should stop writing this into the protocol data when
+        // processing a request.
+        unset($protocol_data['scope']);
+
+        ConduitClient::verifySignature(
+          $this->method,
+          $api_request->getAllParameters(),
+          $protocol_data,
+          $ssl_public_key);
+      } catch (Exception $ex) {
+        return array(
+          'ERR-INVALID-AUTH',
+          pht(
+            'Signature verification failure. %s',
+            $ex->getMessage()),
+        );
+      }
+
+      // If the signature is valid, find the user or device which is
+      // associated with this public key.
+
+      $stored_key = id(new PhabricatorAuthSSHKeyQuery())
+        ->setViewer(PhabricatorUser::getOmnipotentUser())
+        ->withKeys(array($public_key))
+        ->executeOne();
+      if (!$stored_key) {
+        return array(
+          'ERR-INVALID-AUTH',
+          pht(
+            'No user or device is associated with that public key.'),
+        );
+      }
+
+      $object = $stored_key->getObject();
+
+      if ($object instanceof PhabricatorUser) {
+        $user = $object;
+      } else {
+        if (!$stored_key->getIsTrusted()) {
+          return array(
+            'ERR-INVALID-AUTH',
+            pht(
+              'The key which signed this request is not trusted. Only '.
+              'trusted keys can be used to sign API calls.'),
+          );
+        }
+
+        throw new Exception(
+          pht('Not Implemented: Would authenticate Almanac device.'));
+      }
+
+      return $this->validateAuthenticatedUser(
+        $api_request,
+        $user);
+    } else if ($auth_type === null) {
+      // No specified authentication type, continue with other authentication
+      // methods below.
+    } else {
+      return array(
+        'ERR-INVALID-AUTH',
+        pht(
+          'Provided "auth.type" ("%s") is not recognized.',
+          $auth_type),
+      );
+    }
+
+    $token_string = idx($metadata, 'token');
+    if (strlen($token_string)) {
+
+      if (strlen($token_string) != 32) {
+        return array(
+          'ERR-INVALID-AUTH',
+          pht(
+            'API token "%s" has the wrong length. API tokens should be '.
+            '32 characters long.',
+            $token_string),
+        );
+      }
+
+      $type = head(explode('-', $token_string));
+      $valid_types = PhabricatorConduitToken::getAllTokenTypes();
+      $valid_types = array_fuse($valid_types);
+      if (empty($valid_types[$type])) {
+        return array(
+          'ERR-INVALID-AUTH',
+          pht(
+            'API token "%s" has the wrong format. API tokens should be '.
+            '32 characters long and begin with one of these prefixes: %s.',
+            $token_string,
+            implode(', ', $valid_types)),
+          );
+      }
+
+      $token = id(new PhabricatorConduitTokenQuery())
+        ->setViewer(PhabricatorUser::getOmnipotentUser())
+        ->withTokens(array($token_string))
+        ->withExpired(false)
+        ->executeOne();
+      if (!$token) {
+        $token = id(new PhabricatorConduitTokenQuery())
+          ->setViewer(PhabricatorUser::getOmnipotentUser())
+          ->withTokens(array($token_string))
+          ->withExpired(true)
+          ->executeOne();
+        if ($token) {
+          return array(
+            'ERR-INVALID-AUTH',
+            pht(
+              'API token "%s" was previously valid, but has expired.',
+              $token_string),
+          );
+        } else {
+          return array(
+            'ERR-INVALID-AUTH',
+            pht(
+              'API token "%s" is not valid.',
+              $token_string),
+          );
+        }
+      }
+
+      // If this is a "cli-" token, it expires shortly after it is generated
+      // by default. Once it is actually used, we extend its lifetime and make
+      // it permanent. This allows stray tokens to get cleaned up automatically
+      // if they aren't being used.
+      if ($token->getTokenType() == PhabricatorConduitToken::TYPE_COMMANDLINE) {
+        if ($token->getExpires()) {
+          $unguarded = AphrontWriteGuard::beginScopedUnguardedWrites();
+            $token->setExpires(null);
+            $token->save();
+          unset($unguarded);
+        }
+      }
+
+      $user = $token->getObject();
+      if (!($user instanceof PhabricatorUser)) {
+        return array(
+          'ERR-INVALID-AUTH',
+          pht(
+            'API token is not associated with a valid user.'),
+        );
+      }
+
+      return $this->validateAuthenticatedUser(
+        $api_request,
+        $user);
+    }
+
     // handle oauth
-    $access_token = $request->getStr('access_token');
-    $method_scope = $metadata['scope'];
+    $access_token = idx($metadata, 'access_token');
+    $method_scope = idx($metadata, 'scope');
     if ($access_token &&
         $method_scope != PhabricatorOAuthServerScope::SCOPE_NOT_ACCESSIBLE) {
       $token = id(new PhabricatorOAuthServerAccessToken())
@@ -250,7 +416,10 @@ final class PhabricatorConduitAPIController
         $user);
     }
 
-    // Handle sessionless auth. TOOD: This is super messy.
+    // Handle sessionless auth.
+    // TODO: This is super messy.
+    // TODO: Remove this in favor of token-based auth.
+
     if (isset($metadata['authUser'])) {
       $user = id(new PhabricatorUser())->loadOneWhere(
         'userName = %s',
@@ -275,11 +444,14 @@ final class PhabricatorConduitAPIController
         $user);
     }
 
+    // Handle session-based auth.
+    // TODO: Remove this in favor of token-based auth.
+
     $session_key = idx($metadata, 'sessionKey');
     if (!$session_key) {
       return array(
         'ERR-INVALID-SESSION',
-        'Session key is not present.'
+        'Session key is not present.',
       );
     }
 
@@ -438,28 +610,16 @@ final class PhabricatorConduitAPIController
         $params[$key] = $decoded_value;
       }
 
-      return $params;
+      $metadata = idx($params, '__conduit__', array());
+      unset($params['__conduit__']);
+
+      return array($metadata, $params);
     }
 
     // Otherwise, look for a single parameter called 'params' which has the
-    // entire param dictionary JSON encoded. This is the usual case for remote
-    // requests.
-
+    // entire param dictionary JSON encoded.
     $params_json = $request->getStr('params');
-    if (!strlen($params_json)) {
-      if ($request->getBool('allowEmptyParams')) {
-        // TODO: This is a bit messy, but otherwise you can't call
-        // "conduit.ping" from the web console.
-        $params = array();
-      } else {
-        throw new Exception(
-          "Request has no 'params' key. This may mean that an extension like ".
-          "Suhosin has dropped data from the request. Check the PHP ".
-          "configuration on your server. If you are developing a Conduit ".
-          "client, you MUST provide a 'params' parameter when making a ".
-          "Conduit request, even if the value is empty (e.g., provide '{}').");
-      }
-    } else {
+    if (strlen($params_json)) {
       $params = json_decode($params_json, true);
       if (!is_array($params)) {
         throw new Exception(
@@ -467,9 +627,27 @@ final class PhabricatorConduitAPIController
           "'{$method}', could not decode JSON serialization. Data: ".
           $params_json);
       }
+
+      $metadata = idx($params, '__conduit__', array());
+      unset($params['__conduit__']);
+
+      return array($metadata, $params);
     }
 
-    return $params;
+    // If we do not have `params`, assume this is a simple HTTP request with
+    // HTTP key-value pairs.
+    $params = array();
+    $metadata = array();
+    foreach ($request->getPassthroughRequestData() as $key => $value) {
+      $meta_key = ConduitAPIMethod::getParameterMetadataKey($key);
+      if ($meta_key !== null) {
+        $metadata[$meta_key] = $value;
+      } else {
+        $params[$key] = $value;
+      }
+    }
+
+    return array($metadata, $params);
   }
 
 }

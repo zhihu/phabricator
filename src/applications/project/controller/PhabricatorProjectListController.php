@@ -14,13 +14,16 @@ final class PhabricatorProjectListController
   }
 
   public function processRequest() {
-    $request = $this->getRequest();
-    $controller = id(new PhabricatorApplicationSearchController($request))
+    $controller = id(new PhabricatorApplicationSearchController())
       ->setQueryKey($this->queryKey)
       ->setSearchEngine(new PhabricatorProjectSearchEngine())
       ->setNavigation($this->buildSideNavView());
 
     return $this->delegateToController($controller);
+  }
+
+  public function buildApplicationMenu() {
+    return $this->buildSideNavView(true)->getMenu();
   }
 
   public function buildApplicationCrumbs() {

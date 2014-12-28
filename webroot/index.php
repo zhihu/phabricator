@@ -16,6 +16,12 @@ try {
   PhabricatorStartup::loadCoreLibraries();
 
   PhabricatorEnv::initializeWebEnvironment();
+
+  $debug_time_limit = PhabricatorEnv::getEnvConfig('debug.time-limit');
+  if ($debug_time_limit) {
+    PhabricatorStartup::setDebugTimeLimit($debug_time_limit);
+  }
+
   $show_unexpected_traces = PhabricatorEnv::getEnvConfig(
     'phabricator.developer-mode');
 
@@ -68,6 +74,8 @@ try {
 
   $application->setRequest($request);
   list($controller, $uri_data) = $application->buildController();
+  $request->setURIMap($uri_data);
+  $controller->setRequest($request);
 
   $access_log->setData(
     array(
@@ -92,7 +100,7 @@ try {
 
     if (!$response) {
       $controller->willProcessRequest($uri_data);
-      $response = $controller->processRequest();
+      $response = $controller->handleRequest($request);
     }
   } catch (Exception $ex) {
     $original_exception = $ex;
@@ -118,7 +126,8 @@ try {
             'z-index: 200000;'.
             'position: relative;'.
             'padding: 8px;'.
-            'font-family: monospace'),
+            'font-family: monospace',
+          ),
           $unexpected_output);
       }
     }

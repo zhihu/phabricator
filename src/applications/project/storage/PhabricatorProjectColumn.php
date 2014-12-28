@@ -3,6 +3,7 @@
 final class PhabricatorProjectColumn
   extends PhabricatorProjectDAO
   implements
+    PhabricatorApplicationTransactionInterface,
     PhabricatorPolicyInterface,
     PhabricatorDestructibleInterface {
 
@@ -32,6 +33,19 @@ final class PhabricatorProjectColumn
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_SERIALIZATION => array(
         'properties' => self::SERIALIZATION_JSON,
+      ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'name' => 'text255',
+        'status' => 'uint32',
+        'sequence' => 'uint32',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_status' => array(
+          'columns' => array('projectPHID', 'status', 'sequence'),
+        ),
+        'key_sequence' => array(
+          'columns' => array('projectPHID', 'sequence'),
+        ),
       ),
     ) + parent::getConfiguration();
   }
@@ -71,17 +85,23 @@ final class PhabricatorProjectColumn
     return pht('Unnamed Column');
   }
 
+  public function getDisplayType() {
+    if ($this->isDefaultColumn()) {
+      return pht('(Default)');
+    }
+    if ($this->isHidden()) {
+      return pht('(Hidden)');
+    }
+
+    return null;
+  }
+
   public function getHeaderIcon() {
     $icon = null;
 
     if ($this->isHidden()) {
       $icon = 'fa-eye-slash';
       $text = pht('Hidden');
-    }
-
-    if ($this->isDefaultColumn()) {
-      $icon = 'fa-archive';
-      $text = pht('Default');
     }
 
     if ($icon) {
@@ -113,6 +133,29 @@ final class PhabricatorProjectColumn
   public function setPointLimit($limit) {
     $this->setProperty('pointLimit', $limit);
     return $this;
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new PhabricatorProjectColumnTransactionEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new PhabricatorProjectColumnTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

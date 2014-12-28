@@ -114,7 +114,7 @@ final class ConpherenceListController extends ConpherenceController {
           ->setLimit($too_many)
           ->execute();
         if (count($all_participation) == $too_many) {
-          $node = end($participation);
+          $node = end($all_participation);
           unset($all_participation[$node->getConpherencePHID()]);
           $scroll_down_participant = $node;
         }
@@ -140,7 +140,8 @@ final class ConpherenceListController extends ConpherenceController {
         $phids = array_keys($participation);
         $content = array(
           'html' => $thread_html,
-          'phids' => $phids);
+          'phids' => $phids,
+        );
         $response = id(new AphrontAjaxResponse())->setContent($content);
         break;
       case self::UNSELECTED_MODE:

@@ -9,7 +9,9 @@ final class PhabricatorWorkerLeaseQuery extends PhabricatorQuery {
   const PHASE_EXPIRED  = 'expired';
 
   private $ids;
+  private $objectPHIDs;
   private $limit;
+  private $skipLease;
 
   public static function getDefaultWaitBeforeRetry() {
     return phutil_units('5 minutes in seconds');
@@ -19,8 +21,27 @@ final class PhabricatorWorkerLeaseQuery extends PhabricatorQuery {
     return phutil_units('2 hours in seconds');
   }
 
+  /**
+   * Set this flag to select tasks from the top of the queue without leasing
+   * them.
+   *
+   * This can be used to show which tasks are coming up next without altering
+   * the queue's behavior.
+   *
+   * @param bool True to skip the lease acquisition step.
+   */
+  public function setSkipLease($skip) {
+    $this->skipLease = $skip;
+    return $this;
+  }
+
   public function withIDs(array $ids) {
     $this->ids = $ids;
+    return $this;
+  }
+
+  public function withObjectPHIDs(array $phids) {
+    $this->objectPHIDs = $phids;
     return $this;
   }
 
@@ -51,6 +72,7 @@ final class PhabricatorWorkerLeaseQuery extends PhabricatorQuery {
     $limit = $this->limit;
 
     $leased = 0;
+    $task_ids = array();
     foreach ($phases as $phase) {
       // NOTE: If we issue `UPDATE ... WHERE ... ORDER BY id ASC`, the query
       // goes very, very slowly. The `ORDER BY` triggers this, although we get
@@ -74,17 +96,23 @@ final class PhabricatorWorkerLeaseQuery extends PhabricatorQuery {
       // total runtime, so keep it simple for the moment.
 
       if ($rows) {
-        queryfx(
-          $conn_w,
-          'UPDATE %T task
-            SET leaseOwner = %s, leaseExpires = UNIX_TIMESTAMP() + %d
-            %Q',
-          $task_table->getTableName(),
-          $lease_ownership_name,
-          self::getDefaultLeaseDuration(),
-          $this->buildUpdateWhereClause($conn_w, $phase, $rows));
+        if ($this->skipLease) {
+          $leased += count($rows);
+          $task_ids += array_fuse(ipull($rows, 'id'));
+        } else {
+          queryfx(
+            $conn_w,
+            'UPDATE %T task
+              SET leaseOwner = %s, leaseExpires = UNIX_TIMESTAMP() + %d
+              %Q',
+            $task_table->getTableName(),
+            $lease_ownership_name,
+            self::getDefaultLeaseDuration(),
+            $this->buildUpdateWhereClause($conn_w, $phase, $rows));
 
-        $leased += $conn_w->getAffectedRows();
+          $leased += $conn_w->getAffectedRows();
+        }
+
         if ($leased == $limit) {
           break;
         }
@@ -95,16 +123,27 @@ final class PhabricatorWorkerLeaseQuery extends PhabricatorQuery {
       return array();
     }
 
+    if ($this->skipLease) {
+      $selection_condition = qsprintf(
+        $conn_w,
+        'task.id IN (%Ld)',
+        $task_ids);
+    } else {
+      $selection_condition = qsprintf(
+        $conn_w,
+        'task.leaseOwner = %s AND leaseExpires > UNIX_TIMESTAMP()',
+        $lease_ownership_name);
+    }
+
     $data = queryfx_all(
       $conn_w,
       'SELECT task.*, taskdata.data _taskData, UNIX_TIMESTAMP() _serverTime
         FROM %T task LEFT JOIN %T taskdata
           ON taskdata.id = task.dataID
-        WHERE leaseOwner = %s AND leaseExpires > UNIX_TIMESTAMP()
-        %Q %Q',
+        WHERE %Q %Q %Q',
       $task_table->getTableName(),
       $taskdata_table->getTableName(),
-      $lease_ownership_name,
+      $selection_condition,
       $this->buildOrderClause($conn_w, $phase),
       $this->buildLimitClause($conn_w, $limit));
 
@@ -140,6 +179,10 @@ final class PhabricatorWorkerLeaseQuery extends PhabricatorQuery {
 
     if ($this->ids) {
       $where[] = qsprintf($conn_w, 'id IN (%Ld)', $this->ids);
+    }
+
+    if ($this->objectPHIDs !== null) {
+      $where[] = qsprintf($conn_w, 'objectPHID IN (%Ls)', $this->objectPHIDs);
     }
 
     return $this->formatWhereClause($where);
@@ -182,8 +225,8 @@ final class PhabricatorWorkerLeaseQuery extends PhabricatorQuery {
     switch ($phase) {
       case self::PHASE_UNLEASED:
         // When selecting new tasks, we want to consume them in order of
-        // decreasing priority (and then FIFO).
-        return qsprintf($conn_w, 'ORDER BY id ASC');
+        // increasing priority (and then FIFO).
+        return qsprintf($conn_w, 'ORDER BY priority ASC, id ASC');
       case self::PHASE_EXPIRED:
         // When selecting failed tasks, we want to consume them in roughly
         // FIFO order of their failures, which is not necessarily their original
@@ -207,10 +250,23 @@ final class PhabricatorWorkerLeaseQuery extends PhabricatorQuery {
   private function getLeaseOwnershipName() {
     static $sequence = 0;
 
+    // TODO: If the host name is very long, this can overflow the 64-character
+    // column, so we pick just the first part of the host name. It might be
+    // useful to just use a random hash as the identifier instead and put the
+    // pid / time / host (which are somewhat useful diagnostically) elsewhere.
+    // Likely, we could store a daemon ID instead and use that to identify
+    // when and where code executed. See T6742.
+
+    $host = php_uname('n');
+    $host = id(new PhutilUTF8StringTruncator())
+      ->setMaximumBytes(32)
+      ->setTerminator('...')
+      ->truncateString($host);
+
     $parts = array(
       getmypid(),
       time(),
-      php_uname('n'),
+      $host,
       ++$sequence,
     );
 

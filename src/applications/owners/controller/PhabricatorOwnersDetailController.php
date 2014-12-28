@@ -86,7 +86,7 @@ final class PhabricatorOwnersDetailController
           'callsign' => $repo->getCallsign(),
           'branch'   => $repo->getDefaultBranch(),
           'path'     => $path->getPath(),
-          'action'   => 'browse'
+          'action'   => 'browse',
         ));
       $repo_name = phutil_tag('strong', array(), $repo->getName());
       $path_link = phutil_tag(
@@ -139,10 +139,10 @@ final class PhabricatorOwnersDetailController
 
     $commit_views = array();
 
-    $commit_uri = id(new PhutilURI('/audit/view/packagecommits/'))
+    $commit_uri = id(new PhutilURI('/audit/'))
       ->setQueryParams(
         array(
-          'phid'    => $package->getPHID(),
+          'auditorPHIDs' => $package->getPHID(),
         ));
 
     $attention_commits = id(new DiffusionCommitQuery())

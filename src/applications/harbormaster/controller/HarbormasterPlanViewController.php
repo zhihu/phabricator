@@ -22,16 +22,10 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
       return new Aphront404Response();
     }
 
-    $xactions = id(new HarbormasterBuildPlanTransactionQuery())
-      ->setViewer($viewer)
-      ->withObjectPHIDs(array($plan->getPHID()))
-      ->execute();
-
-    $xaction_view = id(new PhabricatorApplicationTransactionView())
-      ->setUser($viewer)
-      ->setObjectPHID($plan->getPHID())
-      ->setTransactions($xactions)
-      ->setShouldTerminate(true);
+    $timeline = $this->buildTransactionTimeline(
+      $plan,
+      new HarbormasterBuildPlanTransactionQuery());
+    $timeline->setShouldTerminate(true);
 
     $title = pht('Plan %d', $id);
 
@@ -77,7 +71,7 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
         $crumbs,
         $box,
         $step_list,
-        $xaction_view,
+        $timeline,
       ),
       array(
         'title' => $title,
@@ -391,7 +385,8 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
         $note = array(
           phutil_tag('strong', array(), pht('ERROR:')),
           ' ',
-          $error);
+          $error,
+        );
       } else {
         $note = $bound;
       }
@@ -457,7 +452,8 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
         $note = array(
           phutil_tag('strong', array(), pht('ERROR:')),
           ' ',
-          $error);
+          $error,
+        );
       } else {
         $note = $bound;
       }

@@ -116,7 +116,8 @@ final class PhabricatorFlagSearchEngine
     // sort it alphabetically...
     asort($options);
     $default_option = array(
-      0 => pht('All Object Types'));
+      0 => pht('All Object Types'),
+    );
     // ...and stick the default option on front
     $options = array_merge($default_option, $options);
 
@@ -148,7 +149,8 @@ final class PhabricatorFlagSearchEngine
 
       $item = id(new PHUIObjectItemView())
         ->addHeadIcon($flag_icon)
-        ->setHeader($flag->getHandle()->renderLink());
+        ->setHeader($flag->getHandle()->getFullName())
+        ->setHref($flag->getHandle()->getURI());
 
       $item->addAction(
         id(new PHUIListItemView())

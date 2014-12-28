@@ -2,6 +2,7 @@
 
 final class ReleephRequest extends ReleephDAO
   implements
+    PhabricatorApplicationTransactionInterface,
     PhabricatorPolicyInterface,
     PhabricatorCustomFieldInterface {
 
@@ -153,6 +154,32 @@ final class ReleephRequest extends ReleephDAO
         'details' => self::SERIALIZATION_JSON,
         'userIntents' => self::SERIALIZATION_JSON,
       ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'requestCommitPHID' => 'phid?',
+        'commitIdentifier' => 'text40?',
+        'commitPHID' => 'phid?',
+        'pickStatus' => 'uint32?',
+        'inBranch' => 'bool',
+        'mailKey' => 'bytes20',
+        'userIntents' => 'text?',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_phid' => null,
+        'phid' => array(
+          'columns' => array('phid'),
+          'unique' => true,
+        ),
+        'requestIdentifierBranch' => array(
+          'columns' => array('requestCommitPHID', 'branchID'),
+          'unique' => true,
+        ),
+        'branchID' => array(
+          'columns' => array('branchID'),
+        ),
+        'key_requestedObject' => array(
+          'columns' => array('requestedObjectPHID'),
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 
@@ -267,6 +294,29 @@ final class ReleephRequest extends ReleephDAO
 
   private function setUserIntents(array $ar) {
     return parent::setUserIntents($ar);
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new ReleephRequestTransactionalEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new ReleephRequestTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

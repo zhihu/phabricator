@@ -35,7 +35,7 @@ final class PhabricatorBotObjectNameHandler extends PhabricatorBotHandler {
           foreach ($matches as $match) {
             switch ($match[1]) {
               case 'R2D2':
-                $output[$match[1]] = pht('beep hoop bop');
+                $output[$match[1]] = pht('beep boop bop');
                 break;
             }
           }
@@ -123,8 +123,8 @@ final class PhabricatorBotObjectNameHandler extends PhabricatorBotHandler {
               array(
                 'id' => $file_id,
               ));
-            $output[$file['phid']] = $file['objectName'].': '.$file['uri'].' - '.
-              $file['name'];
+            $output[$file['phid']] = $file['objectName'].': '.
+              $file['uri'].' - '.$file['name'];
           }
         }
 

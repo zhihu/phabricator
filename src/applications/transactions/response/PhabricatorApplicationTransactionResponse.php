@@ -5,7 +5,6 @@ final class PhabricatorApplicationTransactionResponse
 
   private $viewer;
   private $transactions;
-  private $anchorOffset;
   private $isPreview;
   private $transactionView;
 
@@ -20,15 +19,6 @@ final class PhabricatorApplicationTransactionResponse
 
   protected function buildProxy() {
     return new AphrontAjaxResponse();
-  }
-
-  public function setAnchorOffset($anchor_offset) {
-    $this->anchorOffset = $anchor_offset;
-    return $this;
-  }
-
-  public function getAnchorOffset() {
-    return $this->anchorOffset;
   }
 
   public function setTransactions($transactions) {
@@ -71,14 +61,16 @@ final class PhabricatorApplicationTransactionResponse
       ->setTransactions($this->getTransactions())
       ->setIsPreview($this->isPreview);
 
-    if ($this->getAnchorOffset()) {
-      $view->setAnchorOffset($this->getAnchorOffset());
-    }
-
     if ($this->isPreview) {
       $xactions = mpull($view->buildEvents(), 'render');
     } else {
       $xactions = mpull($view->buildEvents(), 'render', 'getTransactionPHID');
+    }
+
+    // Force whatever the underlying views built to render into HTML for
+    // the Javascript.
+    foreach ($xactions as $key => $xaction) {
+      $xactions[$key] = hsprintf('%s', $xaction);
     }
 
     $content = array(

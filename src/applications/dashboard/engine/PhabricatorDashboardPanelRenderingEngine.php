@@ -193,11 +193,14 @@ final class PhabricatorDashboardPanelRenderingEngine extends Phobject {
         'id' => $id,
         'sigil' => 'dashboard-panel',
         'meta' => array(
-          'objectPHID' => $panel->getPHID()),
-        'class' => 'dashboard-panel'),
+          'objectPHID' => $panel->getPHID(),
+        ),
+        'class' => 'dashboard-panel',
+      ),
       array(
         $header,
-        $content));
+        $content,
+      ));
   }
 
 
@@ -219,6 +222,12 @@ final class PhabricatorDashboardPanelRenderingEngine extends Phobject {
         $header = id(new PHUIActionHeaderView())
           ->setHeaderTitle($panel->getName())
           ->setHeaderColor(PHUIActionHeaderView::HEADER_LIGHTBLUE);
+        $panel_type = $panel->getImplementation();
+        $header = $panel_type->adjustPanelHeader(
+          $this->getViewer(),
+          $panel,
+          $this,
+          $header);
         break;
     }
     return $header;
@@ -252,6 +261,7 @@ final class PhabricatorDashboardPanelRenderingEngine extends Phobject {
     }
     return $header;
   }
+
 
   /**
    * Detect graph cycles in panels, and deeply nested panels.

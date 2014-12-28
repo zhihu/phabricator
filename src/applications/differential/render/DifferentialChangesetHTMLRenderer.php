@@ -328,7 +328,7 @@ abstract class DifferentialChangesetHTMLRenderer
         $row = array(
           $readable_key,
           $oval,
-          $nval
+          $nval,
         );
         $rows[] = $row;
 
@@ -409,16 +409,8 @@ abstract class DifferentialChangesetHTMLRenderer
           $content)));
   }
 
-  private function renderColgroup() {
-    return phutil_tag('colgroup', array(), array(
-      phutil_tag('col', array('class' => 'num')),
-      phutil_tag('col', array('class' => 'left')),
-      phutil_tag('col', array('class' => 'num')),
-      phutil_tag('col', array('class' => 'copy')),
-      phutil_tag('col', array('class' => 'right')),
-      phutil_tag('col', array('class' => 'cov')),
-    ));
-  }
+  abstract protected function renderColgroup();
+
 
   protected function wrapChangeInTable($content) {
     if (!$content) {

@@ -6,25 +6,37 @@ final class PhabricatorProjectEditDetailsController
   private $id;
 
   public function willProcessRequest(array $data) {
-    $this->id = $data['id'];
+    $this->id = idx($data, 'id');
   }
 
   public function processRequest() {
     $request = $this->getRequest();
     $viewer = $request->getUser();
 
-    $project = id(new PhabricatorProjectQuery())
-      ->setViewer($viewer)
-      ->withIDs(array($this->id))
-      ->needSlugs(true)
-      ->requireCapabilities(
-        array(
-          PhabricatorPolicyCapability::CAN_VIEW,
-          PhabricatorPolicyCapability::CAN_EDIT,
-        ))
-      ->executeOne();
-    if (!$project) {
-      return new Aphront404Response();
+    if ($this->id) {
+      $is_new = false;
+
+      $project = id(new PhabricatorProjectQuery())
+        ->setViewer($viewer)
+        ->withIDs(array($this->id))
+        ->needSlugs(true)
+        ->requireCapabilities(
+          array(
+            PhabricatorPolicyCapability::CAN_VIEW,
+            PhabricatorPolicyCapability::CAN_EDIT,
+          ))
+          ->executeOne();
+      if (!$project) {
+        return new Aphront404Response();
+      }
+
+    } else {
+      $is_new = true;
+
+      $this->requireApplicationCapability(
+        ProjectCreateProjectsCapability::CAPABILITY);
+
+      $project = PhabricatorProject::initializeNewProject($viewer);
     }
 
     $field_list = PhabricatorCustomField::getObjectFields(
@@ -33,9 +45,6 @@ final class PhabricatorProjectEditDetailsController
     $field_list
       ->setViewer($viewer)
       ->readFieldsFromStorage($project);
-
-    $view_uri = $this->getApplicationURI('view/'.$project->getID().'/');
-    $edit_uri = $this->getApplicationURI('edit/'.$project->getID().'/');
 
     $e_name = true;
     $e_slugs = false;
@@ -49,6 +58,7 @@ final class PhabricatorProjectEditDetailsController
     $v_slugs = $project_slugs;
     $v_color = $project->getColor();
     $v_icon = $project->getIcon();
+    $v_locked = $project->getIsMembershipLocked();
 
     $validation_exception = null;
 
@@ -63,6 +73,7 @@ final class PhabricatorProjectEditDetailsController
       $v_join = $request->getStr('can_join');
       $v_color = $request->getStr('color');
       $v_icon = $request->getStr('icon');
+      $v_locked = $request->getInt('is_membership_locked', 0);
 
       $xactions = $field_list->buildFieldTransactionsFromRequest(
         new PhabricatorProjectTransaction(),
@@ -73,6 +84,7 @@ final class PhabricatorProjectEditDetailsController
       $type_edit = PhabricatorTransactions::TYPE_EDIT_POLICY;
       $type_icon = PhabricatorProjectTransaction::TYPE_ICON;
       $type_color = PhabricatorProjectTransaction::TYPE_COLOR;
+      $type_locked = PhabricatorProjectTransaction::TYPE_LOCKED;
 
       $xactions[] = id(new PhabricatorProjectTransaction())
         ->setTransactionType($type_name)
@@ -102,15 +114,48 @@ final class PhabricatorProjectEditDetailsController
         ->setTransactionType($type_color)
         ->setNewValue($v_color);
 
+      $xactions[] = id(new PhabricatorProjectTransaction())
+        ->setTransactionType($type_locked)
+        ->setNewValue($v_locked);
+
       $editor = id(new PhabricatorProjectTransactionEditor())
         ->setActor($viewer)
         ->setContentSourceFromRequest($request)
         ->setContinueOnNoEffect(true);
 
+      if ($is_new) {
+        $xactions[] = id(new PhabricatorProjectTransaction())
+          ->setTransactionType(PhabricatorTransactions::TYPE_EDGE)
+          ->setMetadataValue(
+            'edge:type',
+            PhabricatorEdgeConfig::TYPE_PROJ_MEMBER)
+          ->setNewValue(
+            array(
+              '+' => array($viewer->getPHID() => $viewer->getPHID()),
+            ));
+      }
+
       try {
+
         $editor->applyTransactions($project, $xactions);
 
-        return id(new AphrontRedirectResponse())->setURI($edit_uri);
+        if ($request->isAjax()) {
+          return id(new AphrontAjaxResponse())
+            ->setContent(array(
+              'phid' => $project->getPHID(),
+              'name' => $project->getName(),
+            ));
+        }
+
+        if ($is_new) {
+          $redirect_uri =
+            $this->getApplicationURI('view/'.$project->getID().'/');
+        } else {
+          $redirect_uri =
+            $this->getApplicationURI('edit/'.$project->getID().'/');
+        }
+
+        return id(new AphrontRedirectResponse())->setURI($redirect_uri);
       } catch (PhabricatorApplicationTransactionValidationException $ex) {
         $validation_exception = $ex;
 
@@ -124,8 +169,13 @@ final class PhabricatorProjectEditDetailsController
       }
     }
 
-    $header_name = pht('Edit Project');
-    $title = pht('Edit Project');
+    if ($is_new) {
+      $header_name = pht('Create a New Project');
+      $title = pht('Create Project');
+    } else {
+      $header_name = pht('Edit Project');
+      $title = pht('Edit Project');
+    }
 
     $policies = id(new PhabricatorPolicyQuery())
       ->setViewer($viewer)
@@ -133,8 +183,7 @@ final class PhabricatorProjectEditDetailsController
       ->execute();
     $v_slugs = implode(', ', $v_slugs);
 
-    $form = new AphrontFormView();
-    $form
+    $form = id(new AphrontFormView())
       ->setUser($viewer)
       ->appendChild(
         id(new AphrontFormTextControl())
@@ -146,8 +195,16 @@ final class PhabricatorProjectEditDetailsController
 
     $shades = PhabricatorProjectIcon::getColorMap();
 
-    $icon_uri = $this->getApplicationURI('icon/'.$project->getID().'/');
+    if ($is_new) {
+      $icon_uri = $this->getApplicationURI('icon/');
+    } else {
+      $icon_uri = $this->getApplicationURI('icon/'.$project->getID().'/');
+    }
     $icon_display = PhabricatorProjectIcon::renderIconForChooser($v_icon);
+    list($can_lock, $lock_message) = $this->explainApplicationCapability(
+      ProjectCanLockProjectsCapability::CAPABILITY,
+      pht('You can update the Lock Project setting.'),
+      pht('You can not update the Lock Project setting.'));
 
     $form
       ->appendChild(
@@ -163,12 +220,17 @@ final class PhabricatorProjectEditDetailsController
           ->setLabel(pht('Color'))
           ->setName('color')
           ->setValue($v_color)
-          ->setOptions($shades))
-      ->appendChild(
+          ->setOptions($shades));
+
+    if (!$is_new) {
+      $form->appendChild(
         id(new AphrontFormStaticControl())
         ->setLabel(pht('Primary Hashtag'))
         ->setCaption(pht('The primary hashtag is derived from the name.'))
-        ->setValue($v_primary_slug))
+        ->setValue($v_primary_slug));
+    }
+
+    $form
       ->appendChild(
         id(new AphrontFormTextControl())
           ->setLabel(pht('Additional Hashtags'))
@@ -202,19 +264,53 @@ final class PhabricatorProjectEditDetailsController
           ->setPolicies($policies)
           ->setCapability(PhabricatorPolicyCapability::CAN_JOIN))
       ->appendChild(
-        id(new AphrontFormSubmitControl())
-          ->addCancelButton($edit_uri)
-          ->setValue(pht('Save')));
+        id(new AphrontFormCheckboxControl())
+        ->setLabel(pht('Lock Project'))
+        ->setDisabled(!$can_lock)
+        ->addCheckbox(
+          'is_membership_locked',
+          1,
+          pht('Prevent members from leaving this project.'),
+          $v_locked)
+        ->setCaption($lock_message));
+
+    if ($request->isAjax()) {
+      $errors = array();
+      if ($validation_exception) {
+        $errors = mpull($ex->getErrors(), 'getMessage');
+      }
+      $dialog = id(new AphrontDialogView())
+        ->setUser($viewer)
+        ->setWidth(AphrontDialogView::WIDTH_FULL)
+        ->setTitle($header_name)
+        ->setErrors($errors)
+        ->appendForm($form)
+        ->addSubmitButton($title)
+        ->addCancelButton('/project/');
+      return id(new AphrontDialogResponse())->setDialog($dialog);
+    }
+
+    $form->appendChild(
+      id(new AphrontFormSubmitControl())
+      ->addCancelButton($this->getApplicationURI())
+      ->setValue(pht('Save')));
 
     $form_box = id(new PHUIObjectBoxView())
       ->setHeaderText($title)
       ->setValidationException($validation_exception)
       ->setForm($form);
 
-    $crumbs = $this->buildApplicationCrumbs($this->buildSideNavView())
-      ->addTextCrumb($project->getName(), $view_uri)
-      ->addTextCrumb(pht('Edit'), $edit_uri)
-      ->addTextCrumb(pht('Details'));
+    $crumbs = $this->buildApplicationCrumbs($this->buildSideNavView());
+    if ($is_new) {
+      $crumbs->addTextCrumb($title);
+    } else {
+      $crumbs
+        ->addTextCrumb($project->getName(),
+          $this->getApplicationURI('view/'.$project->getID().'/'))
+        ->addTextCrumb(pht('Edit'),
+          $this->getApplicationURI('edit/'.$project->getID().'/'))
+        ->addTextCrumb(pht('Details'));
+    }
 
     return $this->buildApplicationPage(
       array(

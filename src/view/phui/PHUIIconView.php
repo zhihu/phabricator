@@ -4,7 +4,6 @@ final class PHUIIconView extends AphrontTagView {
 
   const SPRITE_APPS = 'apps';
   const SPRITE_TOKENS = 'tokens';
-  const SPRITE_PAYMENTS = 'payments';
   const SPRITE_LOGIN = 'login';
   const SPRITE_PROJECTS = 'projects';
 
@@ -565,6 +564,49 @@ final class PHUIIconView extends AphrontTagView {
       'fa-share-alt',
       'fa-share-alt-square',
       'fa-bomb',
+      'fa-soccer-ball',
+      'fa-futbol-o',
+      'fa-tty',
+      'fa-binoculars',
+      'fa-plug',
+      'fa-slideshare',
+      'fa-twitch',
+      'fa-yelp',
+      'fa-newspaper-o',
+      'fa-wifi',
+      'fa-calculator',
+      'fa-paypal',
+      'fa-google-wallet',
+      'fa-cc-visa',
+      'fa-cc-mastercard',
+      'fa-cc-discover',
+      'fa-cc-amex',
+      'fa-cc-paypal',
+      'fa-cc-stripe',
+      'fa-bell-slash',
+      'fa-bell-slash-o',
+      'fa-trash',
+      'fa-copyright',
+      'fa-at',
+      'fa-eyedropper',
+      'fa-paint-brush',
+      'fa-birthday-cake',
+      'fa-area-chart',
+      'fa-pie-chart',
+      'fa-line-chart',
+      'fa-lastfm',
+      'fa-lastfm-square',
+      'fa-toggle-off',
+      'fa-toggle-on',
+      'fa-bicycle',
+      'fa-bus',
+      'fa-ioxhost',
+      'fa-angellist',
+      'fa-cc',
+      'fa-shekel',
+      'fa-sheqel',
+      'fa-ils',
+      'fa-meanpath',
     );
   }
 
@@ -580,6 +622,7 @@ final class PHUIIconView extends AphrontTagView {
       'sky',
       'indigo',
       'violet',
+      'pink',
       'lightgreytext',
       'lightbluetext',
     );

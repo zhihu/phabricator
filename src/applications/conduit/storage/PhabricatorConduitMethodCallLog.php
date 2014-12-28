@@ -10,6 +10,30 @@ final class PhabricatorConduitMethodCallLog
   protected $error;
   protected $duration;
 
+  public function getConfiguration() {
+    return array(
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'id' => 'auto64',
+        'connectionID' => 'id64?',
+        'method' => 'text64',
+        'error' => 'text255',
+        'duration' => 'uint64',
+        'callerPHID' => 'phid?',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_date' => array(
+          'columns' => array('dateCreated'),
+        ),
+        'key_method' => array(
+          'columns' => array('method'),
+        ),
+        'key_callermethod' => array(
+          'columns' => array('callerPHID', 'method'),
+        ),
+      ),
+    ) + parent::getConfiguration();
+  }
+
 
 /* -(  PhabricatorPolicyInterface  )----------------------------------------- */
 

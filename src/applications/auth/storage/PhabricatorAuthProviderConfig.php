@@ -1,7 +1,10 @@
 <?php
 
-final class PhabricatorAuthProviderConfig extends PhabricatorAuthDAO
-  implements PhabricatorPolicyInterface {
+final class PhabricatorAuthProviderConfig
+  extends PhabricatorAuthDAO
+  implements
+    PhabricatorApplicationTransactionInterface,
+    PhabricatorPolicyInterface {
 
   protected $providerClass;
   protected $providerType;
@@ -20,7 +23,7 @@ final class PhabricatorAuthProviderConfig extends PhabricatorAuthDAO
 
   public function generatePHID() {
     return PhabricatorPHID::generateNewPHID(
-      PhabricatorPHIDConstants::PHID_TYPE_AUTH);
+      PhabricatorAuthAuthProviderPHIDType::TYPECONST);
   }
 
   public function getConfiguration() {
@@ -28,6 +31,26 @@ final class PhabricatorAuthProviderConfig extends PhabricatorAuthDAO
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_SERIALIZATION => array(
         'properties' => self::SERIALIZATION_JSON,
+      ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'isEnabled' => 'bool',
+        'providerClass' => 'text128',
+        'providerType' => 'text32',
+        'providerDomain' => 'text128',
+        'shouldAllowLogin' => 'bool',
+        'shouldAllowRegistration' => 'bool',
+        'shouldAllowLink' => 'bool',
+        'shouldAllowUnlink' => 'bool',
+        'shouldTrustEmails' => 'bool',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_provider' => array(
+          'columns' => array('providerType', 'providerDomain'),
+          'unique' => true,
+        ),
+        'key_class' => array(
+          'columns' => array('providerClass'),
+        ),
       ),
     ) + parent::getConfiguration();
   }
@@ -56,6 +79,29 @@ final class PhabricatorAuthProviderConfig extends PhabricatorAuthDAO
       }
     }
     return $this->provider;
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new PhabricatorAuthProviderConfigEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new PhabricatorAuthProviderConfigTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

@@ -96,9 +96,7 @@ final class DifferentialRevisionViewController extends DifferentialController {
     $props = mpull($props, 'getData', 'getName');
 
     $all_changesets = $changesets;
-    $inlines = $this->loadInlineComments(
-      $revision,
-      $all_changesets);
+    $inlines = $revision->loadInlineComments($all_changesets);
 
     $object_phids = array_merge(
       $revision->getReviewers(),
@@ -145,12 +143,13 @@ final class DifferentialRevisionViewController extends DifferentialController {
       $warning->appendChild(hsprintf(
         '%s <strong>%s</strong>',
         pht(
-          'This diff is very large and affects %s files. Load each file '.
-            'individually.',
+          'This diff is very large and affects %s files. '.
+          'You may load each file individually or ',
           new PhutilNumber($count)),
         phutil_tag(
           'a',
           array(
+            'class' => 'button grey',
             'href' => $request_uri
               ->alter('large', 'true')
               ->setFragment('toc'),
@@ -643,44 +642,6 @@ final class DifferentialRevisionViewController extends DifferentialController {
     return $actions_dict;
   }
 
-  private function loadInlineComments(
-    DifferentialRevision $revision,
-    array &$changesets) {
-    assert_instances_of($changesets, 'DifferentialChangeset');
-
-    $inline_comments = array();
-
-    $inline_comments = id(new DifferentialInlineCommentQuery())
-      ->withRevisionIDs(array($revision->getID()))
-      ->withNotDraft(true)
-      ->execute();
-
-    $load_changesets = array();
-    foreach ($inline_comments as $inline) {
-      $changeset_id = $inline->getChangesetID();
-      if (isset($changesets[$changeset_id])) {
-        continue;
-      }
-      $load_changesets[$changeset_id] = true;
-    }
-
-    $more_changesets = array();
-    if ($load_changesets) {
-      $changeset_ids = array_keys($load_changesets);
-      $more_changesets += id(new DifferentialChangeset())
-        ->loadAllWhere(
-          'id IN (%Ld)',
-          $changeset_ids);
-    }
-
-    if ($more_changesets) {
-      $changesets += $more_changesets;
-      $changesets = msort($changesets, 'getSortKey');
-    }
-
-    return $inline_comments;
-  }
-
   private function loadChangesetsAndVsMap(
     DifferentialDiff $target,
     DifferentialDiff $diff_vs = null,
@@ -925,22 +886,14 @@ final class DifferentialRevisionViewController extends DifferentialController {
     DifferentialDiff $right_diff,
     array $changesets) {
 
-    $viewer = $this->getRequest()->getUser();
-
-    $xactions = id(new DifferentialTransactionQuery())
-      ->setViewer($viewer)
-      ->withObjectPHIDs(array($revision->getPHID()))
-      ->needComments(true)
-      ->execute();
-
-    $timeline = id(new DifferentialTransactionView())
-      ->setUser($viewer)
-      ->setObjectPHID($revision->getPHID())
-      ->setChangesets($changesets)
-      ->setRevision($revision)
-      ->setLeftDiff($left_diff)
-      ->setRightDiff($right_diff)
-      ->setTransactions($xactions);
+    $timeline = $this->buildTransactionTimeline(
+      $revision,
+      new DifferentialTransactionQuery(),
+      $engine = null,
+      array(
+        'left' => $left_diff->getID(),
+        'right' => $right_diff->getID(),
+      ));
 
     return $timeline;
   }

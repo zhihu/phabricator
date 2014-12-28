@@ -67,7 +67,6 @@ final class DiffusionCommitController extends DiffusionController {
         ),
         array(
           'title' => pht('Commit Still Parsing'),
-          'device' => false,
         ));
     }
 
@@ -276,6 +275,7 @@ final class DiffusionCommitController extends DiffusionController {
       $content[] = $change_panel;
 
       $changesets = DiffusionPathChange::convertToDifferentialChangesets(
+        $user,
         $changes);
 
       $vcs = $repository->getVersionControlSystem();
@@ -399,7 +399,6 @@ final class DiffusionCommitController extends DiffusionController {
       array(
         'title' => $commit_id,
         'pageObjects' => array($commit->getPHID()),
-        'device' => false,
       ));
   }
 
@@ -419,7 +418,6 @@ final class DiffusionCommitController extends DiffusionController {
       ->withSourcePHIDs(array($commit_phid))
       ->withEdgeTypes(array(
         DiffusionCommitHasTaskEdgeType::EDGECONST,
-        PhabricatorEdgeConfig::TYPE_COMMIT_HAS_PROJECT,
         PhabricatorEdgeConfig::TYPE_COMMIT_HAS_DREV,
       ));
 
@@ -427,8 +425,6 @@ final class DiffusionCommitController extends DiffusionController {
 
     $task_phids = array_keys(
       $edges[$commit_phid][DiffusionCommitHasTaskEdgeType::EDGECONST]);
-    $proj_phids = array_keys(
-      $edges[$commit_phid][PhabricatorEdgeConfig::TYPE_COMMIT_HAS_PROJECT]);
     $revision_phid = key(
       $edges[$commit_phid][PhabricatorEdgeConfig::TYPE_COMMIT_HAS_DREV]);
 
@@ -628,26 +624,14 @@ final class DiffusionCommitController extends DiffusionController {
       $props['Tasks'] = $task_list;
     }
 
-    if ($proj_phids) {
-      $proj_list = array();
-      foreach ($proj_phids as $phid) {
-        $proj_list[] = $handles[$phid]->renderLink();
-      }
-      $proj_list = phutil_implode_html(phutil_tag('br'), $proj_list);
-      $props['Projects'] = $proj_list;
-    }
-
     return $props;
   }
 
   private function buildComments(PhabricatorRepositoryCommit $commit) {
-    $viewer = $this->getRequest()->getUser();
-
-    $xactions = id(new PhabricatorAuditTransactionQuery())
-      ->setViewer($viewer)
-      ->withObjectPHIDs(array($commit->getPHID()))
-      ->needComments(true)
-      ->execute();
+    $timeline = $this->buildTransactionTimeline(
+      $commit,
+      new PhabricatorAuditTransactionQuery());
+    $xactions = $timeline->getTransactions();
 
     $path_ids = array();
     foreach ($xactions as $xaction) {
@@ -667,11 +651,7 @@ final class DiffusionCommitController extends DiffusionController {
       $path_map = ipull($path_map, 'path', 'id');
     }
 
-    return id(new PhabricatorAuditTransactionView())
-      ->setUser($viewer)
-      ->setObjectPHID($commit->getPHID())
-      ->setPathMap($path_map)
-      ->setTransactions($xactions);
+    return $timeline->setPathMap($path_map);
   }
 
   private function renderAddCommentPanel(
@@ -796,7 +776,7 @@ final class DiffusionCommitController extends DiffusionController {
       'aphront-panel-preview aphront-panel-flush',
       array(
         phutil_tag('div', array('id' => 'audit-preview'), $loading),
-        phutil_tag('div', array('id' => 'inline-comment-preview'))
+        phutil_tag('div', array('id' => 'inline-comment-preview')),
       ));
 
     // TODO: This is pretty awkward, unify the CSS between Diffusion and
@@ -911,7 +891,8 @@ final class DiffusionCommitController extends DiffusionController {
         'diffusion.mergedcommitsquery',
         array(
           'commit' => $drequest->getCommit(),
-          'limit' => $limit + 1));
+          'limit' => $limit + 1,
+        ));
     } catch (ConduitException $ex) {
       if ($ex->getMessage() != 'ERR-UNSUPPORTED-VCS') {
         throw $ex;
@@ -1026,7 +1007,8 @@ final class DiffusionCommitController extends DiffusionController {
       'diffusion.rawdiffquery',
       array(
         'commit' => $drequest->getCommit(),
-        'path' => $drequest->getPath()));
+        'path' => $drequest->getPath(),
+      ));
 
     $file = PhabricatorFile::buildFromFileDataOrHash(
       $raw_diff,
@@ -1053,58 +1035,12 @@ final class DiffusionCommitController extends DiffusionController {
 
     $view = new PHUIStatusListView();
     foreach ($audit_requests as $request) {
+      $code = $request->getAuditStatus();
       $item = new PHUIStatusItemView();
-
-      switch ($request->getAuditStatus()) {
-        case PhabricatorAuditStatusConstants::AUDIT_NOT_REQUIRED:
-          $item->setIcon(
-            PHUIStatusItemView::ICON_OPEN,
-            'blue',
-            pht('Commented'));
-          break;
-        case PhabricatorAuditStatusConstants::AUDIT_REQUIRED:
-          $item->setIcon(
-            PHUIStatusItemView::ICON_WARNING,
-            'blue',
-            pht('Audit Required'));
-          break;
-        case PhabricatorAuditStatusConstants::CONCERNED:
-          $item->setIcon(
-            PHUIStatusItemView::ICON_REJECT,
-            'red',
-            pht('Concern Raised'));
-          break;
-        case PhabricatorAuditStatusConstants::ACCEPTED:
-          $item->setIcon(
-            PHUIStatusItemView::ICON_ACCEPT,
-            'green',
-            pht('Accepted'));
-          break;
-        case PhabricatorAuditStatusConstants::AUDIT_REQUESTED:
-          $item->setIcon(
-            PHUIStatusItemView::ICON_WARNING,
-            'dark',
-            pht('Audit Requested'));
-          break;
-        case PhabricatorAuditStatusConstants::RESIGNED:
-          $item->setIcon(
-            PHUIStatusItemView::ICON_OPEN,
-            'dark',
-            pht('Resigned'));
-          break;
-        case PhabricatorAuditStatusConstants::CLOSED:
-          $item->setIcon(
-            PHUIStatusItemView::ICON_ACCEPT,
-            'blue',
-            pht('Closed'));
-          break;
-        default:
-          $item->setIcon(
-            PHUIStatusItemView::ICON_QUESTION,
-            'dark',
-            pht('%s?', $request->getAuditStatus()));
-          break;
-      }
+      $item->setIcon(
+        PhabricatorAuditStatusConstants::getStatusIcon($code),
+        PhabricatorAuditStatusConstants::getStatusColor($code),
+        PhabricatorAuditStatusConstants::getStatusName($code));
 
       $note = array();
       foreach ($request->getAuditReasons() as $reason) {

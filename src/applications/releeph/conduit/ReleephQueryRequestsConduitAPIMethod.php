@@ -15,7 +15,7 @@ final class ReleephQueryRequestsConduitAPIMethod
   public function defineParamTypes() {
     return array(
       'revisionPHIDs'         => 'optional list<phid>',
-      'requestedCommitPHIDs'  => 'optional list<phid>'
+      'requestedCommitPHIDs'  => 'optional list<phid>',
     );
   }
 
@@ -56,7 +56,7 @@ final class ReleephQueryRequestsConduitAPIMethod
       $object = $releephRequest->getRequestedObject();
       if ($object instanceof DifferentialRevision) {
         $object_phid = $object->getPHID();
-      }  else {
+      } else {
         $object_phid = null;
       }
 

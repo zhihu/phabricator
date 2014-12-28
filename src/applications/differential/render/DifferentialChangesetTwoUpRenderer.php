@@ -7,6 +7,17 @@ final class DifferentialChangesetTwoUpRenderer
     return false;
   }
 
+  protected function renderColgroup() {
+    return phutil_tag('colgroup', array(), array(
+      phutil_tag('col', array('class' => 'num')),
+      phutil_tag('col', array('class' => 'left')),
+      phutil_tag('col', array('class' => 'num')),
+      phutil_tag('col', array('class' => 'copy')),
+      phutil_tag('col', array('class' => 'right')),
+      phutil_tag('col', array('class' => 'cov')),
+    ));
+  }
+
   public function renderTextChange(
     $range_start,
     $range_len,
@@ -25,7 +36,7 @@ final class DifferentialChangesetTwoUpRenderer
           'td',
           array(
             'colspan' => 6,
-            'class' => 'show-more'
+            'class' => 'show-more',
           ),
           pht('Context not available.')));
     }
@@ -302,7 +313,7 @@ final class DifferentialChangesetTwoUpRenderer
           array('class' => $n_classes, 'colspan' => $n_colspan),
           array(
             phutil_tag('span', array('class' => 'zwsp'), $zero_space),
-            $n_text
+            $n_text,
           )),
         $n_cov,
       ));
@@ -365,7 +376,7 @@ final class DifferentialChangesetTwoUpRenderer
       $old = phutil_tag(
         'div',
         array(
-          'class' => 'differential-image-stage'
+          'class' => 'differential-image-stage',
         ),
         phutil_tag(
           'img',
@@ -379,7 +390,7 @@ final class DifferentialChangesetTwoUpRenderer
       $new = phutil_tag(
         'div',
         array(
-          'class' => 'differential-image-stage'
+          'class' => 'differential-image-stage',
         ),
         phutil_tag(
           'img',

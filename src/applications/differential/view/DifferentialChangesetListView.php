@@ -110,8 +110,9 @@ final class DifferentialChangesetListView extends AphrontView {
     Javelin::initBehavior('differential-toggle-files', array(
       'pht' => array(
         'undo' => pht('Undo'),
-        'collapsed' => pht('This file content has been collapsed.'))
-      ));
+        'collapsed' => pht('This file content has been collapsed.'),
+      ),
+    ));
     Javelin::initBehavior(
       'differential-dropdown-menus',
       array(
@@ -174,6 +175,7 @@ final class DifferentialChangesetListView extends AphrontView {
         $load = javelin_tag(
           'a',
           array(
+            'class' => 'button grey',
             'href' => '#'.$uniq_id,
             'sigil' => 'differential-load',
             'meta' => array(
@@ -182,7 +184,7 @@ final class DifferentialChangesetListView extends AphrontView {
             ),
             'mustcapture' => true,
           ),
-          pht('Load'));
+          pht('Load File'));
       }
       $detail->appendChild(
         phutil_tag(

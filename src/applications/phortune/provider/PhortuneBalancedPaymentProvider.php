@@ -2,17 +2,119 @@
 
 final class PhortuneBalancedPaymentProvider extends PhortunePaymentProvider {
 
-  public function isEnabled() {
-    return $this->getMarketplaceURI() &&
-           $this->getSecretKey();
+  const BALANCED_MARKETPLACE_ID   = 'balanced.marketplace-id';
+  const BALANCED_SECRET_KEY       = 'balanced.secret-key';
+
+  public function isAcceptingLivePayments() {
+    return !preg_match('/-test-/', $this->getSecretKey());
   }
 
-  public function getProviderType() {
-    return 'balanced';
+  public function getName() {
+    return pht('Balanced Payments');
   }
 
-  public function getProviderDomain() {
-    return 'balancedpayments.com';
+  public function getConfigureName() {
+    return pht('Add Balanced Payments Account');
+  }
+
+  public function getConfigureDescription() {
+    return pht(
+      'Allows you to accept credit or debit card payments with a '.
+      'balancedpayments.com account.');
+  }
+
+  public function getConfigureProvidesDescription() {
+    return pht(
+      'This merchant accepts credit and debit cards via Balanced Payments.');
+  }
+
+  public function getConfigureInstructions() {
+    return pht(
+      "To configure Balacned, register or log in to an existing account on ".
+      "[[https://balancedpayments.com | balancedpayments.com]]. Once logged ".
+      "in:\n\n".
+      "  - Choose a marketplace.\n".
+      "  - Find the **Marketplace ID** in {nav My Marketplace > Settings} and ".
+      "    copy it into the field above.\n".
+      "  - On the same screen, under **API keys**, choose **Add a key**, then ".
+      "    **Show key secret**. Copy the value into the field above.\n\n".
+      "You can either use a test marketplace to add this provider in test ".
+      "mode, or use a live marketplace to accept live payments.");
+  }
+
+  public function getAllConfigurableProperties() {
+    return array(
+      self::BALANCED_MARKETPLACE_ID,
+      self::BALANCED_SECRET_KEY,
+    );
+  }
+
+  public function getAllConfigurableSecretProperties() {
+    return array(
+      self::BALANCED_SECRET_KEY,
+    );
+  }
+
+  public function processEditForm(
+    AphrontRequest $request,
+    array $values) {
+
+    $errors = array();
+    $issues = array();
+
+    if (!strlen($values[self::BALANCED_MARKETPLACE_ID])) {
+      $errors[] = pht('Balanced Marketplace ID is required.');
+      $issues[self::BALANCED_MARKETPLACE_ID] = pht('Required');
+    }
+
+    if (!strlen($values[self::BALANCED_SECRET_KEY])) {
+      $errors[] = pht('Balanced Secret Key is required.');
+      $issues[self::BALANCED_SECRET_KEY] = pht('Required');
+    }
+
+    return array($errors, $issues, $values);
+  }
+
+  public function extendEditForm(
+    AphrontRequest $request,
+    AphrontFormView $form,
+    array $values,
+    array $issues) {
+
+    $form
+      ->appendChild(
+        id(new AphrontFormTextControl())
+          ->setName(self::BALANCED_MARKETPLACE_ID)
+          ->setValue($values[self::BALANCED_MARKETPLACE_ID])
+          ->setError(idx($issues, self::BALANCED_MARKETPLACE_ID, true))
+          ->setLabel(pht('Balanced Marketplace ID')))
+      ->appendChild(
+        id(new AphrontFormTextControl())
+          ->setName(self::BALANCED_SECRET_KEY)
+          ->setValue($values[self::BALANCED_SECRET_KEY])
+          ->setError(idx($issues, self::BALANCED_SECRET_KEY, true))
+          ->setLabel(pht('Balanced Secret Key')));
+
+  }
+
+  public function canRunConfigurationTest() {
+    return true;
+  }
+
+  public function runConfigurationTest() {
+    $this->loadBalancedAPILibraries();
+
+    // TODO: This only tests that the secret key is correct. It's not clear
+    // how to test that the marketplace is correct.
+
+    try {
+      Balanced\Settings::$api_key = $this->getSecretKey();
+      Balanced\APIKey::query()->first();
+    } catch (RESTful\Exceptions\HTTPError $error) {
+      // NOTE: This exception doesn't print anything meaningful if it escapes
+      // to top level. Replace it with something slightly readable.
+      throw new Exception($error->response->body->description);
+    }
   }
 
   public function getPaymentMethodDescription() {
@@ -20,7 +122,7 @@ final class PhortuneBalancedPaymentProvider extends PhortunePaymentProvider {
   }
 
   public function getPaymentMethodIcon() {
-    return celerity_get_resource_uri('/rsrc/image/phortune/balanced.png');
+    return 'Balanced';
   }
 
   public function getPaymentMethodProviderDescription() {
@@ -32,23 +134,107 @@ final class PhortuneBalancedPaymentProvider extends PhortunePaymentProvider {
     return pht('Credit/Debit Card');
   }
 
-  public function canHandlePaymentMethod(PhortunePaymentMethod $method) {
-    $type = $method->getMetadataValue('type');
-    return ($type === 'balanced.account');
-  }
-
   protected function executeCharge(
     PhortunePaymentMethod $method,
     PhortuneCharge $charge) {
-    throw new PhortuneNotImplementedException($this);
+    $this->loadBalancedAPILibraries();
+
+    $price = $charge->getAmountAsCurrency();
+
+    // Build the string which will appear on the credit card statement.
+    $charge_as = new PhutilURI(PhabricatorEnv::getProductionURI('/'));
+    $charge_as = $charge_as->getDomain();
+    $charge_as = id(new PhutilUTF8StringTruncator())
+      ->setMaximumBytes(22)
+      ->setTerminator('')
+      ->truncateString($charge_as);
+
+    try {
+      Balanced\Settings::$api_key = $this->getSecretKey();
+      $card = Balanced\Card::get($method->getMetadataValue('balanced.cardURI'));
+      $debit = $card->debit($price->getValueInUSDCents(), $charge_as);
+    } catch (RESTful\Exceptions\HTTPError $error) {
+      // NOTE: This exception doesn't print anything meaningful if it escapes
+      // to top level. Replace it with something slightly readable.
+      throw new Exception($error->response->body->description);
+    }
+
+    $expect_status = 'succeeded';
+    if ($debit->status !== $expect_status) {
+      throw new Exception(
+        pht(
+          'Debit failed, expected "%s", got "%s".',
+          $expect_status,
+          $debit->status));
+    }
+
+    $charge->setMetadataValue('balanced.debitURI', $debit->uri);
+    $charge->save();
   }
 
-  private function getMarketplaceURI() {
-    return PhabricatorEnv::getEnvConfig('phortune.balanced.marketplace-uri');
+  protected function executeRefund(
+    PhortuneCharge $charge,
+    PhortuneCharge $refund) {
+    $this->loadBalancedAPILibraries();
+
+    $debit_uri = $charge->getMetadataValue('balanced.debitURI');
+    if (!$debit_uri) {
+      throw new Exception(pht('No Balanced debit URI!'));
+    }
+
+    $refund_cents = $refund
+      ->getAmountAsCurrency()
+      ->negate()
+      ->getValueInUSDCents();
+
+    $params = array(
+      'amount' => $refund_cents,
+    );
+
+    try {
+      Balanced\Settings::$api_key = $this->getSecretKey();
+      $balanced_debit = Balanced\Debit::get($debit_uri);
+      $balanced_refund = $balanced_debit->refunds->create($params);
+    } catch (RESTful\Exceptions\HTTPError $error) {
+      throw new Exception($error->response->body->description);
+    }
+
+    $refund->setMetadataValue('balanced.refundURI', $balanced_refund->uri);
+    $refund->save();
+  }
+
+  public function updateCharge(PhortuneCharge $charge) {
+    $this->loadBalancedAPILibraries();
+
+    $debit_uri = $charge->getMetadataValue('balanced.debitURI');
+    if (!$debit_uri) {
+      throw new Exception(pht('No Balanced debit URI!'));
+    }
+
+    try {
+      Balanced\Settings::$api_key = $this->getSecretKey();
+      $balanced_debit = Balanced\Debit::get($debit_uri);
+    } catch (RESTful\Exceptions\HTTPError $error) {
+      throw new Exception($error->response->body->description);
+    }
+
+    // TODO: Deal with disputes / chargebacks / surprising refunds.
+  }
+
+  private function getMarketplaceID() {
+    return $this
+      ->getProviderConfig()
+      ->getMetadataValue(self::BALANCED_MARKETPLACE_ID);
   }
 
   private function getSecretKey() {
-    return PhabricatorEnv::getEnvConfig('phortune.balanced.secret-key');
+    return $this
+      ->getProviderConfig()
+      ->getMetadataValue(self::BALANCED_SECRET_KEY);
+  }
+
+  private function getMarketplaceURI() {
+    return '/v1/marketplaces/'.$this->getMarketplaceID();
   }
 
 
@@ -66,21 +252,19 @@ final class PhortuneBalancedPaymentProvider extends PhortunePaymentProvider {
 
   /**
    * @phutil-external-symbol class Balanced\Card
+   * @phutil-external-symbol class Balanced\Debit
    * @phutil-external-symbol class Balanced\Settings
    * @phutil-external-symbol class Balanced\Marketplace
+   * @phutil-external-symbol class Balanced\APIKey
    * @phutil-external-symbol class RESTful\Exceptions\HTTPError
    */
   public function createPaymentMethodFromRequest(
     AphrontRequest $request,
     PhortunePaymentMethod $method,
     array $token) {
+    $this->loadBalancedAPILibraries();
 
     $errors = array();
-
-    $root = dirname(phutil_get_library_root('phabricator'));
-    require_once $root.'/externals/httpful/bootstrap.php';
-    require_once $root.'/externals/restful/bootstrap.php';
-    require_once $root.'/externals/balanced-php/bootstrap.php';
 
     $account_phid = $method->getAccountPHID();
     $author_phid = $method->getAuthorPHID();
@@ -174,6 +358,13 @@ final class PhortuneBalancedPaymentProvider extends PhortunePaymentProvider {
 
 
     return null;
+  }
+
+  private function loadBalancedAPILibraries() {
+    $root = dirname(phutil_get_library_root('phabricator'));
+    require_once $root.'/externals/httpful/bootstrap.php';
+    require_once $root.'/externals/restful/bootstrap.php';
+    require_once $root.'/externals/balanced-php/bootstrap.php';
   }
 
 }

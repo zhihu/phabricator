@@ -160,18 +160,18 @@ final class PhabricatorWorkerTestCase extends PhabricatorTestCase {
     $this->expectNextLease($task1);
   }
 
-  public function testLeasedIsHighestPriority() {
+  public function testLeasedIsLowestPriority() {
     $task1 = $this->scheduleTask(array(), 2);
-    $task2 = $this->scheduleTask(array(), 1);
+    $task2 = $this->scheduleTask(array(), 2);
     $task3 = $this->scheduleTask(array(), 1);
 
     $this->expectNextLease(
-      $task1,
-      'Tasks with a higher priority should be scheduled first.');
+      $task3,
+      'Tasks with a lower priority should be scheduled first.');
     $this->expectNextLease(
-      $task2,
+      $task1,
       'Tasks with the same priority should be FIFO.');
-    $this->expectNextLease($task3);
+    $this->expectNextLease($task2);
   }
 
   private function expectNextLease($task, $message = null) {
@@ -206,7 +206,7 @@ final class PhabricatorWorkerTestCase extends PhabricatorTestCase {
     return PhabricatorWorker::scheduleTask(
       'PhabricatorTestWorker',
       $data,
-      $priority);
+      array('priority' => $priority));
   }
 
 }

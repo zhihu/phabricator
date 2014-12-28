@@ -38,6 +38,7 @@
 final class PhabricatorStartup {
 
   private static $startTime;
+  private static $debugTimeLimit;
   private static $globals = array();
   private static $capturingOutput;
   private static $rawInput;
@@ -226,6 +227,70 @@ final class PhabricatorStartup {
   }
 
 
+/* -(  Debug Time Limit  )--------------------------------------------------- */
+
+
+  /**
+   * Set a time limit (in seconds) for the current script. After time expires,
+   * the script fatals.
+   *
+   * This works like `max_execution_time`, but prints out a useful stack trace
+   * when the time limit expires. This is primarily intended to make it easier
+   * to debug pages which hang by allowing extraction of a stack trace: set a
+   * short debug limit, then use the trace to figure out what's happening.
+   *
+   * The limit is implemented with a tick function, so enabling it implies
+   * some accounting overhead.
+   *
+   * @param int Time limit in seconds.
+   * @return void
+   */
+  public static function setDebugTimeLimit($limit) {
+    self::$debugTimeLimit = $limit;
+
+    static $initialized;
+    if (!$initialized) {
+      declare(ticks=1);
+      register_tick_function(array('PhabricatorStartup', 'onDebugTick'));
+    }
+  }
+
+
+  /**
+   * Callback tick function used by @{method:setDebugTimeLimit}.
+   *
+   * Fatals with a useful stack trace after the time limit expires.
+   *
+   * @return void
+   */
+  public static function onDebugTick() {
+    $limit = self::$debugTimeLimit;
+    if (!$limit) {
+      return;
+    }
+
+    $elapsed = (microtime(true) - self::getStartTime());
+    if ($elapsed > $limit) {
+      $frames = array();
+      foreach (debug_backtrace() as $frame) {
+        $file = isset($frame['file']) ? $frame['file'] : '-';
+        $file = basename($file);
+
+        $line = isset($frame['line']) ? $frame['line'] : '-';
+        $class = isset($frame['class']) ? $frame['class'].'->' : null;
+        $func = isset($frame['function']) ? $frame['function'].'()' : '?';
+
+        $frames[] = "{$file}:{$line} {$class}{$func}";
+      }
+
+      self::didFatal(
+        "Request aborted by debug time limit after {$limit} seconds.\n\n".
+        "STACK TRACE\n".
+        implode("\n", $frames));
+    }
+  }
+
+
 /* -(  In Case of Apocalypse  )---------------------------------------------- */
 
 
@@ -335,7 +400,8 @@ final class PhabricatorStartup {
     // Replace superglobals with unfiltered versions, disrespect php.ini (we
     // filter ourselves)
     $filter = array(INPUT_GET, INPUT_POST,
-      INPUT_SERVER, INPUT_ENV, INPUT_COOKIE);
+      INPUT_SERVER, INPUT_ENV, INPUT_COOKIE,
+    );
     foreach ($filter as $type) {
       $filtered = filter_input_array($type, FILTER_UNSAFE_RAW);
       if (!is_array($filtered)) {

@@ -2,6 +2,7 @@
 
 final class HarbormasterBuildable extends HarbormasterDAO
   implements
+    PhabricatorApplicationTransactionInterface,
     PhabricatorPolicyInterface,
     HarbormasterBuildableInterface {
 
@@ -146,7 +147,7 @@ final class HarbormasterBuildable extends HarbormasterDAO
     PhabricatorWorker::scheduleTask(
       'HarbormasterBuildWorker',
       array(
-        'buildID' => $build->getID()
+        'buildID' => $build->getID(),
       ));
 
     return $build;
@@ -155,6 +156,22 @@ final class HarbormasterBuildable extends HarbormasterDAO
   public function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID => true,
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'containerPHID' => 'phid?',
+        'buildableStatus' => 'text32',
+        'isManualBuildable' => 'bool',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_buildable' => array(
+          'columns' => array('buildablePHID'),
+        ),
+        'key_container' => array(
+          'columns' => array('containerPHID'),
+        ),
+        'key_manual' => array(
+          'columns' => array('isManualBuildable'),
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 
@@ -207,6 +224,29 @@ final class HarbormasterBuildable extends HarbormasterDAO
 
   public function getBuilds() {
     return $this->assertAttached($this->builds);
+  }
+
+
+/* -(  PhabricatorApplicationTransactionInterface  )------------------------- */
+
+
+  public function getApplicationTransactionEditor() {
+    return new HarbormasterBuildableTransactionEditor();
+  }
+
+  public function getApplicationTransactionObject() {
+    return $this;
+  }
+
+  public function getApplicationTransactionTemplate() {
+    return new HarbormasterBuildableTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 

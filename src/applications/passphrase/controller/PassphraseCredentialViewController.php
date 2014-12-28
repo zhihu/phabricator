@@ -26,18 +26,10 @@ final class PassphraseCredentialViewController extends PassphraseController {
       throw new Exception(pht('Credential has invalid type "%s"!', $type));
     }
 
-    $xactions = id(new PassphraseCredentialTransactionQuery())
-      ->setViewer($viewer)
-      ->withObjectPHIDs(array($credential->getPHID()))
-      ->execute();
-
-    $engine = id(new PhabricatorMarkupEngine())
-      ->setViewer($viewer);
-
-    $timeline = id(new PhabricatorApplicationTransactionView())
-      ->setUser($viewer)
-      ->setObjectPHID($credential->getPHID())
-      ->setTransactions($xactions);
+    $timeline = $this->buildTransactionTimeline(
+      $credential,
+      new PassphraseCredentialTransactionQuery());
+    $timeline->setShouldTerminate(true);
 
     $title = pht('%s %s', 'K'.$credential->getID(), $credential->getName());
     $crumbs = $this->buildApplicationCrumbs();
@@ -46,6 +38,8 @@ final class PassphraseCredentialViewController extends PassphraseController {
     $header = $this->buildHeaderView($credential);
     $actions = $this->buildActionView($credential, $type);
     $properties = $this->buildPropertyView($credential, $type, $actions);
+
+    $crumbs->setActionList($actions);
 
     $box = id(new PHUIObjectBoxView())
       ->setHeader($header)

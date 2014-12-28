@@ -383,7 +383,8 @@ final class ManiphestReportController extends ManiphestController {
       $label,
       number_format($info['open']),
       number_format($info['close']),
-      $fmt);
+      $fmt,
+    );
   }
 
   public function renderOpenTasks() {
@@ -394,6 +395,12 @@ final class ManiphestReportController extends ManiphestController {
     $query = id(new ManiphestTaskQuery())
       ->setViewer($user)
       ->withStatuses(ManiphestTaskStatus::getOpenStatusConstants());
+
+    switch ($this->view) {
+      case 'project':
+        $query->needProjectPHIDs(true);
+        break;
+    }
 
     $project_phid = $request->getStr('project');
     $project_handle = null;
@@ -611,7 +618,7 @@ final class ManiphestReportController extends ManiphestController {
         'sigil' => 'has-tooltip',
         'meta'  => array(
           'tip'  => pht('Closed after %s', $edate),
-          'size' => 260
+          'size' => 260,
         ),
       ),
       pht('Recently Closed'));

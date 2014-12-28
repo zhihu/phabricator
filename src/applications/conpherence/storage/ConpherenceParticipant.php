@@ -15,6 +15,23 @@ final class ConpherenceParticipant extends ConpherenceDAO {
       self::CONFIG_SERIALIZATION => array(
         'settings' => self::SERIALIZATION_JSON,
       ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'participationStatus' => 'uint32',
+        'dateTouched' => 'epoch',
+        'seenMessageCount' => 'uint64',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'conpherencePHID' => array(
+          'columns' => array('conpherencePHID', 'participantPHID'),
+          'unique' => true,
+        ),
+        'unreadCount' => array(
+          'columns' => array('participantPHID', 'participationStatus'),
+        ),
+        'participationIndex' => array(
+          'columns' => array('participantPHID', 'dateTouched', 'id'),
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 

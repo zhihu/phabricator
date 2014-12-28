@@ -19,7 +19,7 @@ final class PhameBlogEditController
         ->withIDs(array($this->id))
         ->requireCapabilities(
           array(
-            PhabricatorPolicyCapability::CAN_EDIT
+            PhabricatorPolicyCapability::CAN_EDIT,
           ))
         ->executeOne();
       if (!$blog) {
@@ -122,12 +122,13 @@ final class PhameBlogEditController
         ->setError($e_name))
       ->appendChild(
         id(new PhabricatorRemarkupControl())
-        ->setLabel(pht('Description'))
-        ->setName('description')
-        ->setValue($blog->getDescription())
-        ->setID('blog-description')
-        ->setUser($user)
-        ->setDisableMacros(true))
+          ->setUser($user)
+          ->setLabel(pht('Description'))
+          ->setName('description')
+          ->setValue($blog->getDescription())
+          ->setID('blog-description')
+          ->setUser($user)
+          ->setDisableMacros(true))
       ->appendChild(
         id(new AphrontFormPolicyControl())
           ->setUser($user)

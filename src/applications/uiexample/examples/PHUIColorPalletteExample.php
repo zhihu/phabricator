@@ -25,10 +25,12 @@ final class PHUIColorPalletteExample extends PhabricatorUIExample {
       'daeaf3' => '83% Blue {$lightblue}',
       '3498db' => 'Sky Base {$sky}',
       'ddeef9' => '83% Sky {$lightsky}',
-      'c6539d' => 'Base Indigo {$indigo}',
-      'f5e2ef' => '83% Indigo {$lightindigo}',
+      '6e5cb6' => 'Base Indigo {$indigo}',
+      'eae6f7' => '83% Indigo {$lightindigo}',
+      'da49be' => 'Base Pink {$pink}',
+      'fbeaf8' => '83% Pink {$lightpink}',
       '8e44ad' => 'Base Violet {$violet}',
-      'ecdff1' => '83% Violet {$lightviolet}'
+      'ecdff1' => '83% Violet {$lightviolet}',
     );
 
     $greys = array(
@@ -61,7 +63,8 @@ final class PHUIColorPalletteExample extends PhabricatorUIExample {
         'div',
         array(
           'style' => 'background-color: #'.$color.';',
-          'class' => 'pl'),
+          'class' => 'pl',
+        ),
         $name.' #'.$color);
     }
 
@@ -71,7 +74,8 @@ final class PHUIColorPalletteExample extends PhabricatorUIExample {
         'div',
         array(
           'style' => 'background-color: #'.$color.';',
-          'class' => 'pl'),
+          'class' => 'pl',
+        ),
         $name.' #'.$color);
     }
 
@@ -84,7 +88,8 @@ final class PHUIColorPalletteExample extends PhabricatorUIExample {
         'div',
         array(
           'style' => 'background-color: #'.$color.';',
-          'class' => 'pl'),
+          'class' => 'pl',
+        ),
         $name.' #'.$color);
     }
 
@@ -92,7 +97,8 @@ final class PHUIColorPalletteExample extends PhabricatorUIExample {
       'a',
       array(
         'href' => 'http://color.hailpixel.com/#'.implode(',', $url),
-        'class' => 'button grey mlb'),
+        'class' => 'button grey mlb',
+      ),
       'Color Palette');
 
     $wrap1 = id(new PHUIObjectBoxView())
@@ -113,7 +119,7 @@ final class PHUIColorPalletteExample extends PhabricatorUIExample {
         array(
           $wrap1,
           $wrap2,
-          $wrap3
+          $wrap3,
         ));
-        }
+  }
 }

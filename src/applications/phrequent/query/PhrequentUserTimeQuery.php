@@ -239,7 +239,8 @@ final class PhrequentUserTimeQuery
     return array(
       self::ENDED_ALL => pht('All'),
       self::ENDED_NO  => pht('No'),
-      self::ENDED_YES => pht('Yes'));
+      self::ENDED_YES => pht('Yes'),
+    );
   }
 
   public static function getOrderSearchOptions() {
@@ -249,11 +250,13 @@ final class PhrequentUserTimeQuery
       self::ORDER_ENDED_ASC     => pht('by furthest end date'),
       self::ORDER_ENDED_DESC    => pht('by nearest end date'),
       self::ORDER_DURATION_ASC  => pht('by smallest duration'),
-      self::ORDER_DURATION_DESC => pht('by largest duration'));
+      self::ORDER_DURATION_DESC => pht('by largest duration'),
+    );
   }
 
   public static function getUserTotalObjectsTracked(
-    PhabricatorUser $user) {
+    PhabricatorUser $user,
+    $limit = PHP_INT_MAX) {
 
     $usertime_dao = new PhrequentUserTime();
     $conn = $usertime_dao->establishConnection('r');
@@ -262,9 +265,11 @@ final class PhrequentUserTimeQuery
       $conn,
       'SELECT COUNT(usertime.id) N FROM %T usertime '.
       'WHERE usertime.userPHID = %s '.
-      'AND usertime.dateEnded IS NULL',
+      'AND usertime.dateEnded IS NULL '.
+      'LIMIT %d',
       $usertime_dao->getTableName(),
-      $user->getPHID());
+      $user->getPHID(),
+      $limit);
     return $count['N'];
   }
 

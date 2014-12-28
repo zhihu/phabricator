@@ -82,38 +82,21 @@ final class DiffusionRepositoryEditMainController
         $this->buildSubversionActions($repository));
     }
 
-    $local_properties = null;
+    $storage_properties = null;
     if ($has_local) {
-      $local_properties = $this->buildLocalProperties(
+      $storage_properties = $this->buildStorageProperties(
         $repository,
-        $this->buildLocalActions($repository));
+        $this->buildStorageActions($repository));
     }
 
     $actions_properties = $this->buildActionsProperties(
       $repository,
       $this->buildActionsActions($repository));
 
-    $xactions = id(new PhabricatorRepositoryTransactionQuery())
-      ->setViewer($viewer)
-      ->withObjectPHIDs(array($repository->getPHID()))
-      ->execute();
-
-    $engine = id(new PhabricatorMarkupEngine())
-      ->setViewer($viewer);
-    foreach ($xactions as $xaction) {
-      if ($xaction->getComment()) {
-        $engine->addObject(
-          $xaction->getComment(),
-          PhabricatorApplicationTransactionComment::MARKUP_FIELD_COMMENT);
-      }
-    }
-    $engine->process();
-
-    $xaction_view = id(new PhabricatorApplicationTransactionView())
-      ->setUser($viewer)
-      ->setObjectPHID($repository->getPHID())
-      ->setTransactions($xactions)
-      ->setMarkupEngine($engine);
+    $timeline = $this->buildTransactionTimeline(
+      $repository,
+      new PhabricatorRepositoryTransactionQuery());
+    $timeline->setShouldTerminate(true);
 
     $boxes = array();
 
@@ -157,10 +140,10 @@ final class DiffusionRepositoryEditMainController
         ->addPropertyList($remote_properties);
     }
 
-    if ($local_properties) {
+    if ($storage_properties) {
       $boxes[] = id(new PHUIObjectBoxView())
-        ->setHeaderText(pht('Local'))
-        ->addPropertyList($local_properties);
+        ->setHeaderText(pht('Storage'))
+        ->addPropertyList($storage_properties);
     }
 
     $boxes[] = id(new PHUIObjectBoxView())
@@ -187,7 +170,7 @@ final class DiffusionRepositoryEditMainController
       array(
         $crumbs,
         $boxes,
-        $xaction_view,
+        $timeline,
       ),
       array(
         'title' => $title,
@@ -565,7 +548,7 @@ final class DiffusionRepositoryEditMainController
     return $view;
   }
 
-  private function buildLocalActions(PhabricatorRepository $repository) {
+  private function buildStorageActions(PhabricatorRepository $repository) {
     $viewer = $this->getRequest()->getUser();
 
     $view = id(new PhabricatorActionListView())
@@ -574,15 +557,15 @@ final class DiffusionRepositoryEditMainController
 
     $edit = id(new PhabricatorActionView())
       ->setIcon('fa-pencil')
-      ->setName(pht('Edit Local'))
+      ->setName(pht('Edit Storage'))
       ->setHref(
-        $this->getRepositoryControllerURI($repository, 'edit/local/'));
+        $this->getRepositoryControllerURI($repository, 'edit/storage/'));
     $view->addAction($edit);
 
     return $view;
   }
 
-  private function buildLocalProperties(
+  private function buildStorageProperties(
     PhabricatorRepository $repository,
     PhabricatorActionListView $actions) {
 
@@ -592,8 +575,23 @@ final class DiffusionRepositoryEditMainController
       ->setUser($viewer)
       ->setActionList($actions);
 
+    $service_phid = $repository->getAlmanacServicePHID();
+    if ($service_phid) {
+      $handles = $this->loadViewerHandles(array($service_phid));
+      $v_service = $handles[$service_phid]->renderLink();
+    } else {
+      $v_service = phutil_tag(
+        'em',
+        array(),
+        pht('Local'));
+    }
+
     $view->addProperty(
-      pht('Local Path'),
+      pht('Storage Service'),
+      $v_service);
+
+    $view->addProperty(
+      pht('Storage Path'),
       $repository->getHumanReadableDetail('local-path'));
 
     return $view;

@@ -54,6 +54,19 @@ final class LegalpadDocument extends LegalpadDAO
       self::CONFIG_SERIALIZATION => array(
         'recentContributorPHIDs' => self::SERIALIZATION_JSON,
       ),
+      self::CONFIG_COLUMN_SCHEMA => array(
+        'title' => 'text255',
+        'contributorCount' => 'uint32',
+        'versions' => 'uint32',
+        'mailKey' => 'bytes20',
+        'signatureType' => 'text4',
+        'preamble' => 'text',
+      ),
+      self::CONFIG_KEY_SCHEMA => array(
+        'key_creator' => array(
+          'columns' => array('creatorPHID', 'dateModified'),
+        ),
+      ),
     ) + parent::getConfiguration();
   }
 
@@ -198,6 +211,13 @@ final class LegalpadDocument extends LegalpadDAO
 
   public function getApplicationTransactionTemplate() {
     return new LegalpadTransaction();
+  }
+
+  public function willRenderTimeline(
+    PhabricatorApplicationTransactionView $timeline,
+    AphrontRequest $request) {
+
+    return $timeline;
   }
 
 
