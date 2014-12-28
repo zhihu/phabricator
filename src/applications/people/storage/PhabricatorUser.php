@@ -551,7 +551,6 @@ final class PhabricatorUser
       $this,
       $this->loadPrimaryEmail(),
       PhabricatorAuthSessionEngine::ONETIME_WELCOME);
-    $http_auth = PhabricatorEnv::getEnvConfig('http.auth');
 
     $body = <<<EOBODY
 欢迎使用 Phabricator！
@@ -567,8 +566,6 @@ final class PhabricatorUser
 设置完成后，你可以通过下面的地址登录 Phabricator：
 
   {$base_uri}
-
-{$http_auth}
 
 EOBODY;
 
