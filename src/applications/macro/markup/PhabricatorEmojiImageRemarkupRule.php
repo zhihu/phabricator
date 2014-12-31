@@ -50,12 +50,15 @@ final class PhabricatorEmojiImageRemarkupRule extends PhutilRemarkupRule {
   }
 
   private function hasEmoji($name) {
-    $files = Filesystem::listDirectory('rsrc/image/emoji', $include_hidden = false);
-    foreach ($files as $file) {
-      $info = pathinfo($file);
-      $file_name = basename($file, '.'.$info['extension']);
-      if ($file_name == $name) {
-        return true;
+    $path = Filesystem::resolvePath('rsrc/image/emoji');
+    if (Filesystem::pathExists($path)) {
+      $files = Filesystem::listDirectory('rsrc/image/emoji', $include_hidden = false);
+      foreach ($files as $file) {
+        $info = pathinfo($file);
+        $file_name = basename($file, '.'.$info['extension']);
+        if ($file_name == $name) {
+          return true;
+        }
       }
     }
     return false;
