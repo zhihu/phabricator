@@ -25,6 +25,10 @@ final class ManiphestTaskEditController extends ManiphestController {
       ManiphestEditProjectsCapability::CAPABILITY);
     $can_edit_status = $this->hasApplicationCapability(
       ManiphestEditStatusCapability::CAPABILITY);
+    $can_create_projects = PhabricatorPolicyFilter::hasCapability(
+      $user,
+      PhabricatorApplication::getByClass('PhabricatorProjectApplication'),
+      ProjectCreateProjectsCapability::CAPABILITY);
 
     $parent_task = null;
     $template_id = null;
@@ -126,11 +130,14 @@ final class ManiphestTaskEditController extends ManiphestController {
 
       // You can only have a parent task if you're creating a new task.
       $parent_id = $request->getInt('parent');
-      if ($parent_id) {
+      if (strlen($parent_id)) {
         $parent_task = id(new ManiphestTaskQuery())
           ->setViewer($user)
           ->withIDs(array($parent_id))
           ->executeOne();
+        if (!$parent_task) {
+          return new Aphront404Response();
+        }
         if (!$template_id) {
           $template_id = $parent_id;
         }
@@ -349,7 +356,7 @@ final class ManiphestTaskEditController extends ManiphestController {
           id(new PhabricatorEdgeEditor())
             ->addEdge(
               $parent_task->getPHID(),
-              PhabricatorEdgeConfig::TYPE_TASK_DEPENDS_ON_TASK,
+              ManiphestTaskDependsOnTaskEdgeType::EDGECONST,
               $task->getPHID())
             ->save();
           $workflow = $parent_task->getID();
@@ -380,6 +387,17 @@ final class ManiphestTaskEditController extends ManiphestController {
                 return new Aphront404Response();
               }
 
+              // re-load projects for accuracy as they are not re-loaded via
+              // the editor
+              $project_phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
+                $task->getPHID(),
+                PhabricatorProjectObjectHasProjectEdgeType::EDGECONST);
+              $task->attachProjectPHIDs($project_phids);
+              $remove_from_board = false;
+              if (!in_array($column->getProjectPHID(), $project_phids)) {
+                $remove_from_board = true;
+              }
+
               $positions = id(new PhabricatorProjectColumnPositionQuery())
                 ->setViewer($user)
                 ->withColumns(array($column))
@@ -394,7 +412,7 @@ final class ManiphestTaskEditController extends ManiphestController {
               if ($order == PhabricatorProjectColumn::ORDER_NATURAL) {
                 // TODO: This is a little bit awkward, because PHP and JS use
                 // slightly different sort order parameters to achieve the same
-                // effect. It would be unify this a bit at some point.
+                // effect. It would be good to unify this a bit at some point.
                 $sort_map = array();
                 foreach ($positions as $position) {
                   $sort_map[$position->getObjectPHID()] = array(
@@ -411,6 +429,7 @@ final class ManiphestTaskEditController extends ManiphestController {
 
               $data = array(
                 'sortMap' => $sort_map,
+                'removeFromBoard' => $remove_from_board,
               );
               break;
             case 'task':
@@ -503,7 +522,7 @@ final class ManiphestTaskEditController extends ManiphestController {
 
     $error_view = null;
     if ($errors) {
-      $error_view = new AphrontErrorView();
+      $error_view = new PHUIErrorView();
       $error_view->setErrors($errors);
     }
 
@@ -649,6 +668,17 @@ final class ManiphestTaskEditController extends ManiphestController {
     }
 
     if ($can_edit_projects) {
+      $caption = null;
+      if ($can_create_projects) {
+        $caption = javelin_tag(
+          'a',
+          array(
+            'href'        => '/project/create/',
+            'mustcapture' => true,
+            'sigil'       => 'project-create',
+          ),
+          pht('Create New Project'));
+      }
       $form
         ->appendChild(
           id(new AphrontFormTokenizerControl())
@@ -656,21 +686,13 @@ final class ManiphestTaskEditController extends ManiphestController {
             ->setName('projects')
             ->setValue($projects_value)
             ->setID($project_tokenizer_id)
-            ->setCaption(
-              javelin_tag(
-                'a',
-                array(
-                  'href'        => '/project/create/',
-                  'mustcapture' => true,
-                  'sigil'       => 'project-create',
-                ),
-                pht('Create New Project')))
+            ->setCaption($caption)
             ->setDatasource(new PhabricatorProjectDatasource()));
     }
 
     $field_list->appendFieldsToForm($form);
 
-    require_celerity_resource('aphront-error-view-css');
+    require_celerity_resource('phui-error-view-css');
 
     Javelin::initBehavior('project-create', array(
       'tokenizerID' => $project_tokenizer_id,

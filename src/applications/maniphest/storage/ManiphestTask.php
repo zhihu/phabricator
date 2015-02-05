@@ -60,7 +60,7 @@ final class ManiphestTask extends ManiphestDAO
       ->attachSubscriberPHIDs(array());
   }
 
-  public function getConfiguration() {
+  protected function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_SERIALIZATION => array(
@@ -125,13 +125,13 @@ final class ManiphestTask extends ManiphestDAO
   public function loadDependsOnTaskPHIDs() {
     return PhabricatorEdgeQuery::loadDestinationPHIDs(
       $this->getPHID(),
-      PhabricatorEdgeConfig::TYPE_TASK_DEPENDS_ON_TASK);
+      ManiphestTaskDependsOnTaskEdgeType::EDGECONST);
   }
 
   public function loadDependedOnByTaskPHIDs() {
     return PhabricatorEdgeQuery::loadDestinationPHIDs(
       $this->getPHID(),
-      PhabricatorEdgeConfig::TYPE_TASK_DEPENDED_ON_BY_TASK);
+      ManiphestTaskDependedOnByTaskEdgeType::EDGECONST);
   }
 
   public function getAttachedPHIDs($type) {

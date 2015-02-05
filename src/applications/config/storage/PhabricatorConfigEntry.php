@@ -11,7 +11,7 @@ final class PhabricatorConfigEntry
   protected $value;
   protected $isDeleted;
 
-  public function getConfiguration() {
+  protected function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_SERIALIZATION => array(
@@ -46,7 +46,8 @@ final class PhabricatorConfigEntry
     if (!$config_entry) {
       $config_entry = id(new PhabricatorConfigEntry())
         ->setConfigKey($key)
-        ->setNamespace('default');
+        ->setNamespace('default')
+        ->setIsDeleted(0);
     }
 
     return $config_entry;

@@ -11,6 +11,10 @@ final class PhabricatorFilesConfigOptions
     return pht('Configure files and file storage.');
   }
 
+  public function getFontIcon() {
+    return 'fa-file';
+  }
+
   public function getOptions() {
     $viewable_default = array(
       'image/jpeg'  => 'image/jpeg',
@@ -179,7 +183,16 @@ final class PhabricatorFilesConfigOptions
         'metamta.files.public-create-email',
         'string',
         null)
-        ->setDescription(pht('Allow uploaded files via email.')),
+        ->setLocked(true)
+        ->setLockedMessage(pht(
+          'This configuration is deprecated. See description for details.'))
+        ->setSummary(pht('DEPRECATED - Allow uploaded files via email.'))
+        ->setDescription(
+          pht(
+            'This config has been deprecated in favor of [[ '.
+            '/applications/view/PhabricatorFilesApplication/ | '.
+            'application settings ]], which allow for multiple email '.
+            'addresses and other functionality.')),
      $this->newOption(
         'metamta.files.subject-prefix',
         'string',

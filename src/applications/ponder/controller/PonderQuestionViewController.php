@@ -30,8 +30,8 @@ final class PonderQuestionViewController extends PonderController {
 
     $authors = mpull($question->getAnswers(), null, 'getAuthorPHID');
     if (isset($authors[$user->getPHID()])) {
-      $answer_add_panel = id(new AphrontErrorView())
-        ->setSeverity(AphrontErrorView::SEVERITY_NODATA)
+      $answer_add_panel = id(new PHUIErrorView())
+        ->setSeverity(PHUIErrorView::SEVERITY_NODATA)
         ->appendChild(
           pht(
             'You have already answered this question. You can not answer '.
@@ -47,6 +47,12 @@ final class PonderQuestionViewController extends PonderController {
     $header = id(new PHUIHeaderView())
       ->setHeader($question->getTitle());
 
+    if ($question->getStatus() == PonderQuestionStatus::STATUS_OPEN) {
+      $header->setStatus('fa-square-o', 'bluegrey', pht('Open'));
+    } else {
+      $header->setStatus('fa-check-square-o', 'dark', pht('Closed'));
+    }
+
     $actions = $this->buildActionListView($question);
     $properties = $this->buildPropertyListView($question, $actions);
 
@@ -55,7 +61,6 @@ final class PonderQuestionViewController extends PonderController {
       ->addPropertyList($properties);
 
     $crumbs = $this->buildApplicationCrumbs($this->buildSideNavView());
-    $crumbs->setActionList($actions);
     $crumbs->addTextCrumb('Q'.$this->questionID, '/Q'.$this->questionID);
 
     return $this->buildApplicationPage(
@@ -100,11 +105,11 @@ final class PonderQuestionViewController extends PonderController {
 
     if ($question->getStatus() == PonderQuestionStatus::STATUS_OPEN) {
       $name = pht('Close Question');
-      $icon = 'fa-times';
+      $icon = 'fa-check-square-o';
       $href = 'close';
     } else {
       $name = pht('Reopen Question');
-      $icon = 'fa-check-circle-o';
+      $icon = 'fa-square-o';
       $href = 'open';
     }
 

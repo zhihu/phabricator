@@ -255,7 +255,7 @@ final class ConpherenceEditor extends PhabricatorApplicationTransactionEditor {
     switch ($xaction->getTransactionType()) {
       case ConpherenceTransactionType::TYPE_FILES:
         $editor = new PhabricatorEdgeEditor();
-        $edge_type = PhabricatorEdgeConfig::TYPE_OBJECT_HAS_FILE;
+        $edge_type = PhabricatorObjectHasFileEdgeType::EDGECONST;
         $old = array_fill_keys($xaction->getOldValue(), true);
         $new = array_fill_keys($xaction->getNewValue(), true);
         $add_edges = array_keys(array_diff_key($new, $old));
@@ -459,7 +459,23 @@ final class ConpherenceEditor extends PhabricatorApplicationTransactionEditor {
   }
 
   protected function supportsSearch() {
-    return false;
+    return true;
+  }
+
+  protected function getSearchContextParameter(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
+
+    $comment_phids = array();
+    foreach ($xactions as $xaction) {
+      if ($xaction->hasComment()) {
+        $comment_phids[] = $xaction->getPHID();
+      }
+    }
+
+    return array(
+      'commentPHIDs' => $comment_phids,
+    );
   }
 
 }

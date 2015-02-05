@@ -40,7 +40,7 @@ final class PholioMockViewController extends PholioController {
 
     $phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
       $mock->getPHID(),
-      PhabricatorEdgeConfig::TYPE_MOCK_HAS_TASK);
+      PholioMockHasTaskEdgeType::EDGECONST);
     $this->setManiphestTaskPHIDs($phids);
     $phids[] = $mock->getAuthorPHID();
     $this->loadHandles($phids);
@@ -94,7 +94,6 @@ final class PholioMockViewController extends PholioController {
     $add_comment = $this->buildAddCommentView($mock, $comment_form_id);
 
     $crumbs = $this->buildApplicationCrumbs();
-    $crumbs->setActionList($actions);
     $crumbs->addTextCrumb('M'.$mock->getID(), '/M'.$mock->getID());
 
     $object_box = id(new PHUIObjectBoxView())

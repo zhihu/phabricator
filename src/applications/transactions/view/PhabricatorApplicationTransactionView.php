@@ -14,7 +14,14 @@ class PhabricatorApplicationTransactionView extends AphrontView {
   private $quoteTargetID;
   private $quoteRef;
   private $pager;
+  private $renderAsFeed;
   private $renderData = array();
+  private $hideCommentOptions = false;
+
+  public function setRenderAsFeed($feed) {
+    $this->renderAsFeed = $feed;
+    return $this;
+  }
 
   public function setQuoteRef($quote_ref) {
     $this->quoteRef = $quote_ref;
@@ -99,6 +106,15 @@ class PhabricatorApplicationTransactionView extends AphrontView {
 
   public function getRenderData() {
     return $this->renderData;
+  }
+
+  public function setHideCommentOptions($hide_comment_options) {
+    $this->hideCommentOptions = $hide_comment_options;
+    return $this;
+  }
+
+  public function getHideCommentOptions() {
+    return $this->hideCommentOptions;
   }
 
   public function buildEvents($with_hiding = false) {
@@ -382,7 +398,8 @@ class PhabricatorApplicationTransactionView extends AphrontView {
       ->setTransactionPHID($xaction->getPHID())
       ->setUserHandle($xaction->getHandle($xaction->getAuthorPHID()))
       ->setIcon($xaction->getIcon())
-      ->setColor($xaction->getColor());
+      ->setColor($xaction->getColor())
+      ->setHideCommentOptions($this->getHideCommentOptions());
 
     list($token, $token_removed) = $xaction->getToken();
     if ($token) {
@@ -390,7 +407,11 @@ class PhabricatorApplicationTransactionView extends AphrontView {
     }
 
     if (!$this->shouldSuppressTitle($xaction, $group)) {
-      $title = $xaction->getTitle();
+      if ($this->renderAsFeed) {
+        $title = $xaction->getTitleForFeed();
+      } else {
+        $title = $xaction->getTitle();
+      }
       if ($xaction->hasChangeDetails()) {
         if (!$this->isPreview) {
           $details = $this->buildChangeDetailsLink($xaction);
@@ -440,6 +461,8 @@ class PhabricatorApplicationTransactionView extends AphrontView {
       if ($xaction->getCommentVersion() > 1 && !$has_removed_comment) {
         $event->setIsEdited(true);
       }
+
+      $event->setIsNormalComment(true);
 
       // If we have a place for quoted text to go and this is a quotable
       // comment, pass the quote target ID to the event view.

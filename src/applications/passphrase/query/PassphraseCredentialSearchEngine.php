@@ -67,7 +67,7 @@ final class PassphraseCredentialSearchEngine
     return '/passphrase/'.$path;
   }
 
-  public function getBuiltinQueryNames() {
+  protected function getBuiltinQueryNames() {
     return array(
       'active' => pht('Active Credentials'),
       'all' => pht('All Credentials'),

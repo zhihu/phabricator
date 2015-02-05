@@ -142,7 +142,7 @@ final class HarbormasterBuild extends HarbormasterDAO
     return $result;
   }
 
-  public function getConfiguration() {
+  protected function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_COLUMN_SCHEMA => array(
@@ -214,7 +214,7 @@ final class HarbormasterBuild extends HarbormasterDAO
     $log_type) {
 
     $log_source = id(new PhutilUTF8StringTruncator())
-      ->setMaximumCodepoints(250)
+      ->setMaximumBytes(250)
       ->truncateString($log_source);
 
     $log = HarbormasterBuildLog::initializeNewBuildLog($build_target)

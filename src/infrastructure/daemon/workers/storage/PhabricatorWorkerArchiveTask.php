@@ -9,7 +9,7 @@ final class PhabricatorWorkerArchiveTask extends PhabricatorWorkerTask {
   protected $duration;
   protected $result;
 
-  public function getConfiguration() {
+  protected function getConfiguration() {
     $parent = parent::getConfiguration();
 
     $config = array(
@@ -84,6 +84,7 @@ final class PhabricatorWorkerArchiveTask extends PhabricatorWorkerTask {
         ->setFailureCount(0)
         ->setDataID($this->getDataID())
         ->setPriority($this->getPriority())
+        ->setObjectPHID($this->getObjectPHID())
         ->insert();
 
       $this->setDataID(null);

@@ -112,12 +112,21 @@ final class PhabricatorEnv {
     // subprocess environments.
     $_ENV['PATH'] = $env_path;
 
+
+    // If an instance identifier is defined, write it into the environment so
+    // it's available to subprocesses.
+    $instance = PhabricatorEnv::getEnvConfig('cluster.instance');
+    if (strlen($instance)) {
+      putenv('PHABRICATOR_INSTANCE='.$instance);
+      $_ENV['PHABRICATOR_INSTANCE'] = $instance;
+    }
+
     PhabricatorEventEngine::initialize();
 
     $translation = PhabricatorEnv::newObjectFromConfig('translation.provider');
     PhutilTranslator::getInstance()
       ->setLanguage($translation->getLanguage())
-      ->addTranslations($translation->getTranslations());
+      ->addTranslations($translation->getCleanTranslations());
   }
 
   private static function buildConfigurationSourceStack() {
@@ -232,7 +241,10 @@ final class PhabricatorEnv {
 
   public static function calculateEnvironmentHash() {
     $keys = array_keys(self::getAllConfigKeys());
-    ksort($keys);
+    sort($keys);
+
+    $skip_keys = self::getEnvConfig('phd.variant-config');
+    $keys = array_diff($keys, $skip_keys);
 
     $values = array();
     foreach ($keys as $key) {
@@ -528,6 +540,32 @@ final class PhabricatorEnv {
     return true;
   }
 
+  public static function isClusterRemoteAddress() {
+    $address = idx($_SERVER, 'REMOTE_ADDR');
+    if (!$address) {
+      throw new Exception(
+        pht(
+          'Unable to test remote address against cluster whitelist: '.
+          'REMOTE_ADDR is not defined.'));
+    }
+
+    return self::isClusterAddress($address);
+  }
+
+  public static function isClusterAddress($address) {
+    $cluster_addresses = PhabricatorEnv::getEnvConfig('cluster.addresses');
+    if (!$cluster_addresses) {
+      throw new Exception(
+        pht(
+          'Phabricator is not configured to serve cluster requests. '.
+          'Set `cluster.addresses` in the configuration to whitelist '.
+          'cluster hosts before sending requests that use a cluster '.
+          'authentication mechanism.'));
+    }
+
+    return PhutilCIDRList::newList($cluster_addresses)
+      ->containsAddress($address);
+  }
 
 /* -(  Internals  )---------------------------------------------------------- */
 

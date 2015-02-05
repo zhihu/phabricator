@@ -67,7 +67,7 @@ final class DifferentialRevision extends DifferentialDAO
       ->setStatus(ArcanistDifferentialRevisionStatus::NEEDS_REVIEW);
   }
 
-  public function getConfiguration() {
+  protected function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_SERIALIZATION => array(
@@ -214,7 +214,7 @@ final class DifferentialRevision extends DifferentialDAO
 
     $subscriber_phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
       $this->getPHID(),
-      PhabricatorEdgeConfig::TYPE_OBJECT_HAS_SUBSCRIBER);
+      PhabricatorObjectHasSubscriberEdgeType::EDGECONST);
     $subscriber_phids = array_reverse($subscriber_phids);
     foreach ($subscriber_phids as $phid) {
       $data[] = array(
@@ -226,7 +226,7 @@ final class DifferentialRevision extends DifferentialDAO
 
     $reviewer_phids = PhabricatorEdgeQuery::loadDestinationPHIDs(
       $this->getPHID(),
-      PhabricatorEdgeConfig::TYPE_DREV_HAS_REVIEWER);
+      DifferentialRevisionHasReviewerEdgeType::EDGECONST);
     $reviewer_phids = array_reverse($reviewer_phids);
     foreach ($reviewer_phids as $phid) {
       $data[] = array(

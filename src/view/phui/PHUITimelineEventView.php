@@ -22,8 +22,10 @@ final class PHUITimelineEventView extends AphrontView {
   private $token;
   private $tokenRemoved;
   private $quoteTargetID;
+  private $isNormalComment;
   private $quoteRef;
   private $reallyMajorEvent;
+  private $hideCommentOptions = false;
 
   public function setQuoteRef($quote_ref) {
     $this->quoteRef = $quote_ref;
@@ -41,6 +43,15 @@ final class PHUITimelineEventView extends AphrontView {
 
   public function getQuoteTargetID() {
     return $this->quoteTargetID;
+  }
+
+  public function setIsNormalComment($is_normal_comment) {
+    $this->isNormalComment = $is_normal_comment;
+    return $this;
+  }
+
+  public function getIsNormalComment() {
+    return $this->isNormalComment;
   }
 
   public function setHideByDefault($hide_by_default) {
@@ -154,6 +165,15 @@ final class PHUITimelineEventView extends AphrontView {
     return $this;
   }
 
+  public function setHideCommentOptions($hide_comment_options) {
+    $this->hideCommentOptions = $hide_comment_options;
+    return $this;
+  }
+
+  public function getHideCommentOptions() {
+    return $this->hideCommentOptions;
+  }
+
   public function setToken($token, $removed = false) {
     $this->token = $token;
     $this->tokenRemoved = $removed;
@@ -249,7 +269,7 @@ final class PHUITimelineEventView extends AphrontView {
     $menu = null;
     $items = array();
     $has_menu = false;
-    if (!$this->getIsPreview()) {
+    if (!$this->getIsPreview() && !$this->getHideCommentOptions()) {
       foreach ($this->getEventGroup() as $event) {
         $items[] = $event->getMenuItems($this->anchor);
         if ($event->hasChildren()) {
@@ -547,8 +567,9 @@ final class PHUITimelineEventView extends AphrontView {
             'uri' => '/transactions/quote/'.$xaction_phid.'/',
             'ref' => $ref,
           ));
+    }
 
-      // if there is something to quote then there is something to view raw
+    if ($this->getIsNormalComment()) {
       $items[] = id(new PhabricatorActionView())
         ->setIcon('fa-cutlery')
         ->setHref('/transactions/raw/'.$xaction_phid.'/')

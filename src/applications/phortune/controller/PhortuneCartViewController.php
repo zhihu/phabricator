@@ -86,8 +86,8 @@ final class PhortuneCartViewController
         }
         break;
       case PhortuneCart::STATUS_PURCHASED:
-        $error_view = id(new AphrontErrorView())
-          ->setSeverity(AphrontErrorView::SEVERITY_NOTICE)
+        $error_view = id(new PHUIErrorView())
+          ->setSeverity(PHUIErrorView::SEVERITY_NOTICE)
           ->appendChild(pht('This purchase has been completed.'));
 
         break;
@@ -159,7 +159,6 @@ final class PhortuneCartViewController
     $crumbs = $this->buildApplicationCrumbs();
     $this->addAccountCrumb($crumbs, $cart->getAccount());
     $crumbs->addTextCrumb(pht('Cart %d', $cart->getID()));
-    $crumbs->setActionList($actions);
 
     $timeline = $this->buildTransactionTimeline(
       $cart,

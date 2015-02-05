@@ -14,8 +14,12 @@ final class PhabricatorManiphestApplication extends PhabricatorApplication {
     return '/maniphest/';
   }
 
-  public function getIconName() {
-    return 'maniphest';
+  public function getFontIcon() {
+    return 'fa-anchor';
+  }
+
+  public function getTitleGlyph() {
+    return "\xE2\x9A\x93";
   }
 
   public function isPinnedByDefault(PhabricatorUser $viewer) {
@@ -35,7 +39,6 @@ final class PhabricatorManiphestApplication extends PhabricatorApplication {
   public function getEventListeners() {
     return array(
       new ManiphestNameIndexEventListener(),
-      new ManiphestActionMenuEventListener(),
       new ManiphestHovercardEventListener(),
     );
   }
@@ -142,6 +145,20 @@ final class PhabricatorManiphestApplication extends PhabricatorApplication {
                  ->setHref($this->getBaseURI().'task/create/?projects=PHID-PROJ-eipqemisx4qzrejiehbz&description=NOTE:%20%E8%AF%B7%E5%8F%82%E7%85%A7%20%5B%5Bdev/index_it_operations/callsa%20%7C%20%E8%BF%90%E7%BB%B4%E6%97%A5%E5%B8%B8%E9%9C%80%E6%B1%82%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%5D%5D%20%E6%9D%A5%E5%A1%AB%E5%86%99%20task%20%E6%8F%8F%E8%BF%B0'));
 
     return $items;
+  }
+
+  public function supportsEmailIntegration() {
+    return true;
+  }
+
+  public function getAppEmailBlurb() {
+    return pht(
+      'Send email to these addresses to create tasks. %s',
+      phutil_tag(
+        'a',
+        array(
+          'href' => $this->getInboundEmailSupportLink(),),
+        pht('Learn More')));
   }
 
   protected function getCustomCapabilities() {

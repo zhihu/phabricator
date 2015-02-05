@@ -65,7 +65,7 @@ final class PonderAnswer extends PonderDAO
     return $this->comments;
   }
 
-  public function getConfiguration() {
+  protected function getConfiguration() {
     return array(
       self::CONFIG_AUX_PHID => true,
       self::CONFIG_COLUMN_SCHEMA => array(
@@ -166,7 +166,7 @@ final class PonderAnswer extends PonderDAO
 
   // votable interface
   public function getUserVoteEdgeType() {
-    return PhabricatorEdgeConfig::TYPE_VOTING_USER_HAS_ANSWER;
+    return PonderVotingUserHasAnswerEdgeType::EDGECONST;
   }
 
   public function getVotablePHID() {

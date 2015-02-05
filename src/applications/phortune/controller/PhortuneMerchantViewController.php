@@ -43,7 +43,6 @@ final class PhortuneMerchantViewController
     $properties = $this->buildPropertyListView($merchant, $providers);
     $actions = $this->buildActionListView($merchant);
     $properties->setActionList($actions);
-    $crumbs->setActionList($actions);
 
     $provider_list = $this->buildProviderList(
       $merchant,
@@ -184,6 +183,14 @@ final class PhortuneMerchantViewController
         ->setName(pht('View Orders'))
         ->setIcon('fa-shopping-cart')
         ->setHref($this->getApplicationURI("merchant/orders/{$id}/"))
+        ->setDisabled(!$can_edit)
+        ->setWorkflow(!$can_edit));
+
+    $view->addAction(
+      id(new PhabricatorActionView())
+        ->setName(pht('View Subscriptions'))
+        ->setIcon('fa-moon-o')
+        ->setHref($this->getApplicationURI("merchant/{$id}/subscription/"))
         ->setDisabled(!$can_edit)
         ->setWorkflow(!$can_edit));
 

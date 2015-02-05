@@ -7,7 +7,7 @@ final class AlmanacServiceSearchEngine
     return pht('Almanac Services');
   }
 
-  protected function getApplicationClassName() {
+  public function getApplicationClassName() {
     return 'PhabricatorAlmanacApplication';
   }
 
@@ -31,7 +31,7 @@ final class AlmanacServiceSearchEngine
     return '/almanac/service/'.$path;
   }
 
-  public function getBuiltinQueryNames() {
+  protected function getBuiltinQueryNames() {
     $names = array(
       'all' => pht('All Services'),
     );
