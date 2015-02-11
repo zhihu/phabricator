@@ -114,7 +114,7 @@ final class PhabricatorManiphestApplication extends PhabricatorApplication {
                id(new PHUIListItemView())
                  ->setName(pht('反馈 Web Bug 以及可用性问题'))
                  ->setIcon('maniphest-dark')
-                 ->setHref($this->getBaseURI().'task/create/?title=「知乎%20Web%20Bug」&projects=PHID-PROJ-ng2ucirw6embkz22vruj%2CPHID-PROJ-j2nwt65tpusqhhlsdgyd&assign=sheng&priority=50&description=NOTE%3A%20请参照%20%5B%5Bindex_qa/regulation/about_bugs/%20%7C%20Bug%20相关%5D%5D%20来填写%20task%20描述%0A%0A%3D%20Info%0A%0A%3E%20系统版本：%0A%3E%20操作系统：%0A%3E%20用户主页链接：%0A%3E%20出现频率：%0A%0A%3D%20重现步骤%0A%0A%3E%20具体的页面和操作%0A%0A%3D%20期望的结果%0A%0A%3D%20实际的结果%0A%0A%3D%20附加信息（log，截屏，其它信息）'),
+                 ->setHref($this->getBaseURI().'task/create/?title=「知乎%20Web%20Bug」&projects=PHID-PROJ-ng2ucirw6embkz22vruj%2CPHID-PROJ-ew7wzg36oytdejq2a3vj&assign=sheng&priority=50&description=NOTE%3A%20请参照%20%5B%5Bindex_qa/regulation/about_bugs/%20%7C%20Bug%20相关%5D%5D%20来填写%20task%20描述%0A%0A%3D%20Info%0A%0A%3E%20系统版本：%0A%3E%20操作系统：%0A%3E%20用户主页链接：%0A%3E%20出现频率：%0A%0A%3D%20重现步骤%0A%0A%3E%20具体的页面和操作%0A%0A%3D%20期望的结果%0A%0A%3D%20实际的结果%0A%0A%3D%20附加信息（log，截屏，其它信息）'),
                id(new PHUIListItemView())
                  ->setName(pht('反馈知乎 Android Bug'))
                  ->setIcon('maniphest-dark')
