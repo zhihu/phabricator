@@ -130,8 +130,8 @@ final class PhabricatorChineseTranslation
 
       '%d Assigned Task(s)' => '%d 个我负责的任务',
 
-      'AM' => '上午',
-      'PM' => '下午',
+      // 'AM' => '上午',
+      // 'PM' => '下午',
 
       'Mon' => '星期一',
       'Tue' => '星期二',
