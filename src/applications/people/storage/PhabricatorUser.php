@@ -50,6 +50,8 @@ final class PhabricatorUser
   private $alternateCSRFString = self::ATTACHABLE;
   private $session = self::ATTACHABLE;
 
+  private $authorities = array();
+
   protected function readField($field) {
     switch ($field) {
       case 'timezoneIdentifier':
@@ -188,19 +190,6 @@ final class PhabricatorUser
 
   public function getMonogram() {
     return '@'.$this->getUsername();
-  }
-
-  public function getTranslation() {
-    try {
-      if ($this->translation &&
-          class_exists($this->translation) &&
-          is_subclass_of($this->translation, 'PhabricatorTranslation')) {
-        return $this->translation;
-      }
-    } catch (PhutilMissingSymbolException $ex) {
-      return null;
-    }
-    return null;
   }
 
   public function isLoggedIn() {
@@ -706,6 +695,25 @@ EOBODY;
       'phid = %s',
       $email->getUserPHID());
   }
+
+
+  /**
+   * Grant a user a source of authority, to let them bypass policy checks they
+   * could not otherwise.
+   */
+  public function grantAuthority($authority) {
+    $this->authorities[] = $authority;
+    return $this;
+  }
+
+
+  /**
+   * Get authorities granted to the user.
+   */
+  public function getAuthorities() {
+    return $this->authorities;
+  }
+
 
 /* -(  Multi-Factor Authentication  )---------------------------------------- */
 

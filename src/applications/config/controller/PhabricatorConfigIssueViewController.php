@@ -14,12 +14,12 @@ final class PhabricatorConfigIssueViewController
     $user = $request->getUser();
 
     $issues = PhabricatorSetupCheck::runAllChecks();
-    PhabricatorSetupCheck::setOpenSetupIssueCount(
-      PhabricatorSetupCheck::countUnignoredIssues($issues));
+    PhabricatorSetupCheck::setOpenSetupIssueKeys(
+      PhabricatorSetupCheck::getUnignoredIssueKeys($issues));
 
     if (empty($issues[$this->issueKey])) {
-      $content = id(new PHUIErrorView())
-        ->setSeverity(PHUIErrorView::SEVERITY_NOTICE)
+      $content = id(new PHUIInfoView())
+        ->setSeverity(PHUIInfoView::SEVERITY_NOTICE)
         ->setTitle(pht('Issue Resolved'))
         ->appendChild(pht('This setup issue has been resolved. '))
         ->appendChild(

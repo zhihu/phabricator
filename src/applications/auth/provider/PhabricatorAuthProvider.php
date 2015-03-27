@@ -158,6 +158,10 @@ abstract class PhabricatorAuthProvider {
     return $this->renderLoginForm($controller->getRequest(), $mode = 'start');
   }
 
+  public function buildInviteForm(PhabricatorAuthStartController $controller) {
+    return $this->renderLoginForm($controller->getRequest(), $mode = 'invite');
+  }
+
   abstract public function processLoginRequest(
     PhabricatorAuthLoginController $controller);
 
@@ -243,13 +247,19 @@ abstract class PhabricatorAuthProvider {
             $image_uri,
             array(
               'name' => $name,
-              'canCDN' => true,
+              'viewPolicy' => PhabricatorPolicies::POLICY_NOONE,
             ));
+          if ($image_file->isViewableImage()) {
+            $image_file
+              ->setViewPolicy(PhabricatorPolicies::getMostOpenPolicy())
+              ->setCanCDN(true)
+              ->save();
+            $account->setProfileImagePHID($image_file->getPHID());
+          } else {
+            $image_file->delete();
+          }
         unset($unguarded);
 
-        if ($image_file) {
-          $account->setProfileImagePHID($image_file->getPHID());
-        }
       } catch (Exception $ex) {
         // Log this but proceed, it's not especially important that we
         // be able to pull profile images.
@@ -401,6 +411,8 @@ abstract class PhabricatorAuthProvider {
       $button_text = pht('Link External Account');
     } else if ($mode == 'refresh') {
       $button_text = pht('Refresh Account Link');
+    } else if ($mode == 'invite') {
+      $button_text = pht('Register Account');
     } else if ($this->shouldAllowRegistration()) {
       $button_text = pht('Login or Register');
     } else {
@@ -449,7 +461,7 @@ abstract class PhabricatorAuthProvider {
     return null;
   }
 
-  protected function getAuthCSRFCode(AphrontRequest $request) {
+  public function getAuthCSRFCode(AphrontRequest $request) {
     $phcid = $request->getCookie(PhabricatorCookies::COOKIE_CLIENTID);
     if (!strlen($phcid)) {
       throw new Exception(

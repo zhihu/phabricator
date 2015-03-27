@@ -2,6 +2,9 @@
 
 final class PhabricatorBinariesSetupCheck extends PhabricatorSetupCheck {
 
+  public function getDefaultGroup() {
+    return self::GROUP_OTHER;
+  }
 
   protected function executeChecks() {
 
@@ -102,11 +105,11 @@ final class PhabricatorBinariesSetupCheck extends PhabricatorSetupCheck {
           $version = trim(substr($stdout, strlen('git version ')));
           break;
         case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:
-          $minimum_version = null;
+          $minimum_version = '1.5';
           $bad_versions = array(
             '1.7.1' => pht('This version of Subversion has a bug where '.
                            '"svn diff -c N" does not work for files added '.
-                           'in rN (Subverison issue #2873), fixed in 1.7.2.'),);
+                           'in rN (Subversion issue #2873), fixed in 1.7.2.'),);
           list($err, $stdout, $stderr) = exec_manual('svn --version --quiet');
           $version = trim($stdout);
           break;
@@ -118,18 +121,7 @@ final class PhabricatorBinariesSetupCheck extends PhabricatorSetupCheck {
             '2.2' => pht('This version of Mercurial has a significant memory '.
                          'leak, fixed in 2.2.1. Pushing fails with this '.
                          'version as well; see T3046#54922.'),);
-          list($err, $stdout, $stderr) = exec_manual('hg --version --quiet');
-
-          // NOTE: At least on OSX, recent versions of Mercurial report this
-          // string in this format:
-          //
-          //   Mercurial Distributed SCM (version 3.1.1+20140916)
-
-          $matches = null;
-          $pattern = '/^Mercurial Distributed SCM \(version ([\d.]+)/m';
-          if (preg_match($pattern, $stdout, $matches)) {
-            $version = $matches[1];
-          }
+          $version = PhabricatorRepositoryVersion::getMercurialVersion();
           break;
       }
 
@@ -232,7 +224,6 @@ final class PhabricatorBinariesSetupCheck extends PhabricatorSetupCheck {
       case PhabricatorRepositoryType::REPOSITORY_TYPE_GIT:
         break;
       case PhabricatorRepositoryType::REPOSITORY_TYPE_SVN:
-        break;
       case PhabricatorRepositoryType::REPOSITORY_TYPE_MERCURIAL:
         $summary = pht(
           "The '%s' binary is version %s and Phabricator requires version ".

@@ -15,6 +15,10 @@ final class PhabricatorCoreConfigOptions
     return 'fa-bullseye';
   }
 
+  public function getGroup() {
+    return 'core';
+  }
+
   public function getOptions() {
     if (phutil_is_windows()) {
       $paths = array();
@@ -86,9 +90,10 @@ final class PhabricatorCoreConfigOptions
         ->addExample('America/Boise', pht('US Mountain (MDT)'))
         ->addExample('America/Los_Angeles', pht('US West (PDT)')),
       $this->newOption('phabricator.cookie-prefix', 'string', null)
+        ->setLocked(true)
         ->setSummary(
           pht('Set a string Phabricator should use to prefix '.
-              'cookie names'))
+              'cookie names.'))
         ->setDescription(
           pht(
             'Cookies set for x.com are also sent for y.x.com. Assuming '.
@@ -175,9 +180,6 @@ final class PhabricatorCoreConfigOptions
       $this->newOption('config.hide', 'set', array())
         ->setLocked(true)
         ->setDescription(pht('Additional configuration options to hide.')),
-      $this->newOption('config.mask', 'set', array())
-        ->setLocked(true)
-        ->setDescription(pht('Additional configuration options to mask.')),
       $this->newOption('config.ignore-issues', 'set', array())
         ->setLocked(true)
         ->setDescription(pht('Setup issues to ignore.')),
@@ -212,12 +214,35 @@ final class PhabricatorCoreConfigOptions
         ->setDescription(pht('Cache namespace.')),
       $this->newOption('phabricator.allow-email-users', 'bool', false)
         ->setBoolOptions(
-            array(
-              pht('Allow'),
-              pht('Disallow'),
-              ))->setDescription(
-                 pht(
-                   'Allow non-members to interact with tasks over email.')),
+          array(
+            pht('Allow'),
+            pht('Disallow'),
+          ))
+        ->setDescription(
+           pht('Allow non-members to interact with tasks over email.')),
+      $this->newOption('phabricator.silent', 'bool', false)
+        ->setLocked(true)
+        ->setBoolOptions(
+          array(
+            pht('Run Silently'),
+            pht('Run Normally'),
+          ))
+        ->setSummary(pht('Stop Phabricator from sending any email, etc.'))
+        ->setDescription(
+          pht(
+            'This option allows you to stop Phabricator from sending '.
+            'any data to external services. Among other things, it will '.
+            'disable email, SMS, repository mirroring, and HTTP hooks.'.
+            "\n\n".
+            'This option is intended to allow a Phabricator instance to '.
+            'be exported, copied, imported, and run in a test environment '.
+            'without impacting users. For example, if you are migrating '.
+            'to new hardware, you could perform a test migration first, '.
+            'make sure things work, and then do a production cutover '.
+            'later with higher confidence and less disruption. Without '.
+            'this flag, users would receive duplicate email during the '.
+            'time the test instance and old production instance were '.
+            'both in operation.')),
       );
 
   }

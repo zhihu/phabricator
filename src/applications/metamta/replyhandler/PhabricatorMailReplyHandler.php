@@ -49,9 +49,20 @@ abstract class PhabricatorMailReplyHandler {
   abstract public function getPrivateReplyHandlerEmailAddress(
     PhabricatorObjectHandle $handle);
   public function getReplyHandlerDomain() {
+    return $this->getDefaultReplyHandlerDomain();
+  }
+  protected function getCustomReplyHandlerDomainIfExists($config_key) {
+    $domain = PhabricatorEnv::getEnvConfig($config_key);
+    if ($domain) {
+      return $domain;
+    }
+    return $this->getDefaultReplyHandlerDomain();
+  }
+  private function getDefaultReplyHandlerDomain() {
     return PhabricatorEnv::getEnvConfig(
       'metamta.reply-handler-domain');
   }
+
   abstract public function getReplyHandlerInstructions();
   abstract protected function receiveEmail(
     PhabricatorMetaMTAReceivedMail $mail);
@@ -349,21 +360,10 @@ abstract class PhabricatorMailReplyHandler {
     }
 
     $phids = mpull($handles, 'getPHID');
-    $map = id(new PhabricatorMetaMTAMemberQuery())
+    $results = id(new PhabricatorMetaMTAMemberQuery())
       ->setViewer(PhabricatorUser::getOmnipotentUser())
       ->withPHIDs($phids)
-      ->execute();
-
-    $results = array();
-    foreach ($phids as $phid) {
-      if (isset($map[$phid])) {
-        foreach ($map[$phid] as $expanded_phid) {
-          $results[$expanded_phid] = $expanded_phid;
-        }
-      } else {
-        $results[$phid] = $phid;
-      }
-    }
+      ->executeExpansion();
 
     return id(new PhabricatorHandleQuery())
       ->setViewer(PhabricatorUser::getOmnipotentUser())

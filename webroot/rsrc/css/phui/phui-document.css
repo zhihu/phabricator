@@ -14,6 +14,11 @@
   margin: 16px auto;
 }
 
+.device-desktop .phui-document-fluid .phui-document-view {
+  max-width: none;
+  margin: 16px;
+}
+
 .device-desktop .phui-document-view.phui-offset-view {
   max-width: 800px;
 }
@@ -102,12 +107,7 @@
 }
 
 .phui-document-content {
-  min-height: 240px;
   background: #fff;
-
-  /* NOTE: This fixes margins, not floats, and can not be replaced with
-     the ".group" class. See T3150.
-  */
   overflow: hidden;
 }
 
@@ -151,4 +151,8 @@
 
 .phui-document-view .phui-property-list-view {
   border-bottom: 1px solid {$thinblueborder};
+}
+
+.phui-document-view .phui-info-severity-nodata {
+  background-color: {$lightgreybackground};
 }

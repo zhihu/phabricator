@@ -3,13 +3,14 @@
 final class PhabricatorTaskmasterDaemon extends PhabricatorDaemon {
 
   protected function run() {
-    $sleep = 0;
     do {
       $tasks = id(new PhabricatorWorkerLeaseQuery())
         ->setLimit(1)
         ->execute();
 
       if ($tasks) {
+        $this->willBeginWork();
+
         foreach ($tasks as $task) {
           $id = $task->getID();
           $class = $task->getTaskClass();
@@ -20,17 +21,15 @@ final class PhabricatorTaskmasterDaemon extends PhabricatorDaemon {
           $ex = $task->getExecutionException();
           if ($ex) {
             if ($ex instanceof PhabricatorWorkerPermanentFailureException) {
-              $this->log(
-                pht(
-                  'Task %s failed permanently: %s',
-                  $id,
-                  $ex->getMessage()));
+              throw new PhutilProxyException(
+                pht('Permanent failure while executing Task ID %d.', $id),
+                $ex);
             } else if ($ex instanceof PhabricatorWorkerYieldException) {
               $this->log(pht('Task %s yielded.', $id));
             } else {
               $this->log("Task {$id} failed!");
               throw new PhutilProxyException(
-                "Error while executing task ID {$id} from queue.",
+                pht('Error while executing Task ID %d.', $id),
                 $ex);
             }
           } else {
@@ -40,7 +39,11 @@ final class PhabricatorTaskmasterDaemon extends PhabricatorDaemon {
 
         $sleep = 0;
       } else {
-        $sleep = min($sleep + 1, 30);
+        // When there's no work, sleep for one second. The pool will
+        // autoscale down if we're continuously idle for an extended period
+        // of time.
+        $this->willBeginIdle();
+        $sleep = 1;
       }
 
       $this->sleep($sleep);
