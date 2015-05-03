@@ -4,7 +4,6 @@ final class PhrictionDocumentHeraldAdapter extends HeraldAdapter {
 
   private $document;
   private $ccPHIDs = array();
-  private $emailPHIDs = array();
 
   public function getAdapterApplicationClass() {
     return 'PhabricatorPhrictionApplication';
@@ -12,6 +11,10 @@ final class PhrictionDocumentHeraldAdapter extends HeraldAdapter {
 
   public function getAdapterContentDescription() {
     return pht('React to wiki documents being created or updated.');
+  }
+
+  protected function newObject() {
+    return new PhrictionDocument();
   }
 
   public function getObject() {
@@ -30,14 +33,10 @@ final class PhrictionDocumentHeraldAdapter extends HeraldAdapter {
     $this->ccPHIDs = $cc_phids;
     return $this;
   }
+
   public function getCcPHIDs() {
     return $this->ccPHIDs;
   }
-
-  public function getEmailPHIDs() {
-    return $this->emailPHIDs;
-  }
-
 
   public function getAdapterContentName() {
     return pht('Phriction Documents');
@@ -137,29 +136,8 @@ final class PhrictionDocumentHeraldAdapter extends HeraldAdapter {
             true,
             pht('Added address to cc list.'));
           break;
-        case self::ACTION_FLAG:
-          $result[] = parent::applyFlagEffect(
-            $effect,
-            $this->getDocument()->getPHID());
-          break;
-        case self::ACTION_EMAIL:
-          foreach ($effect->getTarget() as $phid) {
-            $this->emailPHIDs[] = $phid;
-          }
-          $result[] = new HeraldApplyTranscript(
-            $effect,
-            true,
-            pht('Added addresses to email list.'));
-          break;
         default:
-          $custom_result = parent::handleCustomHeraldEffect($effect);
-          if ($custom_result === null) {
-            throw new Exception(pht(
-              "No rules to handle action '%s'.",
-              $action));
-          }
-
-          $result[] = $custom_result;
+          $result[] = $this->applyStandardEffect($effect);
           break;
       }
     }

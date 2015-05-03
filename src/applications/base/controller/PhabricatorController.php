@@ -3,6 +3,7 @@
 abstract class PhabricatorController extends AphrontController {
 
   private $handles;
+  private $extraQuicksandConfig = array();
 
   public function shouldRequireLogin() {
     return true;
@@ -55,6 +56,19 @@ abstract class PhabricatorController extends AphrontController {
 
   public function shouldAllowLegallyNonCompliantUsers() {
     return false;
+  }
+
+  public function isGlobalDragAndDropUploadEnabled() {
+    return false;
+  }
+
+  public function addExtraQuicksandConfig($config) {
+    $this->extraQuicksandConfig += $config;
+    return $this;
+  }
+
+  private function getExtraQuicksandConfig() {
+    return $this->extraQuicksandConfig;
   }
 
   public function willBeginExecution() {
@@ -256,7 +270,8 @@ abstract class PhabricatorController extends AphrontController {
         if ($must_sign_docs) {
           $controller = new LegalpadDocumentSignController();
           $this->getRequest()->setURIMap(array(
-            'id' => head($must_sign_docs)->getID(),));
+            'id' => head($must_sign_docs)->getID(),
+          ));
           $this->setCurrentApplication($legalpad);
           return $this->delegateToController($controller);
         } else {
@@ -289,7 +304,8 @@ abstract class PhabricatorController extends AphrontController {
   private function buildPageResponse($page) {
     if ($this->getRequest()->isQuicksand()) {
       $response = id(new AphrontAjaxResponse())
-        ->setContent($page->renderForQuicksand());
+        ->setContent($page->renderForQuicksand(
+          $this->getExtraQuicksandConfig()));
     } else {
       $response = id(new AphrontWebpageResponse())
         ->setContent($page->render());
@@ -414,7 +430,7 @@ abstract class PhabricatorController extends AphrontController {
           ));
       }
     } else if ($response instanceof AphrontRedirectResponse) {
-      if ($request->isAjax()) {
+      if ($request->isAjax() || $request->isQuicksand()) {
         return id(new AphrontAjaxResponse())
           ->setContent(
             array(
@@ -426,53 +442,16 @@ abstract class PhabricatorController extends AphrontController {
     return $response;
   }
 
-  protected function getHandle($phid) {
-    if (empty($this->handles[$phid])) {
-      throw new Exception(
-        "Attempting to access handle which wasn't loaded: {$phid}");
-    }
-    return $this->handles[$phid];
-  }
-
-  protected function loadHandles(array $phids) {
-    $phids = array_filter($phids);
-    $this->handles = $this->loadViewerHandles($phids);
-    return $this;
-  }
-
-  protected function getLoadedHandles() {
-    return $this->handles;
-  }
-
+  /**
+   * WARNING: Do not call this in new code.
+   *
+   * @deprecated See "Handles Technical Documentation".
+   */
   protected function loadViewerHandles(array $phids) {
     return id(new PhabricatorHandleQuery())
       ->setViewer($this->getRequest()->getUser())
       ->withPHIDs($phids)
       ->execute();
-  }
-
-  /**
-   * Render a list of links to handles, identified by PHIDs. The handles must
-   * already be loaded.
-   *
-   * @param   list<phid>  List of PHIDs to render links to.
-   * @param   string      Style, one of "\n" (to put each item on its own line)
-   *                      or "," (to list items inline, separated by commas).
-   * @return  string      Rendered list of handle links.
-   */
-  protected function renderHandlesForPHIDs(array $phids, $style = "\n") {
-    $style_map = array(
-      "\n"  => phutil_tag('br'),
-      ','   => ', ',
-    );
-
-    if (empty($style_map[$style])) {
-      throw new Exception("Unknown handle list style '{$style}'!");
-    }
-
-    return implode_selected_handle_links($style_map[$style],
-      $this->getLoadedHandles(),
-      array_filter($phids));
   }
 
   public function buildApplicationMenu() {
@@ -595,7 +574,6 @@ abstract class PhabricatorController extends AphrontController {
       ->setViewer($viewer)
       ->withObjectPHIDs(array($object->getPHID()))
       ->needComments(true)
-      ->setReversePaging(false)
       ->executeWithCursorPager($pager);
     $xactions = array_reverse($xactions);
 

@@ -4,7 +4,6 @@ abstract class HeraldPreCommitAdapter extends HeraldAdapter {
 
   private $log;
   private $hookEngine;
-  private $emailPHIDs = array();
 
   public function setPushLog(PhabricatorRepositoryPushLog $log) {
     $this->log = $log;
@@ -26,10 +25,6 @@ abstract class HeraldPreCommitAdapter extends HeraldAdapter {
 
   public function getObject() {
     return $this->log;
-  }
-
-  public function getEmailPHIDs() {
-    return array_values($this->emailPHIDs);
   }
 
   public function supportsRuleType($rule_type) {
@@ -106,15 +101,6 @@ abstract class HeraldPreCommitAdapter extends HeraldAdapter {
             true,
             pht('Did nothing.'));
           break;
-        case self::ACTION_EMAIL:
-          foreach ($effect->getTarget() as $phid) {
-            $this->emailPHIDs[$phid] = $phid;
-          }
-          $result[] = new HeraldApplyTranscript(
-            $effect,
-            true,
-            pht('Added mailable to mail targets.'));
-          break;
         case self::ACTION_BLOCK:
           $result[] = new HeraldApplyTranscript(
             $effect,
@@ -122,14 +108,7 @@ abstract class HeraldPreCommitAdapter extends HeraldAdapter {
             pht('Blocked push.'));
           break;
         default:
-          $custom_result = parent::handleCustomHeraldEffect($effect);
-          if ($custom_result === null) {
-            throw new Exception(pht(
-              "No rules to handle action '%s'.",
-              $action));
-          }
-
-          $result[] = $custom_result;
+          $result[] = $this->applyStandardEffect($effect);
           break;
       }
     }

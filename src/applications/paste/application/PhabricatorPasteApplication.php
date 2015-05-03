@@ -55,7 +55,8 @@ final class PhabricatorPasteApplication extends PhabricatorApplication {
       phutil_tag(
         'a',
         array(
-          'href' => $this->getInboundEmailSupportLink(),),
+          'href' => $this->getInboundEmailSupportLink(),
+        ),
         pht('Learn More')));
   }
 
@@ -80,6 +81,19 @@ final class PhabricatorPasteApplication extends PhabricatorApplication {
     $items[] = $item;
 
     return $items;
+  }
+
+  public function getMailCommandObjects() {
+    return array(
+      'paste' => array(
+        'name' => pht('Email Commands: Pastes'),
+        'header' => pht('Interacting with Pastes'),
+        'object' => new PhabricatorPaste(),
+        'summary' => pht(
+          'This page documents the commands you can use to interact with '.
+          'pastes.'),
+      ),
+    );
   }
 
 }

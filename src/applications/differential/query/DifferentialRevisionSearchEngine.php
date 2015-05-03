@@ -40,11 +40,15 @@ final class DifferentialRevisionSearchEngine
 
     $saved->setParameter(
       'subscriberPHIDs',
-      $this->readUsersFromRequest($request, 'subscribers'));
+      $this->readSubscribersFromRequest($request, 'subscribers'));
 
     $saved->setParameter(
       'repositoryPHIDs',
       $request->getArr('repositories'));
+
+    $saved->setParameter(
+      'projects',
+      $this->readProjectsFromRequest($request, 'projects'));
 
     $saved->setParameter(
       'draft',
@@ -67,12 +71,19 @@ final class DifferentialRevisionSearchEngine
       ->needDrafts(true)
       ->needRelationships(true);
 
+    $user_datasource = id(new PhabricatorPeopleUserFunctionDatasource())
+      ->setViewer($this->requireViewer());
+
     $responsible_phids = $saved->getParameter('responsiblePHIDs', array());
+    $responsible_phids = $user_datasource->evaluateTokens($responsible_phids);
     if ($responsible_phids) {
       $query->withResponsibleUsers($responsible_phids);
     }
 
+    $this->setQueryProjects($query, $saved);
+
     $author_phids = $saved->getParameter('authorPHIDs', array());
+    $author_phids = $user_datasource->evaluateTokens($author_phids);
     if ($author_phids) {
       $query->withAuthors($author_phids);
     }
@@ -82,7 +93,10 @@ final class DifferentialRevisionSearchEngine
       $query->withReviewers($reviewer_phids);
     }
 
+    $sub_datasource = id(new PhabricatorMetaMTAMailableFunctionDatasource())
+      ->setViewer($this->requireViewer());
     $subscriber_phids = $saved->getParameter('subscriberPHIDs', array());
+    $subscriber_phids = $sub_datasource->evaluateTokens($subscriber_phids);
     if ($subscriber_phids) {
       $query->withCCs($subscriber_phids);
     }
@@ -123,52 +137,45 @@ final class DifferentialRevisionSearchEngine
     $subscriber_phids = $saved->getParameter('subscriberPHIDs', array());
     $repository_phids = $saved->getParameter('repositoryPHIDs', array());
     $only_draft = $saved->getParameter('draft', false);
-
-    $all_phids = array_mergev(
-      array(
-        $responsible_phids,
-        $author_phids,
-        $reviewer_phids,
-        $subscriber_phids,
-        $repository_phids,
-      ));
-
-    $handles = id(new PhabricatorHandleQuery())
-      ->setViewer($this->requireViewer())
-      ->withPHIDs($all_phids)
-      ->execute();
+    $projects = $saved->getParameter('projects', array());
 
     $form
-      ->appendChild(
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Responsible Users'))
           ->setName('responsibles')
-          ->setDatasource(new PhabricatorPeopleDatasource())
-          ->setValue(array_select_keys($handles, $responsible_phids)))
-      ->appendChild(
+          ->setDatasource(new PhabricatorPeopleUserFunctionDatasource())
+          ->setValue($responsible_phids))
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Authors'))
           ->setName('authors')
-          ->setDatasource(new PhabricatorPeopleDatasource())
-          ->setValue(array_select_keys($handles, $author_phids)))
-      ->appendChild(
+          ->setDatasource(new PhabricatorPeopleUserFunctionDatasource())
+          ->setValue($author_phids))
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Reviewers'))
           ->setName('reviewers')
           ->setDatasource(new PhabricatorProjectOrUserDatasource())
-          ->setValue(array_select_keys($handles, $reviewer_phids)))
-      ->appendChild(
+          ->setValue($reviewer_phids))
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Subscribers'))
           ->setName('subscribers')
-          ->setDatasource(new PhabricatorMetaMTAMailableDatasource())
-          ->setValue(array_select_keys($handles, $subscriber_phids)))
-      ->appendChild(
+          ->setDatasource(new PhabricatorMetaMTAMailableFunctionDatasource())
+          ->setValue($subscriber_phids))
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Repositories'))
           ->setName('repositories')
           ->setDatasource(new DiffusionRepositoryDatasource())
-          ->setValue(array_select_keys($handles, $repository_phids)))
+          ->setValue($repository_phids))
+      ->appendControl(
+        id(new AphrontFormTokenizerControl())
+          ->setLabel(pht('Projects'))
+          ->setName('projects')
+          ->setDatasource(new PhabricatorProjectLogicalDatasource())
+          ->setValue($projects))
       ->appendChild(
         id(new AphrontFormSelectControl())
           ->setLabel(pht('Status'))

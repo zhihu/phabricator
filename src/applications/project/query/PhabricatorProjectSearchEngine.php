@@ -55,7 +55,8 @@ final class PhabricatorProjectSearchEngine
 
     $name = $saved->getParameter('name');
     if (strlen($name)) {
-      $query->withDatasourceQuery($name);
+      $tokens = PhabricatorTypeaheadDatasource::tokenizeString($name);
+      $query->withNameTokens($tokens);
     }
 
     $icons = $saved->getParameter('icons');
@@ -77,11 +78,7 @@ final class PhabricatorProjectSearchEngine
     AphrontFormView $form,
     PhabricatorSavedQuery $saved) {
 
-    $phids = $saved->getParameter('memberPHIDs', array());
-    $member_handles = id(new PhabricatorHandleQuery())
-      ->setViewer($this->requireViewer())
-      ->withPHIDs($phids)
-      ->execute();
+    $member_phids = $saved->getParameter('memberPHIDs', array());
 
     $status = $saved->getParameter('status');
     $name_match = $saved->getParameter('name');
@@ -123,12 +120,12 @@ final class PhabricatorProjectSearchEngine
           ->setName('name')
           ->setLabel(pht('Name'))
           ->setValue($name_match))
-      ->appendChild(
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
           ->setDatasource(new PhabricatorPeopleDatasource())
           ->setName('members')
           ->setLabel(pht('Members'))
-          ->setValue($member_handles))
+          ->setValue($member_phids))
       ->appendChild(
         id(new AphrontFormSelectControl())
           ->setLabel(pht('Status'))
@@ -181,15 +178,17 @@ final class PhabricatorProjectSearchEngine
 
   private function getStatusOptions() {
     return array(
-      'active' => pht('Show Only Active Projects'),
-      'all'    => pht('Show All Projects'),
+      'active'   => pht('Show Only Active Projects'),
+      'archived' => pht('Show Only Archived Projects'),
+      'all'      => pht('Show All Projects'),
     );
   }
 
   private function getStatusValues() {
     return array(
-      'active' => PhabricatorProjectQuery::STATUS_ACTIVE,
-      'all' => PhabricatorProjectQuery::STATUS_ANY,
+      'active'   => PhabricatorProjectQuery::STATUS_ACTIVE,
+      'archived' => PhabricatorProjectQuery::STATUS_ARCHIVED,
+      'all'      => PhabricatorProjectQuery::STATUS_ANY,
     );
   }
 

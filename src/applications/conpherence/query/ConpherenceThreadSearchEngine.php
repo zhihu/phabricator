@@ -3,22 +3,8 @@
 final class ConpherenceThreadSearchEngine
   extends PhabricatorApplicationSearchEngine {
 
-  // For now, we only search for rooms, but write this code so its easy to
-  // change that decision later
-  private $isRooms = true;
-
-  public function setIsRooms($bool) {
-    $this->isRooms = $bool;
-    return $this;
-  }
-
   public function getResultTypeDescription() {
-    if ($this->isRooms) {
-      $type = pht('Rooms');
-    } else {
-      $type = pht('Threads');
-    }
-    return $type;
+    return pht('Threads');
   }
 
   public function getApplicationClassName() {
@@ -32,17 +18,42 @@ final class ConpherenceThreadSearchEngine
       'participantPHIDs',
       $this->readUsersFromRequest($request, 'participants'));
 
+    $saved->setParameter('fulltext', $request->getStr('fulltext'));
+
+    $saved->setParameter(
+      'threadType',
+      $request->getStr('threadType'));
+
     return $saved;
   }
 
   public function buildQueryFromSavedQuery(PhabricatorSavedQuery $saved) {
     $query = id(new ConpherenceThreadQuery())
-      ->withIsRoom($this->isRooms)
       ->needParticipantCache(true);
 
     $participant_phids = $saved->getParameter('participantPHIDs', array());
     if ($participant_phids && is_array($participant_phids)) {
       $query->withParticipantPHIDs($participant_phids);
+    }
+
+    $fulltext = $saved->getParameter('fulltext');
+    if (strlen($fulltext)) {
+      $query->withFulltext($fulltext);
+    }
+
+    $thread_type = $saved->getParameter('threadType');
+    if (idx($this->getTypeOptions(), $thread_type)) {
+      switch ($thread_type) {
+        case 'rooms':
+          $query->withIsRoom(true);
+          break;
+        case 'messages':
+          $query->withIsRoom(false);
+          break;
+        case 'both':
+          $query->withIsRoom(null);
+          break;
+      }
     }
 
     return $query;
@@ -52,39 +63,43 @@ final class ConpherenceThreadSearchEngine
     AphrontFormView $form,
     PhabricatorSavedQuery $saved) {
 
-    $phids = $saved->getParameter('participantPHIDs', array());
-    $participant_handles = id(new PhabricatorHandleQuery())
-      ->setViewer($this->requireViewer())
-      ->withPHIDs($phids)
-      ->execute();
+    $participant_phids = $saved->getParameter('participantPHIDs', array());
+    $fulltext = $saved->getParameter('fulltext');
+
     $form
-      ->appendChild(
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
-        ->setDatasource(new PhabricatorPeopleDatasource())
-        ->setName('participants')
-        ->setLabel(pht('Participants'))
-        ->setValue($participant_handles));
+          ->setDatasource(new PhabricatorPeopleDatasource())
+          ->setName('participants')
+          ->setLabel(pht('Participants'))
+          ->setValue($participant_phids))
+      ->appendControl(
+        id(new AphrontFormTextControl())
+          ->setName('fulltext')
+          ->setLabel(pht('Contains Words'))
+          ->setValue($fulltext))
+      ->appendControl(
+        id(new AphrontFormSelectControl())
+        ->setLabel(pht('Type'))
+        ->setName('threadType')
+        ->setOptions($this->getTypeOptions())
+        ->setValue($saved->getParameter('threadType')));
   }
 
   protected function getURI($path) {
-    if ($this->isRooms) {
-      return '/conpherence/room/'.$path;
-    } else {
-      // TODO - will need a path if / when "thread" search happens
-    }
+    return '/conpherence/search/'.$path;
   }
 
   protected function getBuiltinQueryNames() {
     $names = array();
 
-    if ($this->isRooms) {
-      $names = array(
-        'all' => pht('All Rooms'),
-      );
+    $names = array(
+      'all' => pht('All Rooms'),
+    );
 
-      if ($this->requireViewer()->isLoggedIn()) {
-        $names['participant'] = pht('Participated');
-      }
+    if ($this->requireViewer()->isLoggedIn()) {
+      $names['participant'] = pht('Joined Rooms');
+      $names['messages'] = pht('All Messages');
     }
 
     return $names;
@@ -97,8 +112,15 @@ final class ConpherenceThreadSearchEngine
 
     switch ($query_key) {
       case 'all':
+        $query->setParameter('threadType', 'rooms');
         return $query;
       case 'participant':
+        $query->setParameter('threadType', 'rooms');
+        return $query->setParameter(
+          'participantPHIDs',
+          array($this->requireViewer()->getPHID()));
+      case 'messages':
+        $query->setParameter('threadType', 'messages');
         return $query->setParameter(
           'participantPHIDs',
           array($this->requireViewer()->getPHID()));
@@ -123,6 +145,31 @@ final class ConpherenceThreadSearchEngine
 
     $viewer = $this->requireViewer();
 
+    $policy_objects = ConpherenceThread::loadPolicyObjects(
+      $viewer,
+      $conpherences);
+
+    $fulltext = $query->getParameter('fulltext');
+    if (strlen($fulltext) && $conpherences) {
+      $context = $this->loadContextMessages($conpherences, $fulltext);
+
+      $author_phids = array();
+      foreach ($context as $messages) {
+        foreach ($messages as $group) {
+          foreach ($group as $message) {
+            $xaction = $message['xaction'];
+            if ($xaction) {
+              $author_phids[] = $xaction->getAuthorPHID();
+            }
+          }
+        }
+      }
+
+      $handles = $viewer->loadHandles($author_phids);
+    } else {
+      $context = array();
+    }
+
     $list = new PHUIObjectItemListView();
     $list->setUser($viewer);
     foreach ($conpherences as $conpherence) {
@@ -130,6 +177,13 @@ final class ConpherenceThreadSearchEngine
       $data = $conpherence->getDisplayData($viewer);
       $title = $data['title'];
 
+      if ($conpherence->getIsRoom()) {
+        $icon_name = $conpherence->getPolicyIconName($policy_objects);
+      } else {
+        $icon_name = 'fa-envelope-o';
+      }
+      $icon = id(new PHUIIconView())
+        ->setIconFont($icon_name);
       $item = id(new PHUIObjectItemView())
         ->setObjectName($conpherence->getMonogram())
         ->setHeader($title)
@@ -141,16 +195,271 @@ final class ConpherenceThreadSearchEngine
           pht('Messages: %d', $conpherence->getMessageCount()))
         ->addAttribute(
           array(
-            id(new PHUIIconView())->setIconFont('fa-envelope-o', 'green'),
+            $icon,
             ' ',
             pht(
               'Last updated %s',
               phabricator_datetime($conpherence->getDateModified(), $viewer)),
           ));
 
+      $messages = idx($context, $conpherence->getPHID());
+      if ($messages) {
+
+        // TODO: This is egregiously under-designed.
+
+        foreach ($messages as $group) {
+          $rows = array();
+          $rowc = array();
+          foreach ($group as $message) {
+            $xaction = $message['xaction'];
+            if (!$xaction) {
+              continue;
+            }
+
+            $rowc[] = ($message['match'] ? 'highlighted' : null);
+            $rows[] = array(
+              $handles->renderHandle($xaction->getAuthorPHID()),
+              $xaction->getComment()->getContent(),
+              phabricator_datetime($xaction->getDateCreated(), $viewer),
+            );
+          }
+          $table = id(new AphrontTableView($rows))
+            ->setHeaders(
+              array(
+                pht('User'),
+                pht('Message'),
+                pht('At'),
+              ))
+            ->setRowClasses($rowc)
+            ->setColumnClasses(
+              array(
+                '',
+                'wide',
+              ));
+          $box = id(new PHUIBoxView())
+            ->appendChild($table)
+            ->addMargin(PHUI::MARGIN_SMALL);
+          $item->appendChild($box);
+        }
+      }
+
       $list->addItem($item);
     }
 
     return $list;
   }
+
+  private function getTypeOptions() {
+    return array(
+      'rooms' => pht('Rooms'),
+      'messages' => pht('Messages'),
+      'both' => pht('Both'),
+    );
+  }
+
+  private function loadContextMessages(array $threads, $fulltext) {
+    $phids = mpull($threads, 'getPHID');
+
+    // We want to load a few messages for each thread in the result list, to
+    // show some of the actual content hits to help the user find what they
+    // are looking for.
+
+    // This method is trying to batch this lookup in most cases, so we do
+    // between one and "a handful" of queries instead of one per thread in
+    // most cases. To do this:
+    //
+    //   - Load a big block of results for all of the threads.
+    //   - If we didn't get a full block back, we have everything that matches
+    //     the query. Sort it out and exit.
+    //   - Otherwise, some threads had a ton of hits, so we might not be
+    //     getting everything we want (we could be getting back 1,000 hits for
+    //     the first thread). Remove any threads which we have enough results
+    //     for and try again.
+    //   - Repeat until we have everything or every thread has enough results.
+    //
+    // In the worst case, we could end up degrading to one query per thread,
+    // but this is incredibly unlikely on real data.
+
+    // Size of the result blocks we're going to load.
+    $limit = 1000;
+
+    // Number of messages we want for each thread.
+    $want = 3;
+
+    $need = $phids;
+    $hits = array();
+    while ($need) {
+      $rows = id(new ConpherenceFulltextQuery())
+        ->withThreadPHIDs($need)
+        ->withFulltext($fulltext)
+        ->setLimit($limit)
+        ->execute();
+
+      foreach ($rows as $row) {
+        $hits[$row['threadPHID']][] = $row;
+      }
+
+      if (count($rows) < $limit) {
+        break;
+      }
+
+      foreach ($need as $key => $phid) {
+        if (count($hits[$phid]) >= $want) {
+          unset($need[$key]);
+        }
+      }
+    }
+
+    // Now that we have all the fulltext matches, throw away any extras that we
+    // aren't going to render so we don't need to do lookups on them.
+    foreach ($hits as $phid => $rows) {
+      if (count($rows) > $want) {
+        $hits[$phid] = array_slice($rows, 0, $want);
+      }
+    }
+
+    // For each fulltext match, we want to render a message before and after
+    // the match to give it some context. We already know the transactions
+    // before each match because the rows have a "previousTransactionPHID",
+    // but we need to do one more query to figure out the transactions after
+    // each match.
+
+    // Collect the transactions we want to find the next transactions for.
+    $after = array();
+    foreach ($hits as $phid => $rows) {
+      foreach ($rows as $row) {
+        $after[] = $row['transactionPHID'];
+      }
+    }
+
+    // Look up the next transactions.
+    if ($after) {
+      $after_rows = id(new ConpherenceFulltextQuery())
+        ->withPreviousTransactionPHIDs($after)
+        ->execute();
+    } else {
+      $after_rows = array();
+    }
+
+    // Build maps from PHIDs to the previous and next PHIDs.
+    $prev_map = array();
+    $next_map = array();
+    foreach ($after_rows as $row) {
+      $next_map[$row['previousTransactionPHID']] = $row['transactionPHID'];
+    }
+
+    foreach ($hits as $phid => $rows) {
+      foreach ($rows as $row) {
+        $prev = $row['previousTransactionPHID'];
+        if ($prev) {
+          $prev_map[$row['transactionPHID']] = $prev;
+          $next_map[$prev] = $row['transactionPHID'];
+        }
+      }
+    }
+
+    // Now we're going to collect the actual transaction PHIDs, in order, that
+    // we want to show for each thread.
+    $groups = array();
+    foreach ($hits as $thread_phid => $rows) {
+      $rows = ipull($rows, null, 'transactionPHID');
+      foreach ($rows as $phid => $row) {
+        unset($rows[$phid]);
+
+        $group = array();
+
+        // Walk backward, finding all the previous results. We can just keep
+        // going until we run out of results because we've only loaded things
+        // that we want to show.
+        $prev = $phid;
+        while (true) {
+          if (!isset($prev_map[$prev])) {
+            // No previous transaction, so we're done.
+            break;
+          }
+
+          $prev = $prev_map[$prev];
+
+          if (isset($rows[$prev])) {
+            $match = true;
+            unset($rows[$prev]);
+          } else {
+            $match = false;
+          }
+
+          $group[] = array(
+            'phid' => $prev,
+            'match' => $match,
+          );
+        }
+
+        if (count($group) > 1) {
+          $group = array_reverse($group);
+        }
+
+        $group[] = array(
+          'phid' => $phid,
+          'match' => true,
+        );
+
+        $next = $phid;
+        while (true) {
+          if (!isset($next_map[$next])) {
+            break;
+          }
+
+          $next = $next_map[$next];
+
+          if (isset($rows[$next])) {
+            $match = true;
+            unset($rows[$next]);
+          } else {
+            $match = false;
+          }
+
+          $group[] = array(
+            'phid' => $next,
+            'match' => $match,
+          );
+        }
+
+        $groups[$thread_phid][] = $group;
+      }
+    }
+
+    // Load all the actual transactions we need.
+    $xaction_phids = array();
+    foreach ($groups as $thread_phid => $group) {
+      foreach ($group as $list) {
+        foreach ($list as $item) {
+          $xaction_phids[] = $item['phid'];
+        }
+      }
+    }
+
+    if ($xaction_phids) {
+      $xactions = id(new ConpherenceTransactionQuery())
+        ->setViewer($this->requireViewer())
+        ->withPHIDs($xaction_phids)
+        ->needComments(true)
+        ->execute();
+      $xactions = mpull($xactions, null, 'getPHID');
+    } else {
+      $xactions = array();
+    }
+
+    foreach ($groups as $thread_phid => $group) {
+      foreach ($group as $key => $list) {
+        foreach ($list as $lkey => $item) {
+          $xaction = idx($xactions, $item['phid']);
+          $groups[$thread_phid][$key][$lkey]['xaction'] = $xaction;
+        }
+      }
+    }
+
+    // TODO: Sort the groups chronologically?
+
+    return $groups;
+  }
+
 }

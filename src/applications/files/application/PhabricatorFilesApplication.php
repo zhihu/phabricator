@@ -51,7 +51,8 @@ final class PhabricatorFilesApplication extends PhabricatorApplication {
       phutil_tag(
         'a',
         array(
-          'href' => $this->getInboundEmailSupportLink(),),
+          'href' => $this->getInboundEmailSupportLink(),
+        ),
         pht('Learn More')));
   }
 
@@ -92,6 +93,19 @@ final class PhabricatorFilesApplication extends PhabricatorApplication {
           => 'PhabricatorFileTransformController',
         'uploaddialog/' => 'PhabricatorFileUploadDialogController',
         'download/(?P<phid>[^/]+)/' => 'PhabricatorFileDialogController',
+      ),
+    );
+  }
+
+  public function getMailCommandObjects() {
+    return array(
+      'file' => array(
+        'name' => pht('Email Commands: Files'),
+        'header' => pht('Interacting with Files'),
+        'object' => new PhabricatorFile(),
+        'summary' => pht(
+          'This page documents the commands you can use to interact with '.
+          'files.'),
       ),
     );
   }

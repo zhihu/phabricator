@@ -159,6 +159,18 @@ final class PhabricatorExtraConfigSetupCheck extends PhabricatorSetupCheck {
       'option "%s". Use that option to configure which fields are shown.',
       'differential.fields');
 
+    $reply_domain_reason = pht(
+      'Individual application reply handler domains have been removed. '.
+      'Configure a reply domain with "%s".',
+      'metamta.reply-handler-domain');
+
+    $reply_handler_reason = pht(
+      'Reply handlers can no longer be overridden with configuration.');
+
+    $monospace_reason = pht(
+      'Phabricator no longer supports global customization of monospaced '.
+      'fonts.');
+
     $ancient_config += array(
       'phid.external-loaders' =>
         pht(
@@ -220,6 +232,26 @@ final class PhabricatorExtraConfigSetupCheck extends PhabricatorSetupCheck {
       'security.allow-outbound-http' => pht(
         'This option has been replaced with the more granular option '.
         '`security.outbound-blacklist`.'),
+      'metamta.reply.show-hints' => pht(
+        'Phabricator no longer shows reply hints in mail.'),
+
+      'metamta.differential.reply-handler-domain' => $reply_domain_reason,
+      'metamta.diffusion.reply-handler-domain' => $reply_domain_reason,
+      'metamta.macro.reply-handler-domain' => $reply_domain_reason,
+      'metamta.maniphest.reply-handler-domain' => $reply_domain_reason,
+      'metamta.pholio.reply-handler-domain' => $reply_domain_reason,
+
+      'metamta.diffusion.reply-handler' => $reply_handler_reason,
+      'metamta.differential.reply-handler' => $reply_handler_reason,
+      'metamta.maniphest.reply-handler' => $reply_handler_reason,
+      'metamta.package.reply-handler' => $reply_handler_reason,
+
+      'metamta.precedence-bulk' => pht(
+        'Phabricator now always sends transaction mail with '.
+        '"Precedence: bulk" to improve deliverability.'),
+
+      'style.monospace' => $monospace_reason,
+      'style.monospace.windows' => $monospace_reason,
     );
 
     return $ancient_config;

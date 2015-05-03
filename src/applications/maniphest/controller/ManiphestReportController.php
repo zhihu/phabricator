@@ -320,13 +320,14 @@ final class ManiphestReportController extends ManiphestController {
 
     $form = id(new AphrontFormView())
       ->setUser($user)
-      ->appendChild(
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
           ->setDatasource(new PhabricatorProjectDatasource())
           ->setLabel(pht('Project'))
           ->setLimit(1)
           ->setName('set_project')
-          ->setValue($tokens));
+          // TODO: This is silly, but this is Maniphest reports.
+          ->setValue(mpull($tokens, 'getPHID')));
 
     if ($has_window) {
       list($window_str, $ignored, $window_error) = $this->getWindow();
@@ -410,7 +411,10 @@ final class ManiphestReportController extends ManiphestController {
       $handles = $this->loadViewerHandles($phids);
       $project_handle = $handles[$project_phid];
 
-      $query->withAnyProjects($phids);
+      $query->withEdgeLogicPHIDs(
+        PhabricatorProjectObjectHasProjectEdgeType::EDGECONST,
+        PhabricatorQueryConstraint::OPERATOR_OR,
+        $phids);
     }
 
     $tasks = $query->execute();
@@ -461,7 +465,7 @@ final class ManiphestReportController extends ManiphestController {
           }
         }
 
-        $base_link = '/maniphest/?allProjects=';
+        $base_link = '/maniphest/?projects=';
         $leftover_name = phutil_tag('em', array(), pht('(No Project)'));
         $col_header = pht('Project');
         $header = pht('Open Tasks by Project and Priority (%s)', $date);

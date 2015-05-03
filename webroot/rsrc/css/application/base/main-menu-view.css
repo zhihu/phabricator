@@ -89,7 +89,13 @@
 }
 
 .phabricator-menu-button-icon.phui-icon-view {
-  font-size: 24px;
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  color: rgba(255,255,255,.8);
+  text-align: center;
+  vertical-align: middle;
+  line-height: 24px;
 }
 
 .phabricator-expand-application-menu,
@@ -118,7 +124,7 @@
 }
 
 .phabricator-main-menu-search-container {
-  padding: 9px 0 10px 0;
+  padding: 8px 0;
   position: relative;
   height: 24px;
   margin: 0 8px;
@@ -154,31 +160,35 @@
   right: 0;
   position: absolute;
   font-size: 13px;
-  border: 1px solid #333;
-  border-radius: 12px;
-  background-color: #222;
+  border-width: 2px;
+  border-color: rgba(0,0,0,.6);
+  border-radius: 3px;
+  background-color: rgba(0,0,0,.5);
   opacity: .8;
-  height: 26px;
-  line-height: 12px;
+  height: 28px;
   box-shadow: 0px 1px 1px rgba(128, 128, 128, 0.25);
-  padding: 6px 32px 6px 10px;
+  padding: 3px 30px 3px 6px;
+  float: left;
+  width: 205px;
 }
 
 .phabricator-main-menu.main-header-dark .phabricator-main-menu-search input {
-  background-color: #555;
+  background-color: rgba(150,150,150,.5);
+  border-color: #333;
 }
 
 .device .phabricator-main-menu-search input {
-  height: 30px;
+  height: 32px;
   font-size: 15px;
-  border-radius: 15px;
+  width: 100%;
+  padding-left: 50px;
 }
 
 .phabricator-main-menu .phabricator-main-menu-search input:focus {
   background: #fff;
   opacity: 1;
   color: #333;
-  border-color: #e7e7e7;
+  border-color: {$sky};
   box-shadow: none;
 }
 
@@ -187,30 +197,86 @@
 }
 
 .phabricator-main-menu-search button {
+  color: rgba(255,255,255,.8);
   position: absolute;
-  color: transparent;
-  background: transparent 5px 6px url(/rsrc/image/search-white.png) no-repeat;
+  background: #000;
   border: none;
   outline: none;
   box-shadow: none;
   text-shadow: none;
   min-width: 0;
-
-  height: 20px;
-  width: 20px;
+  height: 24px;
+  width: 28px;
   top: 10px;
-  right: 6px;
+  right: -6px;
+  margin: 0 8px 0 0;
+  padding: 0;
+  border-radius: 0;
+}
+
+.phabricator-main-menu-search button.phabricator-main-menu-search-dropdown {
+  position: absolute;
+  right: auto;
+  left: -45px;
+  width: 40px;
+  background: transparent;
+}
+
+.device-desktop .phabricator-main-menu-search
+  button.phabricator-main-menu-search-dropdown:hover .phui-icon-view {
+    color: #fff;
+}
+
+.device .phabricator-main-menu-search
+  button.phabricator-main-menu-search-dropdown {
+    left: 2px;
+    background: #000;
+}
+
+.device .phabricator-main-menu-search
+  button.phabricator-main-menu-search-dropdown .phui-icon-view {
+    margin-top: 2px;
+  }
+
+.device .phabricator-main-menu-search
+  button.phabricator-main-menu-search-dropdown .caret {
+    margin-top: 3px;
+}
+
+button.phabricator-main-menu-search-dropdown .caret:before {
+  content: "\f107";
+  font-family: FontAwesome;
+}
+
+.phabricator-main-menu-search button.phabricator-main-menu-search-dropdown
+  .phui-icon-view {
+  color: rgba(255,255,255,.8);
+}
+
+.phabricator-main-menu-search-dropdown .caret {
+  position: absolute;
+  right: 13px;
+  top: 3px;
+  border: none;
+  margin-top: 1px;
+}
+
+.phabricator-main-menu-search button:hover {
+  color: #fff;
 }
 
 .device .phabricator-main-menu-search button {
-  top: 7px;
+  top: 6px;
+  border-radius: 0;
+  height: 28px;
+  right: -6px;
 }
 
 .phabricator-main-menu-search-target div.jx-typeahead-results {
-  background: #ffffff;
+  background: #fff;
   word-wrap: break-word;
   overflow-y: auto;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  box-shadow: {$dropshadow};
   border: {$blueborder};
   border-radius: 3px;
   margin-left: 40px;
@@ -468,7 +534,7 @@
 }
 
 .device-desktop .phabricator-core-menu-icon {
-  top: 5px;
+  top: 4px;
   left: 4px;
 }
 
@@ -492,7 +558,7 @@
   background: #fff;
   top: 38px;
   padding: 2px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  box-shadow: {$dropshadow};
   border: {$blueborder};
   border-radius: 3px;
 }

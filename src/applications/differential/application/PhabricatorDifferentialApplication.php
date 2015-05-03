@@ -22,8 +22,13 @@ final class PhabricatorDifferentialApplication extends PhabricatorApplication {
     return true;
   }
 
-  public function getHelpURI() {
-    return PhabricatorEnv::getDoclink('Differential User Guide');
+  public function getHelpDocumentationArticles(PhabricatorUser $viewer) {
+    return array(
+      array(
+        'name' => pht('Differential User Guide'),
+        'href' => PhabricatorEnv::getDoclink('Differential User Guide'),
+      ),
+    );
   }
 
   public function getFactObjectsForAnalysis() {
@@ -174,7 +179,8 @@ EOTEXT
       phutil_tag(
         'a',
         array(
-          'href' => $this->getInboundEmailSupportLink(),),
+          'href' => $this->getInboundEmailSupportLink(),
+        ),
         pht('Learn More')));
   }
 
@@ -183,6 +189,25 @@ EOTEXT
       DifferentialDefaultViewCapability::CAPABILITY => array(
         'caption' => pht('Default view policy for newly created revisions.'),
       ),
+    );
+  }
+
+  public function getMailCommandObjects() {
+    return array(
+      'revision' => array(
+        'name' => pht('Email Commands: Revisions'),
+        'header' => pht('Interacting with Differential Revisions'),
+        'object' => new DifferentialRevision(),
+        'summary' => pht(
+          'This page documents the commands you can use to interact with '.
+          'revisions in Differential.'),
+      ),
+    );
+  }
+
+  public function getApplicationSearchDocumentTypes() {
+    return array(
+      DifferentialRevisionPHIDType::TYPECONST,
     );
   }
 

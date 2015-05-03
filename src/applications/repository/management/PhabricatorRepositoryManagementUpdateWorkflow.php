@@ -51,45 +51,62 @@ final class PhabricatorRepositoryManagementUpdateWorkflow
     }
 
     $repository = head($repos);
-    $callsign = $repository->getCallsign();
 
     try {
-      $lock_name = get_class($this).':'.$callsign;
+      $lock_name = 'repository.update:'.$repository->getID();
       $lock = PhabricatorGlobalLock::newLock($lock_name);
 
-      $lock->lock();
-
-      $no_discovery = $args->getArg('no-discovery');
-
-      id(new PhabricatorRepositoryPullEngine())
-        ->setRepository($repository)
-        ->setVerbose($this->getVerbose())
-        ->pullRepository();
-
-      if ($no_discovery) {
-        $lock->unlock();
-        return;
+      try {
+        $lock->lock();
+      } catch (PhutilLockException $ex) {
+        throw new PhutilProxyException(
+          pht(
+            'Another process is currently holding the update lock for '.
+            'repository "%s". Repositories may only be updated by one '.
+            'process at a time. This can happen if you are running multiple '.
+            'copies of the daemons. This can also happen if you manually '.
+            'update a repository while the daemons are also updating it '.
+            '(in this case, just try again in a few moments).',
+            $repository->getMonogram()),
+          $ex);
       }
 
-      // TODO: It would be nice to discover only if we pulled something, but
-      // this isn't totally trivial. It's slightly more complicated with hosted
-      // repositories, too.
+      try {
+        $no_discovery = $args->getArg('no-discovery');
 
-      $repository->writeStatusMessage(
-        PhabricatorRepositoryStatusMessage::TYPE_NEEDS_UPDATE,
-        null);
+        id(new PhabricatorRepositoryPullEngine())
+          ->setRepository($repository)
+          ->setVerbose($this->getVerbose())
+          ->pullRepository();
 
-      $this->discoverRepository($repository);
+        if ($no_discovery) {
+          $lock->unlock();
+          return;
+        }
 
-      $this->checkIfRepositoryIsFullyImported($repository);
+        // TODO: It would be nice to discover only if we pulled something, but
+        // this isn't totally trivial. It's slightly more complicated with
+        // hosted repositories, too.
 
-      $this->updateRepositoryRefs($repository);
+        $repository->writeStatusMessage(
+          PhabricatorRepositoryStatusMessage::TYPE_NEEDS_UPDATE,
+          null);
 
-      $this->mirrorRepository($repository);
+        $this->discoverRepository($repository);
 
-      $repository->writeStatusMessage(
-        PhabricatorRepositoryStatusMessage::TYPE_FETCH,
-        PhabricatorRepositoryStatusMessage::CODE_OKAY);
+        $this->checkIfRepositoryIsFullyImported($repository);
+
+        $this->updateRepositoryRefs($repository);
+
+        $this->mirrorRepository($repository);
+
+        $repository->writeStatusMessage(
+          PhabricatorRepositoryStatusMessage::TYPE_FETCH,
+          PhabricatorRepositoryStatusMessage::CODE_OKAY);
+      } catch (Exception $ex) {
+        $lock->unlock();
+        throw $ex;
+      }
     } catch (Exception $ex) {
       $repository->writeStatusMessage(
         PhabricatorRepositoryStatusMessage::TYPE_FETCH,
@@ -98,8 +115,6 @@ final class PhabricatorRepositoryManagementUpdateWorkflow
           'message' => pht(
             'Error updating working copy: %s', $ex->getMessage()),
         ));
-
-      $lock->unlock();
       throw $ex;
     }
 
@@ -133,7 +148,7 @@ final class PhabricatorRepositoryManagementUpdateWorkflow
       $proxy = new PhutilProxyException(
         pht(
           'Error while pushing "%s" repository to mirrors.',
-          $repository->getCallsign()),
+          $repository->getMonogram()),
         $ex);
       phlog($proxy);
     }

@@ -645,6 +645,23 @@ final class PhabricatorUSEnglishTranslation
       '%s edited reverted commit(s), added %s: %s; removed %s: %s.' =>
         '%s edited reverted commits, added %3$s; removed %5$s.',
 
+      '%s added %s reverted commit(s) for %s: %s.' => array(
+        array(
+          '%s added a reverted commit for %3$s: %4$s.',
+          '%s added reverted commits for %3$s: %4$s.',
+        ),
+      ),
+
+      '%s removed %s reverted commit(s) for %s: %s.' => array(
+        array(
+          '%s removed a reverted commit for %3$s: %4$s.',
+          '%s removed reverted commits for %3$s: %4$s.',
+        ),
+      ),
+
+      '%s edited reverted commit(s) for %s, added %s: %s; removed %s: %s.' =>
+        '%s edited reverted commits for %2$s, added %4$s; removed %6$s.',
+
       '%s added %s reverting commit(s): %s.' => array(
         array(
           '%s added a reverting commit: %3$s.',
@@ -661,6 +678,23 @@ final class PhabricatorUSEnglishTranslation
 
       '%s edited reverting commit(s), added %s: %s; removed %s: %s.' =>
         '%s edited reverting commits, added %3$s; removed %5$s.',
+
+      '%s added %s reverting commit(s) for %s: %s.' => array(
+        array(
+          '%s added a reverting commit for %3$s: %4$s.',
+          '%s added reverting commitsi for %3$s: %4$s.',
+        ),
+      ),
+
+      '%s removed %s reverting commit(s) for %s: %s.' => array(
+        array(
+          '%s removed a reverting commit for %3$s: %4$s.',
+          '%s removed reverting commits for %3$s: %4$s.',
+        ),
+      ),
+
+      '%s edited reverting commit(s) for %s, added %s: %s; removed %s: %s.' =>
+        '%s edited reverting commits for %s, added %4$s; removed %6$s.',
 
       '%s changed project member(s), added %d: %s; removed %d: %s.' =>
         '%s changed project members, added %3$s; removed %5$s.',
@@ -698,6 +732,23 @@ final class PhabricatorUSEnglishTranslation
         array(
           '%s removed a hashtag: %3$s.',
           '%s removed hashtags: %3$s.',
+        ),
+      ),
+
+      '%s changed %s hashtag(s), added %d: %s; removed %d: %s.' =>
+        '%s changed hashtags for %s, added %4$s; removed %6$s.',
+
+      '%s added %d %s hashtag(s): %s.' => array(
+        array(
+          '%s added a hashtag to %3$s: %4$s.',
+          '%s added hashtags to %3$s: %4$s.',
+        ),
+      ),
+
+      '%s removed %d %s hashtag(s): %s.' => array(
+        array(
+          '%s removed a hashtag from %3$s: %4$s.',
+          '%s removed hashtags from %3$s: %4$s.',
         ),
       ),
 
@@ -913,6 +964,23 @@ final class PhabricatorUSEnglishTranslation
 
       '%s edited %s edge(s) for %s, added %s: %s; removed %s: %s.' =>
         '%s edited edges for %3$s, added: %5$s; removed %7$s.',
+
+      '%s added %s member(s) for %s: %s.' => array(
+        array(
+          '%s added a member for %3$s: %4$s.',
+          '%s added members for %3$s: %4$s.',
+        ),
+      ),
+
+      '%s removed %s member(s) for %s: %s.' => array(
+        array(
+          '%s removed a member for %3$s: %4$s.',
+          '%s removed members for %3$s: %4$s.',
+        ),
+      ),
+
+      '%s edited %s member(s) for %s, added %s: %s; removed %s: %s.' =>
+        '%s edited members for %3$s, added: %5$s; removed %7$s.',
 
       '%d related link(s):' => array(
         'Related link:',

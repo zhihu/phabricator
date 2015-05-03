@@ -614,13 +614,11 @@ final class DiffusionCommitController extends DiffusionController {
     }
 
     if ($reverts_phids) {
-      $this->loadHandles($reverts_phids);
-      $props[pht('Reverts')] = $this->renderHandlesForPHIDs($reverts_phids);
+      $props[pht('Reverts')] = $viewer->renderHandleList($reverts_phids);
     }
 
     if ($reverted_by_phids) {
-      $this->loadHandles($reverted_by_phids);
-      $props[pht('Reverted By')] = $this->renderHandlesForPHIDs(
+      $props[pht('Reverted By')] = $viewer->renderHandleList(
         $reverted_by_phids);
     }
 
@@ -679,6 +677,9 @@ final class DiffusionCommitController extends DiffusionController {
 
     $actions = $this->getAuditActions($commit, $audit_requests);
 
+    $mailable_source = new PhabricatorMetaMTAMailableDatasource();
+    $auditor_source = new DiffusionAuditorDatasource();
+
     $form = id(new AphrontFormView())
       ->setUser($user)
       ->setAction('/audit/addcomment/')
@@ -689,22 +690,24 @@ final class DiffusionCommitController extends DiffusionController {
           ->setName('action')
           ->setID('audit-action')
           ->setOptions($actions))
-      ->appendChild(
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Add Auditors'))
           ->setName('auditors')
           ->setControlID('add-auditors')
           ->setControlStyle('display: none')
           ->setID('add-auditors-tokenizer')
-          ->setDisableBehavior(true))
-      ->appendChild(
+          ->setDisableBehavior(true)
+          ->setDatasource($auditor_source))
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
           ->setLabel(pht('Add CCs'))
           ->setName('ccs')
           ->setControlID('add-ccs')
           ->setControlStyle('display: none')
           ->setID('add-ccs-tokenizer')
-          ->setDisableBehavior(true))
+          ->setDisableBehavior(true)
+          ->setDatasource($mailable_source))
       ->appendChild(
         id(new PhabricatorRemarkupControl())
           ->setLabel(pht('Comments'))
@@ -719,9 +722,6 @@ final class DiffusionCommitController extends DiffusionController {
     $header = new PHUIHeaderView();
     $header->setHeader(
       $is_serious ? pht('Audit Commit') : pht('Creative Accounting'));
-
-    $mailable_source = new PhabricatorMetaMTAMailableDatasource();
-    $auditor_source = new DiffusionAuditorDatasource();
 
     Javelin::initBehavior(
       'differential-add-reviewers-and-ccs',
@@ -1023,9 +1023,7 @@ final class DiffusionCommitController extends DiffusionController {
 
   private function renderAuditStatusView(array $audit_requests) {
     assert_instances_of($audit_requests, 'PhabricatorRepositoryAuditRequest');
-
-    $phids = mpull($audit_requests, 'getAuditorPHID');
-    $this->loadHandles($phids);
+    $viewer = $this->getViewer();
 
     $authority_map = array_fill_keys($this->auditAuthorityPHIDs, true);
 
@@ -1045,7 +1043,7 @@ final class DiffusionCommitController extends DiffusionController {
       $item->setNote($note);
 
       $auditor_phid = $request->getAuditorPHID();
-      $target = $this->getHandle($auditor_phid)->renderLink();
+      $target = $viewer->renderHandle($auditor_phid);
       $item->setTarget($target);
 
       if (isset($authority_map[$auditor_phid])) {

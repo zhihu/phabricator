@@ -5,11 +5,9 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
   private $task;
   private $ccPHIDs = array();
   private $assignPHID;
-  private $projectPHIDs = array();
-  private $emailPHIDs = array();
 
-  public function getEmailPHIDs() {
-    return $this->emailPHIDs;
+  protected function newObject() {
+    return new ManiphestTask();
   }
 
   public function getAdapterApplicationClass() {
@@ -66,14 +64,6 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
     return $this->assignPHID;
   }
 
-  public function setProjectPHIDs(array $project_phids) {
-    $this->projectPHIDs = $project_phids;
-    return $this;
-  }
-  public function getProjectPHIDs() {
-    return $this->projectPHIDs;
-  }
-
   public function getAdapterContentName() {
     return pht('Maniphest Tasks');
   }
@@ -104,7 +94,6 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
             self::ACTION_ADD_CC,
             self::ACTION_EMAIL,
             self::ACTION_ASSIGN_TASK,
-            self::ACTION_ADD_PROJECTS,
             self::ACTION_NOTHING,
           ),
           parent::getActions($rule_type));
@@ -177,20 +166,6 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
             true,
             pht('Added addresses to cc list.'));
           break;
-        case self::ACTION_EMAIL:
-          foreach ($effect->getTarget() as $phid) {
-            $this->emailPHIDs[] = $phid;
-          }
-          $result[] = new HeraldApplyTranscript(
-            $effect,
-            true,
-            pht('Added addresses to email list.'));
-          break;
-        case self::ACTION_FLAG:
-          $result[] = parent::applyFlagEffect(
-            $effect,
-            $this->getTask()->getPHID());
-          break;
         case self::ACTION_ASSIGN_TASK:
           $target_array = $effect->getTarget();
           $assign_phid = reset($target_array);
@@ -200,32 +175,12 @@ final class HeraldManiphestTaskAdapter extends HeraldAdapter {
             true,
             pht('Assigned task.'));
           break;
-        case self::ACTION_ADD_PROJECTS:
-          foreach ($effect->getTarget() as $phid) {
-            $this->projectPHIDs[] = $phid;
-          }
-          $result[] = new HeraldApplyTranscript(
-            $effect,
-            true,
-            pht('Added projects.'));
-          break;
         default:
-          $custom_result = parent::handleCustomHeraldEffect($effect);
-          if ($custom_result === null) {
-            throw new Exception(pht(
-              "No rules to handle action '%s'.",
-              $action));
-          }
-
-          $result[] = $custom_result;
+          $result[] = $this->applyStandardEffect($effect);
           break;
       }
     }
     return $result;
-  }
-
-  protected function getCustomFieldTemplateObject() {
-    return new ManiphestTask();
   }
 
 }

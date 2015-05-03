@@ -135,11 +135,9 @@ final class PhortuneMerchantViewController
 
     $view->addProperty(pht('Status'), $status_view);
 
-    $this->loadHandles($merchant->getMemberPHIDs());
-
     $view->addProperty(
       pht('Members'),
-      $this->renderHandlesForPHIDs($merchant->getMemberPHIDs()));
+      $viewer->renderHandleList($merchant->getMemberPHIDs()));
 
     $view->invokeWillRenderEvent();
 
@@ -191,6 +189,15 @@ final class PhortuneMerchantViewController
         ->setName(pht('View Subscriptions'))
         ->setIcon('fa-moon-o')
         ->setHref($this->getApplicationURI("merchant/{$id}/subscription/"))
+        ->setDisabled(!$can_edit)
+        ->setWorkflow(!$can_edit));
+
+
+    $view->addAction(
+      id(new PhabricatorActionView())
+        ->setName(pht('New Invoice'))
+        ->setIcon('fa-fax')
+        ->setHref($this->getApplicationURI("merchant/{$id}/invoice/new/"))
         ->setDisabled(!$can_edit)
         ->setWorkflow(!$can_edit));
 

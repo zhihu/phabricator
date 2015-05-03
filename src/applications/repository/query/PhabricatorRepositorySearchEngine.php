@@ -20,7 +20,10 @@ final class PhabricatorRepositorySearchEngine
     $saved->setParameter('hosted', $request->getStr('hosted'));
     $saved->setParameter('types', $request->getArr('types'));
     $saved->setParameter('name', $request->getStr('name'));
-    $saved->setParameter('anyProjectPHIDs', $request->getArr('anyProjects'));
+
+    $saved->setParameter(
+      'projects',
+      $this->readProjectsFromRequest($request, 'projects'));
 
     return $saved;
   }
@@ -42,13 +45,7 @@ final class PhabricatorRepositorySearchEngine
       $query->withStatus($status);
     }
 
-    $order = $saved->getParameter('order');
-    $order = idx($this->getOrderValues(), $order);
-    if ($order) {
-      $query->setOrder($order);
-    } else {
-      $query->setOrder(head($this->getOrderValues()));
-    }
+    $this->setQueryOrder($query, $saved);
 
     $hosted = $saved->getParameter('hosted');
     $hosted = idx($this->getHostedValues(), $hosted);
@@ -66,10 +63,9 @@ final class PhabricatorRepositorySearchEngine
       $query->withNameContains($name);
     }
 
-    $any_project_phids = $saved->getParameter('anyProjectPHIDs');
-    if ($any_project_phids) {
-      $query->withAnyProjects($any_project_phids);
-    }
+    $adjusted = clone $saved;
+    $adjusted->setParameter('projects', $this->readProjectTokens($saved));
+    $this->setQueryProjects($query, $adjusted);
 
     return $query;
   }
@@ -82,16 +78,7 @@ final class PhabricatorRepositorySearchEngine
     $types = $saved_query->getParameter('types', array());
     $types = array_fuse($types);
     $name = $saved_query->getParameter('name');
-    $any_project_phids = $saved_query->getParameter('anyProjectPHIDs', array());
-
-    if ($any_project_phids) {
-      $any_project_handles = id(new PhabricatorHandleQuery())
-        ->setViewer($this->requireViewer())
-        ->withPHIDs($any_project_phids)
-        ->execute();
-    } else {
-      $any_project_handles = array();
-    }
+    $projects = $this->readProjectTokens($saved_query);
 
     $form
       ->appendChild(
@@ -104,12 +91,12 @@ final class PhabricatorRepositorySearchEngine
           ->setName('name')
           ->setLabel(pht('Name Contains'))
           ->setValue($name))
-      ->appendChild(
+      ->appendControl(
         id(new AphrontFormTokenizerControl())
-          ->setDatasource(new PhabricatorProjectDatasource())
-          ->setName('anyProjects')
-          ->setLabel(pht('In Any Project'))
-          ->setValue($any_project_handles))
+          ->setDatasource(new PhabricatorProjectLogicalDatasource())
+          ->setName('projects')
+          ->setLabel(pht('Projects'))
+          ->setValue($projects))
       ->appendChild(
         id(new AphrontFormSelectControl())
           ->setName('status')
@@ -134,15 +121,12 @@ final class PhabricatorRepositorySearchEngine
         $name,
         isset($types[$key]));
     }
+    $form->appendChild($type_control);
 
-    $form
-      ->appendChild($type_control)
-      ->appendChild(
-        id(new AphrontFormSelectControl())
-          ->setName('order')
-          ->setLabel(pht('Order'))
-          ->setValue($saved_query->getParameter('order'))
-          ->setOptions($this->getOrderOptions()));
+    $this->appendOrderFieldsToForm(
+      $form,
+      $saved_query,
+      new PhabricatorRepositoryQuery());
   }
 
   protected function getURI($path) {
@@ -186,26 +170,6 @@ final class PhabricatorRepositorySearchEngine
       '' => PhabricatorRepositoryQuery::STATUS_ALL,
       'open' => PhabricatorRepositoryQuery::STATUS_OPEN,
       'closed' => PhabricatorRepositoryQuery::STATUS_CLOSED,
-    );
-  }
-
-  private function getOrderOptions() {
-    return array(
-      'committed' => pht('Most Recent Commit'),
-      'name' => pht('Name'),
-      'callsign' => pht('Callsign'),
-      'created' => pht('Date Created'),
-      'size' => pht('Commit Count'),
-    );
-  }
-
-  private function getOrderValues() {
-    return array(
-      'committed' => PhabricatorRepositoryQuery::ORDER_COMMITTED,
-      'name' => PhabricatorRepositoryQuery::ORDER_NAME,
-      'callsign' => PhabricatorRepositoryQuery::ORDER_CALLSIGN,
-      'created' => PhabricatorRepositoryQuery::ORDER_CREATED,
-      'size' => PhabricatorRepositoryQuery::ORDER_SIZE,
     );
   }
 
@@ -302,6 +266,17 @@ final class PhabricatorRepositorySearchEngine
     }
 
     return $list;
+  }
+
+  private function readProjectTokens(PhabricatorSavedQuery $saved) {
+    $projects = $saved->getParameter('projects', array());
+
+    $any = $saved->getParameter('anyProjectPHIDs', array());
+    foreach ($any as $project) {
+      $projects[] = 'any('.$project.')';
+    }
+
+    return $projects;
   }
 
 }

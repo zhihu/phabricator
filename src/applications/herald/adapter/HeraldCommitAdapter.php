@@ -13,7 +13,6 @@ final class HeraldCommitAdapter extends HeraldAdapter {
   protected $commitData;
   private $commitDiff;
 
-  protected $emailPHIDs = array();
   protected $addCCPHIDs = array();
   protected $auditMap = array();
   protected $buildPlans = array();
@@ -25,6 +24,10 @@ final class HeraldCommitAdapter extends HeraldAdapter {
 
   public function getAdapterApplicationClass() {
     return 'PhabricatorDiffusionApplication';
+  }
+
+  protected function newObject() {
+    return new PhabricatorRepositoryCommit();
   }
 
   public function getObject() {
@@ -215,10 +218,6 @@ final class HeraldCommitAdapter extends HeraldAdapter {
 
   public function getPHID() {
     return $this->commit->getPHID();
-  }
-
-  public function getEmailPHIDs() {
-    return array_keys($this->emailPHIDs);
   }
 
   public function getAddCCMap() {
@@ -498,21 +497,12 @@ final class HeraldCommitAdapter extends HeraldAdapter {
             true,
             pht('Great success at doing nothing.'));
           break;
-        case self::ACTION_EMAIL:
-          foreach ($effect->getTarget() as $phid) {
-            $this->emailPHIDs[$phid] = true;
-          }
-          $result[] = new HeraldApplyTranscript(
-            $effect,
-            true,
-            pht('Added address to email targets.'));
-          break;
         case self::ACTION_ADD_CC:
           foreach ($effect->getTarget() as $phid) {
             if (empty($this->addCCPHIDs[$phid])) {
               $this->addCCPHIDs[$phid] = array();
             }
-            $this->addCCPHIDs[$phid][] = $effect->getRuleID();
+            $this->addCCPHIDs[$phid][] = $effect->getRule()->getID();
           }
           $result[] = new HeraldApplyTranscript(
             $effect,
@@ -524,7 +514,7 @@ final class HeraldCommitAdapter extends HeraldAdapter {
             if (empty($this->auditMap[$phid])) {
               $this->auditMap[$phid] = array();
             }
-            $this->auditMap[$phid][] = $effect->getRuleID();
+            $this->auditMap[$phid][] = $effect->getRule()->getID();
           }
           $result[] = new HeraldApplyTranscript(
             $effect,
@@ -540,20 +530,8 @@ final class HeraldCommitAdapter extends HeraldAdapter {
             true,
             pht('Applied build plans.'));
           break;
-        case self::ACTION_FLAG:
-          $result[] = parent::applyFlagEffect(
-            $effect,
-            $this->commit->getPHID());
-          break;
         default:
-          $custom_result = parent::handleCustomHeraldEffect($effect);
-          if ($custom_result === null) {
-            throw new Exception(pht(
-              "No rules to handle action '%s'.",
-              $action));
-          }
-
-          $result[] = $custom_result;
+          $result[] = $this->applyStandardEffect($effect);
           break;
       }
     }

@@ -8,6 +8,8 @@ abstract class PhabricatorInlineCommentController
   abstract protected function loadCommentForEdit($id);
   abstract protected function loadCommentForDone($id);
   abstract protected function loadCommentByPHID($phid);
+  abstract protected function loadObjectOwnerPHID(
+    PhabricatorInlineCommentInterface $inline);
   abstract protected function deleteComment(
     PhabricatorInlineCommentInterface $inline);
   abstract protected function saveComment(
@@ -88,6 +90,7 @@ abstract class PhabricatorInlineCommentController
         }
         $inline = $this->loadCommentForDone($this->getCommentID());
 
+        $is_draft_state = false;
         switch ($inline->getFixedState()) {
           case PhabricatorInlineCommentInterface::STATE_DRAFT:
             $next_state = PhabricatorInlineCommentInterface::STATE_UNDONE;
@@ -97,16 +100,22 @@ abstract class PhabricatorInlineCommentController
             break;
           case PhabricatorInlineCommentInterface::STATE_DONE:
             $next_state = PhabricatorInlineCommentInterface::STATE_UNDRAFT;
+            $is_draft_state = true;
             break;
           default:
           case PhabricatorInlineCommentInterface::STATE_UNDONE:
             $next_state = PhabricatorInlineCommentInterface::STATE_DRAFT;
+            $is_draft_state = true;
             break;
         }
 
         $inline->setFixedState($next_state)->save();
 
-        return $this->buildEmptyResponse();
+        return id(new AphrontAjaxResponse())
+          ->setContent(
+            array(
+              'draftState' => $is_draft_state,
+            ));
       case 'delete':
       case 'undelete':
       case 'refdelete':
@@ -197,20 +206,20 @@ abstract class PhabricatorInlineCommentController
         $edit_dialog = $this->buildEditDialog();
 
         if ($this->getOperation() == 'reply') {
-          $inline = $this->loadComment($this->getCommentID());
-
           $edit_dialog->setTitle(pht('Reply to Inline Comment'));
-          $changeset = $inline->getChangesetID();
-          $is_new = $inline->getIsNewFile();
-          $number = $inline->getLineNumber();
-          $length = $inline->getLineLength();
         } else {
           $edit_dialog->setTitle(pht('New Inline Comment'));
-          $changeset = $this->getChangesetID();
-          $is_new = $this->getIsNewFile();
-          $number = $this->getLineNumber();
-          $length = $this->getLineLength();
         }
+
+        // NOTE: We read the values from the client (the display values), not
+        // the values from the database (the original values) when replying.
+        // In particular, when replying to a ghost comment which was moved
+        // across diffs and then moved backward to the most recent visible
+        // line, we want to reply on the display line (which exists), not on
+        // the comment's original line (which may not exist in this changeset).
+        $is_new = $this->getIsNewFile();
+        $number = $this->getLineNumber();
+        $length = $this->getLineLength();
 
         $edit_dialog->addHiddenInput('op', 'create');
         $edit_dialog->addHiddenInput('is_new', $is_new);
@@ -252,14 +261,11 @@ abstract class PhabricatorInlineCommentController
           pht('Failed to load comment "%s".', $reply_phid));
       }
 
-      if ($reply_comment->getChangesetID() != $this->getChangesetID()) {
-        throw new Exception(
-          pht(
-            'Comment "%s" belongs to wrong changeset (%s vs %s).',
-            $reply_phid,
-            $reply_comment->getChangesetID(),
-            $this->getChangesetID()));
-      }
+      // NOTE: It's fine to reply to a comment from a different changeset, so
+      // the reply comment may not appear on the same changeset that the new
+      // comment appears on. This is expected in the case of ghost comments.
+      // We currently put the new comment on the visible changeset, not the
+      // original comment's changeset.
     }
   }
 
@@ -306,14 +312,17 @@ abstract class PhabricatorInlineCommentController
     $phids = array($user->getPHID());
 
     $handles = $this->loadViewerHandles($phids);
+    $object_owner_phid = $this->loadObjectOwnerPHID($inline);
 
     $view = id(new PHUIDiffInlineCommentDetailView())
+      ->setUser($user)
       ->setInlineComment($inline)
       ->setIsOnRight($on_right)
       ->setMarkupEngine($engine)
       ->setHandles($handles)
       ->setEditable(true)
-      ->setCanMarkDone(false);
+      ->setCanMarkDone(false)
+      ->setObjectOwnerPHID($object_owner_phid);
 
     $view = $this->buildScaffoldForView($view);
 

@@ -81,7 +81,7 @@ EODOC
     $herald_hints_description = $this->deformat(pht(<<<EODOC
 You can disable the Herald hints in email if users prefer smaller messages.
 These are the links under the header "WHY DID I GET THIS EMAIL?". If you set
-this to true, they will not appear in any mail. Users can still navigate to
+this to `false`, they will not appear in any mail. Users can still navigate to
 the links via the web interface.
 EODOC
 ));
@@ -245,18 +245,8 @@ EODOC
         'string',
         null)
         ->setLocked(true)
-        ->setDescription(pht(
-          'Domain used for reply email addresses. Some applications can '.
-          'override this configuration with a different domain.'))
+        ->setDescription(pht('Domain used for reply email addresses.'))
         ->addExample('phabricator.example.com', ''),
-      $this->newOption('metamta.reply.show-hints', 'bool', true)
-        ->setBoolOptions(
-          array(
-            pht('Show Reply Handler Hints'),
-            pht('No Reply Handler Hints'),
-          ))
-        ->setSummary(pht('Show hints about reply handler actions in email.'))
-        ->setDescription($reply_hints_description),
       $this->newOption('metamta.herald.show-hints', 'bool', true)
         ->setBoolOptions(
           array(
@@ -281,14 +271,6 @@ EODOC
           ))
         ->setSummary(pht('Show email preferences link in email.'))
         ->setDescription($email_preferences_description),
-      $this->newOption('metamta.precedence-bulk', 'bool', false)
-        ->setBoolOptions(
-          array(
-            pht('Add "Precedence: bulk" Header'),
-            pht('No "Precedence: bulk" Header'),
-          ))
-        ->setSummary(pht('Control the "Precedence: bulk" header.'))
-        ->setDescription($bulk_description),
       $this->newOption('metamta.re-prefix', 'bool', false)
         ->setBoolOptions(
           array(

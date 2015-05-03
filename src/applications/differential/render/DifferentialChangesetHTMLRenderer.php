@@ -459,13 +459,15 @@ abstract class DifferentialChangesetHTMLRenderer
     $allow_done = !$comment->isDraft() && $this->getCanMarkDone();
 
     return id(new PHUIDiffInlineCommentDetailView())
+      ->setUser($user)
       ->setInlineComment($comment)
       ->setIsOnRight($on_right)
       ->setHandles($this->getHandles())
       ->setMarkupEngine($this->getMarkupEngine())
       ->setEditable($edit)
       ->setAllowReply($allow_reply)
-      ->setCanMarkDone($allow_done);
+      ->setCanMarkDone($allow_done)
+      ->setObjectOwnerPHID($this->getObjectOwnerPHID());
   }
 
 
