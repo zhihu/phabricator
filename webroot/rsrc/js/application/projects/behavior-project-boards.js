@@ -230,7 +230,7 @@ JX.behavior('project-boards', function(config, statics) {
     var cols = getcolumns();
 
     for (ii = 0; ii < cols.length; ii++) {
-      var list = new JX.DraggableList('project-card', cols[ii])
+      var list = new JX.DraggableList('project-card', cols[ii], 'absolute')
         .setFindItemsHandler(JX.bind(null, finditems, cols[ii]));
 
       list.listen('didSend', JX.bind(list, onupdate, cols[ii]));

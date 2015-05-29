@@ -11,10 +11,12 @@
 
 JX.install('DraggableList', {
 
-  construct : function(sigil, root) {
+  construct : function(sigil, root, position) {
     this._sigil = sigil;
     this._root = root || document.body;
     this._group = [this];
+    // support absolute or relative
+    this._position = position || 'relative';
 
     // NOTE: Javelin does not dispatch mousemove by default.
     JX.enableDispatch(document.body, 'mousemove');
@@ -169,6 +171,7 @@ JX.install('DraggableList', {
       e.kill();
 
       this._dragging = e.getNode(this._sigil);
+      this._offset = JX.$V(this._dragging.offsetLeft, this._dragging.offsetTop);
       this._origin = JX.$V(e);
       this._originScroll = JX.Vector.getAggregateScrollForNode(this._dragging);
       this._dimensions = JX.$V(this._dragging);
@@ -186,6 +189,9 @@ JX.install('DraggableList', {
         }
 
         JX.DOM.alterClass(this._dragging, 'drag-dragging', true);
+        if (this._position === 'absolute') {
+          this._offset.setPos(this._dragging);
+        }
       }
     },
 
@@ -440,7 +446,14 @@ JX.install('DraggableList', {
 
       p.y -= origin.y;
       this._lastAdjust = new JX.Vector(p.x, p.y);
-      p.setPos(this._dragging);
+
+      if (this._position === 'absolute') {
+        var mousePos = JX.$V(this._lastMousePosition.x, this._lastMousePosition.y);
+        var originPos = this._origin.add(this._originScroll);
+        mousePos.add(-originPos.x, -originPos.y).add(this._offset).setPos(this._dragging);
+      } else {
+        p.setPos(this._dragging);
+      }
 
       e.kill();
     },
