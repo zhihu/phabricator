@@ -61,13 +61,6 @@ abstract class PhabricatorStandardCustomFieldPHIDs
     }
   }
 
-  public function getRequiredHandlePHIDsForApplicationSearch($value) {
-    if ($value) {
-      return $value;
-    }
-    return array();
-  }
-
   public function getRequiredHandlePHIDsForPropertyView() {
     $value = $this->getFieldValue();
     if ($value) {
@@ -124,7 +117,7 @@ abstract class PhabricatorStandardCustomFieldPHIDs
       $old = array();
     }
 
-    $new = json_decode($xaction->getNewValue());
+    $new = phutil_json_decode($xaction->getNewValue());
     if (!is_array($new)) {
       $new = array();
     }

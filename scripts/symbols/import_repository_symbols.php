@@ -35,20 +35,21 @@ $args->parse(
         'be part of a single transaction.'),
     ),
     array(
-      'name'      => 'more',
+      'name'      => 'callsign',
       'wildcard'  => true,
     ),
   ));
 
-$more = $args->getArg('more');
-if (count($more) !== 1) {
+$callsigns = $args->getArg('callsign');
+if (count($callsigns) !== 1) {
   $args->printHelpAndExit();
 }
 
-$callsign   = head($more);
-$repository = id(new PhabricatorRepository())->loadOneWhere(
-  'callsign = %s',
-  $callsign);
+$callsign = head($callsigns);
+$repository = id(new PhabricatorRepositoryQuery())
+  ->setViewer(PhabricatorUser::getOmnipotentUser())
+  ->withCallsigns($callsigns)
+  ->executeOne();
 
 if (!$repository) {
   echo pht("Repository '%s' does not exist.", $callsign);
@@ -169,11 +170,11 @@ foreach ($input as $key => $line) {
     $line_number = $matches['line'];
     $path        = $matches['path'];
 
-    check_string_value($context, 'Symbol context', $line_no, 128);
-    check_string_value($name, 'Symbol name', $line_no, 128);
-    check_string_value($type, 'Symbol type', $line_no, 12);
-    check_string_value($lang, 'Symbol language', $line_no, 32);
-    check_string_value($path, 'Path', $line_no, 512);
+    check_string_value($context, pht('Symbol context'), $line_no, 128);
+    check_string_value($name, pht('Symbol name'), $line_no, 128);
+    check_string_value($type, pht('Symbol type'), $line_no, 12);
+    check_string_value($lang, pht('Symbol language'), $line_no, 32);
+    check_string_value($path, pht('Path'), $line_no, 512);
 
     if (!strlen($path) || $path[0] != '/') {
       throw new Exception(
@@ -225,4 +226,4 @@ if (count($symbols)) {
   commit_symbols($symbols, $repository, $no_purge);
 }
 
-echo pht('Done.'), "\n";
+echo pht('Done.')."\n";

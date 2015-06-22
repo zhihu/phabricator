@@ -17,10 +17,17 @@ final class PhabricatorCalendarEventEditor
     $types[] = PhabricatorCalendarEventTransaction::TYPE_NAME;
     $types[] = PhabricatorCalendarEventTransaction::TYPE_START_DATE;
     $types[] = PhabricatorCalendarEventTransaction::TYPE_END_DATE;
-    $types[] = PhabricatorCalendarEventTransaction::TYPE_STATUS;
     $types[] = PhabricatorCalendarEventTransaction::TYPE_DESCRIPTION;
     $types[] = PhabricatorCalendarEventTransaction::TYPE_CANCEL;
     $types[] = PhabricatorCalendarEventTransaction::TYPE_INVITE;
+    $types[] = PhabricatorCalendarEventTransaction::TYPE_ALL_DAY;
+    $types[] = PhabricatorCalendarEventTransaction::TYPE_ICON;
+
+    $types[] = PhabricatorCalendarEventTransaction::TYPE_RECURRING;
+    $types[] = PhabricatorCalendarEventTransaction::TYPE_FREQUENCY;
+    $types[] = PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE;
+    $types[] = PhabricatorCalendarEventTransaction::TYPE_INSTANCE_OF_EVENT;
+    $types[] = PhabricatorCalendarEventTransaction::TYPE_SEQUENCE_INDEX;
 
     $types[] = PhabricatorTransactions::TYPE_COMMENT;
     $types[] = PhabricatorTransactions::TYPE_VIEW_POLICY;
@@ -33,35 +40,34 @@ final class PhabricatorCalendarEventEditor
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
     switch ($xaction->getTransactionType()) {
+      case PhabricatorCalendarEventTransaction::TYPE_RECURRING:
+        return $object->getIsRecurring();
+      case PhabricatorCalendarEventTransaction::TYPE_FREQUENCY:
+        return $object->getRecurrenceFrequency();
+      case PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE:
+        return $object->getRecurrenceEndDate();
+      case PhabricatorCalendarEventTransaction::TYPE_INSTANCE_OF_EVENT:
+        return $object->getInstanceOfEventPHID();
+      case PhabricatorCalendarEventTransaction::TYPE_SEQUENCE_INDEX:
+        return $object->getSequenceIndex();
       case PhabricatorCalendarEventTransaction::TYPE_NAME:
         return $object->getName();
       case PhabricatorCalendarEventTransaction::TYPE_START_DATE:
         return $object->getDateFrom();
       case PhabricatorCalendarEventTransaction::TYPE_END_DATE:
         return $object->getDateTo();
-      case PhabricatorCalendarEventTransaction::TYPE_STATUS:
-        $status = $object->getStatus();
-        if ($status === null) {
-          return null;
-        }
-        return (int)$status;
       case PhabricatorCalendarEventTransaction::TYPE_DESCRIPTION:
         return $object->getDescription();
       case PhabricatorCalendarEventTransaction::TYPE_CANCEL:
         return $object->getIsCancelled();
+      case PhabricatorCalendarEventTransaction::TYPE_ALL_DAY:
+        return (int)$object->getIsAllDay();
+      case PhabricatorCalendarEventTransaction::TYPE_ICON:
+        return $object->getIcon();
       case PhabricatorCalendarEventTransaction::TYPE_INVITE:
         $map = $xaction->getNewValue();
         $phids = array_keys($map);
-        $invitees = array();
-
-        if ($map && !$this->getIsNewObject()) {
-          $invitees = id(new PhabricatorCalendarEventInviteeQuery())
-            ->setViewer($this->getActor())
-            ->withEventPHIDs(array($object->getPHID()))
-            ->withInviteePHIDs($phids)
-            ->execute();
-          $invitees = mpull($invitees, null, 'getInviteePHID');
-        }
+        $invitees = mpull($object->getInvitees(), null, 'getInviteePHID');
 
         $old = array();
         foreach ($phids as $phid) {
@@ -82,13 +88,19 @@ final class PhabricatorCalendarEventEditor
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
     switch ($xaction->getTransactionType()) {
+      case PhabricatorCalendarEventTransaction::TYPE_RECURRING:
+      case PhabricatorCalendarEventTransaction::TYPE_FREQUENCY:
+      case PhabricatorCalendarEventTransaction::TYPE_INSTANCE_OF_EVENT:
+      case PhabricatorCalendarEventTransaction::TYPE_SEQUENCE_INDEX:
       case PhabricatorCalendarEventTransaction::TYPE_NAME:
       case PhabricatorCalendarEventTransaction::TYPE_DESCRIPTION:
       case PhabricatorCalendarEventTransaction::TYPE_CANCEL:
       case PhabricatorCalendarEventTransaction::TYPE_INVITE:
+      case PhabricatorCalendarEventTransaction::TYPE_ICON:
         return $xaction->getNewValue();
-      case PhabricatorCalendarEventTransaction::TYPE_STATUS:
+      case PhabricatorCalendarEventTransaction::TYPE_ALL_DAY:
         return (int)$xaction->getNewValue();
+      case PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE:
       case PhabricatorCalendarEventTransaction::TYPE_START_DATE:
       case PhabricatorCalendarEventTransaction::TYPE_END_DATE:
         return $xaction->getNewValue()->getEpoch();
@@ -102,6 +114,14 @@ final class PhabricatorCalendarEventEditor
     PhabricatorApplicationTransaction $xaction) {
 
     switch ($xaction->getTransactionType()) {
+      case PhabricatorCalendarEventTransaction::TYPE_RECURRING:
+        return $object->setIsRecurring($xaction->getNewValue());
+      case PhabricatorCalendarEventTransaction::TYPE_FREQUENCY:
+        return $object->setRecurrenceFrequency($xaction->getNewValue());
+      case PhabricatorCalendarEventTransaction::TYPE_INSTANCE_OF_EVENT:
+        return $object->setInstanceOfEventPHID($xaction->getNewValue());
+      case PhabricatorCalendarEventTransaction::TYPE_SEQUENCE_INDEX:
+        return $object->setSequenceIndex($xaction->getNewValue());
       case PhabricatorCalendarEventTransaction::TYPE_NAME:
         $object->setName($xaction->getNewValue());
         return;
@@ -111,8 +131,8 @@ final class PhabricatorCalendarEventEditor
       case PhabricatorCalendarEventTransaction::TYPE_END_DATE:
         $object->setDateTo($xaction->getNewValue());
         return;
-      case PhabricatorCalendarEventTransaction::TYPE_STATUS:
-        $object->setStatus($xaction->getNewValue());
+      case PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE:
+        $object->setRecurrenceEndDate($xaction->getNewValue());
         return;
       case PhabricatorCalendarEventTransaction::TYPE_DESCRIPTION:
         $object->setDescription($xaction->getNewValue());
@@ -120,12 +140,13 @@ final class PhabricatorCalendarEventEditor
       case PhabricatorCalendarEventTransaction::TYPE_CANCEL:
         $object->setIsCancelled((int)$xaction->getNewValue());
         return;
+      case PhabricatorCalendarEventTransaction::TYPE_ALL_DAY:
+        $object->setIsAllDay((int)$xaction->getNewValue());
+        return;
+      case PhabricatorCalendarEventTransaction::TYPE_ICON:
+        $object->setIcon($xaction->getNewValue());
+        return;
       case PhabricatorCalendarEventTransaction::TYPE_INVITE:
-      case PhabricatorTransactions::TYPE_COMMENT:
-      case PhabricatorTransactions::TYPE_VIEW_POLICY:
-      case PhabricatorTransactions::TYPE_EDIT_POLICY:
-      case PhabricatorTransactions::TYPE_EDGE:
-      case PhabricatorTransactions::TYPE_SUBSCRIBERS:
         return;
     }
 
@@ -137,12 +158,18 @@ final class PhabricatorCalendarEventEditor
     PhabricatorApplicationTransaction $xaction) {
 
     switch ($xaction->getTransactionType()) {
+      case PhabricatorCalendarEventTransaction::TYPE_RECURRING:
+      case PhabricatorCalendarEventTransaction::TYPE_FREQUENCY:
+      case PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE:
+      case PhabricatorCalendarEventTransaction::TYPE_INSTANCE_OF_EVENT:
+      case PhabricatorCalendarEventTransaction::TYPE_SEQUENCE_INDEX:
       case PhabricatorCalendarEventTransaction::TYPE_NAME:
       case PhabricatorCalendarEventTransaction::TYPE_START_DATE:
       case PhabricatorCalendarEventTransaction::TYPE_END_DATE:
-      case PhabricatorCalendarEventTransaction::TYPE_STATUS:
       case PhabricatorCalendarEventTransaction::TYPE_DESCRIPTION:
       case PhabricatorCalendarEventTransaction::TYPE_CANCEL:
+      case PhabricatorCalendarEventTransaction::TYPE_ALL_DAY:
+      case PhabricatorCalendarEventTransaction::TYPE_ICON:
         return;
       case PhabricatorCalendarEventTransaction::TYPE_INVITE:
         $map = $xaction->getNewValue();
@@ -164,24 +191,94 @@ final class PhabricatorCalendarEventEditor
         }
         $object->attachInvitees($invitees);
         return;
-      case PhabricatorTransactions::TYPE_COMMENT:
-      case PhabricatorTransactions::TYPE_VIEW_POLICY:
-      case PhabricatorTransactions::TYPE_EDIT_POLICY:
-      case PhabricatorTransactions::TYPE_EDGE:
-      case PhabricatorTransactions::TYPE_SUBSCRIBERS:
-        return;
     }
 
     return parent::applyCustomExternalTransaction($object, $xaction);
   }
 
+  protected function didApplyInternalEffects(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
+
+    $object->removeViewerTimezone($this->requireActor());
+
+    return $xactions;
+  }
+
+  protected function applyFinalEffects(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
+
+    // Clear the availability caches for users whose availability is affected
+    // by this edit.
+
+    $invalidate_all = false;
+    $invalidate_phids = array();
+    foreach ($xactions as $xaction) {
+      switch ($xaction->getTransactionType()) {
+        case PhabricatorCalendarEventTransaction::TYPE_ICON:
+          break;
+        case PhabricatorCalendarEventTransaction::TYPE_RECURRING:
+        case PhabricatorCalendarEventTransaction::TYPE_FREQUENCY:
+        case PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE:
+        case PhabricatorCalendarEventTransaction::TYPE_INSTANCE_OF_EVENT:
+        case PhabricatorCalendarEventTransaction::TYPE_SEQUENCE_INDEX:
+        case PhabricatorCalendarEventTransaction::TYPE_START_DATE:
+        case PhabricatorCalendarEventTransaction::TYPE_END_DATE:
+        case PhabricatorCalendarEventTransaction::TYPE_CANCEL:
+        case PhabricatorCalendarEventTransaction::TYPE_ALL_DAY:
+          // For these kinds of changes, we need to invalidate the availabilty
+          // caches for all attendees.
+          $invalidate_all = true;
+          break;
+        case PhabricatorCalendarEventTransaction::TYPE_INVITE:
+          foreach ($xaction->getNewValue() as $phid => $ignored) {
+            $invalidate_phids[$phid] = $phid;
+          }
+          break;
+      }
+    }
+
+    $phids = mpull($object->getInvitees(), 'getInviteePHID');
+    $phids = array_fuse($phids);
+
+    if (!$invalidate_all) {
+      $phids = array_select_keys($phids, $invalidate_phids);
+    }
+
+    if ($phids) {
+      $user = new PhabricatorUser();
+      $conn_w = $user->establishConnection('w');
+      queryfx(
+        $conn_w,
+        'UPDATE %T SET availabilityCacheTTL = NULL
+          WHERE phid IN (%Ls) AND availabilityCacheTTL >= %d',
+        $user->getTableName(),
+        $phids,
+        $object->getDateFromForCache());
+    }
+
+    return $xactions;
+  }
+
+
   protected function validateAllTransactions(
     PhabricatorLiskDAO $object,
     array $xactions) {
-    $start_date_xaction = PhabricatorCalendarEventTransaction::TYPE_START_DATE;
-    $end_date_xaction = PhabricatorCalendarEventTransaction::TYPE_END_DATE;
+    $start_date_xaction =
+      PhabricatorCalendarEventTransaction::TYPE_START_DATE;
+    $end_date_xaction =
+      PhabricatorCalendarEventTransaction::TYPE_END_DATE;
+    $is_recurrence_xaction =
+      PhabricatorCalendarEventTransaction::TYPE_RECURRING;
+    $recurrence_end_xaction =
+      PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE;
+
     $start_date = $object->getDateFrom();
     $end_date = $object->getDateTo();
+    $recurrence_end = $object->getRecurrenceEndDate();
+    $is_recurring = $object->getIsRecurring();
+
     $errors = array();
 
     foreach ($xactions as $xaction) {
@@ -189,6 +286,10 @@ final class PhabricatorCalendarEventEditor
         $start_date = $xaction->getNewValue()->getEpoch();
       } else if ($xaction->getTransactionType() == $end_date_xaction) {
         $end_date = $xaction->getNewValue()->getEpoch();
+      } else if ($xaction->getTransactionType() == $recurrence_end_xaction) {
+        $recurrence_end = $xaction->getNewValue();
+      } else if ($xaction->getTransactionType() == $is_recurrence_xaction) {
+        $is_recurring = $xaction->getNewValue();
       }
     }
     if ($start_date > $end_date) {
@@ -197,6 +298,16 @@ final class PhabricatorCalendarEventEditor
         $type,
         pht('Invalid'),
         pht('End date must be after start date.'),
+        null);
+    }
+
+    if ($recurrence_end && !$is_recurring) {
+      $type =
+        PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE;
+      $errors[] = new PhabricatorApplicationTransactionValidationError(
+        $type,
+        pht('Invalid'),
+        pht('Event must be recurring to have a recurrence end date.').
         null);
     }
 
@@ -227,6 +338,7 @@ final class PhabricatorCalendarEventEditor
           $errors[] = $error;
         }
         break;
+      case PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE:
       case PhabricatorCalendarEventTransaction::TYPE_START_DATE:
       case PhabricatorCalendarEventTransaction::TYPE_END_DATE:
         foreach ($xactions as $xaction) {
@@ -258,9 +370,7 @@ final class PhabricatorCalendarEventEditor
   protected function shouldSendMail(
     PhabricatorLiskDAO $object,
     array $xactions) {
-
-    $xactions = mfilter($xactions, 'shouldHide', true);
-    return $xactions;
+    return true;
   }
 
   protected function getMailSubjectPrefix() {
@@ -294,7 +404,7 @@ final class PhabricatorCalendarEventEditor
       PhabricatorCalendarEventTransaction::MAILTAG_CONTENT =>
         pht(
           "An event's name, status, invite list, ".
-          "and description changes."),
+          "icon, and description changes."),
       PhabricatorCalendarEventTransaction::MAILTAG_RESCHEDULE =>
         pht(
           "An event's start and end date ".

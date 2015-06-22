@@ -13,14 +13,14 @@ final class NuanceItem
   protected $requestorPHID;
   protected $sourcePHID;
   protected $sourceLabel;
-  protected $data;
+  protected $data = array();
   protected $mailKey;
   protected $dateNuanced;
 
-  public static function initializeNewItem(PhabricatorUser $user) {
+  public static function initializeNewItem() {
     return id(new NuanceItem())
       ->setDateNuanced(time())
-      ->setStatus(NuanceItem::STATUS_OPEN);
+      ->setStatus(self::STATUS_OPEN);
   }
 
   protected function getConfiguration() {
@@ -92,6 +92,15 @@ final class NuanceItem
 
   public function attachSource(NuanceSource $source) {
     $this->source = $source;
+  }
+
+  public function getNuanceProperty($key, $default = null) {
+    return idx($this->data, $key, $default);
+  }
+
+  public function setNuanceProperty($key, $value) {
+    $this->data[$key] = $value;
+    return $this;
   }
 
   public function getCapabilities() {

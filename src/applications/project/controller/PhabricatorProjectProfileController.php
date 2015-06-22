@@ -67,6 +67,7 @@ final class PhabricatorProjectProfileController
       $nav,
       array(
         'title' => $project->getName(),
+        'pageObjects' => array($project->getPHID()),
       ));
   }
 
@@ -90,7 +91,8 @@ final class PhabricatorProjectProfileController
       id(new PhabricatorActionView())
         ->setName(pht('Edit Details'))
         ->setIcon('fa-pencil')
-        ->setHref($this->getApplicationURI("details/{$id}/")));
+        ->setHref($this->getApplicationURI("details/{$id}/"))
+        ->setDisabled(!$can_edit));
 
     $view->addAction(
       id(new PhabricatorActionView())

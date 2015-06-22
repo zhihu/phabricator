@@ -90,6 +90,7 @@ body.device-phone .phui-header-view {
 .phui-header-image {
   display: inline-block;
   background-repeat: no-repeat;
+  background-size: 100%;
   border: 2px solid white;
   width: 50px;
   height: 50px;
@@ -138,4 +139,12 @@ body.device-phone .phui-header-view {
 
 .device .phui-header-action-links .phui-mobile-menu {
   display: inline-block;
+}
+
+.spaces-name {
+  color: {$lightbluetext};
+}
+
+.spaces-name .phui-handle {
+  color: #000;
 }

@@ -14,64 +14,173 @@ final class PhabricatorCalendarEvent extends PhabricatorCalendarDAO
   protected $userPHID;
   protected $dateFrom;
   protected $dateTo;
-  protected $status;
   protected $description;
   protected $isCancelled;
+  protected $isAllDay;
+  protected $icon;
   protected $mailKey;
+
+  protected $isRecurring = 0;
+  protected $recurrenceFrequency = array();
+  protected $recurrenceEndDate;
+
+  private $isGhostEvent = false;
+  protected $instanceOfEventPHID;
+  protected $sequenceIndex;
 
   protected $viewPolicy;
   protected $editPolicy;
 
+  const DEFAULT_ICON = 'fa-calendar';
+
+  private $parentEvent = self::ATTACHABLE;
   private $invitees = self::ATTACHABLE;
+  private $appliedViewer;
 
-  const STATUS_AWAY = 1;
-  const STATUS_SPORADIC = 2;
-
-  public static function initializeNewCalendarEvent(PhabricatorUser $actor) {
+  public static function initializeNewCalendarEvent(
+    PhabricatorUser $actor,
+    $mode) {
     $app = id(new PhabricatorApplicationQuery())
       ->setViewer($actor)
       ->withClasses(array('PhabricatorCalendarApplication'))
       ->executeOne();
 
+    $view_policy = null;
+    $is_recurring = 0;
+
+    if ($mode == 'public') {
+      $view_policy = PhabricatorPolicies::getMostOpenPolicy();
+    } else if ($mode == 'recurring') {
+      $is_recurring = true;
+    } else {
+      $view_policy = $actor->getPHID();
+    }
+
     return id(new PhabricatorCalendarEvent())
       ->setUserPHID($actor->getPHID())
       ->setIsCancelled(0)
-      ->setViewPolicy($actor->getPHID())
+      ->setIsAllDay(0)
+      ->setIsRecurring($is_recurring)
+      ->setIcon(self::DEFAULT_ICON)
+      ->setViewPolicy($view_policy)
       ->setEditPolicy($actor->getPHID())
-      ->attachInvitees(array());
+      ->attachInvitees(array())
+      ->applyViewerTimezone($actor);
+  }
+
+  public function applyViewerTimezone(PhabricatorUser $viewer) {
+    if ($this->appliedViewer) {
+      throw new Exception(pht('Viewer timezone is already applied!'));
+    }
+
+    $this->appliedViewer = $viewer;
+
+    if (!$this->getIsAllDay()) {
+      return $this;
+    }
+
+    $zone = $viewer->getTimeZone();
+
+
+    $this->setDateFrom(
+      $this->getDateEpochForTimeZone(
+        $this->getDateFrom(),
+        new DateTimeZone('Pacific/Kiritimati'),
+        'Y-m-d',
+        null,
+        $zone));
+
+    $this->setDateTo(
+      $this->getDateEpochForTimeZone(
+        $this->getDateTo(),
+        new DateTimeZone('Pacific/Midway'),
+        'Y-m-d 23:59:00',
+        '-1 day',
+        $zone));
+
+    return $this;
+  }
+
+
+  public function removeViewerTimezone(PhabricatorUser $viewer) {
+    if (!$this->appliedViewer) {
+      throw new Exception(pht('Viewer timezone is not applied!'));
+    }
+
+    if ($viewer->getPHID() != $this->appliedViewer->getPHID()) {
+      throw new Exception(pht('Removed viewer must match applied viewer!'));
+    }
+
+    $this->appliedViewer = null;
+
+    if (!$this->getIsAllDay()) {
+      return $this;
+    }
+
+    $zone = $viewer->getTimeZone();
+
+    $this->setDateFrom(
+      $this->getDateEpochForTimeZone(
+        $this->getDateFrom(),
+        $zone,
+        'Y-m-d',
+        null,
+        new DateTimeZone('Pacific/Kiritimati')));
+
+    $this->setDateTo(
+      $this->getDateEpochForTimeZone(
+        $this->getDateTo(),
+        $zone,
+        'Y-m-d',
+        '+1 day',
+        new DateTimeZone('Pacific/Midway')));
+
+    return $this;
+  }
+
+  private function getDateEpochForTimeZone(
+    $epoch,
+    $src_zone,
+    $format,
+    $adjust,
+    $dst_zone) {
+
+    $src = new DateTime('@'.$epoch);
+    $src->setTimeZone($src_zone);
+
+    if (strlen($adjust)) {
+      $adjust = ' '.$adjust;
+    }
+
+    $dst = new DateTime($src->format($format).$adjust, $dst_zone);
+    return $dst->format('U');
   }
 
   public function save() {
+    if ($this->appliedViewer) {
+      throw new Exception(
+        pht(
+          'Can not save event with viewer timezone still applied!'));
+    }
+
     if (!$this->mailKey) {
       $this->mailKey = Filesystem::readRandomCharacters(20);
     }
+
     return parent::save();
   }
 
-  private static $statusTexts = array(
-    self::STATUS_AWAY => 'away',
-    self::STATUS_SPORADIC => 'sporadic',
-  );
-
-  public function setTextStatus($status) {
-    $statuses = array_flip(self::$statusTexts);
-    return $this->setStatus($statuses[$status]);
-  }
-
-  public function getTextStatus() {
-    return self::$statusTexts[$this->status];
-  }
-
-  public function getStatusOptions() {
-    return array(
-      self::STATUS_AWAY     => pht('Away'),
-      self::STATUS_SPORADIC => pht('Sporadic'),
-    );
-  }
-
-  public function getHumanStatus() {
-    $options = $this->getStatusOptions();
-    return $options[$this->status];
+  /**
+   * Get the event start epoch for evaluating invitee availability.
+   *
+   * When assessing availability, we pretend events start earlier than they
+   * really. This allows us to mark users away for the entire duration of a
+   * series of back-to-back meetings, even if they don't strictly overlap.
+   *
+   * @return int Event start date for availability caches.
+   */
+  public function getDateFromForCache() {
+    return ($this->getDateFrom() - phutil_units('15 minutes in seconds'));
   }
 
   protected function getConfiguration() {
@@ -81,15 +190,27 @@ final class PhabricatorCalendarEvent extends PhabricatorCalendarDAO
         'name' => 'text',
         'dateFrom' => 'epoch',
         'dateTo' => 'epoch',
-        'status' => 'uint32',
         'description' => 'text',
         'isCancelled' => 'bool',
+        'isAllDay' => 'bool',
+        'icon' => 'text32',
         'mailKey' => 'bytes20',
+        'isRecurring' => 'bool',
+        'recurrenceEndDate' => 'epoch?',
+        'instanceOfEventPHID' => 'phid?',
+        'sequenceIndex' => 'uint32?',
       ),
       self::CONFIG_KEY_SCHEMA => array(
         'userPHID_dateFrom' => array(
           'columns' => array('userPHID', 'dateTo'),
         ),
+        'key_instance' => array(
+          'columns' => array('instanceOfEventPHID', 'sequenceIndex'),
+          'unique' => true,
+        ),
+      ),
+      self::CONFIG_SERIALIZATION => array(
+        'recurrenceFrequency' => self::SERIALIZATION_JSON,
       ),
     ) + parent::getConfiguration();
   }
@@ -101,38 +222,6 @@ final class PhabricatorCalendarEvent extends PhabricatorCalendarDAO
 
   public function getMonogram() {
     return 'E'.$this->getID();
-  }
-
-  public function getTerseSummary(PhabricatorUser $viewer) {
-    $until = phabricator_date($this->dateTo, $viewer);
-    if ($this->status == PhabricatorCalendarEvent::STATUS_SPORADIC) {
-      return pht('Sporadic until %s', $until);
-    } else {
-      return pht('Away until %s', $until);
-    }
-  }
-
-  public static function getNameForStatus($value) {
-    switch ($value) {
-      case self::STATUS_AWAY:
-        return pht('Away');
-      case self::STATUS_SPORADIC:
-        return pht('Sporadic');
-      default:
-        return pht('Unknown');
-    }
-  }
-
-  public function loadCurrentStatuses($user_phids) {
-    if (!$user_phids) {
-      return array();
-    }
-
-    $statuses = $this->loadAllWhere(
-      'userPHID IN (%Ls) AND UNIX_TIMESTAMP() BETWEEN dateFrom AND dateTo',
-      $user_phids);
-
-    return mpull($statuses, null, 'getUserPHID');
   }
 
   public function getInvitees() {
@@ -163,6 +252,125 @@ final class PhabricatorCalendarEvent extends PhabricatorCalendarDAO
     $is_attending = ($old_status == $attending_status);
 
     return $is_attending;
+  }
+
+  public function getIsUserInvited($phid) {
+    $uninvited_status = PhabricatorCalendarEventInvitee::STATUS_UNINVITED;
+    $declined_status = PhabricatorCalendarEventInvitee::STATUS_DECLINED;
+    $status = $this->getUserInviteStatus($phid);
+    if ($status == $uninvited_status || $status == $declined_status) {
+      return false;
+    }
+    return true;
+  }
+
+  public function getIsGhostEvent() {
+    return $this->isGhostEvent;
+  }
+
+  public function setIsGhostEvent($is_ghost_event) {
+    $this->isGhostEvent = $is_ghost_event;
+    return $this;
+  }
+
+  public function generateNthGhost(
+    $sequence_index,
+    PhabricatorUser $actor) {
+
+    $frequency = $this->getFrequencyUnit();
+    $modify_key = '+'.$sequence_index.' '.$frequency;
+
+    $instance_of = ($this->getPHID()) ?
+      $this->getPHID() : $this->instanceOfEventPHID;
+
+    $date = $this->dateFrom;
+    $date_time = PhabricatorTime::getDateTimeFromEpoch($date, $actor);
+    $date_time->modify($modify_key);
+    $date = $date_time->format('U');
+
+    $duration = $this->dateTo - $this->dateFrom;
+
+    $edit_policy = PhabricatorPolicies::POLICY_NOONE;
+
+    $ghost_event = id(clone $this)
+      ->setIsGhostEvent(true)
+      ->setDateFrom($date)
+      ->setDateTo($date + $duration)
+      ->setIsRecurring(true)
+      ->setRecurrenceFrequency($this->recurrenceFrequency)
+      ->setInstanceOfEventPHID($instance_of)
+      ->setSequenceIndex($sequence_index)
+      ->setEditPolicy($edit_policy);
+
+    return $ghost_event;
+  }
+
+  public function getFrequencyUnit() {
+    $frequency = idx($this->recurrenceFrequency, 'rule');
+
+    switch ($frequency) {
+      case 'daily':
+        return 'day';
+      case 'weekly':
+        return 'week';
+      case 'monthly':
+        return 'month';
+      case 'yearly':
+        return 'year';
+      default:
+        return 'day';
+    }
+  }
+
+  public function getURI() {
+    $uri = '/'.$this->getMonogram();
+    if ($this->isGhostEvent) {
+      $uri = $uri.'/'.$this->sequenceIndex;
+    }
+    return $uri;
+  }
+
+  public function getParentEvent() {
+    return $this->assertAttached($this->parentEvent);
+  }
+
+  public function attachParentEvent($event) {
+    $this->parentEvent = $event;
+    return $this;
+  }
+
+  public function getIsCancelled() {
+    $instance_of = $this->instanceOfEventPHID;
+    if ($instance_of != null && $this->getIsParentCancelled()) {
+      return true;
+    }
+    return $this->isCancelled;
+  }
+
+  public function getIsRecurrenceParent() {
+    if ($this->isRecurring && !$this->instanceOfEventPHID) {
+      return true;
+    }
+    return false;
+  }
+
+  public function getIsRecurrenceException() {
+    if ($this->instanceOfEventPHID && !$this->isGhostEvent) {
+      return true;
+    }
+    return false;
+  }
+
+  public function getIsParentCancelled() {
+    if ($this->instanceOfEventPHID == null) {
+      return false;
+    }
+
+    $recurring_event = $this->getParentEvent();
+    if ($recurring_event->getIsCancelled()) {
+      return true;
+    }
+    return false;
   }
 
 /* -(  Markup Interface  )--------------------------------------------------- */
@@ -255,7 +463,8 @@ final class PhabricatorCalendarEvent extends PhabricatorCalendarDAO
 
   public function describeAutomaticCapability($capability) {
     return pht('The owner of an event can always view and edit it,
-      and invitees can always view it.');
+      and invitees can always view it, except if the event is an
+      instance of a recurring event.');
   }
 
 /* -(  PhabricatorApplicationTransactionInterface  )------------------------- */

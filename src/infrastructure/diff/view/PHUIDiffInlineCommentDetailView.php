@@ -18,6 +18,10 @@ final class PHUIDiffInlineCommentDetailView
     return $this;
   }
 
+  public function isHidden() {
+    return $this->inlineComment->isHidden();
+  }
+
   public function setHandles(array $handles) {
     assert_instances_of($handles, 'PhabricatorObjectHandle');
     $this->handles = $handles;
@@ -71,8 +75,23 @@ final class PHUIDiffInlineCommentDetailView
     return $this->objectOwnerPHID;
   }
 
-  public function render() {
+  public function getAnchorName() {
+    $inline = $this->inlineComment;
+    if ($inline->getID()) {
+      return 'inline-'.$inline->getID();
+    }
+    return null;
+  }
 
+  public function getScaffoldCellID() {
+    $anchor = $this->getAnchorName();
+    if ($anchor) {
+      return 'anchor-'.$anchor;
+    }
+    return null;
+  }
+
+  public function render() {
     require_celerity_resource('phui-inline-comment-view-css');
     $inline = $this->inlineComment;
 
@@ -128,12 +147,11 @@ final class PHUIDiffInlineCommentDetailView
     if ($ghost) {
       if ($ghost['new']) {
         $ghosticon = 'fa-fast-forward';
-        $reason = pht('View forward comment');
+        $reason = pht('View on forward revision');
       } else {
         $ghosticon = 'fa-fast-backward';
-        $reason = pht('View previous comment');
+        $reason = pht('View on previous revision');
       }
-      $ghost_id = celerity_generate_unique_node_id();
 
       $ghost_icon = id(new PHUIIconView())
         ->setIconFont($ghosticon)
@@ -143,16 +161,12 @@ final class PHUIDiffInlineCommentDetailView
             'tip' => $reason,
             'size' => 300,
           ));
-      $ghost_tag = javelin_tag(
+      $ghost_tag = phutil_tag(
         'a',
         array(
           'class' => 'ghost-icon',
-          'sigil' => 'jx-toggle-class',
-          'meta'  => array(
-            'map' => array(
-              $ghost_id => 'ghost-is-expanded',
-            ),
-          ),
+          'href' => $ghost['href'],
+          'target' => '_blank',
         ),
         $ghost_icon);
       $classes[] = 'inline-comment-ghost';
@@ -182,6 +196,8 @@ final class PHUIDiffInlineCommentDetailView
     if (!$this->preview) {
       $nextprev = new PHUIButtonBarView();
       $nextprev->addClass('mml');
+
+
       $up = id(new PHUIButtonView())
         ->setTag('a')
         ->setColor(PHUIButtonView::SIMPLE)
@@ -197,6 +213,18 @@ final class PHUIDiffInlineCommentDetailView
         ->setIconFont('fa-chevron-down')
         ->addSigil('differential-inline-next')
         ->setMustCapture(true);
+
+      $hide = id(new PHUIButtonView())
+        ->setTag('a')
+        ->setColor(PHUIButtonView::SIMPLE)
+        ->setTooltip(pht('Hide Comment'))
+        ->setIconFont('fa-times')
+        ->addSigil('hide-inline')
+        ->setMustCapture(true);
+
+      if ($viewer_phid && $inline->getID() && $inline->supportsHiding()) {
+        $nextprev->addButton($hide);
+      }
 
       $nextprev->addButton($up);
       $nextprev->addButton($down);
@@ -223,7 +251,7 @@ final class PHUIDiffInlineCommentDetailView
       }
     }
 
-    $anchor_name = 'inline-'.$inline->getID();
+    $anchor_name = $this->getAnchorName();
 
     if ($this->editable && !$this->preview) {
       $edit_button = id(new PHUIButtonView())
@@ -415,7 +443,6 @@ final class PHUIDiffInlineCommentDetailView
         'class' => $classes,
         'sigil' => $sigil,
         'meta'  => $metadata,
-        'id'    => $ghost_id,
       ),
       array(
         phutil_tag_div('differential-inline-comment-head grouped', array(

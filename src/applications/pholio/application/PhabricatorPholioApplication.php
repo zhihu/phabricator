@@ -49,7 +49,6 @@ final class PhabricatorPholioApplication extends PhabricatorApplication {
         'inline/' => array(
           '(?:(?P<id>\d+)/)?' => 'PholioInlineController',
           'list/(?P<id>\d+)/' => 'PholioInlineListController',
-          'thumb/(?P<imageid>\d+)/' => 'PholioInlineThumbController',
         ),
         'image/' => array(
           'upload/' => 'PholioImageUploadController',
@@ -72,8 +71,12 @@ final class PhabricatorPholioApplication extends PhabricatorApplication {
 
   protected function getCustomCapabilities() {
     return array(
-      PholioDefaultViewCapability::CAPABILITY => array(),
-      PholioDefaultEditCapability::CAPABILITY => array(),
+      PholioDefaultViewCapability::CAPABILITY => array(
+        'template' => PholioMockPHIDType::TYPECONST,
+      ),
+      PholioDefaultEditCapability::CAPABILITY => array(
+        'template' => PholioMockPHIDType::TYPECONST,
+      ),
     );
   }
 

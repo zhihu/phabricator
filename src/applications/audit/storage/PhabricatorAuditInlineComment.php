@@ -23,6 +23,14 @@ final class PhabricatorAuditInlineComment
     return $this->proxy;
   }
 
+  public function supportsHiding() {
+    return false;
+  }
+
+  public function isHidden() {
+    return false;
+  }
+
   public function getTransactionCommentForSave() {
     $content_source = PhabricatorContentSource::newForSource(
       PhabricatorContentSource::SOURCE_LEGACY,
@@ -115,7 +123,7 @@ final class PhabricatorAuditInlineComment
   private static function buildProxies(array $inlines) {
     $results = array();
     foreach ($inlines as $key => $inline) {
-      $results[$key] = PhabricatorAuditInlineComment::newFromModernComment(
+      $results[$key] = self::newFromModernComment(
         $inline);
     }
     return $results;

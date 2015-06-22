@@ -4,7 +4,7 @@ abstract class HarbormasterBuildStepImplementation {
 
   public static function getImplementations() {
     return id(new PhutilSymbolLoader())
-      ->setAncestorClass('HarbormasterBuildStepImplementation')
+      ->setAncestorClass(__CLASS__)
       ->loadObjects();
   }
 
@@ -72,7 +72,7 @@ abstract class HarbormasterBuildStepImplementation {
    * Loads the settings for this build step implementation from a build
    * step or target.
    */
-  public final function loadSettings($build_object) {
+  final public function loadSettings($build_object) {
     $this->settings = $build_object->getDetails();
     return $this;
   }
