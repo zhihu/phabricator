@@ -5,10 +5,6 @@ final class PhabricatorCalendarEventEditController
 
   private $id;
 
-  public function willProcessRequest(array $data) {
-    $this->id = idx($data, 'id');
-  }
-
   public function isCreate() {
     return !$this->id;
   }
@@ -16,6 +12,8 @@ final class PhabricatorCalendarEventEditController
   public function handleRequest(AphrontRequest $request) {
     $viewer = $request->getViewer();
     $user_phid = $viewer->getPHID();
+    $this->id = $request->getURIData('id');
+
     $error_name = true;
     $error_recurrence_end_date = null;
     $error_start_date = true;
@@ -302,13 +300,13 @@ final class PhabricatorCalendarEventEditController
       } catch (PhabricatorApplicationTransactionValidationException $ex) {
         $validation_exception = $ex;
         $error_name = $ex->getShortMessage(
-            PhabricatorCalendarEventTransaction::TYPE_NAME);
+          PhabricatorCalendarEventTransaction::TYPE_NAME);
         $error_start_date = $ex->getShortMessage(
-            PhabricatorCalendarEventTransaction::TYPE_START_DATE);
+          PhabricatorCalendarEventTransaction::TYPE_START_DATE);
         $error_end_date = $ex->getShortMessage(
-            PhabricatorCalendarEventTransaction::TYPE_END_DATE);
+          PhabricatorCalendarEventTransaction::TYPE_END_DATE);
         $error_recurrence_end_date = $ex->getShortMessage(
-            PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE);
+          PhabricatorCalendarEventTransaction::TYPE_RECURRENCE_END_DATE);
       }
     }
 
@@ -424,11 +422,11 @@ final class PhabricatorCalendarEventEditController
       $recurrence_frequency_select = id(new AphrontFormSelectControl())
         ->setName('frequency')
         ->setOptions(array(
-            'daily' => pht('Daily'),
-            'weekly' => pht('Weekly'),
-            'monthly' => pht('Monthly'),
-            'yearly' => pht('Yearly'),
-          ))
+          'daily' => pht('Daily'),
+          'weekly' => pht('Weekly'),
+          'monthly' => pht('Monthly'),
+          'yearly' => pht('Yearly'),
+        ))
         ->setValue($frequency)
         ->setLabel(pht('Recurring Event Frequency'))
         ->setID($frequency_id)
@@ -583,7 +581,7 @@ final class PhabricatorCalendarEventEditController
       array(
         $crumbs,
         $object_box,
-        ),
+      ),
       array(
         'title' => $page_title,
       ));

@@ -3,26 +3,20 @@
 final class PhabricatorCalendarEventViewController
   extends PhabricatorCalendarController {
 
-  private $id;
-
   public function shouldAllowPublic() {
     return true;
   }
 
-  public function willProcessRequest(array $data) {
-    $this->id = $data['id'];
-  }
-
-  public function processRequest() {
-    $request = $this->getRequest();
-    $viewer = $request->getUser();
+  public function handleRequest(AphrontRequest $request) {
+    $viewer = $request->getViewer();
+    $id = $request->getURIData('id');
     $sequence = $request->getURIData('sequence');
 
     $timeline = null;
 
     $event = id(new PhabricatorCalendarEventQuery())
       ->setViewer($viewer)
-      ->withIDs(array($this->id))
+      ->withIDs(array($id))
       ->executeOne();
     if (!$event) {
       return new Aphront404Response();
@@ -83,10 +77,10 @@ final class PhabricatorCalendarEventViewController
     $draft = PhabricatorDraft::newFromUserAndKey($viewer, $event->getPHID());
     if ($sequence) {
       $comment_uri = $this->getApplicationURI(
-          '/event/comment/'.$event->getID().'/'.$sequence.'/');
+        '/event/comment/'.$event->getID().'/'.$sequence.'/');
     } else {
       $comment_uri = $this->getApplicationURI(
-          '/event/comment/'.$event->getID().'/');
+        '/event/comment/'.$event->getID().'/');
     }
     $add_comment_form = id(new PhabricatorApplicationTransactionCommentView())
       ->setUser($viewer)
@@ -105,6 +99,7 @@ final class PhabricatorCalendarEventViewController
       ),
       array(
         'title' => $page_title,
+        'pageObjects' => array($event->getPHID()),
       ));
   }
 
@@ -372,7 +367,6 @@ final class PhabricatorCalendarEventViewController
       $icon_display);
 
     if (strlen($event->getDescription())) {
-
       $description = PhabricatorMarkupEngine::renderOneObject(
         id(new PhabricatorMarkupOneOff())->setContent($event->getDescription()),
         'default',

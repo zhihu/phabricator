@@ -35,12 +35,16 @@ final class PhabricatorPasteSearchEngine
       $query->withDateCreatedBefore($map['createdEnd']);
     }
 
+    if ($map['statuses']) {
+      $query->withStatuses($map['statuses']);
+    }
+
     return $query;
   }
 
   protected function buildCustomSearchFields() {
     return array(
-      id(new PhabricatorSearchUsersField())
+      id(new PhabricatorUsersSearchField())
         ->setAliases(array('authors'))
         ->setKey('authorPHIDs')
         ->setLabel(pht('Authors')),
@@ -53,6 +57,12 @@ final class PhabricatorPasteSearchEngine
       id(new PhabricatorSearchDateField())
         ->setKey('createdEnd')
         ->setLabel(pht('Created Before')),
+      id(new PhabricatorSearchCheckboxesField())
+        ->setKey('statuses')
+        ->setLabel(pht('Status'))
+        ->setOptions(
+          id(new PhabricatorPaste())
+            ->getStatusNameMap()),
     );
   }
 
@@ -70,6 +80,7 @@ final class PhabricatorPasteSearchEngine
 
   protected function getBuiltinQueryNames() {
     $names = array(
+      'active' => pht('Active Pastes'),
       'all' => pht('All Pastes'),
     );
 
@@ -86,6 +97,12 @@ final class PhabricatorPasteSearchEngine
     $query->setQueryKey($query_key);
 
     switch ($query_key) {
+      case 'active':
+        return $query->setParameter(
+          'statuses',
+          array(
+            PhabricatorPaste::STATUS_ACTIVE,
+          ));
       case 'all':
         return $query;
       case 'authored':
@@ -151,6 +168,10 @@ final class PhabricatorPasteSearchEngine
         ->addIcon('none', $line_count)
         ->appendChild($source_code);
 
+      if ($paste->isArchived()) {
+        $item->setDisabled(true);
+      }
+
       $lang_name = $paste->getLanguage();
       if ($lang_name) {
         $lang_name = idx($lang_map, $lang_name, $lang_name);
@@ -160,6 +181,10 @@ final class PhabricatorPasteSearchEngine
       $list->addItem($item);
     }
 
-    return $list;
+    $result = new PhabricatorApplicationSearchResultView();
+    $result->setObjectList($list);
+    $result->setNoDataString(pht('No pastes found.'));
+
+    return $result;
   }
 }

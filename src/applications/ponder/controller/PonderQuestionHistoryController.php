@@ -2,19 +2,17 @@
 
 final class PonderQuestionHistoryController extends PonderController {
 
-  private $id;
-
-  public function willProcessRequest(array $data) {
-    $this->id = $data['id'];
+  public function shouldAllowPublic() {
+    return true;
   }
 
-  public function processRequest() {
-    $request = $this->getRequest();
-    $viewer = $request->getUser();
+  public function handleRequest(AphrontRequest $request) {
+    $viewer = $request->getViewer();
+    $id = $request->getURIData('id');
 
     $question = id(new PonderQuestionQuery())
       ->setViewer($viewer)
-      ->withIDs(array($this->id))
+      ->withIDs(array($id))
       ->executeOne();
     if (!$question) {
       return new Aphront404Response();
@@ -28,6 +26,7 @@ final class PonderQuestionHistoryController extends PonderController {
     $qid = $question->getID();
 
     $crumbs = $this->buildApplicationCrumbs();
+    $crumbs->setBorder(true);
     $crumbs->addTextCrumb("Q{$qid}", "/Q{$qid}");
     $crumbs->addTextCrumb(pht('History'));
 

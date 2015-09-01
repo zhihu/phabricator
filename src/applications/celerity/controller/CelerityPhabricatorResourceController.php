@@ -11,18 +11,18 @@ final class CelerityPhabricatorResourceController
   private $path;
   private $hash;
   private $library;
+  private $postprocessorKey;
 
   public function getCelerityResourceMap() {
     return CelerityResourceMap::getNamedInstance($this->library);
   }
 
-  public function willProcessRequest(array $data) {
-    $this->path = $data['path'];
-    $this->hash = $data['hash'];
-    $this->library = $data['library'];
-  }
+  public function handleRequest(AphrontRequest $request) {
+    $this->path = $request->getURIData('path');
+    $this->hash = $request->getURIData('hash');
+    $this->library = $request->getURIData('library');
+    $this->postprocessorKey = $request->getURIData('postprocessor');
 
-  public function processRequest() {
     // Check that the resource library exists before trying to serve resources
     // from it.
     try {
@@ -42,7 +42,12 @@ final class CelerityPhabricatorResourceController
 
     return id(new CelerityResourceTransformer())
       ->setMinify($should_minify)
+      ->setPostprocessorKey($this->postprocessorKey)
       ->setCelerityMap($this->getCelerityResourceMap());
+  }
+
+  protected function getCacheKey($path) {
+    return parent::getCacheKey($path.';'.$this->postprocessorKey);
   }
 
 }

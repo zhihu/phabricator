@@ -3,20 +3,14 @@
 final class PhabricatorCalendarEventCancelController
   extends PhabricatorCalendarController {
 
-  private $id;
-
-  public function willProcessRequest(array $data) {
-    $this->id = idx($data, 'id');
-  }
-
-  public function processRequest() {
-    $request  = $this->getRequest();
-    $user     = $request->getUser();
+  public function handleRequest(AphrontRequest $request) {
+    $viewer = $request->getViewer();
+    $id = $request->getURIData('id');
     $sequence = $request->getURIData('sequence');
 
     $event = id(new PhabricatorCalendarEventQuery())
-      ->setViewer($user)
-      ->withIDs(array($this->id))
+      ->setViewer($viewer)
+      ->withIDs(array($id))
       ->requireCapabilities(
         array(
           PhabricatorPolicyCapability::CAN_VIEW,
@@ -26,7 +20,7 @@ final class PhabricatorCalendarEventCancelController
 
     if ($sequence) {
       $parent_event = $event;
-      $event = $parent_event->generateNthGhost($sequence, $user);
+      $event = $parent_event->generateNthGhost($sequence, $viewer);
       $event->attachParentEvent($parent_event);
     }
 
@@ -51,10 +45,10 @@ final class PhabricatorCalendarEventCancelController
         return id(new AphrontRedirectResponse())->setURI($cancel_uri);
       } else if ($sequence) {
         $event = $this->createEventFromGhost(
-          $user,
+          $viewer,
           $event,
           $sequence);
-        $event->applyViewerTimezone($user);
+        $event->applyViewerTimezone($viewer);
       }
 
       $xactions = array();
@@ -65,7 +59,7 @@ final class PhabricatorCalendarEventCancelController
         ->setNewValue(!$is_cancelled);
 
       $editor = id(new PhabricatorCalendarEventEditor())
-        ->setActor($user)
+        ->setActor($viewer)
         ->setContentSourceFromRequest($request)
         ->setContinueOnNoEffect(true)
         ->setContinueOnMissingFields(true);
@@ -81,40 +75,40 @@ final class PhabricatorCalendarEventCancelController
     if ($is_cancelled) {
       if ($sequence || $is_parent_cancelled) {
         $title = pht('Cannot Reinstate Instance');
-        $paragraph = pht('Cannot reinstate an instance of a ' .
-          'cancelled recurring event.');
+        $paragraph = pht(
+          'Cannot reinstate an instance of a cancelled recurring event.');
         $cancel = pht('Cancel');
         $submit = null;
       } else if ($is_parent) {
         $title = pht('Reinstate Recurrence');
-        $paragraph = pht('Reinstate the entire series ' .
-          'of recurring events?');
-        $cancel = pht('Don\'t Reinstate Recurrence');
+        $paragraph = pht(
+          'Reinstate the entire series of recurring events?');
+        $cancel = pht("Don't Reinstate Recurrence");
         $submit = pht('Reinstate Recurrence');
       } else {
         $title = pht('Reinstate Event');
         $paragraph = pht('Reinstate this event?');
-        $cancel = pht('Don\'t Reinstate Event');
+        $cancel = pht("Don't Reinstate Event");
         $submit = pht('Reinstate Event');
       }
     } else {
       if ($sequence) {
         $title = pht('Cancel Instance');
-        $paragraph = pht('Cancel just this instance ' .
-          'of a recurring event.');
-        $cancel = pht('Don\'t Cancel Instance');
+        $paragraph = pht(
+          'Cancel just this instance of a recurring event.');
+        $cancel = pht("Don't Cancel Instance");
         $submit = pht('Cancel Instance');
       } else if ($is_parent) {
         $title = pht('Cancel Recurrence');
-        $paragraph = pht('Cancel the entire series ' .
-          'of recurring events?');
-        $cancel = pht('Don\'t Cancel Recurrence');
+        $paragraph = pht(
+          'Cancel the entire series of recurring events?');
+        $cancel = pht("Don't Cancel Recurrence");
         $submit = pht('Cancel Recurrence');
       } else {
         $title = pht('Cancel Event');
-        $paragraph = pht('You can always reinstate ' .
-          'the event later.');
-        $cancel = pht('Don\'t Cancel Event');
+        $paragraph = pht(
+          'You can always reinstate the event later.');
+        $cancel = pht("Don't Cancel Event");
         $submit = pht('Cancel Event');
       }
     }

@@ -69,6 +69,8 @@ abstract class PhabricatorApplicationTransactionEditor
   private $feedNotifyPHIDs = array();
   private $feedRelatedPHIDs = array();
 
+  const STORAGE_ENCODING_BINARY = 'binary';
+
   /**
    * Get the class name for the application this editor is a part of.
    *
@@ -1055,6 +1057,7 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     if ($this->shouldPublishFeedStory($object, $xactions)) {
+
       $mailed = array();
       foreach ($messages as $mail) {
         foreach ($mail->buildRecipientList() as $phid) {
@@ -1706,7 +1709,7 @@ abstract class PhabricatorApplicationTransactionEditor
 
     $lists = array($new_set, $new_add, $new_rem);
     foreach ($lists as $list) {
-      $this->checkEdgeList($list);
+      $this->checkEdgeList($list, $xaction->getMetadataValue('edge:type'));
     }
 
     $result = array();
@@ -1743,7 +1746,7 @@ abstract class PhabricatorApplicationTransactionEditor
     return $result;
   }
 
-  private function checkEdgeList($list) {
+  private function checkEdgeList($list, $edge_type) {
     if (!$list) {
       return;
     }
@@ -1751,16 +1754,18 @@ abstract class PhabricatorApplicationTransactionEditor
       if (phid_get_type($key) === PhabricatorPHIDConstants::PHID_TYPE_UNKNOWN) {
         throw new Exception(
           pht(
-            "Edge transactions must have destination PHIDs as in edge ".
-            "lists (found key '%s').",
-            $key));
+            'Edge transactions must have destination PHIDs as in edge '.
+            'lists (found key "%s" on transaction of type "%s").',
+            $key,
+            $edge_type));
       }
       if (!is_array($item) && $item !== $key) {
         throw new Exception(
           pht(
-            "Edge transactions must have PHIDs or edge specs as values ".
-            "(found value '%s').",
-            $item));
+            'Edge transactions must have PHIDs or edge specs as values '.
+            '(found value "%s" on transaction of type "%s").',
+            $item,
+            $edge_type));
       }
     }
   }
@@ -2297,6 +2302,8 @@ abstract class PhabricatorApplicationTransactionEditor
       }
     }
 
+    $this->runHeraldMailRules($messages);
+
     return $messages;
   }
 
@@ -2632,6 +2639,21 @@ abstract class PhabricatorApplicationTransactionEditor
   }
 
 
+  /**
+   * @task mail
+   */
+  private function runHeraldMailRules(array $messages) {
+    foreach ($messages as $message) {
+      $engine = new HeraldEngine();
+      $adapter = id(new PhabricatorMailOutboundMailHeraldAdapter())
+        ->setObject($message);
+
+      $rules = $engine->loadRulesForAdapter($adapter);
+      $effects = $engine->applyRules($rules, $adapter);
+      $engine->applyEffects($effects, $adapter, $rules);
+    }
+  }
+
 
 /* -(  Publishing Feed Stories  )-------------------------------------------- */
 
@@ -2810,6 +2832,13 @@ abstract class PhabricatorApplicationTransactionEditor
 
     $this->setHeraldAdapter($adapter);
     $this->setHeraldTranscript($xscript);
+
+    if ($adapter instanceof HarbormasterBuildableAdapterInterface) {
+      HarbormasterBuildable::applyBuildPlans(
+        $adapter->getHarbormasterBuildablePHID(),
+        $adapter->getHarbormasterContainerPHID(),
+        $adapter->getQueuedHarbormasterBuildPlanPHIDs());
+    }
 
     return array_merge(
       $this->didApplyHeraldRules($object, $adapter, $xscript),
@@ -3048,9 +3077,13 @@ abstract class PhabricatorApplicationTransactionEditor
       $state[$property] = $this->$property;
     }
 
+    $custom_state = $this->getCustomWorkerState();
+    $custom_encoding = $this->getCustomWorkerStateEncoding();
+
     $state += array(
       'excludeMailRecipientPHIDs' => $this->getExcludeMailRecipientPHIDs(),
-      'custom' => $this->getCustomWorkerState(),
+      'custom' => $this->encodeStateForStorage($custom_state, $custom_encoding),
+      'custom.encoding' => $custom_encoding,
     );
 
     return $state;
@@ -3064,6 +3097,21 @@ abstract class PhabricatorApplicationTransactionEditor
    * @task workers
    */
   protected function getCustomWorkerState() {
+    return array();
+  }
+
+
+  /**
+   * Hook; return storage encoding for custom properties which need to be
+   * passed to workers.
+   *
+   * This primarily allows binary data to be passed to workers and survive
+   * JSON encoding.
+   *
+   * @return dict<string, string> Property encodings.
+   * @task workers
+   */
+  protected function getCustomWorkerStateEncoding() {
     return array();
   }
 
@@ -3085,7 +3133,10 @@ abstract class PhabricatorApplicationTransactionEditor
     $exclude = idx($state, 'excludeMailRecipientPHIDs', array());
     $this->setExcludeMailRecipientPHIDs($exclude);
 
-    $custom = idx($state, 'custom', array());
+    $custom_state = idx($state, 'custom', array());
+    $custom_encodings = idx($state, 'custom.encoding', array());
+    $custom = $this->decodeStateFromStorage($custom_state, $custom_encodings);
+
     $this->loadCustomWorkerState($custom);
 
     return $this;
@@ -3129,6 +3180,87 @@ abstract class PhabricatorApplicationTransactionEditor
       'feedNotifyPHIDs',
       'feedRelatedPHIDs',
     );
+  }
+
+  /**
+   * Apply encodings prior to storage.
+   *
+   * See @{method:getCustomWorkerStateEncoding}.
+   *
+   * @param map<string, wild> Map of values to encode.
+   * @param map<string, string> Map of encodings to apply.
+   * @return map<string, wild> Map of encoded values.
+   * @task workers
+   */
+  final private function encodeStateForStorage(
+    array $state,
+    array $encodings) {
+
+    foreach ($state as $key => $value) {
+      $encoding = idx($encodings, $key);
+      switch ($encoding) {
+        case self::STORAGE_ENCODING_BINARY:
+          // The mechanics of this encoding (serialize + base64) are a little
+          // awkward, but it allows us encode arrays and still be JSON-safe
+          // with binary data.
+
+          $value = @serialize($value);
+          if ($value === false) {
+            throw new Exception(
+              pht(
+                'Failed to serialize() value for key "%s".',
+                $key));
+          }
+
+          $value = base64_encode($value);
+          if ($value === false) {
+            throw new Exception(
+              pht(
+                'Failed to base64 encode value for key "%s".',
+                $key));
+          }
+          break;
+      }
+      $state[$key] = $value;
+    }
+
+    return $state;
+  }
+
+
+  /**
+   * Undo storage encoding applied when storing state.
+   *
+   * See @{method:getCustomWorkerStateEncoding}.
+   *
+   * @param map<string, wild> Map of encoded values.
+   * @param map<string, string> Map of encodings.
+   * @return map<string, wild> Map of decoded values.
+   * @task workers
+   */
+  final private function decodeStateFromStorage(
+    array $state,
+    array $encodings) {
+
+    foreach ($state as $key => $value) {
+      $encoding = idx($encodings, $key);
+      switch ($encoding) {
+        case self::STORAGE_ENCODING_BINARY:
+          $value = base64_decode($value);
+          if ($value === false) {
+            throw new Exception(
+              pht(
+                'Failed to base64_decode() value for key "%s".',
+                $key));
+          }
+
+          $value = unserialize($value);
+          break;
+      }
+      $state[$key] = $value;
+    }
+
+    return $state;
   }
 
 }

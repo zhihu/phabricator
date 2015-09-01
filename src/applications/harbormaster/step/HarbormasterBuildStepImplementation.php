@@ -8,9 +8,9 @@ abstract class HarbormasterBuildStepImplementation extends Phobject {
   private $settings;
 
   public static function getImplementations() {
-    return id(new PhutilSymbolLoader())
+    return id(new PhutilClassMapQuery())
       ->setAncestorClass(__CLASS__)
-      ->loadObjects();
+      ->execute();
   }
 
   public static function getImplementation($class) {
@@ -40,6 +40,10 @@ abstract class HarbormasterBuildStepImplementation extends Phobject {
    * The name of the implementation.
    */
   abstract public function getName();
+
+  public function getBuildStepGroupKey() {
+    return HarbormasterOtherBuildStepGroup::GROUPKEY;
+  }
 
   /**
    * The generic description of the implementation.

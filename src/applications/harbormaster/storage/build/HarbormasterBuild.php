@@ -214,6 +214,10 @@ final class HarbormasterBuild extends HarbormasterDAO
       $this->getBuildStatus() === self::STATUS_BUILDING;
   }
 
+  public function isAutobuild() {
+    return ($this->getPlanAutoKey() !== null);
+  }
+
   public function createLog(
     HarbormasterBuildTarget $build_target,
     $log_source,
@@ -229,36 +233,6 @@ final class HarbormasterBuild extends HarbormasterDAO
       ->save();
 
     return $log;
-  }
-
-  public function createArtifact(
-    HarbormasterBuildTarget $build_target,
-    $artifact_key,
-    $artifact_type) {
-
-    $artifact =
-      HarbormasterBuildArtifact::initializeNewBuildArtifact($build_target);
-    $artifact->setArtifactKey(
-      $this->getPHID(),
-      $this->getBuildGeneration(),
-      $artifact_key);
-    $artifact->setArtifactType($artifact_type);
-    $artifact->save();
-    return $artifact;
-  }
-
-  public function loadArtifact($name) {
-    $artifact = id(new HarbormasterBuildArtifactQuery())
-      ->setViewer(PhabricatorUser::getOmnipotentUser())
-      ->withArtifactKeys(
-        $this->getPHID(),
-        $this->getBuildGeneration(),
-        array($name))
-      ->executeOne();
-    if ($artifact === null) {
-      throw new Exception(pht('Artifact not found!'));
-    }
-    return $artifact;
   }
 
   public function retrieveVariablesFromBuild() {
@@ -287,9 +261,9 @@ final class HarbormasterBuild extends HarbormasterDAO
   }
 
   public static function getAvailableBuildVariables() {
-    $objects = id(new PhutilSymbolLoader())
+    $objects = id(new PhutilClassMapQuery())
       ->setAncestorClass('HarbormasterBuildableInterface')
-      ->loadObjects();
+      ->execute();
 
     $variables = array();
     $variables[] = array(
@@ -336,16 +310,28 @@ final class HarbormasterBuild extends HarbormasterDAO
   }
 
   public function canRestartBuild() {
+    if ($this->isAutobuild()) {
+      return false;
+    }
+
     return !$this->isRestarting();
   }
 
   public function canStopBuild() {
+    if ($this->isAutobuild()) {
+      return false;
+    }
+
     return !$this->isComplete() &&
            !$this->isStopped() &&
            !$this->isStopping();
   }
 
   public function canResumeBuild() {
+    if ($this->isAutobuild()) {
+      return false;
+    }
+
     return $this->isStopped() &&
            !$this->isResuming();
   }
