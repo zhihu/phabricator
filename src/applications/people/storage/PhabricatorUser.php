@@ -15,7 +15,8 @@ final class PhabricatorUser
     PhabricatorDestructibleInterface,
     PhabricatorSSHPublicKeyInterface,
     PhabricatorFlaggableInterface,
-    PhabricatorApplicationTransactionInterface {
+    PhabricatorApplicationTransactionInterface,
+    PhabricatorFulltextInterface {
 
   const SESSION_TABLE = 'phabricator_session';
   const NAMETOKEN_TABLE = 'user_nametoken';
@@ -273,8 +274,7 @@ final class PhabricatorUser
 
     $this->updateNameTokens();
 
-    id(new PhabricatorSearchIndexer())
-      ->queueDocumentForIndexing($this->getPHID());
+    PhabricatorSearchWorker::queueDocumentForIndexing($this->getPHID());
 
     return $result;
   }
@@ -365,18 +365,15 @@ final class PhabricatorUser
   }
 
   public function validateCSRFToken($token) {
-    $salt = null;
-    $version = 'plain';
-
-    // This is a BREACH-mitigating token. See T3684.
+    // We expect a BREACH-mitigating token. See T3684.
     $breach_prefix = self::CSRF_BREACH_PREFIX;
     $breach_prelen = strlen($breach_prefix);
-
-    if (!strncmp($token, $breach_prefix, $breach_prelen)) {
-      $version = 'breach';
-      $salt = substr($token, $breach_prelen, self::CSRF_SALT_LENGTH);
-      $token = substr($token, $breach_prelen + self::CSRF_SALT_LENGTH);
+    if (strncmp($token, $breach_prefix, $breach_prelen) !== 0) {
+      return false;
     }
+
+    $salt = substr($token, $breach_prelen, self::CSRF_SALT_LENGTH);
+    $token = substr($token, $breach_prelen + self::CSRF_SALT_LENGTH);
 
     // When the user posts a form, we check that it contains a valid CSRF token.
     // Tokens cycle each hour (every CSRF_CYLCE_FREQUENCY seconds) and we accept
@@ -407,22 +404,11 @@ final class PhabricatorUser
 
     for ($ii = -$csrf_window; $ii <= 1; $ii++) {
       $valid = $this->getRawCSRFToken($ii);
-      switch ($version) {
-        // TODO: We can remove this after the BREACH version has been in the
-        // wild for a while.
-        case 'plain':
-          if ($token == $valid) {
-            return true;
-          }
-          break;
-        case 'breach':
-          $digest = PhabricatorHash::digest($valid, $salt);
-          if (substr($digest, 0, self::CSRF_TOKEN_LENGTH) == $token) {
-            return true;
-          }
-          break;
-        default:
-          throw new Exception(pht('Unknown CSRF token format!'));
+
+      $digest = PhabricatorHash::digest($valid, $salt);
+      $digest = substr($digest, 0, self::CSRF_TOKEN_LENGTH);
+      if (phutil_hashes_are_identical($digest, $token)) {
+        return true;
       }
     }
 
@@ -465,8 +451,7 @@ final class PhabricatorUser
       $this->getPHID());
 
     if (!$this->profile) {
-      $profile_dao->setUserPHID($this->getPHID());
-      $this->profile = $profile_dao;
+      $this->profile = PhabricatorUserProfile::initializeNewProfile($this);
     }
 
     return $this->profile;
@@ -518,7 +503,11 @@ final class PhabricatorUser
     return $preferences;
   }
 
-  public function loadEditorLink($path, $line, $callsign) {
+  public function loadEditorLink(
+    $path,
+    $line,
+    PhabricatorRepository $repository = null) {
+
     $editor = $this->loadPreferences()->getPreference(
       PhabricatorUserPreferences::PREFERENCE_EDITOR);
 
@@ -536,6 +525,12 @@ final class PhabricatorUser
 
     if (!strlen($editor)) {
       return null;
+    }
+
+    if ($repository) {
+      $callsign = $repository->getCallsign();
+    } else {
+      $callsign = null;
     }
 
     $uri = strtr($editor, array(
@@ -601,6 +596,13 @@ final class PhabricatorUser
   }
 
   public function sendWelcomeEmail(PhabricatorUser $admin) {
+    if (!$this->canEstablishWebSessions()) {
+      throw new Exception(
+        pht(
+          'Can not send welcome mail to users who can not establish '.
+          'web sessions!'));
+    }
+
     $admin_username = $admin->getUserName();
     $admin_realname = $admin->getRealName();
     $user_username = $this->getUserName();
@@ -1314,6 +1316,14 @@ final class PhabricatorUser
     PhabricatorApplicationTransactionView $timeline,
     AphrontRequest $request) {
     return $timeline;
+  }
+
+
+/* -(  PhabricatorFulltextInterface  )--------------------------------------- */
+
+
+  public function newFulltextEngine() {
+    return new PhabricatorUserFulltextEngine();
   }
 
 }

@@ -84,6 +84,8 @@ final class PhabricatorExtraConfigSetupCheck extends PhabricatorSetupCheck {
         $issue->addPhabricatorConfig($key);
       }
     }
+
+    $this->executeManiphestFieldChecks();
   }
 
   /**
@@ -175,6 +177,10 @@ final class PhabricatorExtraConfigSetupCheck extends PhabricatorSetupCheck {
     $public_mail_reason = pht(
       'Inbound mail addresses are now configured for each application '.
       'in the Applications tool.');
+
+    $gc_reason = pht(
+      'Garbage collectors are now configured with "%s".',
+      'bin/garbage set-policy');
 
     $ancient_config += array(
       'phid.external-loaders' =>
@@ -276,8 +282,90 @@ final class PhabricatorExtraConfigSetupCheck extends PhabricatorSetupCheck {
         'Impersonating users over the API is no longer supported.'),
 
       'feed.public' => pht('The framable public feed is no longer supported.'),
+
+      'auth.login-message' => pht(
+        'This configuration option has been replaced with a modular '.
+        'handler. See T9346.'),
+
+      'gcdaemon.ttl.herald-transcripts' => $gc_reason,
+      'gcdaemon.ttl.daemon-logs' => $gc_reason,
+      'gcdaemon.ttl.differential-parse-cache' => $gc_reason,
+      'gcdaemon.ttl.markup-cache' => $gc_reason,
+      'gcdaemon.ttl.task-archive' => $gc_reason,
+      'gcdaemon.ttl.general-cache' => $gc_reason,
+      'gcdaemon.ttl.conduit-logs' => $gc_reason,
+
+      'phd.variant-config' => pht(
+        'This configuration is no longer relevant because daemons '.
+        'restart automatically on configuration changes.'),
     );
 
     return $ancient_config;
   }
+
+  private function executeManiphestFieldChecks() {
+    $maniphest_appclass = 'PhabricatorManiphestApplication';
+    if (!PhabricatorApplication::isClassInstalled($maniphest_appclass)) {
+      return;
+    }
+
+    $capabilities = array(
+      ManiphestEditAssignCapability::CAPABILITY,
+      ManiphestEditPoliciesCapability::CAPABILITY,
+      ManiphestEditPriorityCapability::CAPABILITY,
+      ManiphestEditProjectsCapability::CAPABILITY,
+      ManiphestEditStatusCapability::CAPABILITY,
+    );
+
+    // Check for any of these capabilities set to anything other than
+    // "All Users".
+
+    $any_set = false;
+    $app = new PhabricatorManiphestApplication();
+    foreach ($capabilities as $capability) {
+      $setting = $app->getPolicy($capability);
+      if ($setting != PhabricatorPolicies::POLICY_USER) {
+        $any_set = true;
+        break;
+      }
+    }
+
+    if (!$any_set) {
+      return;
+    }
+
+    $issue_summary = pht(
+      'Maniphest is currently configured with deprecated policy settings '.
+      'which will be removed in a future version of Phabricator.');
+
+
+    $message = pht(
+      'Some policy settings in Maniphest are now deprecated and will be '.
+      'removed in a future version of Phabricator. You are currently using '.
+      'at least one of these settings.'.
+      "\n\n".
+      'The deprecated settings are "Can Assign Tasks", '.
+      '"Can Edit Task Policies", "Can Prioritize Tasks", '.
+      '"Can Edit Task Projects", and "Can Edit Task Status". You can '.
+      'find these settings in Applications, or follow the link below.'.
+      "\n\n".
+      'You can find discussion of this change (including rationale and '.
+      'recommendations on how to configure similar features) in the upstream, '.
+      'at the link below.'.
+      "\n\n".
+      'To resolve this issue, set all of these policies to "All Users" after '.
+      'making any necessary form customization changes.');
+
+    $more_href = 'https://secure.phabricator.com/T10003';
+    $edit_href = '/applications/view/PhabricatorManiphestApplication/';
+
+    $issue = $this->newIssue('maniphest.T10003-per-field-policies')
+      ->setShortName(pht('Deprecated Policies'))
+      ->setName(pht('Deprecated Maniphest Field Policies'))
+      ->setSummary($issue_summary)
+      ->setMessage($message)
+      ->addLink($more_href, pht('Learn More: Upstream Discussion'))
+      ->addLink($edit_href, pht('Edit These Settings'));
+  }
+
 }

@@ -132,8 +132,7 @@ final class PhortuneCartViewController
           id(new PHUIButtonView())
             ->setTag('a')
             ->setHref($done_uri)
-            ->setIcon(id(new PHUIIconView())
-              ->setIconFont('fa-check-square green'))
+            ->setIcon('fa-check-square green')
             ->setText($cart->getDoneActionName()));
       }
     }
@@ -268,6 +267,7 @@ final class PhortuneCartViewController
     $refund_uri = $this->getApplicationURI("{$prefix}cart/{$id}/refund/");
     $update_uri = $this->getApplicationURI("{$prefix}cart/{$id}/update/");
     $accept_uri = $this->getApplicationURI("{$prefix}cart/{$id}/accept/");
+    $print_uri = $this->getApplicationURI("{$prefix}cart/{$id}/?__print__=1");
 
     $view->addAction(
       id(new PhabricatorActionView())
@@ -308,6 +308,13 @@ final class PhortuneCartViewController
           ->setIcon('fa-shopping-cart')
           ->setHref($resume_uri));
     }
+
+    $view->addAction(
+      id(new PhabricatorActionView())
+        ->setName(pht('Printable Version'))
+        ->setHref($print_uri)
+        ->setOpenInNewWindow(true)
+        ->setIcon('fa-print'));
 
     return $view;
   }

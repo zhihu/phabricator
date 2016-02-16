@@ -6,6 +6,7 @@ final class AphrontTokenizerTemplateView extends AphrontView {
   private $name;
   private $id;
   private $browseURI;
+  private $initialValue;
 
   public function setBrowseURI($browse_uri) {
     $this->browseURI = $browse_uri;
@@ -34,6 +35,15 @@ final class AphrontTokenizerTemplateView extends AphrontView {
 
   public function getName() {
     return $this->name;
+  }
+
+  public function setInitialValue(array $initial_value) {
+    $this->initialValue = $initial_value;
+    return $this;
+  }
+
+  public function getInitialValue() {
+    return $this->initialValue;
   }
 
   public function render() {
@@ -69,7 +79,7 @@ final class AphrontTokenizerTemplateView extends AphrontView {
       $content);
 
     $icon = id(new PHUIIconView())
-      ->setIconFont('fa-search');
+      ->setIcon('fa-search');
 
     $browse = id(new PHUIButtonView())
       ->setTag('a')
@@ -85,6 +95,20 @@ final class AphrontTokenizerTemplateView extends AphrontView {
       $classes[] = 'has-browse';
     }
 
+    $initial = array();
+    $initial_value = $this->getInitialValue();
+    if ($initial_value) {
+      foreach ($this->getInitialValue() as $value) {
+        $initial[] = phutil_tag(
+          'input',
+          array(
+            'type' => 'hidden',
+            'name' => $name.'.initial[]',
+            'value' => $value,
+          ));
+      }
+    }
+
     $frame = javelin_tag(
       'div',
       array(
@@ -94,6 +118,7 @@ final class AphrontTokenizerTemplateView extends AphrontView {
       array(
         $container,
         $browse,
+        $initial,
       ));
 
     return $frame;

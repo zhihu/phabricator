@@ -70,20 +70,24 @@ final class PHUICrumbView extends AphrontView {
     if ($this->icon) {
       $classes[] = 'phui-crumb-has-icon';
       $icon = id(new PHUIIconView())
-        ->setIconFont($this->icon);
+        ->setIcon($this->icon);
     }
+
+    // Surround the crumb name with spaces so that double clicking it only
+    // selects the crumb itself.
+    $name = array(' ', $this->name, ' ');
 
     $name = phutil_tag(
       'span',
       array(
         'class' => 'phui-crumb-name',
       ),
-      $this->name);
+      $name);
 
     $divider = null;
     if (!$this->isLastCrumb) {
       $divider = id(new PHUIIconView())
-        ->setIconFont('fa-angle-right')
+        ->setIcon('fa-angle-right')
         ->addClass('phui-crumb-divider')
         ->addClass('phui-crumb-view');
     } else {

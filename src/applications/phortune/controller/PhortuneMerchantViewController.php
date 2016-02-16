@@ -141,7 +141,8 @@ final class PhortuneMerchantViewController
         'default',
         $viewer);
 
-      $view->addSectionHeader(pht('Description'));
+      $view->addSectionHeader(
+        pht('Description'), PHUIPropertyListView::ICON_SUMMARY);
       $view->addTextContent($description);
     }
 
@@ -278,7 +279,7 @@ final class PhortuneMerchantViewController
       ->setText(pht('Add Payment Provider'))
       ->setDisabled(!$can_edit)
       ->setWorkflow(!$can_edit)
-      ->setIcon(id(new PHUIIconView())->setIconFont('fa-plus'));
+      ->setIcon('fa-plus');
 
     $header = id(new PHUIHeaderView())
       ->setHeader(pht('Payment Providers'))

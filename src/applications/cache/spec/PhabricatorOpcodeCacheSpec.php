@@ -23,7 +23,9 @@ final class PhabricatorOpcodeCacheSpec extends PhabricatorCacheSpec {
       ->setVersion(phpversion('apc'));
 
     if (ini_get('apc.enabled')) {
-      $this->setIsEnabled(true);
+      $this
+        ->setIsEnabled(true)
+        ->setClearCacheCallback('apc_clear_cache');
 
       $mem = apc_sma_info();
       $this->setTotalMemory($mem['num_seg'] * $mem['seg_size']);
@@ -85,7 +87,7 @@ final class PhabricatorOpcodeCacheSpec extends PhabricatorCacheSpec {
           'The "%s" setting is currently disabled in your PHP configuration, '.
           'but Phabricator is running in development mode. This option should '.
           'normally be enabled in development so you do not need to restart '.
-          'your webserver after making changes to the code.',
+          'anything after making changes to the code.',
           'apc.stat');
 
         $this
@@ -109,7 +111,9 @@ final class PhabricatorOpcodeCacheSpec extends PhabricatorCacheSpec {
       ->setVersion(phpversion('Zend OPcache'));
 
     if (ini_get('opcache.enable')) {
-      $this->setIsEnabled(true);
+      $this
+        ->setIsEnabled(true)
+        ->setClearCacheCallback('opcache_reset');
 
       $status = opcache_get_status();
       $memory = $status['memory_usage'];
@@ -131,8 +135,8 @@ final class PhabricatorOpcodeCacheSpec extends PhabricatorCacheSpec {
 
         $message = pht(
           'In development, OPcache should be configured to always reload '.
-          'code so the webserver does not need to be restarted after making '.
-          'changes. To do this, enable "%s" and set "%s" to 0.',
+          'code so nothing needs to be restarted after making changes. To do '.
+          'this, enable "%s" and set "%s" to 0.',
           'opcache.validate_timestamps',
           'opcache.revalidate_freq');
 
@@ -199,5 +203,4 @@ final class PhabricatorOpcodeCacheSpec extends PhabricatorCacheSpec {
       $this->raiseInstallAPCIssue();
     }
   }
-
 }

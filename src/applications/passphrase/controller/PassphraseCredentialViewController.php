@@ -89,7 +89,6 @@ final class PassphraseCredentialViewController extends PassphraseController {
     }
 
     $actions = id(new PhabricatorActionListView())
-      ->setObjectURI('/K'.$id)
       ->setObject($credential)
       ->setUser($viewer);
 
@@ -201,11 +200,7 @@ final class PassphraseCredentialViewController extends PassphraseController {
         pht('Description'),
         PHUIPropertyListView::ICON_SUMMARY);
       $properties->addTextContent(
-        PhabricatorMarkupEngine::renderOneObject(
-          id(new PhabricatorMarkupOneOff())
-            ->setContent($description),
-          'default',
-          $viewer));
+        new PHUIRemarkupView($viewer, $description));
     }
 
     return $properties;

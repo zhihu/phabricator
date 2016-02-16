@@ -2,8 +2,7 @@
 
 final class ReleephProductCreateController extends ReleephProductController {
 
-  public function processRequest() {
-    $request = $this->getRequest();
+  public function handleRequest(AphrontRequest $request) {
     $name = trim($request->getStr('name'));
     $trunk_branch = trim($request->getStr('trunkBranch'));
     $repository_phid = $request->getStr('repositoryPHID');
@@ -122,11 +121,11 @@ final class ReleephProductCreateController extends ReleephProductController {
 
     foreach ($repos as $repo_id => $repo) {
       $repo_name = $repo->getName();
-      $callsign = $repo->getCallsign();
-      $choices[$repo->getPHID()] = "r{$callsign} ({$repo_name})";
+      $display = $repo->getDisplayName();
+      $choices[$repo->getPHID()] = "{$display} ({$repo_name})";
     }
 
-    ksort($choices);
+    asort($choices);
     return $choices;
   }
 

@@ -84,9 +84,6 @@ final class DifferentialUnitField
       // Don't show any warnings.
     } else if ($status == DifferentialUnitStatus::UNIT_AUTO_SKIP) {
       // Don't show any warnings.
-    } else if ($status == DifferentialUnitStatus::UNIT_POSTPONED) {
-      $warnings[] = pht(
-        'Background tests have not finished executing on these changes.');
     } else if ($status == DifferentialUnitStatus::UNIT_SKIP) {
       $warnings[] = pht(
         'Unit tests were skipped when generating these changes.');
@@ -108,7 +105,6 @@ final class DifferentialUnitField
       DifferentialUnitStatus::UNIT_FAIL => 'red',
       DifferentialUnitStatus::UNIT_SKIP => 'blue',
       DifferentialUnitStatus::UNIT_AUTO_SKIP => 'blue',
-      DifferentialUnitStatus::UNIT_POSTPONED => 'blue',
     );
     $icon_color = idx($colors, $diff->getUnitStatus(), 'grey');
 
@@ -129,7 +125,7 @@ final class DifferentialUnitField
       )) + $groups;
 
     foreach ($groups as $result => $group) {
-      $count = new PhutilNumber(count($group));
+      $count = phutil_count($group);
       switch ($result) {
         case ArcanistUnitTestResult::RESULT_PASS:
           $note[] = pht('%s Passed Test(s)', $count);

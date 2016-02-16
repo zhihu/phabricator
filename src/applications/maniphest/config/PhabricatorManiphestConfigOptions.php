@@ -11,7 +11,7 @@ final class PhabricatorManiphestConfigOptions
     return pht('Configure Maniphest.');
   }
 
-  public function getFontIcon() {
+  public function getIcon() {
     return 'fa-anchor';
   }
 
@@ -20,7 +20,7 @@ final class PhabricatorManiphestConfigOptions
   }
 
   public function getOptions() {
-
+    $priority_type = 'custom:ManiphestPriorityConfigOptionType';
     $priority_defaults = array(
       100 => array(
         'name'  => pht('Unbreak Now!'),
@@ -111,6 +111,7 @@ final class PhabricatorManiphestConfigOptions
         'name' => pht('Invalid'),
         'name.full' => pht('Closed, Invalid'),
         'closed' => true,
+        'claim' => false,
         'prefixes' => array(
           'invalidate',
           'invalidates',
@@ -126,6 +127,7 @@ final class PhabricatorManiphestConfigOptions
         'transaction.icon' => 'fa-files-o',
         'special' => ManiphestTaskStatus::SPECIAL_DUPLICATE,
         'closed' => true,
+        'claim' => false,
       ),
       'spite' => array(
         'name' => pht('Spite'),
@@ -198,6 +200,13 @@ The keys you can provide in a specification are:
   - `keywords` //Optional list<string>.// Allows you to specify a list
     of keywords which can be used with `!status` commands in email to select
     this status.
+  - `disabled` //Optional bool.// Marks this status as no longer in use so
+    tasks can not be created or edited to have this status. Existing tasks with
+    this status will not be affected, but you can batch edit them or let them
+    die out on their own.
+  - `claim` //Optional bool.// By default, closing an unassigned task claims
+    it. You can set this to `false` to disable this behavior for a particular
+    status.
 
 Statuses will appear in the UI in the order specified. Note the status marked
 `special` as `duplicate` is not settable directly and will not appear in UI
@@ -242,6 +251,49 @@ EOTEXT
 
     $custom_field_type = 'custom:PhabricatorCustomFieldConfigOptionType';
 
+    $fields_example = array(
+      'mycompany.estimated-hours' => array(
+        'name' => pht('Estimated Hours'),
+        'type' => 'int',
+        'caption' => pht('Estimated number of hours this will take.'),
+      ),
+    );
+    $fields_json = id(new PhutilJSON())->encodeFormatted($fields_example);
+
+    $points_type = 'custom:ManiphestPointsConfigOptionType';
+
+    $points_example_1 = array(
+      'enabled' => true,
+      'label' => pht('Story Points'),
+      'action' => pht('Change Story Points'),
+    );
+    $points_json_1 = id(new PhutilJSON())->encodeFormatted($points_example_1);
+
+    $points_example_2 = array(
+      'enabled' => true,
+      'label' => pht('Estimated Hours'),
+      'action' => pht('Change Estimate'),
+    );
+    $points_json_2 = id(new PhutilJSON())->encodeFormatted($points_example_2);
+
+    $points_description = $this->deformat(pht(<<<EOTEXT
+Activates a points field on tasks. You can use points for estimation or
+planning. If configured, points will appear on workboards.
+
+To activate points, set this value to a map with these keys:
+
+  - `enabled` //Optional bool.// Use `true` to enable points, or
+    `false` to disable them.
+  - `label` //Optional string.// Label for points, like "Story Points" or
+    "Estimated Hours". If omitted, points will be called "Points".
+  - `action` //Optional string.// Label for the action which changes points
+    in Maniphest, like "Change Estimate". If omitted, the action will
+    be called "Change Points".
+
+See the example below for a starting point.
+EOTEXT
+));
+
     return array(
       $this->newOption('maniphest.custom-field-definitions', 'wild', array())
         ->setSummary(pht('Custom Maniphest fields.'))
@@ -250,15 +302,14 @@ EOTEXT
             'Array of custom fields for Maniphest tasks. For details on '.
             'adding custom fields to Maniphest, see "Configuring Custom '.
             'Fields" in the documentation.'))
-        ->addExample(
-          '{"mycompany:estimated-hours": {"name": "Estimated Hours", '.
-          '"type": "int", "caption": "Estimated number of hours this will '.
-          'take."}}',
-          pht('Valid Setting')),
+        ->addExample($fields_json, pht('Valid setting')),
       $this->newOption('maniphest.fields', $custom_field_type, $default_fields)
         ->setCustomData(id(new ManiphestTask())->getCustomFieldBaseClass())
         ->setDescription(pht('Select and reorder task fields.')),
-      $this->newOption('maniphest.priorities', 'wild', $priority_defaults)
+      $this->newOption(
+        'maniphest.priorities',
+        $priority_type,
+        $priority_defaults)
         ->setSummary(pht('Configure Maniphest priority names.'))
         ->setDescription(
           pht(
@@ -275,7 +326,11 @@ EOTEXT
             '  - `color` A color for this priority, like "red" or "blue".'.
             '  - `keywords` An optional list of keywords which can '.
             '     be used to select this priority when using `!priority` '.
-            '     commands in email.'.
+            '     commands in email.'."\n".
+            '  - `disabled` Optional boolean to prevent users from choosing '.
+            '     this priority when creating or editing tasks. Existing '.
+            '     tasks will be unaffected, and can be batch edited to a '.
+            '     different priority or left to eventually die out.'.
             "\n\n".
             'You can choose which priority is the default for newly created '.
             'tasks with `%s`.',
@@ -320,7 +375,11 @@ EOTEXT
             '"Needs Triage" panel on the home page. You should adjust this if '.
             'you adjust priorities using `%s`.',
             'maniphest.priorities')),
-
+      $this->newOption('maniphest.points', $points_type, array())
+        ->setSummary(pht('Configure point values for tasks.'))
+        ->setDescription($points_description)
+        ->addExample($points_json_1, pht('Points Config'))
+        ->addExample($points_json_2, pht('Hours Config')),
     );
   }
 

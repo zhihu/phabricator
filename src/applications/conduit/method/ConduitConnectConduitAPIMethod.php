@@ -63,14 +63,6 @@ final class ConduitConnectConduitAPIMethod extends ConduitAPIMethod {
       ->truncateString($client_description);
     $username = (string)$request->getValue('user');
 
-    // Log the connection, regardless of the outcome of checks below.
-    $connection = new PhabricatorConduitConnectionLog();
-    $connection->setClient($client);
-    $connection->setClientVersion($client_version);
-    $connection->setClientDescription($client_description);
-    $connection->setUsername($username);
-    $connection->save();
-
     switch ($client) {
       case 'arc':
         $server_version = 6;
@@ -142,7 +134,7 @@ final class ConduitConnectConduitAPIMethod extends ConduitAPIMethod {
               $threshold));
       }
       $valid = sha1($token.$user->getConduitCertificate());
-      if ($valid != $signature) {
+      if (!phutil_hashes_are_identical($valid, $signature)) {
         throw new ConduitException('ERR-INVALID-CERTIFICATE');
       }
       $session_key = id(new PhabricatorAuthSessionEngine())->establishSession(
@@ -154,7 +146,7 @@ final class ConduitConnectConduitAPIMethod extends ConduitAPIMethod {
     }
 
     return array(
-      'connectionID'  => $connection->getID(),
+      'connectionID'  => mt_rand(),
       'sessionKey'    => $session_key,
       'userPHID'      => $user->getPHID(),
     );

@@ -3,8 +3,7 @@
 final class HarbormasterPlanViewController extends HarbormasterPlanController {
 
   public function handleRequest(AphrontRequest $request) {
-    $viewer = $this->getviewer();
-
+    $viewer = $this->getViewer();
     $id = $request->getURIData('id');
 
     $plan = id(new HarbormasterBuildPlanQuery())
@@ -82,15 +81,10 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
       ->execute();
     $steps = mpull($steps, null, 'getPHID');
 
-    $has_manage = $this->hasApplicationCapability(
-      HarbormasterManagePlansCapability::CAPABILITY);
-
-    $has_edit = PhabricatorPolicyFilter::hasCapability(
+    $can_edit = PhabricatorPolicyFilter::hasCapability(
       $viewer,
       $plan,
       PhabricatorPolicyCapability::CAN_EDIT);
-
-    $can_edit = ($has_manage && $has_edit);
 
     $step_list = id(new PHUIObjectItemListView())
       ->setUser($viewer)
@@ -123,16 +117,7 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
           ->setStatusIcon('fa-warning red')
           ->addAttribute(pht(
             'This step has an invalid implementation (%s).',
-            $step->getClassName()))
-          ->addAction(
-            id(new PHUIListItemView())
-              ->setIcon('fa-times')
-              ->addSigil('harbormaster-build-step-delete')
-              ->setWorkflow(true)
-              ->setRenderNameAsTooltip(true)
-              ->setName(pht('Delete'))
-              ->setHref(
-                $this->getApplicationURI('step/delete/'.$step->getID().'/')));
+            $step->getClassName()));
         $step_list->addItem($item);
         continue;
       }
@@ -143,23 +128,9 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
       $item->addAttribute($implementation->getDescription());
 
       $step_id = $step->getID();
-      $edit_uri = $this->getApplicationURI("step/edit/{$step_id}/");
-      $delete_uri = $this->getApplicationURI("step/delete/{$step_id}/");
 
-      if ($can_edit) {
-        $item->setHref($edit_uri);
-      }
-
-      $item
-        ->setHref($edit_uri)
-        ->addAction(
-          id(new PHUIListItemView())
-            ->setIcon('fa-times')
-            ->addSigil('harbormaster-build-step-delete')
-            ->setWorkflow(true)
-            ->setDisabled(!$can_edit)
-            ->setHref(
-              $this->getApplicationURI('step/delete/'.$step->getID().'/')));
+      $view_uri = $this->getApplicationURI("step/view/{$step_id}/");
+      $item->setHref($view_uri);
 
       $depends = $step->getStepImplementation()->getDependencies($step);
       $inputs = $step->getStepImplementation()->getArtifactInputs();
@@ -231,9 +202,7 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
           ->setText(pht('Add Build Step'))
           ->setHref($this->getApplicationURI("step/add/{$plan_id}/"))
           ->setTag('a')
-          ->setIcon(
-            id(new PHUIIconView())
-              ->setIconFont('fa-plus'))
+          ->setIcon('fa-plus')
           ->setDisabled(!$can_edit)
           ->setWorkflow(!$can_edit));
 
@@ -250,18 +219,12 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
 
     $list = id(new PhabricatorActionListView())
       ->setUser($viewer)
-      ->setObject($plan)
-      ->setObjectURI($this->getApplicationURI("plan/{$id}/"));
+      ->setObject($plan);
 
-    $has_manage = $this->hasApplicationCapability(
-      HarbormasterManagePlansCapability::CAPABILITY);
-
-    $has_edit = PhabricatorPolicyFilter::hasCapability(
+    $can_edit = PhabricatorPolicyFilter::hasCapability(
       $viewer,
       $plan,
       PhabricatorPolicyCapability::CAN_EDIT);
-
-    $can_edit = ($has_manage && $has_edit);
 
     $list->addAction(
       id(new PhabricatorActionView())
@@ -289,7 +252,7 @@ final class HarbormasterPlanViewController extends HarbormasterPlanController {
           ->setIcon('fa-ban'));
     }
 
-    $can_run = ($has_manage && $plan->canRunManually());
+    $can_run = ($can_edit && $plan->canRunManually());
 
     $list->addAction(
       id(new PhabricatorActionView())

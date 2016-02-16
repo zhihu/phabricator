@@ -106,8 +106,7 @@ final class PhabricatorApplicationDetailViewController
     $overview = $application->getOverview();
     if ($overview) {
       $properties->addSectionHeader(
-        pht('Overview'),
-        PHUIPropertyListView::ICON_SUMMARY);
+        pht('Overview'), PHUIPropertyListView::ICON_SUMMARY);
       $properties->addTextContent(
         PhabricatorMarkupEngine::renderOneObject(
           id(new PhabricatorMarkupOneOff())->setContent($overview),
@@ -119,7 +118,8 @@ final class PhabricatorApplicationDetailViewController
       $viewer,
       $application);
 
-    $properties->addSectionHeader(pht('Policies'));
+    $properties->addSectionHeader(
+      pht('Policies'), 'fa-lock');
 
     foreach ($application->getCapabilities() as $capability) {
       $properties->addProperty(
@@ -135,8 +135,7 @@ final class PhabricatorApplicationDetailViewController
     PhabricatorApplication $selected) {
 
     $view = id(new PhabricatorActionListView())
-      ->setUser($user)
-      ->setObjectURI($this->getRequest()->getRequestURI());
+      ->setUser($user);
 
     $can_edit = PhabricatorPolicyFilter::hasCapability(
       $user,

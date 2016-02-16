@@ -50,6 +50,10 @@ final class PhabricatorProjectBoardImportController
         if ($import_column->isHidden()) {
           continue;
         }
+        if ($import_column->getProxy()) {
+          continue;
+        }
+
         $new_column = PhabricatorProjectColumn::initializeNewColumn($viewer)
           ->setSequence($import_column->getSequence())
           ->setProjectPHID($project->getPHID())
@@ -57,6 +61,9 @@ final class PhabricatorProjectBoardImportController
           ->setProperties($import_column->getProperties())
           ->save();
       }
+
+      $project->setHasWorkboard(1)->save();
+
       $table->saveTransaction();
 
       return id(new AphrontRedirectResponse())->setURI($board_uri);

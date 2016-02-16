@@ -225,18 +225,8 @@ final class PhabricatorConfigWelcomeController
       'fa-globe',
       $content);
 
-    $support_href = PhabricatorEnv::getDoclink('Give Feedback! Get Support!');
-    $content = pht(
-      "=== Need Help with Setup? ===\n\n".
-      'Having trouble getting something set up? See '.
-      '**[[ %s | Give Feedback! Get Support! ]]** for ways to get in touch '.
-      'to get answers to questions, report bugs, and request features.',
-      $support_href);
-
-    $explore[] = $this->newItem(
-      $request,
-      'fa-life-ring',
-      $content);
+    // TODO: Restore some sort of "Support" link here, but just nuke it for
+    // now as we figure stuff out.
 
     $differential_uri = PhabricatorEnv::getURI('/differential/');
     $differential_create_uri = PhabricatorEnv::getURI(
@@ -275,7 +265,7 @@ final class PhabricatorConfigWelcomeController
 
 
     $maniphest_uri = PhabricatorEnv::getURI('/maniphest/');
-    $maniphest_create_uri = PhabricatorEnv::getURI('/maniphest/task/create/');
+    $maniphest_create_uri = PhabricatorEnv::getURI('/maniphest/task/edit/');
     $maniphest_all_uri = PhabricatorEnv::getURI('/maniphest/query/all/');
     $quick[] = $this->newItem(
       $request,
@@ -384,7 +374,7 @@ final class PhabricatorConfigWelcomeController
     $viewer = $request->getUser();
 
     $icon = id(new PHUIIconView())
-      ->setIconFont($icon.' fa-2x');
+      ->setIcon($icon.' fa-2x');
 
     $content = PhabricatorMarkupEngine::renderOneObject(
       id(new PhabricatorMarkupOneOff())->setContent($content),

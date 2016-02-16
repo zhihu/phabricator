@@ -109,7 +109,7 @@ final class PhabricatorAuthListController
         'only users with a verified email address at one of these %s '.
         'allowed domain(s) will be able to register an account: %s',
         $domains_link,
-        new PhutilNumber(count($domains_value)),
+        phutil_count($domains_value),
         phutil_tag('strong', array(), implode(', ', $domains_value)));
     } else {
       $issues[] = pht(
@@ -147,13 +147,11 @@ final class PhabricatorAuthListController
       ->setSeverity($severity)
       ->setErrors($issues);
 
-    $image = id(new PHUIIconView())
-          ->setIconFont('fa-plus');
     $button = id(new PHUIButtonView())
         ->setTag('a')
         ->setColor(PHUIButtonView::SIMPLE)
         ->setHref($this->getApplicationURI('config/new/'))
-        ->setIcon($image)
+        ->setIcon('fa-plus')
         ->setDisabled(!$can_manage)
         ->setText(pht('Add Provider'));
 

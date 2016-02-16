@@ -37,11 +37,11 @@ final class PonderFooterView extends AphrontTagView {
 
     if ($this->count == 0) {
       $icon = id(new PHUIIconView())
-        ->setIconFont('fa-plus-circle msr');
+        ->setIcon('fa-comments msr');
       $text = pht('Add a Comment');
     } else {
       $icon = id(new PHUIIconView())
-        ->setIconFont('fa-comments msr');
+        ->setIcon('fa-comments msr');
       $text = pht('Show %d Comment(s)', new PhutilNumber($this->count));
     }
 
@@ -78,7 +78,7 @@ final class PonderFooterView extends AphrontTagView {
     $actions[] = $hide_action;
     $actions[] = $show_action;
 
-    return array($this->actions, $actions);
+    return array($actions, $this->actions);
   }
 
 }

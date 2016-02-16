@@ -92,8 +92,24 @@ final class PhabricatorStandardCustomFieldRemarkup
       HeraldAdapter::CONDITION_IS,
       HeraldAdapter::CONDITION_IS_NOT,
       HeraldAdapter::CONDITION_REGEXP,
+      HeraldAdapter::CONDITION_NOT_REGEXP,
     );
   }
 
+  public function getHeraldFieldStandardType() {
+    return HeraldField::STANDARD_TEXT;
+  }
+
+  protected function getHTTPParameterType() {
+    return new AphrontStringHTTPParameterType();
+  }
+
+  public function shouldAppearInApplicationSearch() {
+    return false;
+  }
+
+  public function getConduitEditParameterType() {
+    return new ConduitStringParameterType();
+  }
 
 }

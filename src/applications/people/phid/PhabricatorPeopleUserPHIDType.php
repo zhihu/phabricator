@@ -8,10 +8,6 @@ final class PhabricatorPeopleUserPHIDType extends PhabricatorPHIDType {
     return pht('User');
   }
 
-  public function getPHIDTypeApplicationClass() {
-    return 'PhabricatorPeopleApplication';
-  }
-
   public function getTypeIcon() {
     return 'fa-user bluegrey';
   }
@@ -20,12 +16,17 @@ final class PhabricatorPeopleUserPHIDType extends PhabricatorPHIDType {
     return new PhabricatorUser();
   }
 
+  public function getPHIDTypeApplicationClass() {
+    return 'PhabricatorPeopleApplication';
+  }
+
   protected function buildQueryForObjects(
     PhabricatorObjectQuery $query,
     array $phids) {
 
     return id(new PhabricatorPeopleQuery())
       ->withPHIDs($phids)
+      ->needProfile(true)
       ->needProfileImage(true)
       ->needAvailability(true);
   }
@@ -46,6 +47,17 @@ final class PhabricatorPeopleUserPHIDType extends PhabricatorPHIDType {
 
       if ($user->getIsMailingList()) {
         $handle->setIcon('fa-envelope-o');
+        $handle->setSubtitle(pht('Mailing List'));
+      } else {
+        $profile = $user->getUserProfile();
+        $icon_key = $profile->getIcon();
+        $icon_icon = PhabricatorPeopleIconSet::getIconIcon($icon_key);
+        $subtitle = $profile->getDisplayTitle();
+
+        $handle
+          ->setIcon($icon_icon)
+          ->setSubtitle($subtitle)
+          ->setTokenIcon('fa-user');
       }
 
       $availability = null;

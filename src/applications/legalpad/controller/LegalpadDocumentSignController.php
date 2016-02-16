@@ -250,10 +250,8 @@ final class LegalpadDocumentSignController extends LegalpadController {
       ->addActionLink(
         id(new PHUIButtonView())
           ->setTag('a')
-          ->setIcon(
-            id(new PHUIIconView())
-              ->setIconFont('fa-pencil'))
-          ->setText(pht('Manage Document'))
+          ->setIcon('fa-pencil')
+          ->setText(pht('Manage'))
           ->setHref($manage_uri)
           ->setDisabled(!$can_edit)
           ->setWorkflow(!$can_edit));
@@ -278,7 +276,7 @@ final class LegalpadDocumentSignController extends LegalpadController {
       $preamble_box->addPropertyList($preamble);
     }
 
-    $content = id(new PHUIDocumentView())
+    $content = id(new PHUIDocumentViewPro())
       ->addClass('legalpad')
       ->setHeader($header)
       ->appendChild(
@@ -288,6 +286,7 @@ final class LegalpadDocumentSignController extends LegalpadController {
           $document_markup,
         ));
 
+    $signature_box = null;
     if (!$has_signed) {
       $error_view = null;
       if ($errors) {
@@ -301,23 +300,21 @@ final class LegalpadDocumentSignController extends LegalpadController {
         $field_errors);
 
       switch ($document->getSignatureType()) {
-        case LegalpadDocument::SIGNATURE_TYPE_NONE:
-          $subheader = null;
+        default:
           break;
         case LegalpadDocument::SIGNATURE_TYPE_INDIVIDUAL:
         case LegalpadDocument::SIGNATURE_TYPE_CORPORATION:
-          $subheader = id(new PHUIHeaderView())
-            ->setHeader(pht('Agree and Sign Document'))
-            ->setBleedHeader(true);
+          $box = id(new PHUIObjectBoxView())
+            ->setHeaderText(pht('Agree and Sign Document'))
+            ->setForm($signature_form);
+          if ($error_view) {
+            $box->setInfoView($error_view);
+          }
+          $signature_box = phutil_tag_div('phui-document-view-pro-box', $box);
           break;
       }
 
-      $content->appendChild(
-        array(
-          $subheader,
-          $error_view,
-          $signature_form,
-        ));
+
     }
 
     $crumbs = $this->buildApplicationCrumbs();
@@ -328,6 +325,7 @@ final class LegalpadDocumentSignController extends LegalpadController {
       array(
         $crumbs,
         $content,
+        $signature_box,
       ),
       array(
         'title' => $title,

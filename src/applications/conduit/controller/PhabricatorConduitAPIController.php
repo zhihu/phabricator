@@ -7,18 +7,9 @@ final class PhabricatorConduitAPIController
     return false;
   }
 
-  private $method;
-
-  public function willProcessRequest(array $data) {
-    $this->method = $data['method'];
-    return $this;
-  }
-
-  public function processRequest() {
+  public function handleRequest(AphrontRequest $request) {
+    $method = $request->getURIData('method');
     $time_start = microtime(true);
-    $request = $this->getRequest();
-
-    $method = $this->method;
 
     $api_request = null;
     $method_implementation = null;
@@ -55,7 +46,7 @@ final class PhabricatorConduitAPIController
       $conduit_username = '-';
       if ($call->shouldRequireAuthentication()) {
         $metadata['scope'] = $call->getRequiredScope();
-        $auth_error = $this->authenticateUser($api_request, $metadata);
+        $auth_error = $this->authenticateUser($api_request, $metadata, $method);
         // If we've explicitly authenticated the user here and either done
         // CSRF validation or are using a non-web authentication mechanism.
         $allow_unguarded_writes = true;
@@ -119,19 +110,11 @@ final class PhabricatorConduitAPIController
 
     $time_end = microtime(true);
 
-    $connection_id = null;
-    if (idx($metadata, 'connectionID')) {
-      $connection_id = $metadata['connectionID'];
-    } else if (($method == 'conduit.connect') && $result) {
-      $connection_id = idx($result, 'connectionID');
-    }
-
     $log
       ->setCallerPHID(
         isset($conduit_user)
           ? $conduit_user->getPHID()
           : null)
-      ->setConnectionID($connection_id)
       ->setError((string)$error_code)
       ->setDuration(1000000 * ($time_end - $time_start));
 
@@ -169,7 +152,8 @@ final class PhabricatorConduitAPIController
    */
   private function authenticateUser(
     ConduitAPIRequest $api_request,
-    array $metadata) {
+    array $metadata,
+    $method) {
 
     $request = $this->getRequest();
 
@@ -207,7 +191,7 @@ final class PhabricatorConduitAPIController
         unset($protocol_data['scope']);
 
         ConduitClient::verifySignature(
-          $this->method,
+          $method,
           $api_request->getAllParameters(),
           $protocol_data,
           $ssl_public_key);
@@ -434,7 +418,8 @@ final class PhabricatorConduitAPIController
       $token = idx($metadata, 'authToken');
       $signature = idx($metadata, 'authSignature');
       $certificate = $user->getConduitCertificate();
-      if (sha1($token.$certificate) !== $signature) {
+      $hash = sha1($token.$certificate);
+      if (!phutil_hashes_are_identical($hash, $signature)) {
         return array(
           'ERR-INVALID-AUTH',
           pht('Authentication is invalid.'),
