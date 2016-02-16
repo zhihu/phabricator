@@ -14,7 +14,7 @@ final class PhabricatorManiphestApplication extends PhabricatorApplication {
     return '/maniphest/';
   }
 
-  public function getFontIcon() {
+  public function getIcon() {
     return 'fa-anchor';
   }
 
@@ -50,15 +50,8 @@ final class PhabricatorManiphestApplication extends PhabricatorApplication {
         'report/(?:(?P<view>\w+)/)?' => 'ManiphestReportController',
         'batch/' => 'ManiphestBatchEditController',
         'task/' => array(
-          'create/' => 'ManiphestTaskEditController',
-          'edit/(?P<id>[1-9]\d*)/' => 'ManiphestTaskEditController',
-          'descriptionpreview/'
-            => 'PhabricatorMarkupPreviewController',
-        ),
-        'transaction/' => array(
-          'save/' => 'ManiphestTransactionSaveController',
-          'preview/(?P<id>[1-9]\d*)/'
-            => 'ManiphestTransactionPreviewController',
+          $this->getEditRoutePattern('edit/')
+            => 'ManiphestTaskEditController',
         ),
         'export/(?P<key>[^/]+)/' => 'ManiphestExportController',
         'subpriority/' => 'ManiphestSubpriorityController',
@@ -79,7 +72,7 @@ final class PhabricatorManiphestApplication extends PhabricatorApplication {
       ->setViewer($user)
       ->withStatuses(ManiphestTaskStatus::getOpenStatusConstants())
       ->withOwners(array($user->getPHID()))
-      ->setLimit(self::MAX_STATUS_ITEMS);
+      ->setLimit($limit);
     $count = count($query->execute());
 
     if ($count >= $limit) {
