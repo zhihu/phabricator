@@ -129,4 +129,20 @@ final class PhabricatorStandardCustomFieldBool
     );
   }
 
+  public function getHeraldFieldStandardType() {
+    return HeraldField::STANDARD_BOOL;
+  }
+
+  protected function getHTTPParameterType() {
+    return new AphrontBoolHTTPParameterType();
+  }
+
+  protected function newConduitSearchParameterType() {
+    return new ConduitBoolParameterType();
+  }
+
+  protected function newConduitEditParameterType() {
+    return new ConduitBoolParameterType();
+  }
+
 }

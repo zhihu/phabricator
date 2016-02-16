@@ -95,9 +95,15 @@ abstract class HeraldAction extends Phobject {
 
     switch ($type) {
       case self::STANDARD_PHID_LIST:
-        $handles = $viewer->loadHandles($target);
-        $handles = iterator_to_array($handles);
-        return mpull($handles, 'getName', 'getPHID');
+        $datasource = $this->getDatasource();
+
+        if (!$datasource) {
+          return array();
+        }
+
+        return $datasource
+          ->setViewer($viewer)
+          ->getWireTokens($target);
     }
 
     return $target;
@@ -122,35 +128,7 @@ abstract class HeraldAction extends Phobject {
   }
 
   final public function getActionConstant() {
-    $class = new ReflectionClass($this);
-
-    $const = $class->getConstant('ACTIONCONST');
-    if ($const === false) {
-      throw new Exception(
-        pht(
-          '"%s" class "%s" must define a "%s" property.',
-          __CLASS__,
-          get_class($this),
-          'ACTIONCONST'));
-    }
-
-    $limit = self::getActionConstantByteLimit();
-    if (!is_string($const) || (strlen($const) > $limit)) {
-      throw new Exception(
-        pht(
-          '"%s" class "%s" has an invalid "%s" property. Action constants '.
-          'must be strings and no more than %s bytes in length.',
-          __CLASS__,
-          get_class($this),
-          'ACTIONCONST',
-          new PhutilNumber($limit)));
-    }
-
-    return $const;
-  }
-
-  final public static function getActionConstantByteLimit() {
-    return 64;
+    return $this->getPhobjectClassConstant('ACTIONCONST', 64);
   }
 
   final public static function getAllActions() {
@@ -372,24 +350,28 @@ abstract class HeraldAction extends Phobject {
         return pht(
           'This action specifies no targets.');
       case self::DO_STANDARD_NO_EFFECT:
-        return pht(
-          'This action has no effect on %s target(s): %s.',
-          new PhutilNumber(count($data)),
-          $this->renderHandleList($data));
+        if ($data && is_array($data)) {
+          return pht(
+            'This action has no effect on %s target(s): %s.',
+            phutil_count($data),
+            $this->renderHandleList($data));
+        } else {
+          return pht('This action has no effect.');
+        }
       case self::DO_STANDARD_INVALID:
         return pht(
           '%s target(s) are invalid or of the wrong type: %s.',
-          new PhutilNumber(count($data)),
+          phutil_count($data),
           $this->renderHandleList($data));
       case self::DO_STANDARD_UNLOADABLE:
         return pht(
           '%s target(s) could not be loaded: %s.',
-          new PhutilNumber(count($data)),
+          phutil_count($data),
           $this->renderHandleList($data));
       case self::DO_STANDARD_PERMISSION:
         return pht(
           '%s target(s) do not have permission to see this object: %s.',
-          new PhutilNumber(count($data)),
+          phutil_count($data),
           $this->renderHandleList($data));
       case self::DO_STANDARD_INVALID_ACTION:
         return pht(

@@ -121,6 +121,10 @@ abstract class PhabricatorAuthProvider extends Phobject {
   }
 
   public function shouldAllowRegistration() {
+    if (!$this->shouldAllowLogin()) {
+      return false;
+    }
+
     return $this->getProviderConfig()->getShouldAllowRegistration();
   }
 
@@ -482,7 +486,7 @@ abstract class PhabricatorAuthProvider extends Phobject {
           'problem persists, you may need to clear your cookies.'));
     }
 
-    if ($actual !== $expect) {
+    if (!phutil_hashes_are_identical($actual, $expect)) {
       throw new Exception(
         pht(
           'The authentication provider did not return the correct client '.

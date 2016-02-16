@@ -6,19 +6,24 @@ final class DiffusionHistoryController extends DiffusionController {
     return true;
   }
 
-  protected function processDiffusionRequest(AphrontRequest $request) {
-    $drequest = $this->diffusionRequest;
-    $viewer = $request->getUser();
+  public function handleRequest(AphrontRequest $request) {
+    $response = $this->loadDiffusionContext();
+    if ($response) {
+      return $response;
+    }
+
+    $viewer = $this->getViewer();
+    $drequest = $this->getDiffusionRequest();
     $repository = $drequest->getRepository();
 
-    $page_size = $request->getInt('pagesize', 100);
-    $offset = $request->getInt('offset', 0);
+    $pager = id(new PHUIPagerView())
+      ->readFromRequest($request);
 
     $params = array(
       'commit' => $drequest->getCommit(),
       'path' => $drequest->getPath(),
-      'offset' => $offset,
-      'limit' => $page_size + 1,
+      'offset' => $pager->getOffset(),
+      'limit' => $pager->getPageSize() + 1,
     );
 
     if (!$request->getBool('copies')) {
@@ -32,29 +37,22 @@ final class DiffusionHistoryController extends DiffusionController {
     $history = DiffusionPathChange::newFromConduit(
       $history_results['pathChanges']);
 
-    $pager = new PHUIPagerView();
-    $pager->setPageSize($page_size);
-    $pager->setOffset($offset);
     $history = $pager->sliceResults($history);
-
-    $pager->setURI($request->getRequestURI(), 'offset');
 
     $show_graph = !strlen($drequest->getPath());
     $content = array();
 
-    $history_table = new DiffusionHistoryTableView();
-    $history_table->setUser($request->getUser());
-    $history_table->setDiffusionRequest($drequest);
-    $history_table->setHistory($history);
-    $history_table->loadRevisions();
+    $history_table = id(new DiffusionHistoryTableView())
+      ->setUser($request->getUser())
+      ->setDiffusionRequest($drequest)
+      ->setHistory($history);
 
-    $phids = $history_table->getRequiredHandlePHIDs();
-    $handles = $this->loadViewerHandles($phids);
-    $history_table->setHandles($handles);
+    $history_table->loadRevisions();
 
     if ($show_graph) {
       $history_table->setParents($history_results['parents']);
-      $history_table->setIsHead($offset == 0);
+      $history_table->setIsHead(!$pager->getOffset());
+      $history_table->setIsTail(!$pager->getHasMorePages());
     }
 
     $history_panel = new PHUIObjectBoxView();
@@ -82,19 +80,21 @@ final class DiffusionHistoryController extends DiffusionController {
         'view'   => 'history',
       ));
 
-    return $this->buildApplicationPage(
-      array(
-        $crumbs,
-        $object_box,
-        $content,
-        $pager,
-      ),
-      array(
-        'title' => array(
+    $pager_box = $this->renderTablePagerBox($pager);
+
+    return $this->newPage()
+      ->setTitle(
+        array(
           pht('History'),
-          pht('%s Repository', $drequest->getRepository()->getCallsign()),
-        ),
-      ));
+          $repository->getDisplayName(),
+        ))
+      ->setCrumbs($crumbs)
+      ->appendChild(
+        array(
+          $object_box,
+          $content,
+          $pager_box,
+        ));
   }
 
   private function buildActionView(DiffusionRequest $drequest) {
@@ -150,7 +150,6 @@ final class DiffusionHistoryController extends DiffusionController {
       ->setActionList($actions);
 
     $stable_commit = $drequest->getStableCommit();
-    $callsign = $drequest->getRepository()->getCallsign();
 
     $view->addProperty(
       pht('Commit'),

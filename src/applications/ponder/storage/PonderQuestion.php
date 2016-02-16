@@ -10,7 +10,8 @@ final class PonderQuestion extends PonderDAO
     PhabricatorTokenReceiverInterface,
     PhabricatorProjectInterface,
     PhabricatorDestructibleInterface,
-    PhabricatorSpacesInterface {
+    PhabricatorSpacesInterface,
+    PhabricatorFulltextInterface {
 
   const MARKUP_FIELD_CONTENT = 'markup:content';
 
@@ -20,6 +21,7 @@ final class PonderQuestion extends PonderDAO
   protected $authorPHID;
   protected $status;
   protected $content;
+  protected $answerWiki;
   protected $contentSource;
   protected $viewPolicy;
   protected $spacePHID;
@@ -56,6 +58,7 @@ final class PonderQuestion extends PonderDAO
         'title' => 'text255',
         'status' => 'text32',
         'content' => 'text',
+        'answerWiki' => 'text',
         'answerCount' => 'uint32',
         'mailKey' => 'bytes20',
 
@@ -249,10 +252,6 @@ final class PonderQuestion extends PonderDAO
     return true;
   }
 
-  public function shouldAllowSubscription($phid) {
-    return true;
-  }
-
 
 /* -(  PhabricatorTokenReceiverInterface  )---------------------------------- */
 
@@ -287,6 +286,14 @@ final class PonderQuestion extends PonderDAO
 
   public function getSpacePHID() {
     return $this->spacePHID;
+  }
+
+
+/* -(  PhabricatorFulltextInterface  )--------------------------------------- */
+
+
+  public function newFulltextEngine() {
+    return new PonderQuestionFulltextEngine();
   }
 
 }

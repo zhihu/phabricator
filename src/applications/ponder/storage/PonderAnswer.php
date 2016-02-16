@@ -26,15 +26,18 @@ final class PonderAnswer extends PonderDAO
 
   private $userVotes = array();
 
-  public static function initializeNewAnswer(PhabricatorUser $actor) {
+  public static function initializeNewAnswer(
+    PhabricatorUser $actor,
+    PonderQuestion $question) {
     $app = id(new PhabricatorApplicationQuery())
       ->setViewer($actor)
       ->withClasses(array('PhabricatorPonderApplication'))
       ->executeOne();
 
     return id(new PonderAnswer())
-      ->setQuestionID(0)
+      ->setQuestionID($question->getID())
       ->setContent('')
+      ->attachQuestion($question)
       ->setAuthorPHID($actor->getPHID())
       ->setVoteCount(0)
       ->setStatus(PonderAnswerStatus::ANSWER_STATUS_VISIBLE);
@@ -247,10 +250,6 @@ final class PonderAnswer extends PonderDAO
   }
 
   public function shouldShowSubscribersProperty() {
-    return true;
-  }
-
-  public function shouldAllowSubscription($phid) {
     return true;
   }
 

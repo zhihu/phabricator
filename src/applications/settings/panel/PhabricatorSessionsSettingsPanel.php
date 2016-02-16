@@ -50,7 +50,10 @@ final class PhabricatorSessionsSettingsPanel extends PhabricatorSettingsPanel {
     $rows = array();
     $rowc = array();
     foreach ($sessions as $session) {
-      if ($session->getSessionKey() == $current_key) {
+      $is_current = phutil_hashes_are_identical(
+        $session->getSessionKey(),
+        $current_key);
+      if ($is_current) {
         $rowc[] = 'highlighted';
         $button = phutil_tag(
           'a',
@@ -109,15 +112,12 @@ final class PhabricatorSessionsSettingsPanel extends PhabricatorSettingsPanel {
         'action',
       ));
 
-
-    $terminate_icon = id(new PHUIIconView())
-      ->setIconFont('fa-exclamation-triangle');
     $terminate_button = id(new PHUIButtonView())
       ->setText(pht('Terminate All Sessions'))
       ->setHref('/auth/session/terminate/all/')
       ->setTag('a')
       ->setWorkflow(true)
-      ->setIcon($terminate_icon);
+      ->setIcon('fa-exclamation-triangle');
 
     $header = id(new PHUIHeaderView())
       ->setHeader(pht('Active Login Sessions'))
@@ -125,14 +125,12 @@ final class PhabricatorSessionsSettingsPanel extends PhabricatorSettingsPanel {
 
     $hisec = ($viewer->getSession()->getHighSecurityUntil() - time());
     if ($hisec > 0) {
-      $hisec_icon = id(new PHUIIconView())
-        ->setIconFont('fa-lock');
       $hisec_button = id(new PHUIButtonView())
         ->setText(pht('Leave High Security'))
         ->setHref('/auth/session/downgrade/')
         ->setTag('a')
         ->setWorkflow(true)
-        ->setIcon($hisec_icon);
+        ->setIcon('fa-lock');
       $header->addActionLink($hisec_button);
     }
 

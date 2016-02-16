@@ -251,6 +251,12 @@ final class DifferentialDiff
 
     $dict['changes'] = $this->buildChangesList();
 
+    return $dict + $this->getDiffAuthorshipDict();
+  }
+
+  public function getDiffAuthorshipDict() {
+    $dict = array();
+
     $properties = id(new DifferentialDiffProperty())->loadAllWhere(
       'diffID = %d',
       $this->getID());
@@ -379,6 +385,12 @@ final class DifferentialDiff
     return $map;
   }
 
+  public function getURI() {
+    $id = $this->getID();
+    return "/differential/diff/{$id}/";
+  }
+
+
 /* -(  PhabricatorPolicyInterface  )----------------------------------------- */
 
 
@@ -443,8 +455,12 @@ final class DifferentialDiff
 
       if ($repo) {
         $results['repository.callsign'] = $repo->getCallsign();
+        $results['repository.phid'] = $repo->getPHID();
         $results['repository.vcs'] = $repo->getVersionControlSystem();
         $results['repository.uri'] = $repo->getPublicCloneURI();
+
+        $results['repository.staging.uri'] = $repo->getStagingURI();
+        $results['repository.staging.ref'] = $this->getStagingRef();
       }
     }
 
@@ -459,11 +475,67 @@ final class DifferentialDiff
         pht('The differential revision ID, if applicable.'),
       'repository.callsign' =>
         pht('The callsign of the repository in Phabricator.'),
+      'repository.phid' =>
+        pht('The PHID of the repository in Phabricator.'),
       'repository.vcs' =>
         pht('The version control system, either "svn", "hg" or "git".'),
       'repository.uri' =>
         pht('The URI to clone or checkout the repository from.'),
+      'repository.staging.uri' =>
+        pht('The URI of the staging repository.'),
+      'repository.staging.ref' =>
+        pht('The ref name for this change in the staging repository.'),
     );
+  }
+
+  public function getStagingRef() {
+    // TODO: We're just hoping to get lucky. Instead, `arc` should store
+    // where it sent changes and we should only provide staging details
+    // if we reasonably believe they are accurate.
+    return 'refs/tags/phabricator/diff/'.$this->getID();
+  }
+
+  public function loadTargetBranch() {
+    // TODO: This is sketchy, but just eat the query cost until this can get
+    // cleaned up.
+
+    // For now, we're only returning a target if there's exactly one and it's
+    // a branch, since we don't support landing to more esoteric targets like
+    // tags yet.
+
+    $property = id(new DifferentialDiffProperty())->loadOneWhere(
+      'diffID = %d AND name = %s',
+      $this->getID(),
+      'arc:onto');
+    if (!$property) {
+      return null;
+    }
+
+    $data = $property->getData();
+
+    if (!$data) {
+      return null;
+    }
+
+    if (!is_array($data)) {
+      return null;
+    }
+
+    if (count($data) != 1) {
+      return null;
+    }
+
+    $onto = head($data);
+    if (!is_array($onto)) {
+      return null;
+    }
+
+    $type = idx($onto, 'type');
+    if ($type != 'branch') {
+      return null;
+    }
+
+    return idx($onto, 'name');
   }
 
 

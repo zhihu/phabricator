@@ -96,25 +96,35 @@ final class PhabricatorConfigManagementSetWorkflow
         if (!is_array($value)) {
           switch ($type) {
             case 'set':
+              $command = csprintf(
+                './bin/config set %R %s',
+                $key,
+                '{"value1": true, "value2": true}');
+
               $message = sprintf(
-                  "%s%s\n\n    %s\n",
-                  pht(
-                    "Config key '%s' is of type '%s'. Specify it in JSON.",
-                    $key,
-                    $type),
-                  pht('For example:'),
-                  './bin/config set \'{"value1": true, "value2": true}\'');
+                "%s\n\n    %s\n",
+                pht(
+                  'Config key "%s" is of type "%s". Specify it in JSON. '.
+                  'For example:',
+                  $key,
+                  $type),
+                $command);
               break;
             default:
               if (preg_match('/^list</', $type)) {
+                $command = csprintf(
+                  './bin/config set %R %s',
+                  $key,
+                  '["a", "b", "c"]');
+
                 $message = sprintf(
-                  "%s%s\n\n    %s\n",
+                  "%s\n\n    %s\n",
                   pht(
-                    "Config key '%s' is of type '%s'. Specify it in JSON.",
+                    'Config key "%s" is of type "%s". Specify it in JSON. '.
+                    'For example:',
                     $key,
                     $type),
-                  pht('For example:'),
-                  './bin/config set \'["a", "b", "c"]\'');
+                  $command);
               } else {
                 $message = pht(
                   'Config key "%s" is of type "%s". Specify it in JSON.',
@@ -131,9 +141,10 @@ final class PhabricatorConfigManagementSetWorkflow
     if ($option->getLocked() && $use_database) {
       throw new PhutilArgumentUsageException(
         pht(
-          "Config key '%s' is locked and can only be set in local ".
-          "configuration.",
-          $key));
+          'Config key "%s" is locked and can only be set in local '.
+          'configuration. To learn more, see "%s" in the documentation.',
+          $key,
+          pht('Configuration Guide: Locked and Hidden Configuration')));
     }
 
     try {

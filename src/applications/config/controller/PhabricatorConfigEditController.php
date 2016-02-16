@@ -104,25 +104,46 @@ final class PhabricatorConfigEditController
     if ($errors) {
       $error_view = id(new PHUIInfoView())
         ->setErrors($errors);
-    } else if ($option->getHidden()) {
-      $msg = pht(
+    }
+
+    $status_items = array();
+    if ($option->getHidden()) {
+      $message = pht(
         'This configuration is hidden and can not be edited or viewed from '.
         'the web interface.');
 
-      $error_view = id(new PHUIInfoView())
-        ->setTitle(pht('Configuration Hidden'))
-        ->setSeverity(PHUIInfoView::SEVERITY_WARNING)
-        ->appendChild(phutil_tag('p', array(), $msg));
+      $status_items[] = id(new PHUIStatusItemView())
+        ->setIcon('fa-eye-slash red')
+        ->setTarget(phutil_tag('strong', array(), pht('Configuration Hidden')))
+        ->setNote($message);
     } else if ($option->getLocked()) {
+      $message = $option->getLockedMessage();
 
-      $msg = $option->getLockedMessage();
-      $error_view = id(new PHUIInfoView())
-        ->setTitle(pht('Configuration Locked'))
-        ->setSeverity(PHUIInfoView::SEVERITY_NOTICE)
-        ->appendChild(phutil_tag('p', array(), $msg));
+      $status_items[] = id(new PHUIStatusItemView())
+        ->setIcon('fa-lock red')
+        ->setTarget(phutil_tag('strong', array(), pht('Configuration Locked')))
+        ->setNote($message);
     }
 
-    if ($option->getHidden()) {
+    if ($status_items) {
+      $doc_href = PhabricatorEnv::getDoclink(
+        'Configuration Guide: Locked and Hidden Configuration');
+
+      $doc_link = phutil_tag(
+        'a',
+        array(
+          'href' => $doc_href,
+          'target' => '_blank',
+        ),
+        pht('Configuration Guide: Locked and Hidden Configuration'));
+
+      $status_items[] = id(new PHUIStatusItemView())
+        ->setIcon('fa-book')
+        ->setTarget(phutil_tag('strong', array(), pht('Learn More')))
+        ->setNote($doc_link);
+    }
+
+    if ($option->getHidden() || $option->getLocked()) {
       $control = null;
     } else {
       $control = $this->renderControl(
@@ -144,11 +165,30 @@ final class PhabricatorConfigEditController
 
     $form
       ->setUser($viewer)
-      ->addHiddenInput('issue', $request->getStr('issue'))
-      ->appendChild(
+      ->addHiddenInput('issue', $request->getStr('issue'));
+
+    if ($status_items) {
+      $status_view = id(new PHUIStatusListView());
+
+      foreach ($status_items as $status_item) {
+        $status_view->addItem($status_item);
+      }
+
+      $form->appendControl(
         id(new AphrontFormMarkupControl())
-          ->setLabel(pht('Description'))
-          ->setValue($description));
+          ->setValue($status_view));
+    }
+
+    $description = $option->getDescription();
+    if (strlen($description)) {
+      $description_view = new PHUIRemarkupView($viewer, $description);
+
+      $form
+        ->appendChild(
+          id(new AphrontFormMarkupControl())
+            ->setLabel(pht('Description'))
+            ->setValue($description_view));
+    }
 
     if ($group) {
       $extra = $group->renderContextualDescription(
@@ -164,14 +204,20 @@ final class PhabricatorConfigEditController
     $form
       ->appendChild($control);
 
-    $submit_control = id(new AphrontFormSubmitControl())
-      ->addCancelButton($done_uri);
 
     if (!$option->getLocked()) {
-      $submit_control->setValue(pht('Save Config Entry'));
+      $form->appendChild(
+        id(new AphrontFormSubmitControl())
+          ->addCancelButton($done_uri)
+          ->setValue(pht('Save Config Entry')));
     }
 
-    $form->appendChild($submit_control);
+    if (!$option->getHidden()) {
+      $form->appendChild(
+        id(new AphrontFormMarkupControl())
+          ->setLabel(pht('Current Configuration'))
+          ->setValue($this->renderDefaults($option, $config_entry)));
+    }
 
     $examples = $this->renderExamples($option);
     if ($examples) {
@@ -179,13 +225,6 @@ final class PhabricatorConfigEditController
         id(new AphrontFormMarkupControl())
           ->setLabel(pht('Examples'))
           ->setValue($examples));
-    }
-
-    if (!$option->getHidden()) {
-      $form->appendChild(
-        id(new AphrontFormMarkupControl())
-          ->setLabel(pht('Default'))
-          ->setValue($this->renderDefaults($option, $config_entry)));
     }
 
     $title = pht('Edit %s', $key);
@@ -196,7 +235,7 @@ final class PhabricatorConfigEditController
       ->setForm($form);
 
     if ($error_view) {
-       $form_box->setInfoView($error_view);
+      $form_box->setInfoView($error_view);
     }
 
     $crumbs = $this->buildApplicationCrumbs();
@@ -438,14 +477,10 @@ final class PhabricatorConfigEditController
       }
 
       $control
-        ->setLabel(pht('Value'))
+        ->setLabel(pht('Database Value'))
         ->setError($e_value)
         ->setValue($display_value)
         ->setName('value');
-    }
-
-    if ($option->getLocked()) {
-      $control->setDisabled(true);
     }
 
     return $control;
@@ -501,25 +536,41 @@ final class PhabricatorConfigEditController
       phutil_tag('th', array(), pht('Source')),
       phutil_tag('th', array(), pht('Value')),
     ));
+
+    $is_effective_value = true;
     foreach ($stack as $key => $source) {
+      $row_classes = array(
+        'column-labels',
+      );
+
       $value = $source->getKeys(
         array(
           $option->getKey(),
         ));
 
       if (!array_key_exists($option->getKey(), $value)) {
-        $value = phutil_tag('em', array(), pht('(empty)'));
+        $value = phutil_tag('em', array(), pht('(No Value Configured)'));
       } else {
         $value = $this->getDisplayValue(
           $option,
           $entry,
           $value[$option->getKey()]);
+
+        if ($is_effective_value) {
+          $is_effective_value = false;
+          $row_classes[] = 'config-options-effective-value';
+        }
       }
 
-      $table[] = phutil_tag('tr', array('class' => 'column-labels'), array(
-        phutil_tag('th', array(), $source->getName()),
-        phutil_tag('td', array(), $value),
-      ));
+      $table[] = phutil_tag(
+        'tr',
+        array(
+          'class' => implode(' ', $row_classes),
+        ),
+        array(
+          phutil_tag('th', array(), $source->getName()),
+          phutil_tag('td', array(), $value),
+        ));
     }
 
     require_celerity_resource('config-options-css');

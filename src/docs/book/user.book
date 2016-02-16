@@ -29,8 +29,14 @@
     "userguide": {
       "name": "Application User Guides"
     },
+    "conduit": {
+      "name": "API Documentation"
+    },
     "fieldmanual": {
       "name": "Field Manuals"
+    },
+    "cellar": {
+      "name": "Musty Cellar"
     }
   }
 }

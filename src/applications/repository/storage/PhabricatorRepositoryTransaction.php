@@ -23,11 +23,12 @@ final class PhabricatorRepositoryTransaction
   const TYPE_PUSH_POLICY = 'repo:push-policy';
   const TYPE_CREDENTIAL = 'repo:credential';
   const TYPE_DANGEROUS = 'repo:dangerous';
-  const TYPE_CLONE_NAME = 'repo:clone-name';
+  const TYPE_SLUG = 'repo:slug';
   const TYPE_SERVICE = 'repo:service';
   const TYPE_SYMBOLS_SOURCES = 'repo:symbol-source';
   const TYPE_SYMBOLS_LANGUAGE = 'repo:symbol-language';
   const TYPE_STAGING_URI = 'repo:staging-uri';
+  const TYPE_AUTOMATION_BLUEPRINTS = 'repo:automation-blueprints';
 
   // TODO: Clean up these legacy transaction types.
   const TYPE_SSH_LOGIN = 'repo:ssh-login';
@@ -65,6 +66,7 @@ final class PhabricatorRepositoryTransaction
         }
         break;
       case self::TYPE_SYMBOLS_SOURCES:
+      case self::TYPE_AUTOMATION_BLUEPRINTS:
         if ($old) {
           $phids = array_merge($phids, $old);
         }
@@ -367,19 +369,19 @@ final class PhabricatorRepositoryTransaction
             '%s enabled protection against dangerous changes.',
             $this->renderHandleLink($author_phid));
         }
-      case self::TYPE_CLONE_NAME:
+      case self::TYPE_SLUG:
         if (strlen($old) && !strlen($new)) {
           return pht(
-            '%s removed the clone name of this repository.',
+            '%s removed the short name of this repository.',
             $this->renderHandleLink($author_phid));
         } else if (strlen($new) && !strlen($old)) {
           return pht(
-            '%s set the clone name of this repository to "%s".',
+            '%s set the short name of this repository to "%s".',
             $this->renderHandleLink($author_phid),
             $new);
         } else {
           return pht(
-            '%s changed the clone name of this repository from "%s" to "%s".',
+            '%s changed the short name of this repository from "%s" to "%s".',
             $this->renderHandleLink($author_phid),
             $old,
             $new);
@@ -435,6 +437,34 @@ final class PhabricatorRepositoryTransaction
             $this->renderHandleLink($author_phid),
             $old,
             $new);
+        }
+
+      case self::TYPE_AUTOMATION_BLUEPRINTS:
+        $add = array_diff($new, $old);
+        $rem = array_diff($old, $new);
+
+        if ($add && $rem) {
+          return pht(
+            '%s changed %s automation blueprint(s), '.
+            'added %s: %s; removed %s: %s.',
+            $this->renderHandleLink($author_phid),
+            new PhutilNumber(count($add) + count($rem)),
+            new PhutilNumber(count($add)),
+            $this->renderHandleList($add),
+            new PhutilNumber(count($rem)),
+            $this->renderHandleList($rem));
+        } else if ($add) {
+          return pht(
+            '%s added %s automation blueprint(s): %s.',
+            $this->renderHandleLink($author_phid),
+            new PhutilNumber(count($add)),
+            $this->renderHandleList($add));
+        } else {
+          return pht(
+            '%s removed %s automation blueprint(s): %s.',
+            $this->renderHandleLink($author_phid),
+            new PhutilNumber(count($rem)),
+            $this->renderHandleList($rem));
         }
     }
 

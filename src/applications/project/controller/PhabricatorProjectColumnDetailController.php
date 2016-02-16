@@ -17,11 +17,12 @@ final class PhabricatorProjectColumnDetailController
       ->withIDs(array($project_id))
       ->needImages(true)
       ->executeOne();
-
     if (!$project) {
       return new Aphront404Response();
     }
     $this->setProject($project);
+
+    $project_id = $project->getID();
 
     $column = id(new PhabricatorProjectColumnQuery())
       ->setViewer($viewer)
@@ -40,25 +41,31 @@ final class PhabricatorProjectColumnDetailController
       new PhabricatorProjectColumnTransactionQuery());
     $timeline->setShouldTerminate(true);
 
-    $title = pht('%s', $column->getDisplayName());
+    $title = $column->getDisplayName();
 
     $header = $this->buildHeaderView($column);
     $actions = $this->buildActionView($column);
     $properties = $this->buildPropertyView($column, $actions);
 
+    $crumbs = $this->buildApplicationCrumbs();
+    $crumbs->addTextCrumb(pht('Workboard'), "/project/board/{$project_id}/");
+    $crumbs->addTextCrumb(pht('Column: %s', $title));
+
     $box = id(new PHUIObjectBoxView())
       ->setHeader($header)
       ->addPropertyList($properties);
 
-    $nav = $this->buildIconNavView($project);
-    $nav->appendChild($box);
-    $nav->appendChild($timeline);
+    $nav = $this->getProfileMenu();
 
-    return $this->buildApplicationPage(
-      $nav,
-      array(
-        'title' => $title,
-      ));
+    return $this->newPage()
+      ->setTitle($title)
+      ->setNavigation($nav)
+      ->setCrumbs($crumbs)
+      ->appendChild(
+        array(
+          $box,
+          $timeline,
+        ));
   }
 
   private function buildHeaderView(PhabricatorProjectColumn $column) {
@@ -84,7 +91,6 @@ final class PhabricatorProjectColumnDetailController
     $base_uri = '/board/'.$project_id.'/';
 
     $actions = id(new PhabricatorActionListView())
-      ->setObjectURI($this->getApplicationURI($base_uri.'column/'.$id.'/'))
       ->setUser($viewer);
 
     $can_edit = PhabricatorPolicyFilter::hasCapability(
@@ -113,19 +119,13 @@ final class PhabricatorProjectColumnDetailController
       ->setObject($column)
       ->setActionList($actions);
 
-    $descriptions = PhabricatorPolicyQuery::renderPolicyDescriptions(
-      $viewer,
-      $column);
-
-    $properties->addProperty(
-      pht('Editable By'),
-      $descriptions[PhabricatorPolicyCapability::CAN_EDIT]);
-
-
     $limit = $column->getPointLimit();
-    $properties->addProperty(
-      pht('Point Limit'),
-      $limit ? $limit : pht('No Limit'));
+    if ($limit === null) {
+      $limit_text = pht('No Limit');
+    } else {
+      $limit_text = $limit;
+    }
+    $properties->addProperty(pht('Point Limit'), $limit_text);
 
     return $properties;
   }

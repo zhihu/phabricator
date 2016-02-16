@@ -74,8 +74,7 @@ final class HarbormasterBuildableViewController
 
     $list = id(new PhabricatorActionListView())
       ->setUser($viewer)
-      ->setObject($buildable)
-      ->setObjectURI($buildable->getMonogram());
+      ->setObject($buildable);
 
     $can_edit = PhabricatorPolicyFilter::hasCapability(
       $viewer,
@@ -84,7 +83,8 @@ final class HarbormasterBuildableViewController
 
     $can_restart = false;
     $can_resume = false;
-    $can_stop = false;
+    $can_pause = false;
+    $can_abort = false;
 
     foreach ($buildable->getBuilds() as $build) {
       if ($build->canRestartBuild()) {
@@ -93,14 +93,18 @@ final class HarbormasterBuildableViewController
       if ($build->canResumeBuild()) {
         $can_resume = true;
       }
-      if ($build->canStopBuild()) {
-        $can_stop = true;
+      if ($build->canPauseBuild()) {
+        $can_pause = true;
+      }
+      if ($build->canAbortBuild()) {
+        $can_abort = true;
       }
     }
 
     $restart_uri = "buildable/{$id}/restart/";
-    $stop_uri = "buildable/{$id}/stop/";
+    $pause_uri = "buildable/{$id}/pause/";
     $resume_uri = "buildable/{$id}/resume/";
+    $abort_uri = "buildable/{$id}/abort/";
 
     $list->addAction(
       id(new PhabricatorActionView())
@@ -114,9 +118,9 @@ final class HarbormasterBuildableViewController
       id(new PhabricatorActionView())
         ->setIcon('fa-pause')
         ->setName(pht('Pause All Builds'))
-        ->setHref($this->getApplicationURI($stop_uri))
+        ->setHref($this->getApplicationURI($pause_uri))
         ->setWorkflow(true)
-        ->setDisabled(!$can_stop || !$can_edit));
+        ->setDisabled(!$can_pause || !$can_edit));
 
     $list->addAction(
       id(new PhabricatorActionView())
@@ -125,6 +129,14 @@ final class HarbormasterBuildableViewController
         ->setHref($this->getApplicationURI($resume_uri))
         ->setWorkflow(true)
         ->setDisabled(!$can_resume || !$can_edit));
+
+    $list->addAction(
+      id(new PhabricatorActionView())
+        ->setIcon('fa-exclamation-triangle')
+        ->setName(pht('Abort All Builds'))
+        ->setHref($this->getApplicationURI($abort_uri))
+        ->setWorkflow(true)
+        ->setDisabled(!$can_abort || !$can_edit));
 
     return $list;
   }
@@ -181,7 +193,7 @@ final class HarbormasterBuildableViewController
 
       if ($build->isRestarting()) {
         $item->addIcon('fa-repeat', pht('Restarting'));
-      } else if ($build->isStopping()) {
+      } else if ($build->isPausing()) {
         $item->addIcon('fa-pause', pht('Pausing'));
       } else if ($build->isResuming()) {
         $item->addIcon('fa-play', pht('Resuming'));
@@ -191,7 +203,8 @@ final class HarbormasterBuildableViewController
 
       $restart_uri = "build/restart/{$build_id}/buildable/";
       $resume_uri = "build/resume/{$build_id}/buildable/";
-      $stop_uri = "build/stop/{$build_id}/buildable/";
+      $pause_uri = "build/pause/{$build_id}/buildable/";
+      $abort_uri = "build/abort/{$build_id}/buildable/";
 
       $item->addAction(
         id(new PHUIListItemView())
@@ -213,9 +226,9 @@ final class HarbormasterBuildableViewController
           id(new PHUIListItemView())
             ->setIcon('fa-pause')
             ->setName(pht('Pause'))
-            ->setHref($this->getApplicationURI($stop_uri))
+            ->setHref($this->getApplicationURI($pause_uri))
             ->setWorkflow(true)
-            ->setDisabled(!$build->canStopBuild()));
+            ->setDisabled(!$build->canPauseBuild()));
       }
 
       $targets = $build->getBuildTargets();
@@ -298,7 +311,7 @@ final class HarbormasterBuildableViewController
           id(new PHUIButtonView())
             ->setTag('a')
             ->setHref($lint_href)
-            ->setIconFont('fa-list-ul')
+            ->setIcon('fa-list-ul')
             ->setText('View All'));
 
       $lint = id(new PHUIObjectBoxView())
@@ -322,7 +335,7 @@ final class HarbormasterBuildableViewController
           id(new PHUIButtonView())
             ->setTag('a')
             ->setHref($unit_href)
-            ->setIconFont('fa-list-ul')
+            ->setIcon('fa-list-ul')
             ->setText('View All'));
 
       $unit = id(new PHUIObjectBoxView())

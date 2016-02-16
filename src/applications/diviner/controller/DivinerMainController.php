@@ -17,20 +17,17 @@ final class DivinerMainController extends DivinerController {
     $crumbs->setBorder(true);
     $crumbs->addTextCrumb(pht('Books'));
 
-    $search_icon = id(new PHUIIconView())
-      ->setIconFont('fa-search');
-
     $query_button = id(new PHUIButtonView())
       ->setTag('a')
       ->setHref($this->getApplicationURI('query/'))
       ->setText(pht('Advanced Search'))
-      ->setIcon($search_icon);
+      ->setIcon('fa-search');
 
     $header = id(new PHUIHeaderView())
       ->setHeader(pht('Documentation Books'))
       ->addActionLink($query_button);
 
-    $document = new PHUIDocumentView();
+    $document = new PHUIDocumentViewPro();
     $document->setHeader($header);
     $document->addClass('diviner-view');
 
@@ -45,10 +42,7 @@ final class DivinerMainController extends DivinerController {
         $list[] = $item;
       }
       $list = id(new PHUIBoxView())
-        ->addPadding(PHUI::PADDING_LARGE_LEFT)
-        ->addPadding(PHUI::PADDING_LARGE_RIGHT)
-        ->addPadding(PHUI::PADDING_SMALL_TOP)
-        ->addPadding(PHUI::PADDING_SMALL_BOTTOM)
+        ->addPadding(PHUI::PADDING_MEDIUM_TOP)
         ->appendChild($list);
 
       $document->appendChild($list);
@@ -82,7 +76,6 @@ final class DivinerMainController extends DivinerController {
       ),
       array(
         'title' => pht('Documentation Books'),
-        'fonts' => true,
       ));
   }
 }

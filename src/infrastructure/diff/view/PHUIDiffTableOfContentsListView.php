@@ -23,7 +23,6 @@ final class PHUIDiffTableOfContentsListView extends AphrontView {
   public function render() {
     $this->requireResource('differential-core-view-css');
     $this->requireResource('differential-table-of-contents-css');
-    $this->requireResource('phui-text-css');
 
     Javelin::initBehavior('phabricator-tooltips');
 
@@ -107,7 +106,7 @@ final class PHUIDiffTableOfContentsListView extends AphrontView {
         ))
       ->setColumnClasses(
         array(
-          'center',
+          null,
           'differential-toc-char center',
           'differential-toc-prop center',
           'differential-toc-ftype center',

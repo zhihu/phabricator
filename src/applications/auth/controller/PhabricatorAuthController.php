@@ -2,18 +2,6 @@
 
 abstract class PhabricatorAuthController extends PhabricatorController {
 
-  public function buildStandardPageResponse($view, array $data) {
-    $page = $this->buildStandardPageView();
-
-    $page->setApplicationName(pht('Login'));
-    $page->setBaseURI('/login/');
-    $page->setTitle(idx($data, 'title'));
-    $page->appendChild($view);
-
-    $response = new AphrontWebpageResponse();
-    return $response->setContent($page->render());
-  }
-
   protected function renderErrorPage($title, array $messages) {
     $view = new PHUIInfoView();
     $view->setTitle($title);
@@ -209,7 +197,7 @@ abstract class PhabricatorAuthController extends PhabricatorController {
 
     $actual = $account->getProperty('registrationKey');
     $expect = PhabricatorHash::digest($registration_key);
-    if ($actual !== $expect) {
+    if (!phutil_hashes_are_identical($actual, $expect)) {
       $response = $this->renderError(
         pht(
           'Your browser submitted a different registration key than the one '.

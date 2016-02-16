@@ -274,7 +274,7 @@ final class PhabricatorPolicy
     $img = null;
     if ($icon) {
       $img = id(new PHUIIconView())
-        ->setIconFont($this->getIcon());
+        ->setIcon($this->getIcon());
     }
 
     if ($this->getHref()) {
@@ -321,6 +321,12 @@ final class PhabricatorPolicy
     $classes = array();
 
     foreach ($this->getRules() as $rule) {
+      if (!is_array($rule)) {
+        // This rule is invalid. We'll reject it later, but don't need to
+        // extract anything from it for now.
+        continue;
+      }
+
       $class = idx($rule, 'rule');
       try {
         if (class_exists($class)) {

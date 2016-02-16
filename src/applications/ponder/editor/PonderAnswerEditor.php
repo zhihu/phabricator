@@ -10,6 +10,7 @@ final class PonderAnswerEditor extends PonderEditor {
     $types = parent::getTransactionTypes();
 
     $types[] = PhabricatorTransactions::TYPE_COMMENT;
+    $types[] = PhabricatorTransactions::TYPE_EDGE;
 
     $types[] = PonderAnswerTransaction::TYPE_CONTENT;
     $types[] = PonderAnswerTransaction::TYPE_STATUS;
@@ -83,6 +84,27 @@ final class PonderAnswerEditor extends PonderEditor {
     PhabricatorLiskDAO $object,
     array $xactions) {
     return true;
+  }
+
+  protected function getMailTo(PhabricatorLiskDAO $object) {
+    $phids = array();
+    $phids[] = $object->getAuthorPHID();
+    $phids[] = $this->requireActor()->getPHID();
+
+    $question = id(new PonderQuestionQuery())
+      ->setViewer($this->requireActor())
+      ->withIDs(array($object->getQuestionID()))
+      ->executeOne();
+
+    $phids[] = $question->getAuthorPHID();
+
+    return $phids;
+  }
+
+  protected function shouldPublishFeedStory(
+    PhabricatorLiskDAO $object,
+    array $xactions) {
+      return true;
   }
 
   protected function buildReplyHandler(PhabricatorLiskDAO $object) {

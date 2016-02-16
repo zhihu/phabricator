@@ -242,8 +242,23 @@ abstract class PhabricatorApplicationTransactionEditor
     return $this->applicationEmail;
   }
 
+  public function getTransactionTypesForObject($object) {
+    $old = $this->object;
+    try {
+      $this->object = $object;
+      $result = $this->getTransactionTypes();
+      $this->object = $old;
+    } catch (Exception $ex) {
+      $this->object = $old;
+      throw $ex;
+    }
+    return $result;
+  }
+
   public function getTransactionTypes() {
     $types = array();
+
+    $types[] = PhabricatorTransactions::TYPE_CREATE;
 
     if ($this->object instanceof PhabricatorSubscribableInterface) {
       $types[] = PhabricatorTransactions::TYPE_SUBSCRIBERS;
@@ -290,23 +305,32 @@ abstract class PhabricatorApplicationTransactionEditor
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
     switch ($xaction->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_CREATE:
+        return null;
       case PhabricatorTransactions::TYPE_SUBSCRIBERS:
         return array_values($this->subscribers);
       case PhabricatorTransactions::TYPE_VIEW_POLICY:
+        if ($this->getIsNewObject()) {
+          return null;
+        }
         return $object->getViewPolicy();
       case PhabricatorTransactions::TYPE_EDIT_POLICY:
+        if ($this->getIsNewObject()) {
+          return null;
+        }
         return $object->getEditPolicy();
       case PhabricatorTransactions::TYPE_JOIN_POLICY:
+        if ($this->getIsNewObject()) {
+          return null;
+        }
         return $object->getJoinPolicy();
       case PhabricatorTransactions::TYPE_SPACE:
+        if ($this->getIsNewObject()) {
+          return null;
+        }
+
         $space_phid = $object->getSpacePHID();
         if ($space_phid === null) {
-          if ($this->getIsNewObject()) {
-            // In this case, just return `null` so we know this is the initial
-            // transaction and it should be hidden.
-            return null;
-          }
-
           $default_space = PhabricatorSpacesNamespaceQuery::getDefaultSpace();
           if ($default_space) {
             $space_phid = $default_space->getPHID();
@@ -351,6 +375,8 @@ abstract class PhabricatorApplicationTransactionEditor
     PhabricatorLiskDAO $object,
     PhabricatorApplicationTransaction $xaction) {
     switch ($xaction->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_CREATE:
+        return null;
       case PhabricatorTransactions::TYPE_SUBSCRIBERS:
         return $this->getPHIDTransactionNewValue($xaction);
       case PhabricatorTransactions::TYPE_VIEW_POLICY:
@@ -374,7 +400,15 @@ abstract class PhabricatorApplicationTransactionEditor
           return $space_phid;
         }
       case PhabricatorTransactions::TYPE_EDGE:
-        return $this->getEdgeTransactionNewValue($xaction);
+        $new_value = $this->getEdgeTransactionNewValue($xaction);
+
+        $edge_type = $xaction->getMetadataValue('edge:type');
+        $type_project = PhabricatorProjectObjectHasProjectEdgeType::EDGECONST;
+        if ($edge_type == $type_project) {
+          $new_value = $this->applyProjectConflictRules($new_value);
+        }
+
+        return $new_value;
       case PhabricatorTransactions::TYPE_CUSTOMFIELD:
         $field = $this->getCustomFieldForTransaction($object, $xaction);
         return $field->getNewValueFromApplicationTransactions($xaction);
@@ -402,6 +436,8 @@ abstract class PhabricatorApplicationTransactionEditor
     PhabricatorApplicationTransaction $xaction) {
 
     switch ($xaction->getTransactionType()) {
+      case PhabricatorTransactions::TYPE_CREATE:
+        return true;
       case PhabricatorTransactions::TYPE_COMMENT:
         return $xaction->hasComment();
       case PhabricatorTransactions::TYPE_CUSTOMFIELD:
@@ -464,6 +500,7 @@ abstract class PhabricatorApplicationTransactionEditor
       case PhabricatorTransactions::TYPE_CUSTOMFIELD:
         $field = $this->getCustomFieldForTransaction($object, $xaction);
         return $field->applyApplicationTransactionInternalEffects($xaction);
+      case PhabricatorTransactions::TYPE_CREATE:
       case PhabricatorTransactions::TYPE_BUILDABLE:
       case PhabricatorTransactions::TYPE_TOKEN:
       case PhabricatorTransactions::TYPE_VIEW_POLICY:
@@ -514,6 +551,7 @@ abstract class PhabricatorApplicationTransactionEditor
       case PhabricatorTransactions::TYPE_CUSTOMFIELD:
         $field = $this->getCustomFieldForTransaction($object, $xaction);
         return $field->applyApplicationTransactionExternalEffects($xaction);
+      case PhabricatorTransactions::TYPE_CREATE:
       case PhabricatorTransactions::TYPE_EDGE:
       case PhabricatorTransactions::TYPE_BUILDABLE:
       case PhabricatorTransactions::TYPE_TOKEN:
@@ -762,8 +800,6 @@ abstract class PhabricatorApplicationTransactionEditor
         throw new PhabricatorApplicationTransactionValidationException($errors);
       }
 
-      $file_phids = $this->extractFilePHIDs($object, $xactions);
-
       if ($object->getID()) {
         foreach ($xactions as $xaction) {
 
@@ -800,18 +836,32 @@ abstract class PhabricatorApplicationTransactionEditor
       $this->adjustTransactionValues($object, $xaction);
     }
 
-    $xactions = $this->filterTransactions($object, $xactions);
-
-    if (!$xactions) {
+    try {
+      $xactions = $this->filterTransactions($object, $xactions);
+    } catch (Exception $ex) {
       if ($read_locking) {
         $object->endReadLocking();
-        $read_locking = false;
       }
       if ($transaction_open) {
         $object->killTransaction();
-        $transaction_open = false;
       }
-      return array();
+      throw $ex;
+    }
+
+    // TODO: Once everything is on EditEngine, just use getIsNewObject() to
+    // figure this out instead.
+    $mark_as_create = false;
+    $create_type = PhabricatorTransactions::TYPE_CREATE;
+    foreach ($xactions as $xaction) {
+      if ($xaction->getTransactionType() == $create_type) {
+        $mark_as_create = true;
+      }
+    }
+
+    if ($mark_as_create) {
+      foreach ($xactions as $xaction) {
+        $xaction->setIsCreateTransaction(true);
+      }
     }
 
     // Now that we've merged, filtered, and combined transactions, check for
@@ -821,6 +871,7 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     $xactions = $this->sortTransactions($xactions);
+    $file_phids = $this->extractFilePHIDs($object, $xactions);
 
     if ($is_preview) {
       $this->loadHandles($xactions);
@@ -1050,10 +1101,11 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     if ($this->supportsSearch()) {
-      id(new PhabricatorSearchIndexer())
-        ->queueDocumentForIndexing(
-          $object->getPHID(),
-          $this->getSearchContextParameter($object, $xactions));
+      PhabricatorSearchWorker::queueDocumentForIndexing(
+        $object->getPHID(),
+        array(
+          'transactionPHIDs' => mpull($xactions, 'getPHID'),
+        ));
     }
 
     if ($this->shouldPublishFeedStory($object, $xactions)) {
@@ -1359,7 +1411,7 @@ abstract class PhabricatorApplicationTransactionEditor
    * resigning from a revision in Differential implies removing yourself as
    * a reviewer.
    */
-  private function expandTransactions(
+  protected function expandTransactions(
     PhabricatorLiskDAO $object,
     array $xactions) {
 
@@ -1650,7 +1702,7 @@ abstract class PhabricatorApplicationTransactionEditor
       throw new Exception(
         pht(
           "Invalid '%s' value for PHID transaction. Value should contain only ".
-          "keys '%s' (add PHIDs), '%' (remove PHIDs) and '%s' (set PHIDS).",
+          "keys '%s' (add PHIDs), '%s' (remove PHIDs) and '%s' (set PHIDS).",
           'new',
           '+',
           '-',
@@ -1888,7 +1940,7 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     foreach ($no_effect as $key => $xaction) {
-      if ($xaction->getComment()) {
+      if ($xaction->hasComment()) {
         $xaction->setTransactionType($type_comment);
         $xaction->setOldValue(null);
         $xaction->setNewValue(null);
@@ -2158,6 +2210,51 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     if ($xactions && strlen(last($xactions)->getNewValue())) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Check that text field input isn't longer than a specified length.
+   *
+   * A text field input is invalid if the length of the input is longer than a
+   * specified length. This length can be determined by the space allotted in
+   * the database, or given arbitrarily.
+   * This method is intended to make implementing @{method:validateTransaction}
+   * more convenient:
+   *
+   *   $overdrawn = $this->validateIsTextFieldTooLong(
+   *     $object->getName(),
+   *     $xactions,
+   *     $field_length);
+   *
+   * This will return `true` if the net effect of the object and transactions
+   * is a field that is too long.
+   *
+   * @param wild Current field value.
+   * @param list<PhabricatorApplicationTransaction> Transactions editing the
+   *          field.
+   * @param integer for maximum field length.
+   * @return bool True if the field will be too long after edits.
+   */
+  protected function validateIsTextFieldTooLong(
+    $field_value,
+    array $xactions,
+    $length) {
+
+    if ($xactions) {
+      $new_value_length = phutil_utf8_strlen(last($xactions)->getNewValue());
+      if ($new_value_length <= $length) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    $old_value_length = phutil_utf8_strlen($field_value);
+    if ($old_value_length <= $length) {
       return false;
     }
 
@@ -2610,7 +2707,7 @@ abstract class PhabricatorApplicationTransactionEditor
     $body->addRawSection(implode("\n", $headers));
 
     foreach ($comments as $comment) {
-      $body->addRemarkupSection($comment);
+      $body->addRemarkupSection(null, $comment);
     }
   }
 
@@ -2775,15 +2872,6 @@ abstract class PhabricatorApplicationTransactionEditor
     return false;
   }
 
-  /**
-   * @task search
-   */
-  protected function getSearchContextParameter(
-    PhabricatorLiskDAO $object,
-    array $xactions) {
-    return null;
-  }
-
 
 /* -(  Herald Integration )-------------------------------------------------- */
 
@@ -2822,12 +2910,15 @@ abstract class PhabricatorApplicationTransactionEditor
     PhabricatorLiskDAO $object,
     array $xactions) {
 
-    $adapter = $this->buildHeraldAdapter($object, $xactions);
-    $adapter->setContentSource($this->getContentSource());
-    $adapter->setIsNewObject($this->getIsNewObject());
+    $adapter = $this->buildHeraldAdapter($object, $xactions)
+      ->setContentSource($this->getContentSource())
+      ->setIsNewObject($this->getIsNewObject())
+      ->setAppliedTransactions($xactions);
+
     if ($this->getApplicationEmail()) {
       $adapter->setApplicationEmail($this->getApplicationEmail());
     }
+
     $xscript = HeraldEngine::loadAndApplyRules($adapter);
 
     $this->setHeraldAdapter($adapter);
@@ -2837,7 +2928,7 @@ abstract class PhabricatorApplicationTransactionEditor
       HarbormasterBuildable::applyBuildPlans(
         $adapter->getHarbormasterBuildablePHID(),
         $adapter->getHarbormasterContainerPHID(),
-        $adapter->getQueuedHarbormasterBuildPlanPHIDs());
+        $adapter->getQueuedHarbormasterBuildRequests());
     }
 
     return array_merge(
@@ -3261,6 +3352,129 @@ abstract class PhabricatorApplicationTransactionEditor
     }
 
     return $state;
+  }
+
+
+  /**
+   * Remove conflicts from a list of projects.
+   *
+   * Objects aren't allowed to be tagged with multiple milestones in the same
+   * group, nor projects such that one tag is the ancestor of any other tag.
+   * If the list of PHIDs include mutually exclusive projects, remove the
+   * conflicting projects.
+   *
+   * @param list<phid> List of project PHIDs.
+   * @return list<phid> List with conflicts removed.
+   */
+  private function applyProjectConflictRules(array $phids) {
+    if (!$phids) {
+      return array();
+    }
+
+    // Overall, the last project in the list wins in cases of conflict (so when
+    // you add something, the thing you just added sticks and removes older
+    // values).
+
+    // Beyond that, there are two basic cases:
+
+    // Milestones: An object can't be in "A > Sprint 3" and "A > Sprint 4".
+    // If multiple projects are milestones of the same parent, we only keep the
+    // last one.
+
+    // Ancestor: You can't be in "A" and "A > B". If "A > B" comes later
+    // in the list, we remove "A" and keep "A > B". If "A" comes later, we
+    // remove "A > B" and keep "A".
+
+    // Note that it's OK to be in "A > B" and "A > C". There's only a conflict
+    // if one project is an ancestor of another. It's OK to have something
+    // tagged with multiple projects which share a common ancestor, so long as
+    // they are not mutual ancestors.
+
+    $viewer = PhabricatorUser::getOmnipotentUser();
+
+    $projects = id(new PhabricatorProjectQuery())
+      ->setViewer($viewer)
+      ->withPHIDs(array_keys($phids))
+      ->execute();
+    $projects = mpull($projects, null, 'getPHID');
+
+    // We're going to build a map from each project with milestones to the last
+    // milestone in the list. This last milestone is the milestone we'll keep.
+    $milestone_map = array();
+
+    // We're going to build a set of the projects which have no descendants
+    // later in the list. This allows us to apply both ancestor rules.
+    $ancestor_map = array();
+
+    foreach ($phids as $phid => $ignored) {
+      $project = idx($projects, $phid);
+      if (!$project) {
+        continue;
+      }
+
+      // This is the last milestone we've seen, so set it as the selection for
+      // the project's parent. This might be setting a new value or overwriting
+      // an earlier value.
+      if ($project->isMilestone()) {
+        $parent_phid = $project->getParentProjectPHID();
+        $milestone_map[$parent_phid] = $phid;
+      }
+
+      // Since this is the last item in the list we've examined so far, add it
+      // to the set of projects with no later descendants.
+      $ancestor_map[$phid] = $phid;
+
+      // Remove any ancestors from the set, since this is a later descendant.
+      foreach ($project->getAncestorProjects() as $ancestor) {
+        $ancestor_phid = $ancestor->getPHID();
+        unset($ancestor_map[$ancestor_phid]);
+      }
+    }
+
+    // Now that we've built the maps, we can throw away all the projects which
+    // have conflicts.
+    foreach ($phids as $phid => $ignored) {
+      $project = idx($projects, $phid);
+
+      if (!$project) {
+        // If a PHID is invalid, we just leave it as-is. We could clean it up,
+        // but leaving it untouched is less likely to cause collateral damage.
+        continue;
+      }
+
+      // If this was a milestone, check if it was the last milestone from its
+      // group in the list. If not, remove it from the list.
+      if ($project->isMilestone()) {
+        $parent_phid = $project->getParentProjectPHID();
+        if ($milestone_map[$parent_phid] !== $phid) {
+          unset($phids[$phid]);
+          continue;
+        }
+      }
+
+      // If a later project in the list is a subproject of this one, it will
+      // have removed ancestors from the map. If this project does not point
+      // at itself in the ancestor map, it should be discarded in favor of a
+      // subproject that comes later.
+      if (idx($ancestor_map, $phid) !== $phid) {
+        unset($phids[$phid]);
+        continue;
+      }
+
+      // If a later project in the list is an ancestor of this one, it will
+      // have added itself to the map. If any ancestor of this project points
+      // at itself in the map, this project should be dicarded in favor of
+      // that later ancestor.
+      foreach ($project->getAncestorProjects() as $ancestor) {
+        $ancestor_phid = $ancestor->getPHID();
+        if (isset($ancestor_map[$ancestor_phid])) {
+          unset($phids[$phid]);
+          continue 2;
+        }
+      }
+    }
+
+    return $phids;
   }
 
 }

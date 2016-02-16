@@ -22,6 +22,26 @@ JX.behavior('differential-edit-inline-comments', function(config) {
 
   var editor = null;
 
+  function updateReticleForComment(e) {
+    root = e.getNode('differential-changeset');
+    if (!root) {
+      return;
+    }
+
+    var data = e.getNodeData('differential-inline-comment');
+    var change = e.getNodeData('differential-changeset');
+
+    var id_part = data.on_right ? change.right : change.left;
+    var new_part = data.isNewFile ? 'N' : 'O';
+    var prefix = 'C' + id_part + new_part + 'L';
+
+    origin = JX.$(prefix + data.number);
+    target = JX.$(prefix + (parseInt(data.number, 10) +
+                            parseInt(data.length, 10)));
+
+    updateReticle();
+  }
+
   function updateReticle() {
     JX.DOM.getContentFrame().appendChild(reticle);
 
@@ -138,10 +158,20 @@ JX.behavior('differential-edit-inline-comments', function(config) {
     'mousedown',
     ['differential-changeset', 'tag:th'],
     function(e) {
-      if (editor  ||
-          selecting ||
-          e.isRightButton() ||
+      if (e.isRightButton() ||
           getRowNumber(e.getTarget()) === undefined) {
+        return;
+      }
+
+      if (editor) {
+        new JX.DifferentialInlineCommentEditor(config.uri)
+          .setOperation('busy')
+          .setRow(editor.getRow().previousSibling)
+          .start();
+        return;
+      }
+
+      if (selecting) {
         return;
       }
 
@@ -166,6 +196,10 @@ JX.behavior('differential-edit-inline-comments', function(config) {
     ['mouseover', 'mouseout'],
     ['differential-changeset', 'tag:th'],
     function(e) {
+      if (e.getIsTouchEvent()) {
+        return;
+      }
+
       if (editor) {
         // Don't update the reticle if we're editing a comment, since this
         // would be distracting and we want to keep the lines corresponding
@@ -264,24 +298,14 @@ JX.behavior('differential-edit-inline-comments', function(config) {
     ['mouseover', 'mouseout'],
     'differential-inline-comment',
     function(e) {
+      if (e.getIsTouchEvent()) {
+        return;
+      }
+
       if (e.getType() == 'mouseout') {
         hideReticle();
       } else {
-        root = e.getNode('differential-changeset');
-        if (root) {
-          var data = e.getNodeData('differential-inline-comment');
-          var change = e.getNodeData('differential-changeset');
-
-          var id_part = data.on_right ? change.right : change.left;
-          var new_part = data.isNewFile ? 'N' : 'O';
-          var prefix = 'C' + id_part + new_part + 'L';
-
-          origin = JX.$(prefix + data.number);
-          target = JX.$(prefix + (parseInt(data.number, 10) +
-                                  parseInt(data.length, 10)));
-
-          updateReticle();
-        }
+        updateReticleForComment(e);
       }
     });
 
@@ -293,6 +317,12 @@ JX.behavior('differential-edit-inline-comments', function(config) {
     }
 
     var node = e.getNode('differential-inline-comment');
+
+    // If we're on a touch device, we didn't highlight the affected lines
+    // earlier because we can't use hover events to mutate the document.
+    // Highlight them now.
+    updateReticleForComment(e);
+
     handle_inline_action(node, op);
   };
 

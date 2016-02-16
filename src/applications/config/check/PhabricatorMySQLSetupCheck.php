@@ -319,9 +319,11 @@ final class PhabricatorMySQLSetupCheck extends PhabricatorSetupCheck {
         ->addMySQLConfig('innodb_buffer_pool_size');
     }
 
+    $conn_w = id(new PhabricatorUser())->establishConnection('w');
+
     $ok = PhabricatorStorageManagementAPI::isCharacterSetAvailableOnConnection(
       'utf8mb4',
-      id(new PhabricatorUser())->establishConnection('w'));
+      $conn_w);
     if (!$ok) {
       $summary = pht(
         'You are using an old version of MySQL, and should upgrade.');
@@ -339,11 +341,33 @@ final class PhabricatorMySQLSetupCheck extends PhabricatorSetupCheck {
         ->setMessage($message);
     }
 
+    $info = queryfx_one(
+      $conn_w,
+      'SELECT UNIX_TIMESTAMP() epoch');
+
+    $epoch = (int)$info['epoch'];
+    $local = PhabricatorTime::getNow();
+    $delta = (int)abs($local - $epoch);
+    if ($delta > 60) {
+      $this->newIssue('mysql.clock')
+        ->setName(pht('Major Web/Database Clock Skew'))
+        ->setSummary(
+          pht(
+            'This host is set to a very different time than the database.'))
+        ->setMessage(
+          pht(
+            'The database host and this host ("%s") disagree on the current '.
+            'time by more than 60 seconds (absolute skew is %s seconds). '.
+            'Check that the current time is set correctly everywhere.',
+            php_uname('n'),
+            new PhutilNumber($delta)));
+    }
+
   }
 
   protected function shouldUseMySQLSearchEngine() {
-    $search_engine = PhabricatorSearchEngine::loadEngine();
-    return $search_engine instanceof PhabricatorMySQLSearchEngine;
+    $search_engine = PhabricatorFulltextStorageEngine::loadEngine();
+    return ($search_engine instanceof PhabricatorMySQLFulltextStorageEngine);
   }
 
 }

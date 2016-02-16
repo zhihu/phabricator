@@ -94,7 +94,7 @@ final class ManiphestTaskStatus extends ManiphestConstants {
     $icon = self::getStatusIcon($status);
 
     $img = id(new PHUIIconView())
-      ->setIconFont($icon.' '.$icon_color);
+      ->setIcon($icon.' '.$icon_color);
 
     $tag = phutil_tag(
       'span',
@@ -155,6 +155,10 @@ final class ManiphestTaskStatus extends ManiphestConstants {
     return false;
   }
 
+  public static function isClaimStatus($status) {
+    return self::getStatusAttribute($status, 'claim', true);
+  }
+
   public static function isClosedStatus($status) {
     return !self::isOpenStatus($status);
   }
@@ -165,6 +169,10 @@ final class ManiphestTaskStatus extends ManiphestConstants {
 
   public static function getStatusColor($status) {
     return self::getStatusAttribute($status, 'transaction.color');
+  }
+
+  public static function isDisabledStatus($status) {
+    return self::getStatusAttribute($status, 'disabled');
   }
 
   public static function getStatusIcon($status) {
@@ -274,6 +282,8 @@ final class ManiphestTaskStatus extends ManiphestConstants {
           'prefixes' => 'optional list<string>',
           'suffixes' => 'optional list<string>',
           'keywords' => 'optional list<string>',
+          'disabled' => 'optional bool',
+          'claim' => 'optional bool',
         ));
     }
 

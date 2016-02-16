@@ -22,8 +22,10 @@ final class HeraldRuleController extends HeraldController {
       if (!$rule) {
         return new Aphront404Response();
       }
-      $cancel_uri = $this->getApplicationURI("rule/{$id}/");
+      $cancel_uri = '/'.$rule->getMonogram();
     } else {
+      $new_uri = $this->getApplicationURI('new/');
+
       $rule = new HeraldRule();
       $rule->setAuthorPHID($viewer->getPHID());
       $rule->setMustMatchAll(1);
@@ -33,18 +35,40 @@ final class HeraldRuleController extends HeraldController {
 
       $rule_type = $request->getStr('rule_type');
       if (!isset($rule_type_map[$rule_type])) {
-        $rule_type = HeraldRuleTypeConfig::RULE_TYPE_PERSONAL;
+        return $this->newDialog()
+          ->setTitle(pht('Invalid Rule Type'))
+          ->appendParagraph(
+            pht(
+              'The selected rule type ("%s") is not recognized by Herald.',
+              $rule_type))
+          ->addCancelButton($new_uri);
       }
       $rule->setRuleType($rule_type);
 
-      $adapter = HeraldAdapter::getAdapterForContentType(
-        $rule->getContentType());
+      try {
+        $adapter = HeraldAdapter::getAdapterForContentType(
+          $rule->getContentType());
+      } catch (Exception $ex) {
+        return $this->newDialog()
+          ->setTitle(pht('Invalid Content Type'))
+          ->appendParagraph(
+            pht(
+              'The selected content type ("%s") is not recognized by '.
+              'Herald.',
+              $rule->getContentType()))
+          ->addCancelButton($new_uri);
+      }
 
       if (!$adapter->supportsRuleType($rule->getRuleType())) {
-        throw new Exception(
-          pht(
-            "This rule's content type does not support the selected rule ".
-            "type."));
+        return $this->newDialog()
+          ->setTitle(pht('Rule/Content Mismatch'))
+          ->appendParagraph(
+            pht(
+              'The selected rule type ("%s") is not supported by the selected '.
+              'content type ("%s").',
+              $rule->getRuleType(),
+              $rule->getContentType()))
+          ->addCancelButton($new_uri);
       }
 
       if ($rule->isObjectRule()) {
@@ -104,7 +128,7 @@ final class HeraldRuleController extends HeraldController {
       list($e_name, $errors) = $this->saveRule($adapter, $rule, $request);
       if (!$errors) {
         $id = $rule->getID();
-        $uri = $this->getApplicationURI("rule/{$id}/");
+        $uri = '/'.$rule->getMonogram();
         return id(new AphrontRedirectResponse())->setURI($uri);
       }
     }
@@ -223,13 +247,14 @@ final class HeraldRuleController extends HeraldController {
       ->buildApplicationCrumbs()
       ->addTextCrumb($title);
 
-    return $this->buildApplicationPage(
-      array(
-        $crumbs,
-        $form_box,
-      ),
-      array(
-        'title' => pht('Edit Rule'),
+    $title = pht('Edit Rule');
+
+    return $this->newPage()
+      ->setTitle($title)
+      ->setCrumbs($crumbs)
+      ->appendChild(
+        array(
+          $form_box,
       ));
   }
 

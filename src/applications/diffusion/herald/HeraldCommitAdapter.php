@@ -17,7 +17,7 @@ final class HeraldCommitAdapter
   protected $affectedPackages;
   protected $auditNeededPackages;
 
-  private $buildPlanPHIDs = array();
+  private $buildRequests = array();
 
   public function getAdapterApplicationClass() {
     return 'PhabricatorDiffusionApplication';
@@ -130,10 +130,7 @@ final class HeraldCommitAdapter
   }
 
   public function getHeraldName() {
-    return
-      'r'.
-      $this->repository->getCallsign().
-      $this->commit->getCommitIdentifier();
+    return $this->commit->getMonogram();
   }
 
   public function loadAffectedPaths() {
@@ -168,9 +165,7 @@ final class HeraldCommitAdapter
         'commitPHID = %s AND auditStatus IN (%Ls)',
         $this->commit->getPHID(),
         $status_arr);
-
-      $packages = mpull($requests, 'getAuditorPHID');
-      $this->auditNeededPackages = $packages;
+      $this->auditNeededPackages = $requests;
     }
     return $this->auditNeededPackages;
   }
@@ -211,18 +206,9 @@ final class HeraldCommitAdapter
   }
 
   private function loadCommitDiff() {
-    $drequest = DiffusionRequest::newFromDictionary(
-      array(
-        'user' => PhabricatorUser::getOmnipotentUser(),
-        'repository' => $this->repository,
-        'commit' => $this->commit->getCommitIdentifier(),
-      ));
-
     $byte_limit = self::getEnormousByteLimit();
 
-    $raw = DiffusionQuery::callConduitWithDiffusionRequest(
-      PhabricatorUser::getOmnipotentUser(),
-      $drequest,
+    $raw = $this->callConduit(
       'diffusion.rawdiffquery',
       array(
         'commit' => $this->commit->getCommitIdentifier(),
@@ -298,6 +284,32 @@ final class HeraldCommitAdapter
     return $result;
   }
 
+  public function loadIsMergeCommit() {
+    $parents = $this->callConduit(
+      'diffusion.commitparentsquery',
+      array(
+        'commit' => $this->getObject()->getCommitIdentifier(),
+      ));
+
+    return (count($parents) > 1);
+  }
+
+  private function callConduit($method, array $params) {
+    $viewer = PhabricatorUser::getOmnipotentUser();
+
+    $drequest = DiffusionRequest::newFromDictionary(
+      array(
+        'user' => $viewer,
+        'repository' => $this->repository,
+        'commit' => $this->commit->getCommitIdentifier(),
+      ));
+
+    return DiffusionQuery::callConduitWithDiffusionRequest(
+      $viewer,
+      $drequest,
+      $method,
+      $params);
+  }
 
 /* -(  HarbormasterBuildableAdapterInterface  )------------------------------ */
 
@@ -310,12 +322,13 @@ final class HeraldCommitAdapter
     return $this->getObject()->getRepository()->getPHID();
   }
 
-  public function getQueuedHarbormasterBuildPlanPHIDs() {
-    return $this->buildPlanPHIDs;
+  public function getQueuedHarbormasterBuildRequests() {
+    return $this->buildRequests;
   }
 
-  public function queueHarbormasterBuildPlanPHID($phid) {
-    $this->buildPlanPHIDs[] = $phid;
+  public function queueHarbormasterBuildRequest(
+    HarbormasterBuildRequest $request) {
+    $this->buildRequests[] = $request;
   }
 
 }

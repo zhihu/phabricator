@@ -92,6 +92,7 @@ final class PhabricatorMacroViewController
       ),
       array(
         'title' => $title_short,
+        'pageObjects' => array($macro->getPHID()),
       ));
   }
 
@@ -103,7 +104,6 @@ final class PhabricatorMacroViewController
     $view = id(new PhabricatorActionListView())
       ->setUser($request->getUser())
       ->setObject($macro)
-      ->setObjectURI($request->getRequestURI())
       ->addAction(
         id(new PhabricatorActionView())
         ->setName(pht('Edit Macro'))

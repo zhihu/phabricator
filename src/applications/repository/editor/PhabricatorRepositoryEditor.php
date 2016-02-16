@@ -39,11 +39,12 @@ final class PhabricatorRepositoryEditor
     $types[] = PhabricatorRepositoryTransaction::TYPE_PUSH_POLICY;
     $types[] = PhabricatorRepositoryTransaction::TYPE_CREDENTIAL;
     $types[] = PhabricatorRepositoryTransaction::TYPE_DANGEROUS;
-    $types[] = PhabricatorRepositoryTransaction::TYPE_CLONE_NAME;
+    $types[] = PhabricatorRepositoryTransaction::TYPE_SLUG;
     $types[] = PhabricatorRepositoryTransaction::TYPE_SERVICE;
     $types[] = PhabricatorRepositoryTransaction::TYPE_SYMBOLS_LANGUAGE;
     $types[] = PhabricatorRepositoryTransaction::TYPE_SYMBOLS_SOURCES;
     $types[] = PhabricatorRepositoryTransaction::TYPE_STAGING_URI;
+    $types[] = PhabricatorRepositoryTransaction::TYPE_AUTOMATION_BLUEPRINTS;
 
     $types[] = PhabricatorTransactions::TYPE_EDGE;
     $types[] = PhabricatorTransactions::TYPE_VIEW_POLICY;
@@ -97,8 +98,8 @@ final class PhabricatorRepositoryEditor
         return $object->getCredentialPHID();
       case PhabricatorRepositoryTransaction::TYPE_DANGEROUS:
         return $object->shouldAllowDangerousChanges();
-      case PhabricatorRepositoryTransaction::TYPE_CLONE_NAME:
-        return $object->getDetail('clone-name');
+      case PhabricatorRepositoryTransaction::TYPE_SLUG:
+        return $object->getRepositorySlug();
       case PhabricatorRepositoryTransaction::TYPE_SERVICE:
         return $object->getAlmanacServicePHID();
       case PhabricatorRepositoryTransaction::TYPE_SYMBOLS_LANGUAGE:
@@ -107,6 +108,8 @@ final class PhabricatorRepositoryEditor
         return $object->getSymbolSources();
       case PhabricatorRepositoryTransaction::TYPE_STAGING_URI:
         return $object->getDetail('staging-uri');
+      case PhabricatorRepositoryTransaction::TYPE_AUTOMATION_BLUEPRINTS:
+        return $object->getDetail('automation.blueprintPHIDs', array());
     }
   }
 
@@ -138,12 +141,18 @@ final class PhabricatorRepositoryEditor
       case PhabricatorRepositoryTransaction::TYPE_PUSH_POLICY:
       case PhabricatorRepositoryTransaction::TYPE_CREDENTIAL:
       case PhabricatorRepositoryTransaction::TYPE_DANGEROUS:
-      case PhabricatorRepositoryTransaction::TYPE_CLONE_NAME:
       case PhabricatorRepositoryTransaction::TYPE_SERVICE:
       case PhabricatorRepositoryTransaction::TYPE_SYMBOLS_LANGUAGE:
       case PhabricatorRepositoryTransaction::TYPE_SYMBOLS_SOURCES:
       case PhabricatorRepositoryTransaction::TYPE_STAGING_URI:
+      case PhabricatorRepositoryTransaction::TYPE_AUTOMATION_BLUEPRINTS:
         return $xaction->getNewValue();
+      case PhabricatorRepositoryTransaction::TYPE_SLUG:
+        $name = $xaction->getNewValue();
+        if (strlen($name)) {
+          return $name;
+        }
+        return null;
       case PhabricatorRepositoryTransaction::TYPE_NOTIFY:
       case PhabricatorRepositoryTransaction::TYPE_AUTOCLOSE:
         return (int)$xaction->getNewValue();
@@ -211,8 +220,8 @@ final class PhabricatorRepositoryEditor
       case PhabricatorRepositoryTransaction::TYPE_DANGEROUS:
         $object->setDetail('allow-dangerous-changes', $xaction->getNewValue());
         return;
-      case PhabricatorRepositoryTransaction::TYPE_CLONE_NAME:
-        $object->setDetail('clone-name', $xaction->getNewValue());
+      case PhabricatorRepositoryTransaction::TYPE_SLUG:
+        $object->setRepositorySlug($xaction->getNewValue());
         return;
       case PhabricatorRepositoryTransaction::TYPE_SERVICE:
         $object->setAlmanacServicePHID($xaction->getNewValue());
@@ -225,6 +234,11 @@ final class PhabricatorRepositoryEditor
         return;
       case PhabricatorRepositoryTransaction::TYPE_STAGING_URI:
         $object->setDetail('staging-uri', $xaction->getNewValue());
+        return;
+      case PhabricatorRepositoryTransaction::TYPE_AUTOMATION_BLUEPRINTS:
+        $object->setDetail(
+          'automation.blueprintPHIDs',
+          $xaction->getNewValue());
         return;
       case PhabricatorRepositoryTransaction::TYPE_ENCODING:
         // Make sure the encoding is valid by converting to UTF-8. This tests
@@ -276,31 +290,15 @@ final class PhabricatorRepositoryEditor
 
         $editor->save();
         break;
+      case PhabricatorRepositoryTransaction::TYPE_AUTOMATION_BLUEPRINTS:
+        DrydockAuthorization::applyAuthorizationChanges(
+          $this->getActor(),
+          $object->getPHID(),
+          $xaction->getOldValue(),
+          $xaction->getNewValue());
+        break;
     }
 
-  }
-
-  protected function mergeTransactions(
-    PhabricatorApplicationTransaction $u,
-    PhabricatorApplicationTransaction $v) {
-
-    $type = $u->getTransactionType();
-    switch ($type) {}
-
-    return parent::mergeTransactions($u, $v);
-  }
-
-  protected function transactionHasEffect(
-    PhabricatorLiskDAO $object,
-    PhabricatorApplicationTransaction $xaction) {
-
-    $old = $xaction->getOldValue();
-    $new = $xaction->getNewValue();
-
-    $type = $xaction->getTransactionType();
-    switch ($type) {}
-
-    return parent::transactionHasEffect($object, $xaction);
   }
 
   protected function requireCapabilities(
@@ -333,11 +331,12 @@ final class PhabricatorRepositoryEditor
       case PhabricatorRepositoryTransaction::TYPE_PUSH_POLICY:
       case PhabricatorRepositoryTransaction::TYPE_CREDENTIAL:
       case PhabricatorRepositoryTransaction::TYPE_DANGEROUS:
-      case PhabricatorRepositoryTransaction::TYPE_CLONE_NAME:
+      case PhabricatorRepositoryTransaction::TYPE_SLUG:
       case PhabricatorRepositoryTransaction::TYPE_SERVICE:
       case PhabricatorRepositoryTransaction::TYPE_SYMBOLS_SOURCES:
       case PhabricatorRepositoryTransaction::TYPE_SYMBOLS_LANGUAGE:
       case PhabricatorRepositoryTransaction::TYPE_STAGING_URI:
+      case PhabricatorRepositoryTransaction::TYPE_AUTOMATION_BLUEPRINTS:
         PhabricatorPolicyFilter::requireCapability(
           $this->requireActor(),
           $object,
@@ -431,9 +430,96 @@ final class PhabricatorRepositoryEditor
           }
         }
         break;
+
+      case PhabricatorRepositoryTransaction::TYPE_AUTOMATION_BLUEPRINTS:
+        foreach ($xactions as $xaction) {
+          $old = nonempty($xaction->getOldValue(), array());
+          $new = nonempty($xaction->getNewValue(), array());
+
+          $add = array_diff($new, $old);
+
+          $invalid = PhabricatorObjectQuery::loadInvalidPHIDsForViewer(
+            $this->getActor(),
+            $add);
+          if ($invalid) {
+            $errors[] = new PhabricatorApplicationTransactionValidationError(
+              $type,
+              pht('Invalid'),
+              pht(
+                'Some of the selected automation blueprints are invalid '.
+                'or restricted: %s.',
+                implode(', ', $invalid)),
+              $xaction);
+          }
+        }
+        break;
+
+      case PhabricatorRepositoryTransaction::TYPE_SLUG:
+        foreach ($xactions as $xaction) {
+          $old = $xaction->getOldValue();
+          $new = $xaction->getNewValue();
+
+          if (!strlen($new)) {
+            continue;
+          }
+
+          if ($new === $old) {
+            continue;
+          }
+
+          try {
+            PhabricatorRepository::asssertValidRepositorySlug($new);
+          } catch (Exception $ex) {
+            $errors[] = new PhabricatorApplicationTransactionValidationError(
+              $type,
+              pht('Invalid'),
+              $ex->getMessage(),
+              $xaction);
+            continue;
+          }
+
+          $other = id(new PhabricatorRepositoryQuery())
+            ->setViewer(PhabricatorUser::getOmnipotentUser())
+            ->withSlugs(array($new))
+            ->executeOne();
+          if ($other && ($other->getID() !== $object->getID())) {
+            $errors[] = new PhabricatorApplicationTransactionValidationError(
+              $type,
+              pht('Duplicate'),
+              pht(
+                'The selected repository short name is already in use by '.
+                'another repository. Choose a unique short name.'),
+              $xaction);
+            continue;
+          }
+        }
+        break;
+
     }
 
     return $errors;
+  }
+
+  protected function didCatchDuplicateKeyException(
+    PhabricatorLiskDAO $object,
+    array $xactions,
+    Exception $ex) {
+
+    $errors = array();
+
+    $errors[] = new PhabricatorApplicationTransactionValidationError(
+      null,
+      pht('Invalid'),
+      pht(
+        'The chosen callsign or repository short name is already in '.
+        'use by another repository.'),
+      null);
+
+    throw new PhabricatorApplicationTransactionValidationException($errors);
+  }
+
+  protected function supportsSearch() {
+    return true;
   }
 
 }
