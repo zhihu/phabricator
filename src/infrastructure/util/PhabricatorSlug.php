@@ -14,6 +14,7 @@ final class PhabricatorSlug extends Phobject {
   }
 
   public static function normalize($slug, $hashtag = false) {
+    $slug = GetPinyin($slug);
     $slug = preg_replace('@/+@', '/', $slug);
     $slug = trim($slug, '/');
     $slug = phutil_utf8_strtolower($slug);

@@ -570,7 +570,7 @@ final class PhabricatorUser
     $conn_w = $this->establishConnection('w');
 
     $tokens = PhabricatorTypeaheadDatasource::tokenizeString(
-      $this->getUserName().' '.$this->getRealName());
+      $this->getUserName().' '.$this->getRealName().' '.GetPinyin($this->getRealName()));
 
     $sql = array();
     foreach ($tokens as $token) {

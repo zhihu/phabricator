@@ -40,7 +40,8 @@ final class DifferentialReviewer extends Phobject {
     // PhabricatorLiskDAO, and faking that seems sketchy.
 
     $viewer_phid = $viewer->getPHID();
-    if (!array_key_exists($viewer_phid, $this->authority)) {
+    // System agent always has authority
+    if (!$viewer->getIsSystemAgent() && !array_key_exists($viewer_phid, $this->authority)) {
       throw new Exception(pht('You must %s first!', 'attachAuthority()'));
     }
     return $this->authority[$viewer_phid];

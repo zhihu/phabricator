@@ -16,13 +16,14 @@ ROOT=`pwd` # You can hard-code the path here instead.
 ### UPDATE WORKING COPIES ######################################################
 
 cd $ROOT/libphutil
-git pull
+git pull -r
 
 cd $ROOT/arcanist
-git pull
+git pull -r
 
 cd $ROOT/phabricator
-git pull
+git checkout -- .
+git pull -r
 
 
 ### CYCLE WEB SERVER AND DAEMONS ###############################################
@@ -38,19 +39,23 @@ $ROOT/phabricator/bin/phd stop
 # appropriate command for your system.
 # NOTE: If you're running php-fpm, you should stop it here too.
 
-sudo /etc/init.d/httpd stop
+# sudo /etc/init.d/httpd stop
 
 
 # Upgrade the database schema. You may want to add the "--force" flag to allow
 # this script to run noninteractively.
 $ROOT/phabricator/bin/storage upgrade
 
+$ROOT/phabricator/bin/celerity map
+$ROOT/arcanist/bin/arc liberate $ROOT/phabricator/src
+
 # Restart the webserver. As above, this depends on your system and webserver.
 # NOTE: If you're running php-fpm, restart it here too.
-sudo /etc/init.d/httpd start
+# sudo /etc/init.d/httpd start
 
 # Restart daemons.
 $ROOT/phabricator/bin/phd start
+$ROOT/phabricator/bin/phd launch PhabricatorFactDaemon
 
 # If running the notification server, start it.
 # $ROOT/phabricator/bin/aphlict start

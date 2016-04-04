@@ -17,7 +17,7 @@
 }
 
 .lightbox-attachment img {
-  margin: 3% auto 0;
+  margin: 3% auto 30px;
   max-height: 90%;
   max-width: 90%;
 }

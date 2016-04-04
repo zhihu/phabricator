@@ -59,6 +59,7 @@ final class AphrontMultiColumnView extends AphrontView {
 
   public function render() {
     require_celerity_resource('aphront-multi-column-view-css');
+    require_celerity_resource('aphront-multi-column-fixed-height-css');
 
     $classes = array();
     $classes[] = 'aphront-multi-column-inner';

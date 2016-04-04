@@ -339,9 +339,9 @@ final class PhabricatorObjectHandle
 
   public function getLinkName() {
     switch ($this->getType()) {
-      case PhabricatorPeopleUserPHIDType::TYPECONST:
-        $name = $this->getName();
-        break;
+      // case PhabricatorPeopleUserPHIDType::TYPECONST:
+      //   $name = $this->getName();
+      //   break;
       default:
         $name = $this->getFullName();
         break;

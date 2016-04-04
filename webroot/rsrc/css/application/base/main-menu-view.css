@@ -22,6 +22,14 @@
 .device-desktop .phabricator-main-menu {
   height: 44px;
   padding-right: 4px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.device-desktop .phabricator-standard-page-body {
+  padding-top: 44px;
 }
 
 .phabricator-main-menu a:hover {

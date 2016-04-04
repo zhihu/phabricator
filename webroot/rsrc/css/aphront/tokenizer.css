@@ -28,7 +28,7 @@ var.jx-tokenizer-metrics {
 body input.jx-tokenizer-input {
   border: 1px solid transparent;
   border-width: 1px 0px;
-  padding: 3px;
+  padding: 3px 4px 3px 3px;
   outline: none;
   float: left;
   width: 100%;

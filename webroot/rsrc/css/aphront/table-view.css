@@ -73,8 +73,9 @@ th.aphront-table-view-sortable-selected {
 }
 
 .aphront-table-view td {
-  white-space: nowrap;
-  vertical-align: middle;
+  vertical-align:   top;
+  padding:          8px 12px;
+  white-space:      nowrap;
 }
 
 .aphront-table-down-sort {
